@@ -7,6 +7,7 @@ lexical ImportArtifactType = "entity" | "value" | "repository" | "collection" | 
 layout LAYOUTLIST = LAYOUT* !>> [\t-\n\r\ ] ;
 
 start syntax Module = \module: "module" Identifier name ";" Imports* imports
+                    | \module: "module" Identifier name ";" Imports* imports Artifact artifact
                     ;
 
 syntax Imports = importInternal: "use" Identifier target ImportArtifactType artifactType ";"
@@ -14,3 +15,6 @@ syntax Imports = importInternal: "use" Identifier target ImportArtifactType arti
                | importExternal: "use" Identifier target ImportArtifactType artifactType "from" Identifier module ";"
                | importExternal: "use" Identifier target ImportArtifactType artifactType "from" Identifier module "as" Identifier alias ";"
                ;
+
+// Entity grammar
+syntax Artifact = entity: "entity" Identifier name "{" "}";
