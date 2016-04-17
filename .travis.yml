@@ -1,0 +1,10 @@
+language: java
+jdk:
+  - oraclejdk8
+sudo: required
+install: 
+  - sudo mv support/bin/rascal.jar /usr/local/bin/rascal.jar
+  - sudo mv support/bin/rascal /usr/local/bin/rascal
+  - sudo chmod +x /usr/local/bin/rascal
+script:
+  - cd src && rascal Tests

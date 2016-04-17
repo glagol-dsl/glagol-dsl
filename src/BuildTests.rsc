@@ -30,7 +30,7 @@ public int main(list[str] args)
                         '
                         'extend Test::All;
                         '
-                        'public int main() {
+                        'public int main(list[str] args) {
                         '   list[bool] results = [];
 
                         '<for (function <- functions) {>
@@ -44,4 +44,5 @@ public int main(list[str] args)
 
     return 0;
 }
+
 
