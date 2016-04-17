@@ -2,7 +2,7 @@ module Tests
 
 extend Test::All;
 
-public int main() {
+public int main(list[str] args) {
    list[bool] results = [];
 
 
