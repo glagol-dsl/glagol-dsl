@@ -9,7 +9,7 @@ test bool testShouldParseEmptyEntityWithName()
     str code = "module Example;
                'entity User {}";
 
-    return parseModule(code) == \module("Example", {}, entity("User"));
+    return parseModule(code) == \module("Example", {}, entity({}, "User"));
 }
 
 test bool testShouldParseEmptyEntityWithModuleImports()
@@ -28,5 +28,6 @@ test bool testShouldParseEmptyEntityWithModuleImports()
         importExternal("Language", "entity", "I18n")
    };
 
-    return parseModule(code) == \module("Example", expectedImports, entity("User"));
+    return parseModule(code) == \module("Example", expectedImports, entity({}, "User"));
 }
+
