@@ -1,6 +1,7 @@
 module Syntax::Concrete::Grammar
 
 lexical LAYOUT = [\t-\n\r\ ];
+lexical TableName = [a-zA-Z0-9_]* !>> [a-zA-Z0-9_];
 lexical Identifier =  [a-zA-Z][a-zA-Z0-9_]* !>> [a-zA-Z0-9_];
 lexical ImportArtifactType = "entity" | "value" | "repository" | "collection" | "util" | "service";
 
@@ -17,4 +18,12 @@ syntax Imports = importInternal: "use" Identifier target ImportArtifactType arti
                ;
 
 // Entity grammar
-syntax Artifact = entity: "entity" Identifier name "{" "}";
+
+syntax EntityAnno = annoTable: "@table(" "name=" TableName name ")"
+                  | index: "@index(" Identifier name "," "{" {EntityAnnoIndexColumns ","}* columns "}" ")"
+                  ;
+
+syntax EntityAnnoIndexColumns = Identifier;
+
+syntax Artifact = entity: EntityAnno* annotations "entity" Identifier name "{" "}";
+

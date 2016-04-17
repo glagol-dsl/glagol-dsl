@@ -10,4 +10,7 @@ data Import = importInternal(str target, str \artifactType)
             | importExternal(str target, str \artifactType, str \module, str \alias)
             ;
 
-data Artifact = entity(str name);
+data Artifact = entity(set[Annotation] annotations, str name);
+
+data Annotation = annoTable(str name)
+                | index(str name, set[str] columns);
