@@ -18,8 +18,14 @@ syntax Imports = importInternal: "use" Identifier target ImportArtifactType arti
 
 // Artifacts grammar
 
-syntax Artifact = entity: EntityAnno* annotations "entity" Identifier name "{" EntityValue* values "}"
+syntax Artifact = entity: EntityAnno* annotations "entity" Identifier name "{" EntityDeclarations* declarations "}"
                 ;
+
+syntax EntityDeclarations = EntityValue | EntityRelation;
+
+syntax EntityRelation = relation: "relation" RelationDir local ":" RelationDir foreign Identifier entity "as" Identifier alias ";"
+                      | relation: "relation" RelationDir local ":" RelationDir foreign Identifier entity "as" Identifier alias "with" "{" {RelProperties ","}* "}" ";"
+                      ;
 
 syntax EntityValue = entityValue: EntityValueAnno* annotations "value" Identifier type Identifier name ";"
                    | entityValue: EntityValueAnno* annotations "value" Identifier type Identifier name "with" "{" {ValueProperties ","}* "}" ";"
@@ -39,7 +45,9 @@ lexical LAYOUT = [\t-\n\r\ ];
 lexical Name = [a-zA-Z0-9_]* !>> [a-zA-Z0-9_];
 lexical Identifier =  [a-zA-Z][a-zA-Z0-9_]* !>> [a-zA-Z0-9_];
 lexical ImportArtifactType = "entity" | "value" | "repository" | "collection" | "util" | "service";
-lexical ValueProperties = "get" | "set" | "add" | "clear" ;
+lexical ValueProperties = "get" | "set" ;
+lexical RelationDir = "one" | "many" ;
+lexical RelProperties = "get" | "set" | "add" | "reset" | "clear" ;
 
 lexical UnicodeEscape
       = utf16: "\\" [u] [0-9 A-F a-f] [0-9 A-F a-f] [0-9 A-F a-f] [0-9 A-F a-f]
@@ -56,4 +64,5 @@ lexical StringCharacter
 
 
 lexical StringConstant = "\"" StringCharacter* chars "\"" ;
+
 

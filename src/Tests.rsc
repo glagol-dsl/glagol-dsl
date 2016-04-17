@@ -6,6 +6,8 @@ public int main(list[str] args) {
    list[bool] results = [];
 
 
+   results += testShouldParseEntityRelations();
+
    results += testShouldParseEntityWithValues();
 
    results += testShouldParseEntityWithValuesAndAnnotations();
