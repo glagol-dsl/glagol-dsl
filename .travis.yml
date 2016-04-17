@@ -7,4 +7,6 @@ install:
   - sudo mv support/bin/rascal /usr/local/bin/rascal
   - sudo chmod +x /usr/local/bin/rascal
 script:
-  - cd src && rascal Tests
+  - cd src
+  - rascal BuildTests
+  - rascal Tests

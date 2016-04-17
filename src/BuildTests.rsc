@@ -11,7 +11,10 @@ private set[loc] collectTestFiles(loc location)
             testFiles += current;
         }
         else if (isDirectory(current)) {
-            testFiles += collectTestFiles(current);
+            try {
+                current.ls;
+                testFiles += collectTestFiles(current);
+            } catch: ;
         }
     }
 
@@ -20,7 +23,7 @@ private set[loc] collectTestFiles(loc location)
 
 public int main(list[str] args)
 {
-    loc testsLoc = |home:///www/glagol-dsl/src/Test|;
+    loc testsLoc = |cwd:///Test|;
 
     testFiles = collectTestFiles(testsLoc);
 
@@ -44,5 +47,4 @@ public int main(list[str] args)
 
     return 0;
 }
-
 
