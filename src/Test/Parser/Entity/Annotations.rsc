@@ -8,9 +8,9 @@ test bool testShouldParseTableNameAnnotationForEntity()
 {
     str code = "module Example;
                '@table(name=users)
-               'entity User {}";
+               'entity User { }";
 
-    return parseModule(code) == \module("Example", {}, entity({annoTable("users")}, "User"));
+    return parseModule(code) == \module("Example", {}, entity({annoTable("users")}, "User", {}));
 }
 
 test bool testShouldParseIndexesAnnotationForEntity()
@@ -18,9 +18,9 @@ test bool testShouldParseIndexesAnnotationForEntity()
     str code = "module Example;
                '@index(my_index, {name, email})
                '@index(second_index, {quantity, total})
-               'entity User {}";
+               'entity User { }";
 
-    Artifact expectedEntity = entity({index("my_index", {"name", "email"}), index("second_index", {"quantity", "total"})}, "User");
+    Declaration expectedEntity = entity({index("my_index", {"name", "email"}), index("second_index", {"quantity", "total"})}, "User", {});
 
     return parseModule(code) == \module("Example", {}, expectedEntity);
 }
@@ -31,14 +31,15 @@ test bool testShouldParseCompositeAnnotationForEntity()
                '@index(my_index, {name, email})
                '@index(second_index, {quantity, total})
                '@table(name=my_users_table)
-               'entity User {}";
+               'entity User { }";
 
-    Artifact expectedEntity = entity(
+    Declaration expectedEntity = entity(
         {
             index("my_index", {"name", "email"}),
             index("second_index", {"quantity", "total"}),
             annoTable("my_users_table")
-        }, "User");
+        }, "User", {});
 
     return parseModule(code) == \module("Example", {}, expectedEntity);
 }
+

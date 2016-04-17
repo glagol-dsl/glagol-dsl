@@ -1,16 +1,20 @@
 module Syntax::Abstract::AST
 
-data Module = \module(str name, set[Import] imports)
-            | \module(str name, set[Import] imports, Artifact artifact)
-            ;
+data Declaration = \module(str name, set[Declaration] imports)
+                 | \module(str name, set[Declaration] imports, Declaration artifact)
+                 | importInternal(str target, str \artifactType)
+                 | importInternal(str target, str \artifactType, str \alias)
+                 | importExternal(str target, str \artifactType, str \module)
+                 | importExternal(str target, str \artifactType, str \module, str \alias)
+                 // artifacts
+                 | entity(set[Declaration] annotations, str name, set[Declaration] values)
+                 | entity(str name, set[Declaration] values)
+                 | entityValue(set[Declaration] annotations, str \type, str name)
+                 | entityValue(set[Declaration] annotations, str \type, str name, set[str] valueProperties)
+                 // annotations
+                 | annoTable(str name)
+                 | annoField(set[Expression] pairs)
+                 | index(str name, set[str] columns)
+                 ;
 
-data Import = importInternal(str target, str \artifactType)
-            | importInternal(str target, str \artifactType, str \alias)
-            | importExternal(str target, str \artifactType, str \module)
-            | importExternal(str target, str \artifactType, str \module, str \alias)
-            ;
-
-data Artifact = entity(set[Annotation] annotations, str name);
-
-data Annotation = annoTable(str name)
-                | index(str name, set[str] columns);
+data Expression = annoPair(str key, str \value);

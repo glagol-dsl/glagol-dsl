@@ -4,5 +4,5 @@ import Syntax::Abstract::AST;
 import Parser::ParseCode;
 import ParseTree;
 
-public Module parseModule(str code) = implode(#Module, parseCode(code));
-public Module parseModule(loc file) = implode(#Module, parseFile(file));
+public Declaration parseModule(str code) = implode(#Declaration, parseCode(code));
+public Declaration parseModule(loc file) = implode(#Declaration, parseFile(file));
