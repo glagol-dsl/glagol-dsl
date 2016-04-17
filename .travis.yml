@@ -1,8 +1,6 @@
 language: java
 install:
-  - wget http://update.rascal-mpl.org/console/rascal-shell-stable.jar 
-  - mv rascal-shell-stable.jar /usr/local/bin/rascal.jar
-  - cp ./support/bin/rascal /usr/local/bin/rascal
-  - chmod +x /usr/local/bin/rascal
+  - wget http://update.rascal-mpl.org/console/rascal-shell-stable.jar ./support/bin/rascal.jar
+  - chmod +x ./support/bin/rascal
 script:
-  - cd src && rascal Tests
+  - cd src && ../support/bin/rascal Tests
