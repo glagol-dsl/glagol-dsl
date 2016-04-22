@@ -8,7 +8,7 @@ test void shouldParseMethodWithoutModifier()
 {
 	str code = "module Example;
 			 'entity User {
-			 '    int example() = (23 + 5)*8;
+			 '    int example(int blabla = 5) = (23 + 5)*8;
 			 '}";
 			 
 	iprintln(parseModule(code));

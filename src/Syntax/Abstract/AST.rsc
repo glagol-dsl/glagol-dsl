@@ -19,12 +19,12 @@ data Declaration
     | annoField(set[Expression] pairs)
     | index(str name, set[str] columns)
     // methods
-    | method(Modifier modifier, Type returnType, str name, Expression expr)
+    | method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Expression expr)
     //| method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Expression expr, Expression when)
     //| method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Statement body)
     //| method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Statement body, Expression when)
-    //| parameter(Type paramType, str name)
-    //| parameter(Type paramType, str name, Expression defaultValue)
+    | parameter(Type paramType, str name)
+    | parameter(Type paramType, str name, Expression defaultValue)
     ;
 
 data Statement

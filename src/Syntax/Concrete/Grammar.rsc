@@ -70,7 +70,7 @@ syntax EntityValueAnno = annoField: "@field(" {AnnotationPair ","}* pairs ")";
 syntax AnnotationPair = annoPair: Identifier key ":" Name value;
 
 syntax Method
-    = method: Modifier modifier Type returnType Name name "(" ")" "=" Expression expr ";"
+    = method: Modifier modifier Type returnType Name name "(" {Parameter ","}* parameters ")" "=" Expression expr ";"
     //| method: Modifier modifier Type type AlphaIdentifier name "(" {Parameters parameters ","}* ")" "=" Expression expr "when" Expression when ";"
     //| method: Modifier modifier Type type AlphaIdentifier name "(" {Parameters parameters ","}* ")" "{" Statement body "}"
     //| method: Modifier modifier Type type AlphaIdentifier name "(" {Parameters parameters ","}* ")" "{" Statement body "}" "when" Expression when ";"
@@ -94,16 +94,16 @@ syntax Type
     ;
 
 syntax Parameter
-    = parameter: Type type AlphaIdentifier name
-    | parameter: Type type AlphaIdentifier name "=" ParameterDefaultValue defaultValue
+    = parameter: Type paramType AlphaIdentifier name
+    | parameter: Type paramType AlphaIdentifier name "=" ParameterDefaultValue defaultValue
     ;
 
 syntax ParameterDefaultValue
-    = stringLiteral: StringConstant
-    | numberLiteral: DecimalIntegerLiteral
-    | numberLiteral: DeciFloatNumeral
-    | booleanLiteral: Boolean
-    | array: "[" {ParameterDefaultValue ","}* items "]"
+    = stringLiteral: StringConstant string
+    | numberLiteral: DecimalIntegerLiteral number
+    | numberLiteral: DeciFloatNumeral number
+    | booleanLiteral: Boolean boolean
+    | array: "[" {ParameterDefaultValue ","}* items "]" array
     ;
 
 syntax Statement
@@ -151,10 +151,7 @@ lexical LAYOUT
     = [\t-\n\r\ ];
     
 lexical Identifier
-    =  [a-zA-Z][a-zA-Z0-9_]* !>> [a-zA-Z0-9_];
-    
-lexical AlphaIdentifier
-    =  [a-zA-Z][a-zA-Z]* !>> [a-zA-Z];
+    =  [a-zA-Z][a-zA-Z0-9_]* !>> [a-zA-Z0-9_] \ GlagolPreserved;
     
 lexical ImportArtifactType
     = "entity" | "value" | "repository" | "collection" | "util" | "service";
@@ -208,8 +205,11 @@ lexical DeciFloatNumeral
     | [0-9] !<< [0-9]+ "." [0-9]* !>> [0-9] DeciFloatExponentPart?
     | [0-9] !<< "." [0-9]+ !>> [0-9] DeciFloatExponentPart?
     ;
+    
+lexical AlphaIdentifier
+	=  ([A-Z a-z] !<< [A-Z a-z] [0-9 A-Z a-z]* !>> [0-9 A-Z a-z]) \ GlagolPreserved
+	;
 
 lexical Name
 	=  ([A-Z a-z _] !<< [A-Z _ a-z] [0-9 A-Z _ a-z]* !>> [0-9 A-Z _ a-z]) \ GlagolPreserved
-	| [\\] [A-Z _ a-z] [\- 0-9 A-Z _ a-z]* !>> [\- 0-9 A-Z _ a-z] 
 	;
