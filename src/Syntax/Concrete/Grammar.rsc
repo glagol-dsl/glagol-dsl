@@ -4,6 +4,26 @@ module Syntax::Concrete::Grammar
 
 layout LAYOUTLIST = LAYOUT* !>> [\t-\n\r\ ] ;
 
+keyword GlagolPreserved 
+	= "module"
+	| "use"
+	| "from"
+	| "as"
+	| "entity"
+	| "util"
+	| "service"
+	| "value"
+	| "repository"
+	| "collection"
+	| "int"
+	| "bool"
+	| "boolean"
+	| "string"
+	| "relation"
+	| "true"
+	| "false"
+	;
+
 // Start grammar
 
 start syntax Module
@@ -50,7 +70,7 @@ syntax EntityValueAnno = annoField: "@field(" {AnnotationPair ","}* pairs ")";
 syntax AnnotationPair = annoPair: Identifier key ":" Name value;
 
 syntax Method
-    = method: Modifier modifier Type returnType ";"
+    = method: Modifier modifier Type returnType Name name "(" ")" "=" Expression expr ";"
     //| method: Modifier modifier Type type AlphaIdentifier name "(" {Parameters parameters ","}* ")" "=" Expression expr "when" Expression when ";"
     //| method: Modifier modifier Type type AlphaIdentifier name "(" {Parameters parameters ","}* ")" "{" Statement body "}"
     //| method: Modifier modifier Type type AlphaIdentifier name "(" {Parameters parameters ","}* ")" "{" Statement body "}" "when" Expression when ";"
@@ -70,7 +90,7 @@ syntax Type
     | \bool: "boolean"
     | \void: "void"
     | typedArray: Type type "[]"
-    > artifactType: Identifier name
+    > artifactType: Name name
     ;
 
 syntax Parameter
@@ -88,6 +108,8 @@ syntax ParameterDefaultValue
 
 syntax Statement
     = "statement";
+
+lexical Digid = [0-9];
 
 syntax Expression
     = bracket \bracket  : "(" Expression expression ")"
@@ -116,10 +138,10 @@ syntax Expression
     ;
 
 syntax Literal
-    = stringLiteral: StringConstant
-    | numberLiteral: DecimalIntegerLiteral
-    | numberLiteral: DeciFloatNumeral
-    | booleanLiteral: Boolean
+    = stringLiteral: StringConstant string
+    | numberLiteral: DecimalIntegerLiteral number
+    | numberLiteral: DeciFloatNumeral number
+    | booleanLiteral: Boolean boolean
     //| dateTime: DateTimeLiteral dateTimeLiteral
     ;
 
@@ -127,18 +149,22 @@ syntax Literal
 
 lexical LAYOUT
     = [\t-\n\r\ ];
-lexical Name
-    = [a-zA-Z0-9_]* !>> [a-zA-Z0-9_];
+    
 lexical Identifier
     =  [a-zA-Z][a-zA-Z0-9_]* !>> [a-zA-Z0-9_];
+    
 lexical AlphaIdentifier
     =  [a-zA-Z][a-zA-Z]* !>> [a-zA-Z];
+    
 lexical ImportArtifactType
     = "entity" | "value" | "repository" | "collection" | "util" | "service";
+    
 lexical ValueProperties
     = "get" | "set" ;
+    
 lexical RelationDir
     = "one" | "many" ;
+    
 lexical RelProperties
     = "get" | "set" | "add" | "reset" | "clear" ;
 
@@ -183,3 +209,7 @@ lexical DeciFloatNumeral
     | [0-9] !<< "." [0-9]+ !>> [0-9] DeciFloatExponentPart?
     ;
 
+lexical Name
+	=  ([A-Z a-z _] !<< [A-Z _ a-z] [0-9 A-Z _ a-z]* !>> [0-9 A-Z _ a-z]) \ GlagolPreserved
+	| [\\] [A-Z _ a-z] [\- 0-9 A-Z _ a-z]* !>> [\- 0-9 A-Z _ a-z] 
+	;

@@ -19,12 +19,12 @@ data Declaration
     | annoField(set[Expression] pairs)
     | index(str name, set[str] columns)
     // methods
-    | method(Modifier modifier, Type returnType)
+    | method(Modifier modifier, Type returnType, str name, Expression expr)
     //| method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Expression expr, Expression when)
     //| method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Statement body)
     //| method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Statement body, Expression when)
     //| parameter(Type paramType, str name)
-    | parameter(Type paramType, str name, Expression defaultValue)
+    //| parameter(Type paramType, str name, Expression defaultValue)
     ;
 
 data Statement
@@ -34,9 +34,10 @@ data Statement
 
 data Expression
     = annoPair(str key, str \value)
-    | \numberLiteral(str numberValue)
-    | \booleanLiteral(bool boolValue)
-    | \stringLiteral(str stringValue)
+    | numberLiteral(str numberValue)
+    | literal(Expression literal)
+    | booleanLiteral(bool boolValue)
+    | stringLiteral(str stringValue)
     | \bracket(Expression expr)
     | product(Expression lhs, Expression rhs)
     | remainder(Expression lhs, Expression rhs)
@@ -55,7 +56,7 @@ data Expression
     | or(Expression lhs, Expression rhs)
     | ifThenElse(Expression condition, Expression ifThen, Expression \else)
     | array(set[Expression] values)
-    ;
+	;
 
 data Modifier
     = \private()

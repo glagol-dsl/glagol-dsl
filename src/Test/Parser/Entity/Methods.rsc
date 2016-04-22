@@ -4,14 +4,12 @@ import Parser::ParseAST;
 import Syntax::Abstract::AST;
 import Prelude;
 
-test bool testShouldParseMethod1()
+test void shouldParseMethodWithoutModifier()
 {
-    str code = "module Example;
-               'entity User {
-               '    public int;
-               '}";
-
-    return parseModule(code) == \module("Example", {}, entity({annoTable("users")}, "User", {
-        method(\public(), \int(), "example", numberLiteral(33))
-    }));
+	str code = "module Example;
+			 'entity User {
+			 '    int example() = (23 + 5)*8;
+			 '}";
+			 
+	iprintln(parseModule(code));
 }
