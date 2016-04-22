@@ -10,8 +10,8 @@ data Declaration
     // artifact: entity
     | entity(set[Declaration] annotations, str name, set[Declaration] declarations)
     | entity(str name, set[Declaration] declarations)
-    | entityValue(set[Declaration] annotations, str \type, str name)
-    | entityValue(set[Declaration] annotations, str \type, str name, set[str] valueProperties)
+    | entityValue(set[Declaration] annotations, Type \type, str name)
+    | entityValue(set[Declaration] annotations, Type \type, str name, set[str] valueProperties)
     | relation(str local, str foreign, str entity, str \alias)
     | relation(str local, str foreign, str entity, str \alias, set[str] relProperties)
     // annotations

@@ -56,8 +56,8 @@ syntax EntityRelation
     ;
 
 syntax EntityValue
-    = entityValue: EntityValueAnno* annotations "value" Identifier type Identifier name ";"
-    | entityValue: EntityValueAnno* annotations "value" Identifier type Identifier name "with" "{" {ValueProperties ","}* "}" ";"
+    = entityValue: EntityValueAnno* annotations "value" Type type Identifier name ";"
+    | entityValue: EntityValueAnno* annotations "value" Type type Identifier name "with" "{" {ValueProperties ","}* "}" ";"
     ;
 
 syntax EntityAnno
@@ -67,7 +67,14 @@ syntax EntityAnno
 
 syntax EntityValueAnno = annoField: "@field(" {AnnotationPair ","}* pairs ")";
 
-syntax AnnotationPair = annoPair: Identifier key ":" Name value;
+syntax AnnotationPair 
+	= annoPair: "key" ":" Name value
+	| annoPair: Identifier key
+	;
+	
+lexical AnnotationPairKey
+	= "key" | "sequence" | "type" | ""
+	;
 
 syntax Method
     = method: Modifier modifier Type returnType Name name "(" {Parameter ","}* parameters ")" "=" Expression expr ";"

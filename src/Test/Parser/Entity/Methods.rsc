@@ -34,7 +34,8 @@ test bool shouldParseMethodWithoutModifier()
 		        },
 		        product(
 		          addition(literal(intLiteral(23)), literal(intLiteral(5))),
-		          literal(intLiteral(8)))
+		          literal(intLiteral(8))
+	            )
 	        )
 	  }));
 }
