@@ -34,7 +34,8 @@ data Statement
 
 data Expression
     = annoPair(str key, str \value)
-    | numberLiteral(str numberValue)
+    | intLiteral(int intValue)
+    | floatLiteral(real floatValue)
     | literal(Expression literal)
     | booleanLiteral(bool boolValue)
     | stringLiteral(str stringValue)
@@ -65,7 +66,7 @@ data Modifier
     ;
 
 data Type
-    = \int()
+    = integer()
     | \float()
     | \string()
     | \void()

@@ -83,7 +83,7 @@ syntax Modifier
     ;
 
 syntax Type
-    = \int: "int"
+    = integer: "int"
     | \float: "float"
     | string: "string"
     | \bool: "bool"
@@ -100,8 +100,8 @@ syntax Parameter
 
 syntax ParameterDefaultValue
     = stringLiteral: StringConstant string
-    | numberLiteral: DecimalIntegerLiteral number
-    | numberLiteral: DeciFloatNumeral number
+    | intLiteral: DecimalIntegerLiteral number
+    | floatLiteral: DeciFloatNumeral number
     | booleanLiteral: Boolean boolean
     | array: "[" {ParameterDefaultValue ","}* items "]" array
     ;
@@ -139,8 +139,8 @@ syntax Expression
 
 syntax Literal
     = stringLiteral: StringConstant string
-    | numberLiteral: DecimalIntegerLiteral number
-    | numberLiteral: DeciFloatNumeral number
+    | intLiteral: DecimalIntegerLiteral number
+    | floatLiteral: DeciFloatNumeral number
     | booleanLiteral: Boolean boolean
     //| dateTime: DateTimeLiteral dateTimeLiteral
     ;
