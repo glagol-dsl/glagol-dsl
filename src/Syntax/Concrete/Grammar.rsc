@@ -22,6 +22,7 @@ keyword GlagolPreserved
 	| "relation"
 	| "true"
 	| "false"
+	| "when"
 	;
 
 // Start grammar
@@ -104,9 +105,10 @@ lexical AnnotationFieldKeyValue
     = "primary" | "unique"
     ;
 
+// TODO replace Name with lower-case starting alphabetical-chars-only non-terminal
 syntax Method
     = method: Modifier modifier Type returnType Name name "(" {Parameter ","}* parameters ")" "=" Expression expr ";"
-    //| method: Modifier modifier Type type AlphaIdentifier name "(" {Parameters parameters ","}* ")" "=" Expression expr "when" Expression when ";"
+    | method: Modifier modifier Type returnType Name name "(" {Parameter ","}* parameters ")" "=" Expression expr "when" Expression when ";"
     //| method: Modifier modifier Type type AlphaIdentifier name "(" {Parameters parameters ","}* ")" "{" Statement body "}"
     //| method: Modifier modifier Type type AlphaIdentifier name "(" {Parameters parameters ","}* ")" "{" Statement body "}" "when" Expression when ";"
     ;
@@ -163,6 +165,7 @@ syntax Expression
     | \array            : "[" {Expression ","}* items "]"
     | negative          : "-" Expression argument
     | literal           : Literal literal
+    | variable          : Identifier varName
     > left ( product: Expression lhs "*" () !>> "*" Expression rhs
            | remainder: Expression lhs "%" Expression rhs
            | division: Expression lhs "/" Expression rhs
@@ -260,4 +263,5 @@ lexical AlphaIdentifier
 lexical Name
 	=  ([A-Z a-z _] !<< [A-Z _ a-z] [0-9 A-Z _ a-z]* !>> [0-9 A-Z _ a-z]) \ GlagolPreserved
 	;
+
 

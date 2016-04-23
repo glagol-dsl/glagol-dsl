@@ -39,3 +39,30 @@ test bool shouldParseMethodWithoutModifier()
 	        )
 	  }));
 }
+
+test bool shouldParseMethodWithModifierAndWhenExpression()
+{
+    str code = "module Example;
+             'entity User {
+             '    private int example(int argument) = (23 + 5)*8 when argument \> 5;
+             '}";
+
+    return parseModule(code) == \module("Example", {}, entity({}, "User", {
+        method(\private(), integer(), "example", {parameter(integer(), "argument")}, product(
+              addition(literal(intLiteral(23)), literal(intLiteral(5))),
+              literal(intLiteral(8))
+        ), greaterThan(variable("argument"), literal(intLiteral(5))))
+    }));
+}
+
+test bool shouldParseMethodWithModifierAndBody()
+{
+    str code = "module Example;
+             'entity User {
+             '  private void processEntry(int limit = 15) {
+             '      1+1;
+             '  }
+             '}";
+
+     return true;
+}

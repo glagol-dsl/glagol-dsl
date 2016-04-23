@@ -20,7 +20,7 @@ data Declaration
     | index(str name, set[str] columns)
     // methods
     | method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Expression expr)
-    //| method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Expression expr, Expression when)
+    | method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Expression expr, Expression when)
     //| method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Statement body)
     //| method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Statement body, Expression when)
     | parameter(Type paramType, str name)
@@ -39,6 +39,7 @@ data Expression
     | literal(Expression literal)
     | booleanLiteral(bool boolValue)
     | stringLiteral(str stringValue)
+    | variable(str name)
     | \bracket(Expression expr)
     | product(Expression lhs, Expression rhs)
     | remainder(Expression lhs, Expression rhs)
@@ -74,3 +75,4 @@ data Type
     | typedArray(Type \type)
     | artifactType(str name)
     ;
+

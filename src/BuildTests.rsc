@@ -27,18 +27,20 @@ public int main(list[str] args)
 
     testFiles = collectTestFiles(testsLoc);
 
+    list[str] modules = [moduleName | file <- testFiles, line := readFileLines(file)[0], /module <moduleName:[a-zA-Z:]+?>$/i := line];
     list[str] functions = [function | file <- testFiles, line <- readFileLines(file), /test bool <function:.+?>\(\)/i := line];
 
     str testAggregate = "module Tests
                         '
-                        'extend Test::All;
+                        '<for (moduleName <- modules) {>
+                        'extend <moduleName>;<}>
                         '
                         'public int main(list[str] args) {
                         '   list[bool] results = [];
 
                         '<for (function <- functions) {>
-                        '   results += <function>();
-                        '<}>
+                        '   results += <function>();<}>
+                        '
                         '   return false in results ? 1 : 0;
                         '}
                         '";
@@ -47,4 +49,5 @@ public int main(list[str] args)
 
     return 0;
 }
+
 
