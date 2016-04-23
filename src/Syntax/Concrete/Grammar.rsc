@@ -4,7 +4,7 @@ module Syntax::Concrete::Grammar
 
 layout LAYOUTLIST = LAYOUT* !>> [\t-\n\r\ ] ;
 
-keyword GlagolPreserved 
+keyword GlagolPreserved
 	= "module"
 	| "use"
 	| "from"
@@ -65,16 +65,44 @@ syntax EntityAnno
     | index: "@index(" Identifier name "," "{" {Identifier ","}* columns "}" ")"
     ;
 
-syntax EntityValueAnno = annoField: "@field(" {AnnotationPair ","}* pairs ")";
+syntax EntityValueAnno = annoField: "@field(" {AnnotationFieldKeyPair ","}* pairs ")";
 
-syntax AnnotationPair 
-	= annoPair: "key" ":" Name value
-	| annoPair: Identifier key
-	;
-	
-lexical AnnotationPairKey
-	= "key" | "sequence" | "type" | ""
-	;
+syntax AnnotationFieldKeyPair
+    = annoPair: AnnotationFieldKeyIndex key ":" AnnotationFieldKeyValue value
+    | annoPair: AnnotationFieldSequenceIndex key ":" Boolean value
+    | annoPair: AnnotationFieldTypeIndex key ":" DatabaseType value
+    | annoPair: AnnotationFieldSizeIndex key ":" DecimalIntegerLiteral value
+    | annoPair: AnnotationFieldScaleIndex key ":" DecimalIntegerLiteral value
+    | annoPair: AnnotationFieldColumnIndex key ":" Identifier value
+    ;
+
+lexical AnnotationFieldKeyIndex
+    = "key"
+    ;
+
+lexical AnnotationFieldSequenceIndex
+    = "sequence"
+    ;
+
+lexical AnnotationFieldTypeIndex
+    = "type"
+    ;
+
+lexical AnnotationFieldSizeIndex
+    = "size" | "precision"
+    ;
+
+lexical AnnotationFieldScaleIndex
+    = "scale"
+    ;
+
+lexical AnnotationFieldColumnIndex
+    = "column"
+    ;
+
+lexical AnnotationFieldKeyValue
+    = "primary" | "unique"
+    ;
 
 syntax Method
     = method: Modifier modifier Type returnType Name name "(" {Parameter ","}* parameters ")" "=" Expression expr ";"
@@ -87,6 +115,18 @@ syntax Modifier
     = \public: "public"
     | \public: ()
     | \private: "private"
+    ;
+
+syntax DatabaseType
+    = integer: "int"
+    | \float: "float"
+    | \float: "decimal"
+    | string: "string"
+    | \bool: "bool"
+    | \bool: "boolean"
+    | \date: "date"
+    | \dateTime: "dateTime"
+    | \timestamp: "timestamp"
     ;
 
 syntax Type
@@ -156,19 +196,19 @@ syntax Literal
 
 lexical LAYOUT
     = [\t-\n\r\ ];
-    
+
 lexical Identifier
     =  [a-zA-Z][a-zA-Z0-9_]* !>> [a-zA-Z0-9_] \ GlagolPreserved;
-    
+
 lexical ImportArtifactType
     = "entity" | "value" | "repository" | "collection" | "util" | "service";
-    
+
 lexical ValueProperties
     = "get" | "set" ;
-    
+
 lexical RelationDir
     = "one" | "many" ;
-    
+
 lexical RelProperties
     = "get" | "set" | "add" | "reset" | "clear" ;
 
@@ -212,7 +252,7 @@ lexical DeciFloatNumeral
     | [0-9] !<< [0-9]+ "." [0-9]* !>> [0-9] DeciFloatExponentPart?
     | [0-9] !<< "." [0-9]+ !>> [0-9] DeciFloatExponentPart?
     ;
-    
+
 lexical AlphaIdentifier
 	=  ([A-Z a-z] !<< [A-Z a-z] [0-9 A-Z a-z]* !>> [0-9 A-Z a-z]) \ GlagolPreserved
 	;
@@ -220,3 +260,4 @@ lexical AlphaIdentifier
 lexical Name
 	=  ([A-Z a-z _] !<< [A-Z _ a-z] [0-9 A-Z _ a-z]* !>> [0-9 A-Z _ a-z]) \ GlagolPreserved
 	;
+
