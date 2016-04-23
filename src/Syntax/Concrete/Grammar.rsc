@@ -263,5 +263,3 @@ lexical AlphaIdentifier
 lexical Name
 	=  ([A-Z a-z _] !<< [A-Z _ a-z] [0-9 A-Z _ a-z]* !>> [0-9 A-Z _ a-z]) \ GlagolPreserved
 	;
-
-
