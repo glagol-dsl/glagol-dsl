@@ -21,15 +21,17 @@ data Declaration
     // methods
     | method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Expression expr)
     | method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Expression expr, Expression when)
-    //| method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Statement body)
-    //| method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Statement body, Expression when)
+    | method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, list[Statement] body)
+    | method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, list[Statement] body, Expression when)
     | parameter(Type paramType, str name)
     | parameter(Type paramType, str name, Expression defaultValue)
     ;
 
 data Statement
     = methodCall()
-    | null()
+    | block(list[Statement] stmts)
+    | expression(Expression expr)
+    | empty()
     ;
 
 data Expression
@@ -70,7 +72,7 @@ data Type
     = integer()
     | \float()
     | \string()
-    | \void()
+    | voidValue()
     | \bool()
     | typedArray(Type \type)
     | artifactType(str name)

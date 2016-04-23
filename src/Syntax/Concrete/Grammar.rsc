@@ -23,6 +23,7 @@ keyword GlagolPreserved
 	| "true"
 	| "false"
 	| "when"
+	| "void"
 	;
 
 // Start grammar
@@ -109,8 +110,8 @@ lexical AnnotationFieldKeyValue
 syntax Method
     = method: Modifier modifier Type returnType Name name "(" {Parameter ","}* parameters ")" "=" Expression expr ";"
     | method: Modifier modifier Type returnType Name name "(" {Parameter ","}* parameters ")" "=" Expression expr "when" Expression when ";"
-    //| method: Modifier modifier Type type AlphaIdentifier name "(" {Parameters parameters ","}* ")" "{" Statement body "}"
-    //| method: Modifier modifier Type type AlphaIdentifier name "(" {Parameters parameters ","}* ")" "{" Statement body "}" "when" Expression when ";"
+    | method: Modifier modifier Type returnType Name name "(" {Parameter ","}* parameters ")" "{" Statement* body "}"
+    | method: Modifier modifier Type returnType Name name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" "when" Expression when ";"
     ;
 
 syntax Modifier
@@ -137,7 +138,7 @@ syntax Type
     | string: "string"
     | \bool: "bool"
     | \bool: "boolean"
-    | \void: "void"
+    | voidValue: "void"
     | typedArray: Type type "[]"
     > artifactType: Name name
     ;
@@ -156,7 +157,9 @@ syntax ParameterDefaultValue
     ;
 
 syntax Statement
-    = "statement";
+    = expression: Expression expression ";"
+    | empty: ";"
+    ;
 
 lexical Digid = [0-9];
 

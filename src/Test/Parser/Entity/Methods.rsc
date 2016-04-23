@@ -60,9 +60,29 @@ test bool shouldParseMethodWithModifierAndBody()
     str code = "module Example;
              'entity User {
              '  private void processEntry(int limit = 15) {
-             '      1+1;
+             '      1 + 1;
              '  }
              '}";
+             
+     return parseModule(code) == \module("Example", {}, entity({}, "User", {
+        method(\private(), voidValue(), "processEntry", {parameter(integer(), "limit", intLiteral(15))}, [
+            expression(addition(literal(intLiteral(1)), literal(intLiteral(1))))
+        ])
+     }));
+}
 
-     return true;
+test bool shouldParseMethodWithModifierBodyAndWhen()
+{
+    str code = "module Example;
+             'entity User {
+             '  private void processEntry(int limit = 15) {
+             '      1 + 1;
+             '  } when limit == 15;
+             '}";
+             
+     return parseModule(code) == \module("Example", {}, entity({}, "User", {
+        method(\private(), voidValue(), "processEntry", {parameter(integer(), "limit", intLiteral(15))}, [
+            expression(addition(literal(intLiteral(1)), literal(intLiteral(1))))
+        ], equals(variable("limit"), literal(intLiteral(15))))
+     }));
 }
