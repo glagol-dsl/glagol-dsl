@@ -12,8 +12,8 @@ test bool testShouldParseEntityWithValues()
                '    value Date addedOn with {get, set};
                '}";
     set[Declaration] expectedValues = {
-        entityValue({}, "int", "id", {"get"}),
-        entityValue({}, "Date", "addedOn", {"get", "set"})
+        entityValue({}, integer(), "id", {"get"}),
+        entityValue({}, artifactType("Date"), "addedOn", {"get", "set"})
     };
 
     return parseModule(code) == \module("Example", {}, entity({}, "User", expectedValues));
@@ -42,7 +42,7 @@ test bool testShouldParseEntityWithValuesAndAnnotations()
                 annoPair("size", "11"),
                 annoPair("column", "id")
             })
-        }, "int", "id", {"get"})
+        }, integer(), "id", {"get"})
     };
 
     return parseModule(code) == \module("Example", {}, entity({}, "User", expectedValues));

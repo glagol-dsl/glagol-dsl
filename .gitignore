@@ -3,3 +3,4 @@
 .settings
 build.properties
 .classpath
+src/Tests.rsc
