@@ -38,7 +38,6 @@ data Expression
     = annoPair(str key, str \value)
     | intLiteral(int intValue)
     | floatLiteral(real floatValue)
-    | literal(Expression literal)
     | booleanLiteral(str boolValue)
     | stringLiteral(str stringValue)
     | variable(str name)
