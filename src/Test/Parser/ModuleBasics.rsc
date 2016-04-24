@@ -9,7 +9,7 @@ test bool testShouldParseModule()
     str code = "module Example;";
 
     Declaration ast = parseModule(code);
-
+    
     return ast == \module("Example", {});
 }
 
