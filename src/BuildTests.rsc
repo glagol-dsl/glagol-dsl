@@ -32,14 +32,17 @@ public int main(list[str] args)
 
     str testAggregate = "module Tests
                         '
-                        '<for (moduleName <- modules) {>
-                        'extend <moduleName>;<}>
+                        'import Prelude;
+                        '<for (moduleName <- modules) {>extend <moduleName>;
+                        '<}>
                         '
                         'public int main(list[str] args) {
                         '   list[bool] results = [];
 
                         '<for (function <- functions) {>
-                        '   results += <function>();<}>
+                        '   results += <function>();
+                        '   print(\".\");<}>
+                        '   println(\"OK\");
                         '
                         '   return false in results ? 1 : 0;
                         '}

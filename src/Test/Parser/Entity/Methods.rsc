@@ -25,11 +25,11 @@ test bool shouldParseMethodWithoutModifier()
 		          parameter(
 		            typedArray(string()),
 		            "names",
-		            array({
-		                stringLiteral("\"a\""),
-		                stringLiteral("\"b\""),
-		                stringLiteral("\"c\"")
-		              })
+		            array([
+		                stringLiteral("a"),
+		                stringLiteral("b"),
+		                stringLiteral("c")
+		              ])
 		          )
 		        },
 		        product(

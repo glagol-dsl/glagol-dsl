@@ -39,7 +39,7 @@ data Expression
     | intLiteral(int intValue)
     | floatLiteral(real floatValue)
     | literal(Expression literal)
-    | booleanLiteral(bool boolValue)
+    | booleanLiteral(str boolValue)
     | stringLiteral(str stringValue)
     | variable(str name)
     | \bracket(Expression expr)
@@ -59,7 +59,7 @@ data Expression
     | and(Expression lhs, Expression rhs)
     | or(Expression lhs, Expression rhs)
     | ifThenElse(Expression condition, Expression ifThen, Expression \else)
-    | array(set[Expression] values)
+    | array(list[Expression] values)
 	;
 
 data Modifier
