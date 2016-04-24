@@ -21,7 +21,7 @@ private set[loc] collectTestFiles(loc location)
     return testFiles;
 }
 
-public int main(list[str] args)
+public void main(list[str] args)
 {
     loc testsLoc = |cwd:///Test|;
 
@@ -32,20 +32,19 @@ public int main(list[str] args)
 
     str testAggregate = "module Tests
                         '
-                        '<for (moduleName <- modules) {>
-                        'extend <moduleName>;<}>
+                        'import Prelude;
+                        '<for (moduleName <- modules) {>import <moduleName>;
+                        '<}>
                         '
-                        'public int main(list[str] args) {
+                        'public void main(list[str] args) {
                         '   list[bool] results = [];
 
                         '<for (function <- functions) {>
-                        '   results += <function>();<}>
-                        '
-                        '   return false in results ? 1 : 0;
+                        '   results += <function>();
+                        '   print(\".\");<}>
+                        '   println(\"OK\");
                         '}
                         '";
 
     writeFile(testsLoc.parent + "Tests.rsc", testAggregate);
-
-    return 0;
 }

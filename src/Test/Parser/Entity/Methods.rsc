@@ -25,16 +25,16 @@ test bool shouldParseMethodWithoutModifier()
 		          parameter(
 		            typedArray(string()),
 		            "names",
-		            array({
-		                stringLiteral("\"a\""),
-		                stringLiteral("\"b\""),
-		                stringLiteral("\"c\"")
-		              })
+		            array([
+		                stringLiteral("a"),
+		                stringLiteral("b"),
+		                stringLiteral("c")
+		              ])
 		          )
 		        },
 		        product(
-		          addition(literal(intLiteral(23)), literal(intLiteral(5))),
-		          literal(intLiteral(8))
+		          addition(intLiteral(23), intLiteral(5)),
+		          intLiteral(8)
 	            )
 	        )
 	  }));
@@ -49,9 +49,9 @@ test bool shouldParseMethodWithModifierAndWhenExpression()
 
     return parseModule(code) == \module("Example", {}, entity({}, "User", {
         method(\private(), integer(), "example", {parameter(integer(), "argument")}, product(
-              addition(literal(intLiteral(23)), literal(intLiteral(5))),
-              literal(intLiteral(8))
-        ), greaterThan(variable("argument"), literal(intLiteral(5))))
+              addition(intLiteral(23), intLiteral(5)),
+              intLiteral(8)
+        ), greaterThan(variable("argument"), intLiteral(5)))
     }));
 }
 
@@ -66,7 +66,7 @@ test bool shouldParseMethodWithModifierAndBody()
              
      return parseModule(code) == \module("Example", {}, entity({}, "User", {
         method(\private(), voidValue(), "processEntry", {parameter(integer(), "limit", intLiteral(15))}, [
-            expression(addition(literal(intLiteral(1)), literal(intLiteral(1))))
+            expression(addition(intLiteral(1), intLiteral(1)))
         ])
      }));
 }
@@ -82,7 +82,7 @@ test bool shouldParseMethodWithModifierBodyAndWhen()
              
      return parseModule(code) == \module("Example", {}, entity({}, "User", {
         method(\private(), voidValue(), "processEntry", {parameter(integer(), "limit", intLiteral(15))}, [
-            expression(addition(literal(intLiteral(1)), literal(intLiteral(1))))
-        ], equals(variable("limit"), literal(intLiteral(15))))
+            expression(addition(intLiteral(1), intLiteral(1)))
+        ], equals(variable("limit"), intLiteral(15)))
      }));
 }

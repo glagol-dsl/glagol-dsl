@@ -32,6 +32,7 @@ test bool testShouldParseEntityWithValuesAndAnnotations()
                '    )
                '    value int id with {get};
                '}";
+    
     set[Declaration] expectedValues = {
         entityValue({
             annoField({
@@ -44,6 +45,6 @@ test bool testShouldParseEntityWithValuesAndAnnotations()
             })
         }, integer(), "id", {"get"})
     };
-
+    
     return parseModule(code) == \module("Example", {}, entity({}, "User", expectedValues));
 }

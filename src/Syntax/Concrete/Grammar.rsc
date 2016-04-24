@@ -149,7 +149,7 @@ syntax Parameter
     ;
 
 syntax ParameterDefaultValue
-    = stringLiteral: StringConstant string
+    = stringLiteral: "\"" StringCharacter* string "\""
     | intLiteral: DecimalIntegerLiteral number
     | floatLiteral: DeciFloatNumeral number
     | booleanLiteral: Boolean boolean
@@ -167,8 +167,11 @@ syntax Expression
     = bracket \bracket  : "(" Expression expression ")"
     | \array            : "[" {Expression ","}* items "]"
     | negative          : "-" Expression argument
-    | literal           : Literal literal
-    | variable          : Identifier varName
+    | stringLiteral     : "\"" StringCharacter* string "\""
+    | intLiteral        : DecimalIntegerLiteral number
+    | floatLiteral      : DeciFloatNumeral number
+    | booleanLiteral    : Boolean boolean
+    | variable          : Name varName
     > left ( product: Expression lhs "*" () !>> "*" Expression rhs
            | remainder: Expression lhs "%" Expression rhs
            | division: Expression lhs "/" Expression rhs
@@ -188,14 +191,6 @@ syntax Expression
     > left and: Expression lhs "&&" Expression rhs
     > left or: Expression lhs "||" Expression rhs
     > right ifThenElse: Expression condition "?" Expression thenExp ":" Expression elseExp
-    ;
-
-syntax Literal
-    = stringLiteral: StringConstant string
-    | intLiteral: DecimalIntegerLiteral number
-    | floatLiteral: DeciFloatNumeral number
-    | booleanLiteral: Boolean boolean
-    //| dateTime: DateTimeLiteral dateTimeLiteral
     ;
 
 // Lexical tokens
@@ -235,11 +230,7 @@ lexical Boolean
     = "true"
     | "false"
     ;
-
-lexical StringConstant
-    = "\"" StringCharacter* chars "\""
-    ;
-
+    
 lexical DecimalIntegerLiteral
     = "0" !>> [0-9 A-Z _ a-z]
     | [1-9] [0-9]* !>> [0-9 A-Z _ a-z] ;
