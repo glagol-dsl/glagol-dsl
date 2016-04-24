@@ -122,7 +122,7 @@ test bool shouldParseAllTypesOfLiterals()
                '}";
     
     return parseModule(code) == \module("Example", {}, entity({}, "User", {
-        method(\public(), voidValue(), "math", {}, [
+        method(\public(), voidValue(), "literals", {parameter(integer(), "var")}, [
             expression(stringLiteral("simple string literal")),
             expression(intLiteral(123)),
             expression(floatLiteral(1.23)),

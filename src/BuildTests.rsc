@@ -28,7 +28,7 @@ public void main(list[str] args)
     testFiles = collectTestFiles(testsLoc);
 
     list[str] modules = [moduleName | file <- testFiles, line := readFileLines(file)[0], /module <moduleName:[a-zA-Z:]+?>$/i := line];
-    list[str] functions = [function | file <- testFiles, line <- readFileLines(file), /test bool <function:.+?>\(\)/i := line];
+    list[tuple[str function, str fileName]] functions = [<function, file.path> | file <- testFiles, line <- readFileLines(file), /test bool <function:.+?>\(\)/i := line];
 
     str testAggregate = "module Tests
                         '
@@ -37,18 +37,26 @@ public void main(list[str] args)
                         '<}>
                         '
                         'public void main(list[str] args) {
-                        '   list[bool] results = [];
                         '
-                        '<for (function <- functions) {>
+                        '   list[str] errorMessages = [];
+                        '
+                        '<for (\test <- functions) {>
                         '   try {
-                        '       results += <function>();
-                        '       print(\".\");
+                        '       if (<\test.function>()) print(\".\");
+                        '       else {
+                        '           errorMessages += \"Test <\test.function> failed in <\test.fileName>\";
+                        '           print(\"F\");
+                        '       }
                         '   } catch e: {
-                        '       throw \"Test <function> failed\";
+                        '       throw \"Test <\test.function> threw an exception (located in <\test.fileName>)\";
                         '       return;
                         '   }
                         '<}>
-                        '   println(\"OK\");
+                        '   if (size(errorMessages) \> 0) {
+                        '       println();
+                        '       println(\"Not all tests passed:\");
+                        '       for (error \<- errorMessages) println(error);
+                        '   } else println(\"OK\");
                         '}
                         '";
 
