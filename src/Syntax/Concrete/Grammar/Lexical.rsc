@@ -1,7 +1,25 @@
 module Syntax::Concrete::Grammar::Lexical
 
+extend Syntax::Concrete::Grammar::Keywords;
+
+lexical ArtifactName
+    =  ([A-Z] !<< [A-Z] [0-9 A-Z a-z]* !>> [0-9 A-Z a-z]) \ GlagolPreserved
+    ;
+
+lexical MemberName
+    =  ([a-z] !<< [a-z] [0-9 A-Z a-z]* !>> [0-9 A-Z a-z]) \ GlagolPreserved
+    ;
+
 lexical Identifier
-    =  [a-zA-Z][a-zA-Z0-9_]* !>> [a-zA-Z0-9_] \ GlagolPreserved;
+    =  ([a-zA-Z][a-zA-Z0-9_]* !>> [a-zA-Z0-9_]) \ GlagolPreserved;
+
+lexical AlphaIdentifier
+    =  ([A-Z a-z] !<< [A-Z a-z] [0-9 A-Z a-z]* !>> [0-9 A-Z a-z]) \ GlagolPreserved
+    ;
+
+lexical Name
+    =  ([A-Z a-z _] !<< [A-Z _ a-z] [0-9 A-Z _ a-z]* !>> [0-9 A-Z _ a-z]) \ GlagolPreserved
+    ;
 
 lexical ImportArtifactType
     = "entity" | "value" | "repository" | "collection" | "util" | "service";
@@ -50,14 +68,6 @@ lexical DeciFloatNumeral
     | [0-9] !<< [0-9]+ >> [D F d f]
     | [0-9] !<< [0-9]+ "." [0-9]* !>> [0-9] DeciFloatExponentPart?
     | [0-9] !<< "." [0-9]+ !>> [0-9] DeciFloatExponentPart?
-    ;
-
-lexical AlphaIdentifier
-    =  ([A-Z a-z] !<< [A-Z a-z] [0-9 A-Z a-z]* !>> [0-9 A-Z a-z]) \ GlagolPreserved
-    ;
-
-lexical Name
-    =  ([A-Z a-z _] !<< [A-Z _ a-z] [0-9 A-Z _ a-z]* !>> [0-9 A-Z _ a-z]) \ GlagolPreserved
     ;
 
 lexical AnnotationFieldKeyIndex

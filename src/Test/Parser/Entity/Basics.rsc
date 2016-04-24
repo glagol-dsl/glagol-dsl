@@ -30,5 +30,3 @@ test bool testShouldParseEmptyEntityWithModuleImports()
 
     return parseModule(code) == \module("Example", expectedImports, entity({}, "User", {}));
 }
-
-

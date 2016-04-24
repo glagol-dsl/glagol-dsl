@@ -38,10 +38,16 @@ public void main(list[str] args)
                         '
                         'public void main(list[str] args) {
                         '   list[bool] results = [];
-
+                        '
                         '<for (function <- functions) {>
-                        '   results += <function>();
-                        '   print(\".\");<}>
+                        '   try {
+                        '       results += <function>();
+                        '       print(\".\");
+                        '   } catch e: {
+                        '       throw \"Test <function> failed\";
+                        '       return;
+                        '   }
+                        '<}>
                         '   println(\"OK\");
                         '}
                         '";
