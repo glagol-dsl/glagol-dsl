@@ -7,21 +7,21 @@ extend Syntax::Concrete::Grammar::Lexical;
 // Start grammar
 
 start syntax Module
-   = \module: ^"module" Identifier name ";" Imports* imports
-   | \module: ^"module" Identifier name ";" Imports* imports Artifact mainArtifact
+   = \module: ^"module" Name name ";" Imports* imports
+   | \module: ^"module" Name name ";" Imports* imports Artifact mainArtifact
    ;
 
 syntax Imports
-    = importInternal: "use" Identifier target ImportArtifactType artifactType ";"
-    | importInternal: "use" Identifier target ImportArtifactType artifactType "as" Identifier alias ";"
-    | importExternal: "use" Identifier target ImportArtifactType artifactType "from" Identifier module ";"
-    | importExternal: "use" Identifier target ImportArtifactType artifactType "from" Identifier module "as" Identifier alias ";"
+    = importInternal: "use" ArtifactName target ImportArtifactType artifactType ";"
+    | importInternal: "use" ArtifactName target ImportArtifactType artifactType "as" ArtifactName alias ";"
+    | importExternal: "use" ArtifactName target ImportArtifactType artifactType "from" Name module ";"
+    | importExternal: "use" ArtifactName target ImportArtifactType artifactType "from" Name module "as" ArtifactName alias ";"
     ;
 
 // Artifacts grammar
 
 syntax Artifact
-    = entity: EntityAnno* annotations "entity" Identifier name "{" EntityDeclarations* declarations "}"
+    = entity: EntityAnno* annotations "entity" ArtifactName name "{" EntityDeclarations* declarations "}"
     ;
 
 syntax EntityDeclarations
@@ -31,18 +31,18 @@ syntax EntityDeclarations
     ;
 
 syntax EntityRelation
-    = relation: "relation" RelationDir local ":" RelationDir foreign Identifier entity "as" Identifier alias ";"
-    | relation: "relation" RelationDir local ":" RelationDir foreign Identifier entity "as" Identifier alias "with" "{" {RelProperties ","}* "}" ";"
+    = relation: "relation" RelationDir local ":" RelationDir foreign ArtifactName entity "as" MemberName alias ";"
+    | relation: "relation" RelationDir local ":" RelationDir foreign ArtifactName entity "as" MemberName alias "with" "{" {RelProperties ","}* "}" ";"
     ;
 
 syntax EntityValue
-    = entityValue: EntityValueAnno* annotations "value" Type type Identifier name ";"
-    | entityValue: EntityValueAnno* annotations "value" Type type Identifier name "with" "{" {ValueProperties ","}* "}" ";"
+    = entityValue: EntityValueAnno* annotations "value" Type type MemberName name ";"
+    | entityValue: EntityValueAnno* annotations "value" Type type MemberName name "with" "{" {ValueProperties ","}* "}" ";"
     ;
 
 syntax EntityAnno
     = annoTable: "@table(" "name=" Name name ")"
-    | index: "@index(" Identifier name "," "{" {Identifier ","}* columns "}" ")"
+    | index: "@index(" Name name "," "{" {Name ","}* columns "}" ")"
     ;
 
 syntax EntityValueAnno = annoField: "@field(" {AnnotationFieldKeyPair ","}* pairs ")";
@@ -53,15 +53,15 @@ syntax AnnotationFieldKeyPair
     | annoPair: AnnotationFieldTypeIndex key ":" DatabaseType value
     | annoPair: AnnotationFieldSizeIndex key ":" DecimalIntegerLiteral value
     | annoPair: AnnotationFieldScaleIndex key ":" DecimalIntegerLiteral value
-    | annoPair: AnnotationFieldColumnIndex key ":" Identifier value
+    | annoPair: AnnotationFieldColumnIndex key ":" Name value
     ;
 
 // TODO replace Name with lower-case starting alphabetical-chars-only non-terminal
 syntax Method
-    = method: Modifier modifier Type returnType Name name "(" {Parameter ","}* parameters ")" "=" Expression expr ";"
-    | method: Modifier modifier Type returnType Name name "(" {Parameter ","}* parameters ")" "=" Expression expr "when" Expression when ";"
-    | method: Modifier modifier Type returnType Name name "(" {Parameter ","}* parameters ")" "{" Statement* body "}"
-    | method: Modifier modifier Type returnType Name name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" "when" Expression when ";"
+    = method: Modifier modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "=" Expression expr ";"
+    | method: Modifier modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "=" Expression expr "when" Expression when ";"
+    | method: Modifier modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}"
+    | method: Modifier modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" "when" Expression when ";"
     ;
 
 syntax Modifier
@@ -90,20 +90,20 @@ syntax Type
     | \bool: "boolean"
     | voidValue: "void"
     | typedArray: Type type "[]"
-    > artifactType: Name name
+    > artifactType: ArtifactName name
     ;
 
 syntax Parameter
-    = parameter: Type paramType AlphaIdentifier name
-    | parameter: Type paramType AlphaIdentifier name "=" ParameterDefaultValue defaultValue
+    = parameter: Type paramType MemberName name
+    | parameter: Type paramType MemberName name "=" ParameterDefaultValue defaultValue
     ;
 
 syntax ParameterDefaultValue
-    = stringLiteral: "\"" StringCharacter* string "\""
-    | intLiteral: DecimalIntegerLiteral number
-    | floatLiteral: DeciFloatNumeral number
-    | booleanLiteral: Boolean boolean
-    | array: "[" {ParameterDefaultValue ","}* items "]" array
+    = stringLiteral     : "\"" StringCharacter* string "\""
+    | intLiteral        : DecimalIntegerLiteral number
+    | floatLiteral      : DeciFloatNumeral number
+    | booleanLiteral    : Boolean boolean
+    | array             : "[" {ParameterDefaultValue ","}* items "]" array
     ;
 
 syntax Statement
@@ -119,7 +119,7 @@ syntax Expression
     | intLiteral        : DecimalIntegerLiteral number
     | floatLiteral      : DeciFloatNumeral number
     | booleanLiteral    : Boolean boolean
-    | variable          : Name varName
+    | variable          : MemberName varName
     > left ( product: Expression lhs "*" () !>> "*" Expression rhs
            | remainder: Expression lhs "%" Expression rhs
            | division: Expression lhs "/" Expression rhs

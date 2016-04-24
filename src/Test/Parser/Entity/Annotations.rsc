@@ -42,4 +42,3 @@ test bool testShouldParseCompositeAnnotationForEntity()
 
     return parseModule(code) == \module("Example", {}, expectedEntity);
 }
-

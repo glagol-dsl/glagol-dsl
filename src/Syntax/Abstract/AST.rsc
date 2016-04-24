@@ -76,4 +76,3 @@ data Type
     | typedArray(Type \type)
     | artifactType(str name)
     ;
-
