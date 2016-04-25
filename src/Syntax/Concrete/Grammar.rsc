@@ -27,6 +27,7 @@ syntax Artifact
 syntax EntityDeclarations
     = EntityValue
     | EntityRelation
+    | Constructor
     | Method
     ;
 
@@ -62,6 +63,25 @@ syntax Method
     | method: Modifier modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "=" Expression expr "when" Expression when ";"
     | method: Modifier modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}"
     | method: Modifier modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" "when" Expression when ";"
+    ;
+
+syntax Constructor
+    = constructor: "constructor" "(" {Parameter ","}* parameters ")" MethodBody body When when ConditionalThrow throw ";"
+    ;
+
+syntax MethodBody
+    = methodBody: "{" Statement* body "}"
+    | empty: ()
+    ;
+
+syntax When
+    = "when" Expression expr
+    | none: ()
+    ; 
+
+syntax ConditionalThrow
+    = conditionalThrow: "throws" ArtifactName exceptionName "(" {ParameterDefaultValue ","}* arguments ")" "if" Expression condition
+    | emptyDeclaration: ()
     ;
 
 syntax Modifier

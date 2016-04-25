@@ -20,4 +20,7 @@ keyword GlagolPreserved
     | "false"
     | "when"
     | "void"
+    | "constructor"
+    | "throws"
+    | "if"
     ;
