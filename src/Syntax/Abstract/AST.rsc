@@ -32,6 +32,8 @@ data Statement
     | block(list[Statement] stmts)
     | methodBody(list[Statement] stmts)
     | expression(Expression expr)
+    | ifThen(Expression condition, Statement then)
+    | ifThenElse(Expression condition, Statement then, Statement \else)
     | empty()
     ;
 
