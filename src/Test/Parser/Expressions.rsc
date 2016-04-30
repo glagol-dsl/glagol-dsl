@@ -15,10 +15,10 @@ test bool testShouldParseVariableInBrackets()
                '}";
                
     return parseModule(code) == \module("Example", {}, entity({}, "User", {
-        method(\public(), voidValue(), "variableInBrackets", {parameter(integer(), "theVariable")}, [
+        method(\public(), voidValue(), "variableInBrackets", {parameter(integer(), "theVariable", none())}, [
             expression(variable("theVariable")),
             expression(addition(variable("theVariable"), intLiteral(1)))
-        ])
+        ], none())
     }));
 }
 
@@ -40,7 +40,7 @@ test bool testShouldParseArray()
             expression(array([intLiteral(1), intLiteral(2), intLiteral(3), intLiteral(4), intLiteral(5)])),
             expression(array([floatLiteral(1.34), floatLiteral(2.35), floatLiteral(23.56)])),
             expression(array([array([intLiteral(1), intLiteral(2), intLiteral(3)]), array([intLiteral(3), intLiteral(4), intLiteral(5)])]))
-        ])
+        ], none())
     }));
 }
 
@@ -56,7 +56,7 @@ test bool testShouldParseExpressionsWithNegativeLiterals()
     return parseModule(code) == \module("Example", {}, entity({}, "User", {
         method(\public(), voidValue(), "nestedNegative", {}, [
             expression(negative(negative(negative(intLiteral(23)))))
-        ])
+        ], none())
     }));
 }
 
@@ -103,7 +103,7 @@ test bool testShouldParseMathExpressions()
             expression(lessThanOrEq(intLiteral(9), intLiteral(19))),
             expression(or(or(and(intLiteral(1), booleanLiteral("true")), booleanLiteral("false")), booleanLiteral("true"))),
             expression(ifThenElse(greaterThan(variable("argument"), intLiteral(0)), stringLiteral("argument is positive"), stringLiteral("argument is negative")))
-          ])
+          ], none())
     }));
 }
 
@@ -122,13 +122,13 @@ test bool shouldParseAllTypesOfLiterals()
                '}";
     
     return parseModule(code) == \module("Example", {}, entity({}, "User", {
-        method(\public(), voidValue(), "literals", {parameter(integer(), "var")}, [
+        method(\public(), voidValue(), "literals", {parameter(integer(), "var", none())}, [
             expression(stringLiteral("simple string literal")),
             expression(intLiteral(123)),
             expression(floatLiteral(1.23)),
             expression(booleanLiteral("true")),
             expression(booleanLiteral("false")),
             expression(variable("var"))
-          ])
+          ], none())
     }));
 }

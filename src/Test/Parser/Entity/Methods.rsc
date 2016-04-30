@@ -21,21 +21,22 @@ test bool shouldParseMethodWithoutModifier()
 		          parameter(
 		            integer(),
 		            "blabla",
-		            intLiteral(5)),
+		            defaultValue(intLiteral(5))),
 		          parameter(
 		            typedArray(string()),
 		            "names",
-		            array([
-		                stringLiteral("a"),
-		                stringLiteral("b"),
-		                stringLiteral("c")
-		              ])
+		            defaultValue(array([
+	                  stringLiteral("a"),
+	                  stringLiteral("b"),
+	                  stringLiteral("c")
+	                ]))
 		          )
 		        },
 		        product(
 		          addition(intLiteral(23), intLiteral(5)),
 		          intLiteral(8)
-	            )
+	            ),
+	            none()
 	        )
 	  }));
 }
@@ -48,10 +49,10 @@ test bool shouldParseMethodWithModifierAndWhenExpression()
              '}";
 
     return parseModule(code) == \module("Example", {}, entity({}, "User", {
-        method(\private(), integer(), "example", {parameter(integer(), "argument")}, product(
+        method(\private(), integer(), "example", {parameter(integer(), "argument", none())}, product(
               addition(intLiteral(23), intLiteral(5)),
               intLiteral(8)
-        ), greaterThan(variable("argument"), intLiteral(5)))
+        ), when(greaterThan(variable("argument"), intLiteral(5))))
     }));
 }
 
@@ -65,9 +66,9 @@ test bool shouldParseMethodWithModifierAndBody()
              '}";
              
      return parseModule(code) == \module("Example", {}, entity({}, "User", {
-        method(\private(), voidValue(), "processEntry", {parameter(integer(), "limit", intLiteral(15))}, [
+        method(\private(), voidValue(), "processEntry", {parameter(integer(), "limit", defaultValue(intLiteral(15)))}, [
             expression(addition(intLiteral(1), intLiteral(1)))
-        ])
+        ], none())
      }));
 }
 
@@ -81,8 +82,8 @@ test bool shouldParseMethodWithModifierBodyAndWhen()
              '}";
              
      return parseModule(code) == \module("Example", {}, entity({}, "User", {
-        method(\private(), voidValue(), "processEntry", {parameter(integer(), "limit", intLiteral(15))}, [
+        method(\private(), voidValue(), "processEntry", {parameter(integer(), "limit", defaultValue(intLiteral(15)))}, [
             expression(addition(intLiteral(1), intLiteral(1)))
-        ], equals(variable("limit"), intLiteral(15)))
+        ], when(equals(variable("limit"), intLiteral(15))))
      }));
 }
