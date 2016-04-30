@@ -11,6 +11,7 @@ start syntax Module
    | \module: ^"module" Name name ";" Imports* imports Artifact mainArtifact
    ;
 
+// TODO improve this grammar, always include the alias (use empty for default)
 syntax Imports
     = importInternal: "use" ArtifactName target ImportArtifactType artifactType ";"
     | importInternal: "use" ArtifactName target ImportArtifactType artifactType "as" ArtifactName alias ";"
@@ -136,6 +137,9 @@ syntax DefaultValue
 syntax Statement
     = expression: Expression expression ";"
     | empty: ";"
+    | block: "{" Statement* statements "}"
+    | ifThen: "if" "(" Expression condition ")" Statement then () !>> "else"
+    | ifThenElse: "if" "(" Expression condition ")" Statement then "else" Statement else
     ;
 
 syntax Expression
