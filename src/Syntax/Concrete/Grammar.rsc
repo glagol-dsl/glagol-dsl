@@ -59,10 +59,13 @@ syntax AnnotationFieldKeyPair
 
 // TODO replace Name with lower-case starting alphabetical-chars-only non-terminal
 syntax Method
-    = method: Modifier modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "=" Expression expr ";"
-    | method: Modifier modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "=" Expression expr "when" Expression when ";"
-    | method: Modifier modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}"
-    | method: Modifier modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" "when" Expression when ";"
+    = method: Modifier modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "=" Expression expr When when
+    | method: Modifier modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" When when
+    ;
+
+syntax When
+    = when: "when" Expression when ";"
+    | none: ";"
     ;
 
 syntax Constructor
@@ -80,7 +83,7 @@ syntax When
     ; 
 
 syntax ConditionalThrow
-    = conditionalThrow: "throws" ArtifactName exceptionName "(" {ParameterDefaultValue ","}* arguments ")" "if" Expression condition
+    = conditionalThrow: "throws" ArtifactName exceptionName "(" {DefaultValue ","}* arguments ")" "if" Expression condition
     | emptyDeclaration: ()
     ;
 
@@ -114,16 +117,20 @@ syntax Type
     ;
 
 syntax Parameter
-    = parameter: Type paramType MemberName name
-    | parameter: Type paramType MemberName name "=" ParameterDefaultValue defaultValue
+    = parameter: Type paramType MemberName name ParameterDefaultValue defaultValue
     ;
 
 syntax ParameterDefaultValue
+    = defaultValue: "=" DefaultValue defaultValue
+    | none: ()
+    ;
+
+syntax DefaultValue
     = stringLiteral     : "\"" StringCharacter* string "\""
     | intLiteral        : DecimalIntegerLiteral number
     | floatLiteral      : DeciFloatNumeral number
     | booleanLiteral    : Boolean boolean
-    | array             : "[" {ParameterDefaultValue ","}* items "]" array
+    | array             : "[" {DefaultValue ","}* items "]" array
     ;
 
 syntax Statement

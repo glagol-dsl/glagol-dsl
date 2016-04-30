@@ -19,7 +19,7 @@ test bool shouldParseConstructWithAndWithoutWhenExpr()
           '";
     
     return parseModule(code) == \module("Example", {}, entity({}, "User", {
-        constructor({parameter(integer(), "param")}, methodBody([
+        constructor({parameter(integer(), "param", none())}, methodBody([
                 expression(stringLiteral("some expression")),
                 expression(booleanLiteral("true"))
             ]), 

@@ -19,12 +19,9 @@ data Declaration
     | annoField(set[Expression] pairs)
     | index(str name, set[str] columns)
     // methods
-    | method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Expression expr)
     | method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Expression expr, Expression when)
-    | method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, list[Statement] body)
     | method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, list[Statement] body, Expression when)
     | constructor(set[Declaration] parameters, Statement constructorBody, Expression when, Declaration conditionalThrow)
-    | parameter(Type paramType, str name)
     | parameter(Type paramType, str name, Expression defaultValue)
     | conditionalThrow(str exceptionName, list[Expression] arguments, Expression condition)
     | emptyDeclaration()
@@ -45,6 +42,7 @@ data Expression
     | booleanLiteral(str boolValue)
     | stringLiteral(str stringValue)
     | variable(str name)
+    | when(Expression expr)
     | \bracket(Expression expr)
     | product(Expression lhs, Expression rhs)
     | remainder(Expression lhs, Expression rhs)
@@ -63,14 +61,14 @@ data Expression
     | or(Expression lhs, Expression rhs)
     | ifThenElse(Expression condition, Expression ifThen, Expression \else)
     | array(list[Expression] values)
-    | none()
     | expr(Expression expr)
+    | defaultValue(Expression defaultValue)
+    | none()
 	;
 
 data Modifier
     = \private()
     | \public()
-    //| \protected()
     ;
 
 data Type
