@@ -22,10 +22,10 @@ test bool testShouldParseEmptyEntityWithModuleImports()
                'entity User {}";
 
    set[Declaration] expectedImports = {
-        importExternal("User", "entity", "Auth", "UserEntity"),
-        importInternal("Money", "value"),
-        importInternal("Money", "collection", "MoneySet"),
-        importExternal("Language", "entity", "I18n")
+        \import("User", "entity", from("Auth"), \alias("UserEntity")),
+        \import("Money", "value", localImport(), noAlias()),
+        \import("Money", "collection", localImport(), \alias("MoneySet")),
+        \import("Language", "entity", from("I18n"), noAlias())
    };
 
     return parseModule(code) == \module("Example", expectedImports, entity({}, "User", {}));

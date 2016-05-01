@@ -5,7 +5,6 @@ data Declaration
     | \import(str target, str artifactType, Declaration fromModule, Declaration \alias)
     // artifact: entity
     | entity(set[Declaration] annotations, str name, set[Declaration] declarations)
-    | entity(str name, set[Declaration] declarations)
     | entityValue(set[Declaration] annotations, Type \type, str name)
     | entityValue(set[Declaration] annotations, Type \type, str name, set[str] valueProperties)
     | relation(str local, str foreign, str entity, str artifactAlias)
