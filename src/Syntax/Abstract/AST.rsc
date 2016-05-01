@@ -5,10 +5,10 @@ data Declaration
     | \import(str target, str artifactType, Declaration fromModule, Declaration \alias)
     // artifact: entity
     | entity(set[Declaration] annotations, str name, set[Declaration] declarations)
-    | entityValue(set[Declaration] annotations, Type \type, str name)
-    | entityValue(set[Declaration] annotations, Type \type, str name, set[str] valueProperties)
-    | relation(str local, str foreign, str entity, str artifactAlias)
-    | relation(str local, str foreign, str entity, str artifactAlias, set[str] relProperties)
+    | entityValue(set[Declaration] annotations, Type \type, str name, Declaration valueProperties)
+    | relation(str local, str foreign, str entity, str artifactAlias, Declaration relProperties)
+    | properties(set[str] props)
+    | defaultProperties()
     // annotations
     | annoTable(str name)
     | annoField(set[Expression] pairs)

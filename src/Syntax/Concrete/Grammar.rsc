@@ -41,13 +41,20 @@ syntax EntityDeclaration
     ;
 
 syntax EntityRelation
-    = relation: "relation" RelationDir local ":" RelationDir foreign ArtifactName entity "as" MemberName alias ";"
-    | relation: "relation" RelationDir local ":" RelationDir foreign ArtifactName entity "as" MemberName alias "with" "{" {RelProperties ","}* "}" ";"
+    = relation: "relation" RelationDir local ":" RelationDir foreign ArtifactName entity "as" MemberName alias RelProperties relProperties ";"
     ;
 
+syntax RelProperties
+    = properties: "with" "{" {RelProperty ","}* props "}"
+    | defaultProperties: ();
+
 syntax EntityValue
-    = entityValue: EntityValueAnno* annotations "value" Type type MemberName name ";"
-    | entityValue: EntityValueAnno* annotations "value" Type type MemberName name "with" "{" {ValueProperties ","}* "}" ";"
+    = entityValue: EntityValueAnno* annotations "value" Type type MemberName name ValueProperties valueProperties ";"
+    ;
+
+syntax ValueProperties
+    = properties: "with" "{" {ValueProperty ","}* props "}"
+    | defaultProperties: ()
     ;
 
 syntax EntityAnno
