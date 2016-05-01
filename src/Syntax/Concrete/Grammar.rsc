@@ -7,25 +7,33 @@ extend Syntax::Concrete::Grammar::Lexical;
 // Start grammar
 
 start syntax Module
-   = \module: ^"module" Name name ";" Imports* imports
-   | \module: ^"module" Name name ";" Imports* imports Artifact mainArtifact
+   = \module: ^"module" Name name ";" Import* imports
+   | \module: ^"module" Name name ";" Import* imports Artifact mainArtifact
    ;
 
 // TODO improve this grammar, always include the alias (use empty for default)
-syntax Imports
-    = importInternal: "use" ArtifactName target ImportArtifactType artifactType ";"
-    | importInternal: "use" ArtifactName target ImportArtifactType artifactType "as" ArtifactName alias ";"
-    | importExternal: "use" ArtifactName target ImportArtifactType artifactType "from" Name module ";"
-    | importExternal: "use" ArtifactName target ImportArtifactType artifactType "from" Name module "as" ArtifactName alias ";"
+syntax Import
+    = \import: "use" ArtifactName target ArtifactType artifactType ImportSource ArtifactAlias ";"
+    ;
+
+// TODO replace localImport with from(SAME_MODULE) when doing the manual implode
+syntax ImportSource
+    = from: "from" Name module
+    | localImport: ()
+    ;
+
+syntax ArtifactAlias 
+    = \alias: "as" ArtifactName alias
+    | noAlias: ()
     ;
 
 // Artifacts grammar
 
 syntax Artifact
-    = entity: EntityAnno* annotations "entity" ArtifactName name "{" EntityDeclarations* declarations "}"
+    = entity: EntityAnno* annotations "entity" ArtifactName name "{" EntityDeclaration* declarations "}"
     ;
 
-syntax EntityDeclarations
+syntax EntityDeclaration
     = EntityValue
     | EntityRelation
     | Constructor
@@ -44,11 +52,12 @@ syntax EntityValue
 
 syntax EntityAnno
     = annoTable: "@table(" "name=" Name name ")"
-    | index: "@index(" Name name "," "{" {Name ","}* columns "}" ")"
+    | index:     "@index(" Name name "," "{" {Name ","}* columns "}" ")"
     ;
 
 syntax EntityValueAnno = annoField: "@field(" {AnnotationFieldKeyPair ","}* pairs ")";
 
+// TODO when doing the manual implode - move this constraints checks there, use more flexible here
 syntax AnnotationFieldKeyPair
     = annoPair: AnnotationFieldKeyIndex key ":" AnnotationFieldKeyValue value
     | annoPair: AnnotationFieldSequenceIndex key ":" Boolean value

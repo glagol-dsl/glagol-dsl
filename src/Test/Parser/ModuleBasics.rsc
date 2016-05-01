@@ -38,7 +38,7 @@ test bool testShouldParseModuleWithImportFromOtherModule()
     str code = "module Example;
                'use User entity from Auth;";
 
-    return parseModule(code) == \module("Example", {importExternal("User", "entity", "Auth")});
+    return parseModule(code) == \module("Example", {\import("User", "entity", from("Auth"), noAlias())});
 }
 
 test bool testShouldParseModuleWithImportFromSameModule()
@@ -46,7 +46,7 @@ test bool testShouldParseModuleWithImportFromSameModule()
     str code = "module Example;
                'use User entity;";
 
-    return parseModule(code) == \module("Example", {importInternal("User", "entity")});
+    return parseModule(code) == \module("Example", {\import("User", "entity", localImport(), noAlias())});
 }
 
 test bool testShouldParseModuleWithImportFromSameModuleWithAlias()
@@ -54,7 +54,7 @@ test bool testShouldParseModuleWithImportFromSameModuleWithAlias()
     str code = "module Example;
                'use User entity as UserEntity;";
 
-    return parseModule(code) == \module("Example", {importInternal("User", "entity", "UserEntity")});
+    return parseModule(code) == \module("Example", {\import("User", "entity", localImport(), \alias("UserEntity"))});
 }
 
 test bool testShouldParseModuleWithImportFromOtherModuleWithAlias()
@@ -62,7 +62,7 @@ test bool testShouldParseModuleWithImportFromOtherModuleWithAlias()
     str code = "module Example;
                'use User entity from Auth as UserEntity;";
 
-    return parseModule(code) == \module("Example", {importExternal("User", "entity", "Auth", "UserEntity")});
+    return parseModule(code) == \module("Example", {\import("User", "entity", from("Auth"), \alias("UserEntity"))});
 }
 
 test bool testShouldParseModuleWithCompositeImports()
@@ -74,10 +74,10 @@ test bool testShouldParseModuleWithCompositeImports()
                'use Language entity from I18n;";
 
    set[Declaration] expectedImports = {
-        importExternal("User", "entity", "Auth", "UserEntity"),
-        importInternal("Money", "value"),
-        importInternal("Money", "collection", "MoneySet"),
-        importExternal("Language", "entity", "I18n")
+        \import("User", "entity", from("Auth"), \alias("UserEntity")),
+        \import("Money", "value", localImport(), noAlias()),
+        \import("Money", "collection", localImport(), \alias("MoneySet")),
+        \import("Language", "entity", from("I18n"), noAlias())
    };
 
    return parseModule(code) == \module("Example", expectedImports);
