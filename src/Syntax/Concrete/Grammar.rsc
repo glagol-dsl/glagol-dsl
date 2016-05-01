@@ -155,6 +155,20 @@ syntax Statement
     | block: "{" Statement* statements "}"
     | ifThen: "if" "(" Expression condition ")" Statement then () !>> "else"
     | ifThenElse: "if" "(" Expression condition ")" Statement then "else" Statement else
+    | assign: {Assignable ","}+ assignables AssignOperator operator Statement value !empty!block!ifThen!ifThenElse
+    ;
+
+syntax Assignable
+    = variable    : MemberName varName
+    | arrayAccess : Assignable variable "[" Expression key "]"
+    ;
+
+syntax AssignOperator
+    = divisionAssign    : "/=" 
+    | productAssign     : "*=" 
+    | subtractionAssign : "-=" 
+    | defaultAssign     : "=" 
+    | additionAssign    : "+=" 
     ;
 
 syntax Expression
