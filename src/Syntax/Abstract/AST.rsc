@@ -33,6 +33,7 @@ data Statement
     | expression(Expression expr)
     | ifThen(Expression condition, Statement then)
     | ifThenElse(Expression condition, Statement then, Statement \else)
+    | assign(set[Expression] assignables, AssignOperator operator, Statement \value)
     | empty()
     ;
 
@@ -43,6 +44,7 @@ data Expression
     | booleanLiteral(str boolValue)
     | stringLiteral(str stringValue)
     | variable(str name)
+    | arrayAccess(Expression variable, Expression arrayIndexKey)
     | when(Expression expr)
     | \bracket(Expression expr)
     | product(Expression lhs, Expression rhs)
@@ -70,6 +72,14 @@ data Expression
 data Modifier
     = \private()
     | \public()
+    ;
+
+data AssignOperator
+    = defaultAssign()
+    | divisionAssign()
+    | productAssign()
+    | subtractionAssign()
+    | additionAssign()
     ;
 
 data Type
