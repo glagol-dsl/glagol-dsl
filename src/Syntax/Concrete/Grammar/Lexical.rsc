@@ -21,17 +21,20 @@ lexical Name
     =  ([A-Z a-z _] !<< [A-Z _ a-z] [0-9 A-Z _ a-z]* !>> [0-9 A-Z _ a-z]) \ GlagolPreserved
     ;
 
-lexical ImportArtifactType
+lexical ArtifactType
     = "entity" | "value" | "repository" | "collection" | "util" | "service";
 
-lexical ValueProperties
-    = "get" | "set" ;
+lexical ValueProperty
+    = "get" | "set" 
+    ;
 
 lexical RelationDir
-    = "one" | "many" ;
+    = "one" | "many" 
+    ;
 
-lexical RelProperties
-    = "get" | "set" | "add" | "reset" | "clear" ;
+lexical RelProperty
+    = "get" | "set" | "add" | "reset" | "clear" 
+    ;
 
 lexical UnicodeEscape
     = utf16: "\\" [u] [0-9 A-F a-f] [0-9 A-F a-f] [0-9 A-F a-f] [0-9 A-F a-f]

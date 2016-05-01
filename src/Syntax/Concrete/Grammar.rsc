@@ -7,25 +7,33 @@ extend Syntax::Concrete::Grammar::Lexical;
 // Start grammar
 
 start syntax Module
-   = \module: ^"module" Name name ";" Imports* imports
-   | \module: ^"module" Name name ";" Imports* imports Artifact mainArtifact
+   = \module: ^"module" Name name ";" Import* imports Artifact mainArtifact
    ;
 
 // TODO improve this grammar, always include the alias (use empty for default)
-syntax Imports
-    = importInternal: "use" ArtifactName target ImportArtifactType artifactType ";"
-    | importInternal: "use" ArtifactName target ImportArtifactType artifactType "as" ArtifactName alias ";"
-    | importExternal: "use" ArtifactName target ImportArtifactType artifactType "from" Name module ";"
-    | importExternal: "use" ArtifactName target ImportArtifactType artifactType "from" Name module "as" ArtifactName alias ";"
+syntax Import
+    = \import: "use" ArtifactName target ArtifactType artifactType ImportSource ArtifactAlias ";"
+    ;
+
+// TODO replace localImport with from(SAME_MODULE) when doing the manual implode
+syntax ImportSource
+    = from: "from" Name module
+    | localImport: ()
+    ;
+
+syntax ArtifactAlias 
+    = \alias: "as" ArtifactName alias
+    | noAlias: ()
     ;
 
 // Artifacts grammar
 
 syntax Artifact
-    = entity: EntityAnno* annotations "entity" ArtifactName name "{" EntityDeclarations* declarations "}"
+    = entity: EntityAnno* annotations "entity" ArtifactName name "{" EntityDeclaration* declarations "}"
+    | emptyDeclaration: ()
     ;
 
-syntax EntityDeclarations
+syntax EntityDeclaration
     = EntityValue
     | EntityRelation
     | Constructor
@@ -33,22 +41,30 @@ syntax EntityDeclarations
     ;
 
 syntax EntityRelation
-    = relation: "relation" RelationDir local ":" RelationDir foreign ArtifactName entity "as" MemberName alias ";"
-    | relation: "relation" RelationDir local ":" RelationDir foreign ArtifactName entity "as" MemberName alias "with" "{" {RelProperties ","}* "}" ";"
+    = relation: "relation" RelationDir local ":" RelationDir foreign ArtifactName entity "as" MemberName alias RelProperties relProperties ";"
     ;
 
+syntax RelProperties
+    = properties: "with" "{" {RelProperty ","}* props "}"
+    | defaultProperties: ();
+
 syntax EntityValue
-    = entityValue: EntityValueAnno* annotations "value" Type type MemberName name ";"
-    | entityValue: EntityValueAnno* annotations "value" Type type MemberName name "with" "{" {ValueProperties ","}* "}" ";"
+    = entityValue: EntityValueAnno* annotations "value" Type type MemberName name ValueProperties valueProperties ";"
+    ;
+
+syntax ValueProperties
+    = properties: "with" "{" {ValueProperty ","}* props "}"
+    | defaultProperties: ()
     ;
 
 syntax EntityAnno
     = annoTable: "@table(" "name=" Name name ")"
-    | index: "@index(" Name name "," "{" {Name ","}* columns "}" ")"
+    | index:     "@index(" Name name "," "{" {Name ","}* columns "}" ")"
     ;
 
 syntax EntityValueAnno = annoField: "@field(" {AnnotationFieldKeyPair ","}* pairs ")";
 
+// TODO when doing the manual implode - move this constraints checks there, use more flexible here
 syntax AnnotationFieldKeyPair
     = annoPair: AnnotationFieldKeyIndex key ":" AnnotationFieldKeyValue value
     | annoPair: AnnotationFieldSequenceIndex key ":" Boolean value
@@ -58,7 +74,6 @@ syntax AnnotationFieldKeyPair
     | annoPair: AnnotationFieldColumnIndex key ":" Name value
     ;
 
-// TODO replace Name with lower-case starting alphabetical-chars-only non-terminal
 syntax Method
     = method: Modifier modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "=" Expression expr When when
     | method: Modifier modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" When when
@@ -95,25 +110,25 @@ syntax Modifier
     ;
 
 syntax DatabaseType
-    = integer: "int"
-    | \float: "float"
-    | \float: "decimal"
-    | string: "string"
-    | \bool: "bool"
-    | \bool: "boolean"
-    | \date: "date"
-    | \dateTime: "dateTime"
+    = integer:    "int"
+    | \float:     "float"
+    | \float:     "decimal"
+    | string:     "string"
+    | \bool:      "bool"
+    | \bool:      "boolean"
+    | \date:      "date"
+    | \dateTime:  "dateTime"
     | \timestamp: "timestamp"
     ;
 
 syntax Type
-    = integer: "int"
-    | \float: "float"
-    | string: "string"
-    | \bool: "bool"
-    | \bool: "boolean"
-    | voidValue: "void"
-    | typedArray: Type type "[]"
+    = integer:      "int"
+    | \float:       "float"
+    | string:       "string"
+    | \bool:        "bool"
+    | \bool:        "boolean"
+    | voidValue:    "void"
+    | typedArray:   Type type "[]"
     > artifactType: ArtifactName name
     ;
 

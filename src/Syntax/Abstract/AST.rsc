@@ -1,19 +1,14 @@
 module Syntax::Abstract::AST
 
 data Declaration
-    = \module(str name, set[Declaration] imports)
-    | \module(str name, set[Declaration] imports, Declaration artifact)
-    | importInternal(str target, str \artifactType)
-    | importInternal(str target, str \artifactType, str \alias)
-    | importExternal(str target, str \artifactType, str \module)
-    | importExternal(str target, str \artifactType, str \module, str \alias)
+    = \module(str name, set[Declaration] imports, Declaration artifact)
+    | \import(str target, str artifactType, Declaration fromModule, Declaration \alias)
     // artifact: entity
     | entity(set[Declaration] annotations, str name, set[Declaration] declarations)
-    | entity(str name, set[Declaration] declarations)
-    | entityValue(set[Declaration] annotations, Type \type, str name)
-    | entityValue(set[Declaration] annotations, Type \type, str name, set[str] valueProperties)
-    | relation(str local, str foreign, str entity, str \alias)
-    | relation(str local, str foreign, str entity, str \alias, set[str] relProperties)
+    | entityValue(set[Declaration] annotations, Type \type, str name, Declaration valueProperties)
+    | relation(str local, str foreign, str entity, str artifactAlias, Declaration relProperties)
+    | properties(set[str] props)
+    | defaultProperties()
     // annotations
     | annoTable(str name)
     | annoField(set[Expression] pairs)
@@ -24,6 +19,10 @@ data Declaration
     | constructor(set[Declaration] parameters, Statement constructorBody, Expression when, Declaration conditionalThrow)
     | parameter(Type paramType, str name, Expression defaultValue)
     | conditionalThrow(str exceptionName, list[Expression] arguments, Expression condition)
+    | \alias(str aliasName)
+    | noAlias()
+    | localImport()
+    | from(str sourceModule)
     | emptyDeclaration()
     ;
 
