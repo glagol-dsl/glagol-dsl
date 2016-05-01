@@ -74,7 +74,6 @@ syntax AnnotationFieldKeyPair
     | annoPair: AnnotationFieldColumnIndex key ":" Name value
     ;
 
-// TODO replace Name with lower-case starting alphabetical-chars-only non-terminal
 syntax Method
     = method: Modifier modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "=" Expression expr When when
     | method: Modifier modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" When when
@@ -111,25 +110,25 @@ syntax Modifier
     ;
 
 syntax DatabaseType
-    = integer: "int"
-    | \float: "float"
-    | \float: "decimal"
-    | string: "string"
-    | \bool: "bool"
-    | \bool: "boolean"
-    | \date: "date"
-    | \dateTime: "dateTime"
+    = integer:    "int"
+    | \float:     "float"
+    | \float:     "decimal"
+    | string:     "string"
+    | \bool:      "bool"
+    | \bool:      "boolean"
+    | \date:      "date"
+    | \dateTime:  "dateTime"
     | \timestamp: "timestamp"
     ;
 
 syntax Type
-    = integer: "int"
-    | \float: "float"
-    | string: "string"
-    | \bool: "bool"
-    | \bool: "boolean"
-    | voidValue: "void"
-    | typedArray: Type type "[]"
+    = integer:      "int"
+    | \float:       "float"
+    | string:       "string"
+    | \bool:        "bool"
+    | \bool:        "boolean"
+    | voidValue:    "void"
+    | typedArray:   Type type "[]"
     > artifactType: ArtifactName name
     ;
 
