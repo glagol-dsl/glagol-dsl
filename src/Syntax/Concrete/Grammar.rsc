@@ -7,8 +7,7 @@ extend Syntax::Concrete::Grammar::Lexical;
 // Start grammar
 
 start syntax Module
-   = \module: ^"module" Name name ";" Import* imports
-   | \module: ^"module" Name name ";" Import* imports Artifact mainArtifact
+   = \module: ^"module" Name name ";" Import* imports Artifact mainArtifact
    ;
 
 // TODO improve this grammar, always include the alias (use empty for default)
@@ -31,6 +30,7 @@ syntax ArtifactAlias
 
 syntax Artifact
     = entity: EntityAnno* annotations "entity" ArtifactName name "{" EntityDeclaration* declarations "}"
+    | emptyDeclaration: ()
     ;
 
 syntax EntityDeclaration

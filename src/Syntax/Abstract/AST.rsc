@@ -1,8 +1,7 @@
 module Syntax::Abstract::AST
 
 data Declaration
-    = \module(str name, set[Declaration] imports)
-    | \module(str name, set[Declaration] imports, Declaration artifact)
+    = \module(str name, set[Declaration] imports, Declaration artifact)
     | \import(str target, str artifactType, Declaration fromModule, Declaration \alias)
     // artifact: entity
     | entity(set[Declaration] annotations, str name, set[Declaration] declarations)
