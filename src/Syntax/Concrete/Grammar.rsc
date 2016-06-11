@@ -5,7 +5,7 @@ extend Syntax::Concrete::Grammar::Layout;
 extend Syntax::Concrete::Grammar::Lexical;
 
 start syntax Module
-   = \module: ^"module" Name name ";" Use* uses
+   = \module: ^"module" Name name ";" Use* uses Artifact? artifact
    ;
 
 syntax Use
@@ -18,3 +18,16 @@ syntax UseAlias
 syntax UseSource
     = "from" Name module
     ;
+
+syntax Artifact
+    = Annotation* annotations "entity" ArtifactName name "{" "}"
+    ;
+
+syntax Annotation
+    = "@table" "(" "name" ":" Name name ")"
+    | "@index" "(" Name name "," "{" {Name ","}* fields "}" ")"
+    ;
+
+syntax AnnotationOption
+    = ""
+    ;    

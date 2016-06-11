@@ -72,31 +72,3 @@ lexical DeciFloatNumeral
     | [0-9] !<< [0-9]+ "." [0-9]* !>> [0-9] DeciFloatExponentPart?
     | [0-9] !<< "." [0-9]+ !>> [0-9] DeciFloatExponentPart?
     ;
-
-lexical AnnotationFieldKeyIndex
-    = "key"
-    ;
-
-lexical AnnotationFieldSequenceIndex
-    = "sequence"
-    ;
-
-lexical AnnotationFieldTypeIndex
-    = "type"
-    ;
-
-lexical AnnotationFieldSizeIndex
-    = "size" | "precision"
-    ;
-
-lexical AnnotationFieldScaleIndex
-    = "scale"
-    ;
-
-lexical AnnotationFieldColumnIndex
-    = "column"
-    ;
-
-lexical AnnotationFieldKeyValue
-    = "primary" | "unique"
-    ;
