@@ -20,11 +20,19 @@ lexical AlphaIdentifier
 lexical Name
     =  ([A-Z a-z _] !<< [A-Z _ a-z] [0-9 A-Z _ a-z]* !>> [0-9 A-Z _ a-z]) \ GlagolPreserved
     ;
+    
+lexical AnnotationKey
+    =  ([A-Z a-z _] !<< [A-Z _ a-z] [0-9 A-Z _ a-z]* !>> [0-9 A-Z _ a-z])
+    ;
+    
+lexical AnnotationValue
+    =  [a-zA-Z0-9_]* !>> [a-zA-Z0-9_]
+    ;
 
 lexical ArtifactType
     = "entity" | "value" | "repository" | "collection" | "util" | "service";
 
-lexical ValueProperty
+lexical AccessProperty
     = "get" | "set" 
     ;
 

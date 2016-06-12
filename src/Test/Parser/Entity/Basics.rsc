@@ -10,7 +10,7 @@ test bool entityDeclaration() {
         'entity User {}
         '";
         
-    return parseModule(code) == \module("Testing", {}, entity("User"));
+    return parseModule(code) == \module("Testing", {}, entity("User", {}));
 }
 
 test bool testShouldParseEmptyEntityWithModuleImports()
@@ -29,5 +29,5 @@ test bool testShouldParseEmptyEntityWithModuleImports()
         use("Language", "entity", externalUse("I18n"), "Language")
    };
 
-    return parseModule(code) == \module("Example", expectedImports, entity("User"));
+    return parseModule(code) == \module("Example", expectedImports, entity("User", {}));
 }

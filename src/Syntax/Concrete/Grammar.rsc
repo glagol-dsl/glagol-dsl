@@ -20,14 +20,34 @@ syntax UseSource
     ;
 
 syntax Artifact
-    = Annotation* annotations "entity" ArtifactName name "{" "}"
+    = Annotation* annotations "entity" ArtifactName name "{" Declaration* declarations "}"
     ;
 
 syntax Annotation
     = "@table" "(" "name" ":" Name name ")"
     | "@index" "(" Name name "," "{" {Name ","}* fields "}" ")"
+    | "@field" "(" {AnnotationPair ","}+ pairs ")"
     ;
 
-syntax AnnotationOption
-    = ""
-    ;    
+syntax AnnotationPair
+    = AnnotationKey key ":" AnnotationValue value
+    ;
+
+syntax Declaration
+    = Annotation* annotations "value" Type type MemberName name AccessProperties? accessProperties ";"
+    ;
+
+syntax AccessProperties
+    = "with" "{" {AccessProperty ","}* props "}"
+    ;
+
+syntax Type
+    = integer:      "int"
+    | \float:       "float"
+    | string:       "string"
+    | \bool:        "bool"
+    | \bool:        "boolean"
+    | voidValue:    "void"
+    | typedArray:   Type type "[]"
+    > artifactType: ArtifactName name
+    ;

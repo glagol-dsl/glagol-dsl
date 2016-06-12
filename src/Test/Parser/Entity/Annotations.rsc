@@ -10,7 +10,8 @@ test bool testShouldParseTableNameAnnotationForEntity()
                '@table(name: users)
                'entity User { }";
 
-    return parseModule(code) == \module("Example", {}, entity("User", {annotation(table("users"))}));
+    return parseModule(code) == \module("Example", {}, 
+        annotated({annotation(table("users"))}, entity("User", {})));
 }
 
 test bool testShouldParseIndexesAnnotationForEntity()
@@ -20,10 +21,10 @@ test bool testShouldParseIndexesAnnotationForEntity()
                '@index(second_index, {quantity, total})
                'entity User { }";
 
-    Declaration expectedEntity = entity("User", {
+    Declaration expectedEntity = annotated({
         annotation(index("my_index"), fields(["name", "email"])),
         annotation(index("second_index"), fields(["quantity", "total"]))
-    });
+    }, entity("User", {}));
 
     return parseModule(code) == \module("Example", {}, expectedEntity);
 }
@@ -36,11 +37,11 @@ test bool testShouldParseCompositeAnnotationForEntity()
                '@table(name: my_users_table)
                'entity User { }";
 
-    Declaration expectedEntity = entity("User", {
+    Declaration expectedEntity = annotated({
         annotation(index("my_index"), fields(["name", "email"])),
         annotation(index("second_index"), fields(["quantity", "total"])),
         annotation(table("my_users_table"))
-    });
+    }, entity("User", {}));
 
     return parseModule(code) == \module("Example", {}, expectedEntity);
 }
