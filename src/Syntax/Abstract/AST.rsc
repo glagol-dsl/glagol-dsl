@@ -7,8 +7,14 @@ data Declaration
     | annotated(set[Annotation] annotations, Declaration declaration)
     | entity(str name, set[Declaration] declarations)
     | \value(Type \valueType, str name, set[AccessProperty] valueProperties)
+    | relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties)
     ;
-    
+
+data RelationDir
+    = \one() 
+    | many()
+    ;
+
 data UseSource
     = externalUse(str \module)
     | internalUse()
@@ -20,8 +26,12 @@ data Annotation
     | table(str name)
     | field()
     | index(str name)
-    | options(map[str key, str \value] options)
+    | options(map[str key, Annotation \value] options)
     | fields(list[str] fields)
+    | optionValue(str strValue)
+    | optionValue(bool boolValue)
+    | optionValue(int intValue)
+    | optionValue(Type \typeValue)
     ;
 
 data Type
@@ -37,4 +47,6 @@ data Type
 data AccessProperty
     = get()
     | \set()
+    | add()
+    | clear()
     ;

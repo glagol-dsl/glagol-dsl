@@ -33,8 +33,16 @@ syntax AnnotationPair
     = AnnotationKey key ":" AnnotationValue value
     ;
 
+syntax AnnotationValue
+    = Name name
+    | Type type
+    | DecimalIntegerLiteral number
+    | Boolean boolean
+    ;
+
 syntax Declaration
     = Annotation* annotations "value" Type type MemberName name AccessProperties? accessProperties ";"
+    | "relation" RelationDir l ":" RelationDir r ArtifactName entity "as" MemberName alias AccessProperties? accessProperties ";"
     ;
 
 syntax AccessProperties

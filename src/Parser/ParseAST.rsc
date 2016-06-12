@@ -4,6 +4,7 @@ import Syntax::Abstract::AST;
 import Syntax::Concrete::Grammar;
 import Parser::ParseCode;
 import ParseTree;
+import String;
 import IO;
 
 public Declaration parseModule(str code) = buildAST(parseCode(code));
@@ -47,11 +48,16 @@ private Annotation convertAnnotation((Annotation) `@index(<Name name>, {<{Name "
 private bool convertBoolean((Boolean) `true`) = true;
 private bool convertBoolean((Boolean) `false`) = false;
 
-private tuple[str key,str \value] convertAnnotationPair((AnnotationPair) `<AnnotationKey key> : <AnnotationValue v>`) 
-    = <"<key>", "<v>">;
+private Annotation convertAnnotationValue((AnnotationValue) `<Name name>`) = optionValue("<name>");
+private Annotation convertAnnotationValue((AnnotationValue) `<DecimalIntegerLiteral number>`) = optionValue(toInt("<number>"));
+private Annotation convertAnnotationValue((AnnotationValue) `<Boolean boolean>`) = optionValue(convertBoolean(boolean));
+private Annotation convertAnnotationValue((AnnotationValue) `<Type t>`) = optionValue(convertType(t));
+
+private tuple[str key, Annotation \value] convertAnnotationPair((AnnotationPair) `<AnnotationKey key> : <AnnotationValue v>`) 
+    = <"<key>", convertAnnotationValue(v)>;
 
 private Annotation convertAnnotation((Annotation) `@field(<{AnnotationPair ","}+ ps>)`)
-    = annotation(field(), options(( key:\value | p <- ps, <str key, str \value> := convertAnnotationPair(p) )));
+    = annotation(field(), options(( key:\value | p <- ps, <str key, Annotation \value> := convertAnnotationPair(p) )));
 
 private Declaration convertDeclaration((Declaration) `value <Type valueType><MemberName name>;`) 
     = \value(convertType(valueType), "<name>");
@@ -79,4 +85,15 @@ private set[AccessProperty] convertAccessProperties((AccessProperties) `with { <
 
 private AccessProperty convertAccessProperty((AccessProperty) `get`) = get();
 private AccessProperty convertAccessProperty((AccessProperty) `set`) = \set();
+private AccessProperty convertAccessProperty((AccessProperty) `add`) = add();
+private AccessProperty convertAccessProperty((AccessProperty) `clear`) = clear();
+private AccessProperty convertAccessProperty((AccessProperty) `reset`) = clear();
 
+private RelationDir convertRelationDir((RelationDir) `one`) = \one();
+private RelationDir convertRelationDir((RelationDir) `many`) = many();
+
+private Declaration convertDeclaration((Declaration) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as><AccessProperties accessProperties>;`) 
+    = relation(convertRelationDir(l), convertRelationDir(r), "<entity>", "<as>", convertAccessProperties(accessProperties));
+
+private Declaration convertDeclaration((Declaration) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as>;`) 
+    = relation(convertRelationDir(l), convertRelationDir(r), "<entity>", "<as>", {});

@@ -37,7 +37,13 @@ test bool testShouldParseEntityWithValuesAndAnnotations()
 
     return parseModule(code) == \module("Example", {}, entity("User", {
         annotated({
-            annotation(field(), options(("key": "primary", "sequence": "true", "type": "int", "size": "11", "column": "id")))
+            annotation(field(), options((
+                "key": optionValue("primary"), 
+                "sequence": optionValue(true), 
+                "type": optionValue(integer()), 
+                "size": optionValue(11), 
+                "column": optionValue("id")
+            )))
         }, \value(integer(), "id", {get()}))
     }));
 }
