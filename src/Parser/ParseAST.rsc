@@ -39,25 +39,38 @@ private Declaration convertArtifact((Artifact) `entity <ArtifactName name> {<Dec
 private Declaration convertArtifact((Artifact) `<Annotation* annotations> entity <ArtifactName name> {<Declaration* declarations>}`) 
     = annotated({convertAnnotation(annotation) | annotation <- annotations}, entity("<name>", {convertDeclaration(d) | d <- declarations}));
     
-private Annotation convertAnnotation((Annotation) `@table(name: <Name name>)`) 
-    = annotation(table("<name>"));
+private Annotation convertAnnotation((Annotation) `@<Identifier id>`) = annotation("<id>", []);
 
-private Annotation convertAnnotation((Annotation) `@index(<Name name>, {<{Name ","}* fs>})`) 
-    = annotation(index("<name>"), fields(["<f>" | f <- fs]));
+private Annotation convertAnnotation((Annotation) `@<Identifier id><AnnotationArgs args>`)
+    = annotation("<id>", convertAnnotationArgs(args));
 
-private bool convertBoolean((Boolean) `true`) = true;
-private bool convertBoolean((Boolean) `false`) = false;
+private list[Annotation] convertAnnotationArgs((AnnotationArgs) `(<{AnnotationArg ","}+ args>)`) 
+    = [convertAnnotationArg(arg) | arg <- args];
 
-private Annotation convertAnnotationValue((AnnotationValue) `<Name name>`) = optionValue("<name>");
-private Annotation convertAnnotationValue((AnnotationValue) `<DecimalIntegerLiteral number>`) = optionValue(toInt("<number>"));
-private Annotation convertAnnotationValue((AnnotationValue) `<Boolean boolean>`) = optionValue(convertBoolean(boolean));
-private Annotation convertAnnotationValue((AnnotationValue) `<Type t>`) = optionValue(convertType(t));
+private Annotation convertAnnotationArg((AnnotationArg) `<StringQuoted stringVal>`) 
+    = annotationVal(convertStringQuoted(stringVal));
+    
+private Annotation convertAnnotationArg((AnnotationArg) `<Boolean boolean>`) 
+    = annotationVal(convertBoolean(boolean));
+    
+private Annotation convertAnnotationArg((AnnotationArg) `<DecimalIntegerLiteral number>`) 
+    = annotationVal(toInt("<number>"));
+
+private Annotation convertAnnotationArg((AnnotationArg) `<DeciFloatNumeral number>`) 
+    = annotationVal(toReal("<number>"));
+
+private Annotation convertAnnotationArg((AnnotationArg) `[<{AnnotationArg ","}+ listVal>]`)
+    = annotationVal([convertAnnotationArg(arg) | arg <- listVal]);
+
+private Annotation convertAnnotationArg((AnnotationArg) `{<{AnnotationPair ","}+ mapVal>}`)
+    = annotationMap(( key:\value | p <- mapVal, <str key, Annotation \value> := convertAnnotationPair(p) ));
+
+private Annotation convertAnnotationValue((AnnotationValue) `<AnnotationArg val>`) = convertAnnotationArg(val);
+private Annotation convertAnnotationValue((AnnotationValue) `primary`) = annotationValPrimary();
+private Annotation convertAnnotationValue((AnnotationValue) `<Type t>`) = annotationVal(convertType(t));
 
 private tuple[str key, Annotation \value] convertAnnotationPair((AnnotationPair) `<AnnotationKey key> : <AnnotationValue v>`) 
     = <"<key>", convertAnnotationValue(v)>;
-
-private Annotation convertAnnotation((Annotation) `@field(<{AnnotationPair ","}+ ps>)`)
-    = annotation(field(), options(( key:\value | p <- ps, <str key, Annotation \value> := convertAnnotationPair(p) )));
 
 private Declaration convertDeclaration((Declaration) `value <Type valueType><MemberName name>;`) 
     = \value(convertType(valueType), "<name>");
@@ -73,8 +86,8 @@ private Declaration convertDeclaration((Declaration) `<Annotation* annotations>v
     
 private Type convertType((Type) `int`) = integer();
 private Type convertType((Type) `float`) = float();
-private Type convertType((Type) `bool`) = \bool();
-private Type convertType((Type) `boolean`) = \bool();
+private Type convertType((Type) `bool`) = boolean();
+private Type convertType((Type) `boolean`) = boolean();
 private Type convertType((Type) `void`) = voidValue();
 private Type convertType((Type) `string`) = string();
 private Type convertType((Type) `<Type \type>[]`) = typedArray(convertType(\type));
@@ -97,3 +110,37 @@ private Declaration convertDeclaration((Declaration) `relation <RelationDir l>:<
 
 private Declaration convertDeclaration((Declaration) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as>;`) 
     = relation(convertRelationDir(l), convertRelationDir(r), "<entity>", "<as>", {});
+
+private Declaration convertDeclaration((Declaration) `construct (<{Parameter ","}* parameters>) { }`) 
+    = constructor([convertParameter(p) | p <- parameters]);
+
+private Declaration convertDeclaration((Declaration) `construct (<{Parameter ","}* parameters>);`) 
+    = constructor([convertParameter(p) | p <- parameters]);
+
+private Declaration convertParameter((Parameter) `<Type paramType> <MemberName name>`) = param(convertType(paramType), "<name>");
+
+private Declaration convertParameter((Parameter) `<Type paramType> <MemberName name> <ParameterDefaultValue defaultValue>`) 
+    = param(convertType(paramType), "<name>", convertParameterDefaultVal(defaultValue));
+
+private Expression convertParameterDefaultVal((ParameterDefaultValue) `=<DefaultValue defaultValue>`)
+    = convertExpression(defaultValue);
+    
+private Expression convertExpression((DefaultValue) `"<StringCharacter* string>"`)
+    = strLiteral("<string>");
+    
+private Expression convertExpression((DefaultValue) `<DecimalIntegerLiteral number>`)
+    = intLiteral(toInt("<number>"));
+    
+private Expression convertExpression((DefaultValue) `<DeciFloatNumeral number>`)
+    = floatLiteral(toReal("<number>"));
+    
+private Expression convertExpression((DefaultValue) `<Boolean boolean>`)
+    = boolLiteral(convertBoolean(boolean));
+    
+private Expression convertExpression((DefaultValue) `[<{DefaultValue ","}* items>]`)
+    = array([convertExpression(i) | i <- items]);
+    
+private str convertStringQuoted((StringQuoted) `"<StringCharacter* string>"`) = "<string>";
+
+private bool convertBoolean((Boolean) `true`) = true;
+private bool convertBoolean((Boolean) `false`) = false;

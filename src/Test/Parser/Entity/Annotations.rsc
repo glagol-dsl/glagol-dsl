@@ -7,23 +7,23 @@ import IO;
 test bool testShouldParseTableNameAnnotationForEntity()
 {
     str code = "module Example;
-               '@table(name: users)
+               '@table(\"users\")
                'entity User { }";
 
     return parseModule(code) == \module("Example", {}, 
-        annotated({annotation(table("users"))}, entity("User", {})));
+        annotated({annotation("table", [annotationVal("users")])}, entity("User", {})));
 }
 
 test bool testShouldParseIndexesAnnotationForEntity()
 {
     str code = "module Example;
-               '@index(my_index, {name, email})
-               '@index(second_index, {quantity, total})
+               '@index(\"my_index\", [\"name\", \"email\"])
+               '@index(\"second_index\", [\"quantity\", \"total\"])
                'entity User { }";
 
     Declaration expectedEntity = annotated({
-        annotation(index("my_index"), fields(["name", "email"])),
-        annotation(index("second_index"), fields(["quantity", "total"]))
+        annotation("index", [annotationVal("my_index"), annotationVal([annotationVal("name"), annotationVal("email")])]),
+        annotation("index", [annotationVal("second_index"), annotationVal([annotationVal("quantity"), annotationVal("total")])])
     }, entity("User", {}));
 
     return parseModule(code) == \module("Example", {}, expectedEntity);
@@ -32,15 +32,15 @@ test bool testShouldParseIndexesAnnotationForEntity()
 test bool testShouldParseCompositeAnnotationForEntity()
 {
     str code = "module Example;
-               '@index(my_index, {name, email})
-               '@index(second_index, {quantity, total})
-               '@table(name: my_users_table)
+               '@index(\"my_index\", [\"name\", \"email\"])
+               '@index(\"second_index\", [\"quantity\", \"total\"])
+               '@table(\"my_users_table\")
                'entity User { }";
 
     Declaration expectedEntity = annotated({
-        annotation(index("my_index"), fields(["name", "email"])),
-        annotation(index("second_index"), fields(["quantity", "total"])),
-        annotation(table("my_users_table"))
+        annotation("index", [annotationVal("my_index"), annotationVal([annotationVal("name"), annotationVal("email")])]),
+        annotation("index", [annotationVal("second_index"), annotationVal([annotationVal("quantity"), annotationVal("total")])]),
+        annotation("table", [annotationVal("my_users_table")])
     }, entity("User", {}));
 
     return parseModule(code) == \module("Example", {}, expectedEntity);

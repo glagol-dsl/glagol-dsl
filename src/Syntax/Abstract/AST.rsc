@@ -8,6 +8,9 @@ data Declaration
     | entity(str name, set[Declaration] declarations)
     | \value(Type \valueType, str name, set[AccessProperty] valueProperties)
     | relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties)
+    | constructor(list[Declaration] params)
+    | param(Type paramType, str name)
+    | param(Type paramType, str name, Expression defaultValue)
     ;
 
 data RelationDir
@@ -21,17 +24,24 @@ data UseSource
     ;
 
 data Annotation
-    = annotation(Annotation kind)
-    | annotation(Annotation kind, Annotation \data)
-    | table(str name)
-    | field()
-    | index(str name)
-    | options(map[str key, Annotation \value] options)
-    | fields(list[str] fields)
-    | optionValue(str strValue)
-    | optionValue(bool boolValue)
-    | optionValue(int intValue)
-    | optionValue(Type \typeValue)
+    = annotation(str annotationName, list[Annotation] arguments)
+    | annotationMap(map[str key, Annotation \value] \map)
+    | annotationVal(Annotation \value)
+    | annotationVal(list[Annotation] listValue)
+    | annotationVal(str strValue)
+    | annotationVal(bool boolValue)
+    | annotationVal(int intValue)
+    | annotationVal(real floatValue)
+    | annotationVal(Type \typeValue)
+    | annotationValPrimary()
+    ;
+
+data Expression
+    = intLiteral(int intValue)
+    | floatLiteral(real floatValue)
+    | strLiteral(str strValue)
+    | boolLiteral(bool boolValue)
+    | array(list[Expression] values)
     ;
 
 data Type
@@ -39,7 +49,7 @@ data Type
     | float()
     | string()
     | voidValue()
-    | \bool()
+    | boolean()
     | typedArray(Type \type)
     | artifactType(str name)
     ;

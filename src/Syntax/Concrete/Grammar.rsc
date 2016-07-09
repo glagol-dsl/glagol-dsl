@@ -11,6 +11,7 @@ start syntax Module
 syntax Use
     = use: "use" ArtifactName target ArtifactType artifactType UseSource? source UseAlias? alias ";"
     ;
+    
 syntax UseAlias
     = "as" ArtifactName alias
     ;
@@ -24,9 +25,20 @@ syntax Artifact
     ;
 
 syntax Annotation
-    = "@table" "(" "name" ":" Name name ")"
-    | "@index" "(" Name name "," "{" {Name ","}* fields "}" ")"
-    | "@field" "(" {AnnotationPair ","}+ pairs ")"
+    = "@" Identifier id AnnotationArgs?
+    ;
+
+syntax AnnotationArgs
+    = "(" {AnnotationArg ","}+ args ")"
+    ;
+
+syntax AnnotationArg
+    = StringQuoted stringVal 
+    | Boolean boolean
+    | DecimalIntegerLiteral number
+    | DeciFloatNumeral number
+    | "[" {AnnotationArg ","}+ listVal "]"
+    | "{" {AnnotationPair ","}+ mapVal "}"
     ;
 
 syntax AnnotationPair
@@ -34,15 +46,32 @@ syntax AnnotationPair
     ;
 
 syntax AnnotationValue
-    = Name name
-    | Type type
-    | DecimalIntegerLiteral number
-    | Boolean boolean
+    = AnnotationArg val
+    | "primary"
+    | Type type 
     ;
 
 syntax Declaration
     = Annotation* annotations "value" Type type MemberName name AccessProperties? accessProperties ";"
     | "relation" RelationDir l ":" RelationDir r ArtifactName entity "as" MemberName alias AccessProperties? accessProperties ";"
+    | "construct" "(" {Parameter ","}* parameters ")" "{" "}"
+    | "construct" "(" {Parameter ","}* parameters ")" ";"
+    ;
+
+syntax Parameter
+    = Type paramType MemberName name ParameterDefaultValue? defaultValue
+    ;
+
+syntax ParameterDefaultValue
+    = "=" DefaultValue defaultValue
+    ;
+
+syntax DefaultValue
+    = stringLiteral     : "\"" StringCharacter* string "\""
+    | intLiteral        : DecimalIntegerLiteral number
+    | floatLiteral      : DeciFloatNumeral number
+    | booleanLiteral    : Boolean boolean
+    | array             : "[" {DefaultValue ","}* items "]" array
     ;
 
 syntax AccessProperties
@@ -58,4 +87,8 @@ syntax Type
     | voidValue:    "void"
     | typedArray:   Type type "[]"
     > artifactType: ArtifactName name
+    ;
+
+syntax StringQuoted 
+    = "\"" StringCharacter* string "\""
     ;
