@@ -8,7 +8,8 @@ data Declaration
     | entity(str name, set[Declaration] declarations)
     | \value(Type \valueType, str name, set[AccessProperty] valueProperties)
     | relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties)
-    | constructor(list[Declaration] params)
+    | constructor(list[Declaration] params, list[Statement] body)
+    | constructor(list[Declaration] params, list[Statement] body, Expression when)
     | param(Type paramType, str name)
     | param(Type paramType, str name, Expression defaultValue)
     ;
@@ -42,6 +43,26 @@ data Expression
     | strLiteral(str strValue)
     | boolLiteral(bool boolValue)
     | array(list[Expression] values)
+    | arrayAccess(Expression variable, Expression arrayIndexKey)
+    | variable(str name)
+    | \bracket(Expression expr)
+    | product(Expression lhs, Expression rhs)
+    | remainder(Expression lhs, Expression rhs)
+    | division(Expression lhs, Expression rhs)
+    | addition(Expression lhs, Expression rhs)
+    | subtraction(Expression lhs, Expression rhs)
+    | modulo(Expression lhs, Expression rhs)
+    | negative(Expression expr)
+    | greaterThanOrEq(Expression lhs, Expression rhs)
+    | lessThanOrEq(Expression lhs, Expression rhs)
+    | lessThan(Expression lhs, Expression rhs)
+    | greaterThan(Expression lhs, Expression rhs)
+    | equals(Expression lhs, Expression rhs)
+    | nonEquals(Expression lhs, Expression rhs)
+    | and(Expression lhs, Expression rhs)
+    | or(Expression lhs, Expression rhs)
+    | ifThenElse(Expression condition, Expression ifThen, Expression \else)
+    | emptyExpr()
     ;
 
 data Type
@@ -59,4 +80,21 @@ data AccessProperty
     | \set()
     | add()
     | clear()
+    ;
+
+data Statement
+    = block(list[Statement] stmts)
+    | expression(Expression expr)
+    | ifThen(Expression condition, Statement then)
+    | ifThenElse(Expression condition, Statement then, Statement \else)
+    | assign(Expression assignable, AssignOperator operator, Statement \value)
+    | emptyStmt()
+    ;
+
+data AssignOperator
+    = defaultAssign()
+    | divisionAssign()
+    | productAssign()
+    | subtractionAssign()
+    | additionAssign()
     ;

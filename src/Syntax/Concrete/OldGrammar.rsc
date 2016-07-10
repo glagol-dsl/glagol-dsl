@@ -138,11 +138,11 @@ syntax ParameterDefaultValue
     ;
 
 syntax DefaultValue
-    = stringLiteral     : "\"" StringCharacter* string "\""
-    | intLiteral        : DecimalIntegerLiteral number
-    | floatLiteral      : DeciFloatNumeral number
-    | booleanLiteral    : Boolean boolean
-    | array             : "[" {DefaultValue ","}* items "]" array
+    = stringLiteral: "\"" StringCharacter* string "\""
+    | intLiteral: DecimalIntegerLiteral number
+    | floatLiteral: DeciFloatNumeral number
+    | booleanLiteral: Boolean boolean
+    | array: "[" {DefaultValue ","}* items "]" array
     ;
 
 syntax Statement

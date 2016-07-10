@@ -3,6 +3,7 @@ module Parser::ParseAST
 import Syntax::Abstract::AST;
 import Syntax::Concrete::Grammar;
 import Parser::ParseCode;
+import Exceptions::ParserExceptions;
 import ParseTree;
 import String;
 import IO;
@@ -34,10 +35,10 @@ private UseSource convertUseSource((UseSource) `from <Name src>`) = externalUse(
 private str convertUseAlias((UseAlias) `as <ArtifactName as>`) = "<as>";
  
 private Declaration convertArtifact((Artifact) `entity <ArtifactName name> {<Declaration* declarations>}`) 
-    = entity("<name>", {convertDeclaration(d) | d <- declarations});
+    = entity("<name>", {convertDeclaration(d, "<name>") | d <- declarations});
 
 private Declaration convertArtifact((Artifact) `<Annotation* annotations> entity <ArtifactName name> {<Declaration* declarations>}`) 
-    = annotated({convertAnnotation(annotation) | annotation <- annotations}, entity("<name>", {convertDeclaration(d) | d <- declarations}));
+    = annotated({convertAnnotation(annotation) | annotation <- annotations}, entity("<name>", {convertDeclaration(d, "<name>") | d <- declarations}));
     
 private Annotation convertAnnotation((Annotation) `@<Identifier id>`) = annotation("<id>", []);
 
@@ -72,16 +73,16 @@ private Annotation convertAnnotationValue((AnnotationValue) `<Type t>`) = annota
 private tuple[str key, Annotation \value] convertAnnotationPair((AnnotationPair) `<AnnotationKey key> : <AnnotationValue v>`) 
     = <"<key>", convertAnnotationValue(v)>;
 
-private Declaration convertDeclaration((Declaration) `value <Type valueType><MemberName name>;`) 
+private Declaration convertDeclaration((Declaration) `value <Type valueType><MemberName name>;`, _) 
     = \value(convertType(valueType), "<name>");
     
-private Declaration convertDeclaration((Declaration) `value <Type valueType><MemberName name><AccessProperties accessProperties>;`) 
+private Declaration convertDeclaration((Declaration) `value <Type valueType><MemberName name><AccessProperties accessProperties>;`, _) 
     = \value(convertType(valueType), "<name>", convertAccessProperties(accessProperties));
     
-private Declaration convertDeclaration((Declaration) `<Annotation* annotations>value <Type valueType><MemberName name>;`) 
+private Declaration convertDeclaration((Declaration) `<Annotation* annotations>value <Type valueType><MemberName name>;`, _) 
     = annotated({convertAnnotation(annotation) | annotation <- annotations}, \value(convertType(valueType), "<name>"));
     
-private Declaration convertDeclaration((Declaration) `<Annotation* annotations>value <Type valueType><MemberName name><AccessProperties accessProperties>;`) 
+private Declaration convertDeclaration((Declaration) `<Annotation* annotations>value <Type valueType><MemberName name><AccessProperties accessProperties>;`, _) 
     = annotated({convertAnnotation(annotation) | annotation <- annotations}, \value(convertType(valueType), "<name>", convertAccessProperties(accessProperties)));
     
 private Type convertType((Type) `int`) = integer();
@@ -105,17 +106,108 @@ private AccessProperty convertAccessProperty((AccessProperty) `reset`) = clear()
 private RelationDir convertRelationDir((RelationDir) `one`) = \one();
 private RelationDir convertRelationDir((RelationDir) `many`) = many();
 
-private Declaration convertDeclaration((Declaration) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as><AccessProperties accessProperties>;`) 
+private Declaration convertDeclaration((Declaration) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as><AccessProperties accessProperties>;`, _) 
     = relation(convertRelationDir(l), convertRelationDir(r), "<entity>", "<as>", convertAccessProperties(accessProperties));
 
-private Declaration convertDeclaration((Declaration) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as>;`) 
+private Declaration convertDeclaration((Declaration) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as>;`, _) 
     = relation(convertRelationDir(l), convertRelationDir(r), "<entity>", "<as>", {});
 
-private Declaration convertDeclaration((Declaration) `construct (<{Parameter ","}* parameters>) { }`) 
-    = constructor([convertParameter(p) | p <- parameters]);
+private Declaration convertDeclaration(
+    (Declaration) `<ArtifactName name> (<{Parameter ","}* parameters>) { <Statement* body> }`, 
+    str artifactName) 
+{
+    if (artifactName != "<name>") {
+        throw IllegalConstructorName("\'<name>\' is invalid constructor name");
+    } 
+    
+    return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body]);
+}
+    
+private Declaration convertDeclaration(
+    (Declaration) `<ArtifactName name> (<{Parameter ","}* parameters>) { <Statement* body> }<When when>;`, 
+    str artifactName)
+{
+    if (artifactName != "<name>") {
+        throw IllegalConstructorName("\'<name>\' is invalid constructor name");
+    }
+    
+    return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], convertWhen(when));
+}
 
-private Declaration convertDeclaration((Declaration) `construct (<{Parameter ","}* parameters>);`) 
-    = constructor([convertParameter(p) | p <- parameters]);
+private Declaration convertDeclaration(
+    (Declaration) `<ArtifactName name> (<{Parameter ","}* parameters>);`, 
+    str artifactName) 
+{
+    if (artifactName != "<name>") {
+        throw IllegalConstructorName("\'<name>\' is invalid constructor name");
+    }
+    
+    return constructor([convertParameter(p) | p <- parameters], []);
+}
+
+private Expression convertWhen((When) `when <Expression expr>`) = convertExpression(expr);
+
+private Expression convertExpression((Expression) `(<Expression expr>)`) = \bracket(convertExpression(expr));
+
+private Expression convertExpression((Expression) `<Expression lhs> * <Expression rhs>`) 
+    = product(convertExpression(lhs), convertExpression(rhs));
+    
+private Expression convertExpression((Expression) `<Expression lhs> / <Expression rhs>`) 
+    = division(convertExpression(lhs), convertExpression(rhs));
+    
+private Expression convertExpression((Expression) `<Expression lhs> + <Expression rhs>`) 
+    = addition(convertExpression(lhs), convertExpression(rhs));
+    
+private Expression convertExpression((Expression) `<Expression lhs> - <Expression rhs>`) 
+    = subtraction(convertExpression(lhs), convertExpression(rhs));
+    
+private Expression convertExpression((Expression) `<Expression lhs> mod <Expression rhs>`) 
+    = modulo(convertExpression(lhs), convertExpression(rhs));
+    
+private Expression convertExpression((Expression) `<Expression lhs> \>= <Expression rhs>`) 
+    = greaterThanOrEq(convertExpression(lhs), convertExpression(rhs));
+    
+private Expression convertExpression((Expression) `<Expression lhs> \<= <Expression rhs>`) 
+    = lessThanOrEq(convertExpression(lhs), convertExpression(rhs));
+    
+private Expression convertExpression((Expression) `<Expression lhs> \< <Expression rhs>`) 
+    = lessThan(convertExpression(lhs), convertExpression(rhs));
+    
+private Expression convertExpression((Expression) `<Expression lhs> \> <Expression rhs>`) 
+    = greaterThan(convertExpression(lhs), convertExpression(rhs));
+    
+private Expression convertExpression((Expression) `<Expression lhs> == <Expression rhs>`) 
+    = equals(convertExpression(lhs), convertExpression(rhs));
+    
+private Expression convertExpression((Expression) `<Expression lhs> != <Expression rhs>`) 
+    = nonEquals(convertExpression(lhs), convertExpression(rhs));
+    
+private Expression convertExpression((Expression) `<Expression lhs> && <Expression rhs>`) 
+    = and(convertExpression(lhs), convertExpression(rhs));
+    
+private Expression convertExpression((Expression) `<Expression lhs> || <Expression rhs>`) 
+    = or(convertExpression(lhs), convertExpression(rhs));
+    
+private Expression convertExpression((Expression) `<Expression condition>?<Expression thenExp>:<Expression elseExp>`) 
+    = ifThenElse(convertExpression(condition), convertExpression(thenExp), convertExpression(elseExp));
+
+private Expression convertExpression((Expression) `<StringQuoted string>`)
+    = strLiteral(convertStringQuoted("<string>"));
+    
+private Expression convertExpression((Expression) `<DecimalIntegerLiteral number>`)
+    = intLiteral(toInt("<number>"));
+    
+private Expression convertExpression((Expression) `<DeciFloatNumeral number>`)
+    = floatLiteral(toReal("<number>"));
+    
+private Expression convertExpression((Expression) `<Boolean boolean>`)
+    = boolLiteral(convertBoolean(boolean));
+    
+private Expression convertExpression((Expression) `[<{Expression ","}* items>]`)
+    = array([convertExpression(i) | i <- items]);
+    
+private Expression convertExpression((Expression) `<MemberName varName>`)
+    = variable("<varName>");
 
 private Declaration convertParameter((Parameter) `<Type paramType> <MemberName name>`) = param(convertType(paramType), "<name>");
 
@@ -125,8 +217,8 @@ private Declaration convertParameter((Parameter) `<Type paramType> <MemberName n
 private Expression convertParameterDefaultVal((ParameterDefaultValue) `=<DefaultValue defaultValue>`)
     = convertExpression(defaultValue);
     
-private Expression convertExpression((DefaultValue) `"<StringCharacter* string>"`)
-    = strLiteral("<string>");
+private Expression convertExpression((DefaultValue) `<StringQuoted string>`)
+    = strLiteral(convertStringQuoted("<string>"));
     
 private Expression convertExpression((DefaultValue) `<DecimalIntegerLiteral number>`)
     = intLiteral(toInt("<number>"));
@@ -144,3 +236,26 @@ private str convertStringQuoted((StringQuoted) `"<StringCharacter* string>"`) = 
 
 private bool convertBoolean((Boolean) `true`) = true;
 private bool convertBoolean((Boolean) `false`) = false;
+
+private Statement convertStmt((Statement) `<Expression expr>;`) = expression(convertExpression(expr));
+private Statement convertStmt((Statement) `;`) = emptyStmt();
+private Statement convertStmt((Statement) `{<Statement* stmts>}`) = block([convertStmt(stmt) | stmt <- stmts]);
+
+private Statement convertStmt((Statement) `if ( <Expression condition> ) <Statement then>`) 
+    = ifThen(convertExpression(condition), convertStmt(then));
+
+private Statement convertStmt((Statement) `if ( <Expression condition> ) <Statement then> else <Statement \else>`) 
+    = ifThenElse(convertExpression(condition), convertStmt(then), convertStmt(\else));
+
+private Statement convertStmt((Statement) `<Assignable assignable><AssignOperator operator><Statement val>`) 
+    = assign(convertAssignable(assignable), convertAssignOperator(operator), convertStmt(val));
+
+private Expression convertAssignable((Assignable) `<MemberName name>`) = variable("<name>");
+private Expression convertAssignable((Assignable) `<Assignable variable>[<Expression key>]`)
+    = arrayAccess(convertAssignable(variable), convertExpression(key));
+
+private AssignOperator convertAssignOperator((AssignOperator) `/=`) = divisionAssign();
+private AssignOperator convertAssignOperator((AssignOperator) `*=`) = productAssign();
+private AssignOperator convertAssignOperator((AssignOperator) `-=`) = subtractionAssign();
+private AssignOperator convertAssignOperator((AssignOperator) `=`) = defaultAssign();
+private AssignOperator convertAssignOperator((AssignOperator) `+=`) = additionAssign();
