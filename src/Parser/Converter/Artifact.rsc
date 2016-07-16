@@ -2,7 +2,9 @@ module Parser::Converter::Artifact
 
 import Syntax::Abstract::AST;
 import Syntax::Concrete::Grammar;
-import Parser::Converter::Declaration;
+import Parser::Converter::Declaration::Value;
+import Parser::Converter::Declaration::Constructor;
+import Parser::Converter::Declaration::Relation;
 import Parser::Converter::Annotation;
 
 public Declaration convertArtifact((Artifact) `entity <ArtifactName name> {<Declaration* declarations>}`) 
@@ -10,4 +12,3 @@ public Declaration convertArtifact((Artifact) `entity <ArtifactName name> {<Decl
 
 public Declaration convertArtifact((Artifact) `<Annotation* annotations> entity <ArtifactName name> {<Declaration* declarations>}`) 
     = annotated({convertAnnotation(annotation) | annotation <- annotations}, entity("<name>", {convertDeclaration(d, "<name>") | d <- declarations}));
-    
