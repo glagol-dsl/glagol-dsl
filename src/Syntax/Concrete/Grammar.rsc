@@ -55,7 +55,9 @@ syntax Declaration
     = Annotation* annotations "value" Type type MemberName name AccessProperties? accessProperties ";"
     | "relation" RelationDir l ":" RelationDir r ArtifactName entity "as" MemberName alias AccessProperties? accessProperties ";"
     | ArtifactName "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
-    | ArtifactName "(" {Parameter ","}* parameters ")" ("=" Expression body)? ";"
+    | ArtifactName "(" {Parameter ","}* parameters ")" When? when ";"
+    | Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
+    | Type returnType MemberName name "(" {Parameter ","}* parameters ")" "=" Expression expr When? when ";"
     ;
 
 syntax When
@@ -113,7 +115,7 @@ syntax Expression
     > left ( addition: Expression lhs "+" Expression rhs
            | subtraction: Expression lhs "-" Expression rhs
     )
-    > left modulo: Expression lhs "mod" Expression rhs
+//    > left modulo: Expression lhs "mod" Expression rhs
     > non-assoc ( greaterThanOrEq: Expression lhs "\>=" Expression rhs
                 | lessThanOrEq: Expression lhs "\<=" Expression rhs
                 | lessThan: Expression lhs "\<" !>> "-" Expression rhs

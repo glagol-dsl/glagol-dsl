@@ -10,6 +10,7 @@ data Declaration
     | relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties)
     | constructor(list[Declaration] params, list[Statement] body)
     | constructor(list[Declaration] params, list[Statement] body, Expression when)
+    | method(Type returnType, str name, list[Declaration] params, list[Statement] body)
     | param(Type paramType, str name)
     | param(Type paramType, str name, Expression defaultValue)
     ;
