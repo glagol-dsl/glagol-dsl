@@ -4,6 +4,7 @@ import Syntax::Abstract::AST;
 import Syntax::Concrete::Grammar;
 import String;
 import Parser::Converter::Boolean;
+import Parser::Converter::QuotedString;
 
 public Expression convertExpression((Expression) `(<Expression expr>)`) = \bracket(convertExpression(expr));
 
@@ -65,7 +66,7 @@ public Expression convertExpression((Expression) `<MemberName varName>`)
     = variable("<varName>");
 
 public Expression convertExpression((DefaultValue) `<StringQuoted string>`)
-    = strLiteral(convertStringQuoted("<string>"));
+    = strLiteral(convertStringQuoted(string));
     
 public Expression convertExpression((DefaultValue) `<DecimalIntegerLiteral number>`)
     = intLiteral(toInt("<number>"));

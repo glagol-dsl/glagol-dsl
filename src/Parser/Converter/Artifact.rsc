@@ -5,6 +5,7 @@ import Syntax::Concrete::Grammar;
 import Parser::Converter::Declaration::Value;
 import Parser::Converter::Declaration::Constructor;
 import Parser::Converter::Declaration::Relation;
+import Parser::Converter::Declaration::Method;
 import Parser::Converter::Annotation;
 
 public Declaration convertArtifact((Artifact) `entity <ArtifactName name> {<Declaration* declarations>}`) 

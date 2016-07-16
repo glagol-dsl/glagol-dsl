@@ -10,7 +10,8 @@ data Declaration
     | relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties)
     | constructor(list[Declaration] params, list[Statement] body)
     | constructor(list[Declaration] params, list[Statement] body, Expression when)
-    | method(Type returnType, str name, list[Declaration] params, list[Statement] body)
+    | method(Modifier modifier, Type returnType, str name, list[Declaration] params, list[Statement] body)
+    | method(Modifier modifier, Type returnType, str name, list[Declaration] params, list[Statement] body, Expression when)
     | param(Type paramType, str name)
     | param(Type paramType, str name, Expression defaultValue)
     ;
@@ -76,6 +77,11 @@ data Type
     | artifactType(str name)
     ;
     
+data Modifier
+    = \public()
+    | \private()
+    ;
+    
 data AccessProperty
     = get()
     | \set()
@@ -90,6 +96,7 @@ data Statement
     | ifThenElse(Expression condition, Statement then, Statement \else)
     | assign(Expression assignable, AssignOperator operator, Statement \value)
     | emptyStmt()
+    | \return(Expression expr)
     ;
 
 data AssignOperator

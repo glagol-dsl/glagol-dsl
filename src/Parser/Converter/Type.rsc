@@ -9,5 +9,5 @@ public Type convertType((Type) `bool`) = boolean();
 public Type convertType((Type) `boolean`) = boolean();
 public Type convertType((Type) `void`) = voidValue();
 public Type convertType((Type) `string`) = string();
-public Type convertType((Type) `<Type \type>[]`) = typedArray(convertType(\type));
+public Type convertType((Type) `<Type t>[]`) = typedArray(convertType(t));
 public Type convertType((Type) `<ArtifactName name>`) = artifactType("<name>");

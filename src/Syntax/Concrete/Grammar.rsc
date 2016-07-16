@@ -56,8 +56,13 @@ syntax Declaration
     | "relation" RelationDir l ":" RelationDir r ArtifactName entity "as" MemberName alias AccessProperties? accessProperties ";"
     | ArtifactName "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
     | ArtifactName "(" {Parameter ","}* parameters ")" When? when ";"
-    | Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
-    | Type returnType MemberName name "(" {Parameter ","}* parameters ")" "=" Expression expr When? when ";"
+    | Modifier? modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
+    | Modifier? modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "=" Expression expr When? when ";"
+    ;
+
+syntax Modifier
+    = "private"
+    | "public"
     ;
 
 syntax When
@@ -136,7 +141,10 @@ syntax Statement
     | ifThen: "if" "(" Expression condition ")" Statement then () !>> "else"
     | ifThenElse: "if" "(" Expression condition ")" Statement then "else" Statement else
     | assign: Assignable assignable AssignOperator operator Statement value !empty!block!ifThen!ifThenElse
-    ;
+    | non-assoc  (
+        \return: "return" Expression expr ";"
+    )
+    ;   
 
 syntax Assignable
     = variable: MemberName varName

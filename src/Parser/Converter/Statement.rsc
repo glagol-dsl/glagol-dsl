@@ -18,3 +18,5 @@ public Statement convertStmt((Statement) `if ( <Expression condition> ) <Stateme
 
 public Statement convertStmt((Statement) `<Assignable assignable><AssignOperator operator><Statement val>`) 
     = assign(convertAssignable(assignable), convertAssignOperator(operator), convertStmt(val));
+
+public Statement convertStmt((Statement) `return <Expression expr>;`) = \return(convertExpression(expr));
