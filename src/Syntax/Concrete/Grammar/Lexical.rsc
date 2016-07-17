@@ -62,6 +62,10 @@ lexical DeciFloatExponentPart
     = [E e] SignedInteger !>> [0-9]
     ;
 
+lexical Integer
+    = [0-9]+
+    ;
+
 lexical SignedInteger
     = [+ \-]? [0-9]+
     ;

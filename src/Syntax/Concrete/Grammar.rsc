@@ -136,16 +136,18 @@ syntax Expression
 
 syntax Statement
     = expression: Expression expression ";"
-    | emptyStmt: ";"
     | block: "{" Statement* statements "}"
     | ifThen: "if" "(" Expression condition ")" Statement then () !>> "else"
     | ifThenElse: "if" "(" Expression condition ")" Statement then "else" Statement else
-    | assign: Assignable assignable AssignOperator operator Statement value !emptyStmt!block!ifThen!ifThenElse!return
-    | non-assoc  (
-            \return: "return" Expression expr ";"
+    | assign: Assignable assignable AssignOperator operator Statement value !emptyStmt!block!ifThen!ifThenElse!return!break
+    | foreach: "for" "(" Expression list "as" MemberName var (","  {Expression ","}+ conditions)? ")" Statement body
+    > non-assoc  (
+            \return: "return" Statement stmt !block!ifThen!ifThenElse!foreach!declare!break
+        |   \break: "break" Integer? level ";"
         |   declare: Type type MemberName varName "=" Statement defaultValue !emptyStmt!block!ifThen!ifThenElse!return!declare
         |   declare: Type type MemberName varName ";"
     )
+    > emptyStmt: ";"
     ;   
 
 syntax Assignable
