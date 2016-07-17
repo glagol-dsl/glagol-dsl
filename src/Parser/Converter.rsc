@@ -214,8 +214,8 @@ public Statement convertStmt((Statement) `{<Statement* stmts>}`) = block([conver
 public Statement convertStmt((Statement) `if ( <Expression condition> ) <Statement then>`) 
     = ifThen(convertExpression(condition), convertStmt(then));
 
-public Statement convertStmt((Statement) `if ( <Expression condition> ) <Statement then> else <Statement \else>`) 
-    = ifThenElse(convertExpression(condition), convertStmt(then), convertStmt(\else));
+public Statement convertStmt((Statement) `if ( <Expression condition> ) <Statement then> else <Statement e>`) 
+    = ifThenElse(convertExpression(condition), convertStmt(then), convertStmt(e));
 
 public Statement convertStmt((Statement) `<Assignable assignable><AssignOperator operator><Statement val>`) 
     = assign(convertAssignable(assignable), convertAssignOperator(operator), convertStmt(val));

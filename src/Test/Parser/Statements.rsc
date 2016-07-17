@@ -77,3 +77,91 @@ test bool testDeclarationsWithNestedAssignment() {
         ])
     }));
 }
+
+test bool testIfStatement() {
+    str code
+        = "module Example;
+        'entity User {
+        '   User(int a) {
+        '       if (a == 5) return 5;
+        '   }
+        '}";
+
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        constructor([param(integer(), "a")], [
+            ifThen(equals(variable("a"), intLiteral(5)), \return(intLiteral(5)))
+        ])
+    }));
+}
+
+test bool testIfStatementWithBlock() {
+    str code
+        = "module Example;
+        'entity User {
+        '   User(int a) {
+        '       if (a == 5) {return 5;}
+        '   }
+        '}";
+
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        constructor([param(integer(), "a")], [
+            ifThen(equals(variable("a"), intLiteral(5)), block([\return(intLiteral(5))]))
+        ])
+    }));
+}
+
+test bool testIfElseStatement() {
+    str code
+        = "module Example;
+        'entity User {
+        '   User(int a) {
+        '       if (a == 5) return 5;
+        '       else return 6;
+        '   }
+        '}";
+
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        constructor([param(integer(), "a")], [
+            ifThenElse(equals(variable("a"), intLiteral(5)), \return(intLiteral(5)), \return(intLiteral(6)))
+        ])
+    }));
+}
+
+test bool testIfElseIfStatement() {
+    str code
+        = "module Example;
+        'entity User {
+        '   User(int a) {
+        '       if (a == 5) return 5;
+        '       else if (a == 6) return 6;
+        '   }
+        '}";
+
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        constructor([param(integer(), "a")], [
+            ifThenElse(equals(variable("a"), intLiteral(5)), \return(intLiteral(5)), 
+                ifThen(equals(variable("a"), intLiteral(6)), \return(intLiteral(6)))    
+            )
+        ])
+    }));
+}
+
+test bool testIfElseIfEndingWithElseStatement() {
+    str code
+        = "module Example;
+        'entity User {
+        '   User(int a) {
+        '       if (a == 5) return 5;
+        '       else if (a == 6) return 6;
+        '       else return 0;
+        '   }
+        '}";
+
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        constructor([param(integer(), "a")], [
+            ifThenElse(equals(variable("a"), intLiteral(5)), \return(intLiteral(5)), 
+                ifThenElse(equals(variable("a"), intLiteral(6)), \return(intLiteral(6)), \return(intLiteral(0)))
+            )
+        ])
+    }));
+}
