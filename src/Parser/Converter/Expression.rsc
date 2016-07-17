@@ -48,7 +48,7 @@ public Expression convertExpression((Expression) `<Expression condition>?<Expres
     = ifThenElse(convertExpression(condition), convertExpression(thenExp), convertExpression(elseExp));
 
 public Expression convertExpression((Expression) `<StringQuoted string>`)
-    = strLiteral(convertStringQuoted("<string>"));
+    = strLiteral(convertStringQuoted(string));
     
 public Expression convertExpression((Expression) `<DecimalIntegerLiteral number>`)
     = intLiteral(toInt("<number>"));
@@ -64,6 +64,9 @@ public Expression convertExpression((Expression) `[<{Expression ","}* items>]`)
     
 public Expression convertExpression((Expression) `<MemberName varName>`)
     = variable("<varName>");
+    
+public Expression convertExpression((Expression) `-<Expression expr>`) 
+    = negative(convertExpression(expr));
 
 public Expression convertExpression((DefaultValue) `<StringQuoted string>`)
     = strLiteral(convertStringQuoted(string));
@@ -79,3 +82,4 @@ public Expression convertExpression((DefaultValue) `<Boolean boolean>`)
     
 public Expression convertExpression((DefaultValue) `[<{DefaultValue ","}* items>]`)
     = array([convertExpression(i) | i <- items]);
+    
