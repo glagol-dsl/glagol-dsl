@@ -64,6 +64,7 @@ data Expression
     | and(Expression lhs, Expression rhs)
     | or(Expression lhs, Expression rhs)
     | ifThenElse(Expression condition, Expression ifThen, Expression \else)
+    | new(str artifact, list[Expression] args)
     | emptyExpr()
     ;
 

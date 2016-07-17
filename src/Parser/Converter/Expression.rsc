@@ -83,3 +83,7 @@ public Expression convertExpression((DefaultValue) `<Boolean boolean>`)
 public Expression convertExpression((DefaultValue) `[<{DefaultValue ","}* items>]`)
     = array([convertExpression(i) | i <- items]);
     
+public Expression convertExpression((Expression) `new <ArtifactName name>`) = new("<name>", []);
+public Expression convertExpression((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) 
+    = new("<name>", [convertExpression(arg) | arg <- args]);
+
