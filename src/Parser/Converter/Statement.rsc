@@ -23,5 +23,5 @@ public Statement convertStmt((Statement) `<Assignable assignable><AssignOperator
 public Statement convertStmt((Statement) `return <Expression expr>;`) = \return(convertExpression(expr));
 
 public Statement convertStmt((Statement) `<Type t> <MemberName varName>;`) = declare(convertType(t), variable("<varName>"));
-public Statement convertStmt((Statement) `<Type t> <MemberName varName>=<Expression defValue>;`) 
-    = declare(convertType(t), variable("<varName>"), convertExpression(defValue));
+public Statement convertStmt((Statement) `<Type t> <MemberName varName>=<Statement defValue>`) 
+    = declare(convertType(t), variable("<varName>"), convertStmt(defValue));

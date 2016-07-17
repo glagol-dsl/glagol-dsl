@@ -17,10 +17,10 @@ test bool testDeclarationsWithPrimitiveTypes() {
         
     return parseModule(code) == \module("Example", {}, entity("User", {
         constructor([], [
-            declare(float(), variable("myVariable"), floatLiteral(5.4)),
-            declare(integer(), variable("yourVariable"), intLiteral(23)),
-            declare(string(), variable("myString"), strLiteral("hello world")),
-            declare(boolean(), variable("withExpr"), greaterThan(variable("myVariable"), variable("yourVariable")))
+            declare(float(), variable("myVariable"), expression(floatLiteral(5.4))),
+            declare(integer(), variable("yourVariable"), expression(intLiteral(23))),
+            declare(string(), variable("myString"), expression(strLiteral("hello world"))),
+            declare(boolean(), variable("withExpr"), expression(greaterThan(variable("myVariable"), variable("yourVariable"))))
         ])
     }));
 }
@@ -58,6 +58,22 @@ test bool testDeclarationsWithCustomTypes() {
     return parseModule(code) == \module("Example", {}, entity("User", {
         constructor([], [
             declare(artifactType("DateTime"), variable("myDate"))
+        ])
+    }));
+}
+
+test bool testDeclarationsWithNestedAssignment() {
+    str code
+        = "module Example;
+        'entity User {
+        '   User(int a) {
+        '       int myNumber = a = 5;
+        '   }
+        '}";
+        
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        constructor([param(integer(), "a")], [
+            declare(integer(), variable("myNumber"), assign(variable("a"), defaultAssign(), expression(intLiteral(5))))
         ])
     }));
 }

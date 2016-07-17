@@ -140,10 +140,11 @@ syntax Statement
     | block: "{" Statement* statements "}"
     | ifThen: "if" "(" Expression condition ")" Statement then () !>> "else"
     | ifThenElse: "if" "(" Expression condition ")" Statement then "else" Statement else
-    | assign: Assignable assignable AssignOperator operator Statement value !empty!block!ifThen!ifThenElse
+    | assign: Assignable assignable AssignOperator operator Statement value !emptyStmt!block!ifThen!ifThenElse!return
     | non-assoc  (
             \return: "return" Expression expr ";"
-        |   declare: Type type MemberName varName ("=" Expression expr)? ";"
+        |   declare: Type type MemberName varName "=" Statement defaultValue !emptyStmt!block!ifThen!ifThenElse!return!declare
+        |   declare: Type type MemberName varName ";"
     )
     ;   
 

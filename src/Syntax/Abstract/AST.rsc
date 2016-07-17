@@ -98,7 +98,7 @@ data Statement
     | emptyStmt()
     | \return(Expression expr)
     | declare(Type varType, Expression varName)
-    | declare(Type varType, Expression varName, Expression defaultValue)
+    | declare(Type varType, Expression varName, Statement defaultValue)
     ;
 
 data AssignOperator
