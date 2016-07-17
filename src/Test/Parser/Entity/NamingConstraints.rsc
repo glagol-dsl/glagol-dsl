@@ -2,7 +2,6 @@ module Test::Parser::Entity::NamingConstraints
 
 import Parser::ParseAST;
 import Syntax::Abstract::AST;
-import Prelude;
 
 test bool moduleNameCannotUsePreservedKeywords()
 {

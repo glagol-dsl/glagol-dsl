@@ -2,7 +2,6 @@ module Test::Parser::Entity::Values
 
 import Parser::ParseAST;
 import Syntax::Abstract::AST;
-import Prelude;
 
 test bool testShouldParseEntityWithValues()
 {
