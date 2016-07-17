@@ -8,4 +8,4 @@ install:
   - sudo chmod +x /usr/local/bin/rascal
 script:
   - cd src
-  - rascal BuildTests && rascal Tests
+  - rascal Build && rascal BuildTests && rascal Tests
