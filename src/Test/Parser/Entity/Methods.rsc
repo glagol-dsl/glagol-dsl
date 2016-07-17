@@ -18,7 +18,7 @@ test bool shouldParseMethodWithoutModifier()
                     param(integer(), "blabla", intLiteral(5)),
                     param(typedArray(string()), "names", array([strLiteral("a"), strLiteral("b"), strLiteral("c")]))
                 ], [
-                    \return(product(\bracket(addition(intLiteral(23), intLiteral(5))), intLiteral(8)))
+                    \return(expression(product(\bracket(addition(intLiteral(23), intLiteral(5))), intLiteral(8))))
                 ]
             )
           }
@@ -40,7 +40,7 @@ test bool shouldParseMethodWithModifierAndWhenExpression()
             method(\private(), integer(), "example", [
                     param(integer(), "argument")
                 ], [
-                    \return(product(\bracket(addition(intLiteral(23), intLiteral(5))), intLiteral(8)))
+                    \return(expression(product(\bracket(addition(intLiteral(23), intLiteral(5))), intLiteral(8))))
                 ], greaterThan(variable("argument"), intLiteral(5))
             )
           }
@@ -64,7 +64,7 @@ test bool shouldParseMethodWithModifierBodyAndWhen()
             method(\private(), voidValue(), "processEntry", [
                     param(integer(), "limit", intLiteral(15))
                 ], [
-                    \return(addition(intLiteral(1), intLiteral(5)))
+                    \return(expression(addition(intLiteral(1), intLiteral(5))))
                 ], equals(variable("limit"), intLiteral(15))
             )
           }

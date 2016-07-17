@@ -26,19 +26,19 @@ public Declaration convertDeclaration(
     
 public Declaration convertDeclaration(
     (Declaration) `<Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr>;`, _) 
-    = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))]);
+    = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))]);
 
 public Declaration convertDeclaration(
     (Declaration) `<Modifier modifier><Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr>;`, _) 
-    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))]);
+    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))]);
 
 public Declaration convertDeclaration(
     (Declaration) `<Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr><When when>;`, _) 
-    = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))], convertWhen(when));
+    = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))], convertWhen(when));
 
 public Declaration convertDeclaration(
     (Declaration) `<Modifier modifier><Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr><When when>;`, _) 
-    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))], convertWhen(when));
+    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))], convertWhen(when));
     
 private Modifier convertModifier((Modifier) `public`) = \public();
 private Modifier convertModifier((Modifier) `private`) = \private();

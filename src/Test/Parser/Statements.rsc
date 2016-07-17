@@ -2,6 +2,7 @@ module Test::Parser::Statements
 
 import Parser::ParseAST;
 import Syntax::Abstract::AST;
+import IO;
 
 test bool testDeclarationsWithPrimitiveTypes() {
     str code
@@ -89,7 +90,7 @@ test bool testIfStatement() {
 
     return parseModule(code) == \module("Example", {}, entity("User", {
         constructor([param(integer(), "a")], [
-            ifThen(equals(variable("a"), intLiteral(5)), \return(intLiteral(5)))
+            ifThen(equals(variable("a"), intLiteral(5)), \return(expression(intLiteral(5))))
         ])
     }));
 }
@@ -105,7 +106,7 @@ test bool testIfStatementWithBlock() {
 
     return parseModule(code) == \module("Example", {}, entity("User", {
         constructor([param(integer(), "a")], [
-            ifThen(equals(variable("a"), intLiteral(5)), block([\return(intLiteral(5))]))
+            ifThen(equals(variable("a"), intLiteral(5)), block([\return(expression(intLiteral(5)))]))
         ])
     }));
 }
@@ -122,7 +123,7 @@ test bool testIfElseStatement() {
 
     return parseModule(code) == \module("Example", {}, entity("User", {
         constructor([param(integer(), "a")], [
-            ifThenElse(equals(variable("a"), intLiteral(5)), \return(intLiteral(5)), \return(intLiteral(6)))
+            ifThenElse(equals(variable("a"), intLiteral(5)), \return(expression(intLiteral(5))), \return(expression(intLiteral(6))))
         ])
     }));
 }
@@ -139,8 +140,8 @@ test bool testIfElseIfStatement() {
 
     return parseModule(code) == \module("Example", {}, entity("User", {
         constructor([param(integer(), "a")], [
-            ifThenElse(equals(variable("a"), intLiteral(5)), \return(intLiteral(5)), 
-                ifThen(equals(variable("a"), intLiteral(6)), \return(intLiteral(6)))    
+            ifThenElse(equals(variable("a"), intLiteral(5)), \return(expression(intLiteral(5))), 
+                ifThen(equals(variable("a"), intLiteral(6)), \return(expression(intLiteral(6))))    
             )
         ])
     }));
@@ -159,8 +160,103 @@ test bool testIfElseIfEndingWithElseStatement() {
 
     return parseModule(code) == \module("Example", {}, entity("User", {
         constructor([param(integer(), "a")], [
-            ifThenElse(equals(variable("a"), intLiteral(5)), \return(intLiteral(5)), 
-                ifThenElse(equals(variable("a"), intLiteral(6)), \return(intLiteral(6)), \return(intLiteral(0)))
+            ifThenElse(equals(variable("a"), intLiteral(5)), \return(expression(intLiteral(5))), 
+                ifThenElse(equals(variable("a"), intLiteral(6)), \return(expression(intLiteral(6))), \return(expression(intLiteral(0))))
+            )
+        ])
+    }));
+}
+
+test bool testForeachStatementWithEmptyStmt() {
+    str code
+        = "module Example;
+        'entity User {
+        '   User(int[] a) {
+        '       for (a as b);
+        '   }
+        '}";
+
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        constructor([param(typedArray(integer()), "a")], [
+            foreach(variable("a"), variable("b"), emptyStmt())
+        ])
+    }));
+}
+
+test bool testForeachStatementWithEmptyStmtAndDirectList() {
+    str code
+        = "module Example;
+        'entity User {
+        '   User() {
+        '       for ([1, 2, 3, 4, 5] as b);
+        '   }
+        '}";
+
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        constructor([], [
+            foreach(array([intLiteral(1), intLiteral(2), intLiteral(3), intLiteral(4), intLiteral(5)]), 
+                variable("b"), emptyStmt())
+        ])
+    }));
+}
+
+test bool testForeachStatementWithIncrementStmtAndDirectList() {
+    str code
+        = "module Example;
+        'entity User {
+        '   User() {
+        '       int i;
+        '       for ([1, 2, 3, 4, 5] as b) i += 1;
+        '   }
+        '}";
+
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        constructor([], [
+            declare(integer(), variable("i")),
+            foreach(array([intLiteral(1), intLiteral(2), intLiteral(3), intLiteral(4), intLiteral(5)]), 
+                variable("b"), assign(variable("i"), additionAssign(), expression(intLiteral(1))))
+        ])
+    }));
+}
+
+test bool testForeachStatementWithBreak() {
+    str code
+        = "module Example;
+        'entity User {
+        '   User(int[] a) {
+        '       for (a as b) {
+        '           if (a \> 2) break;
+        '       }
+        '   }
+        '}";
+
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        constructor([param(typedArray(integer()), "a")], [
+            foreach(variable("a"), variable("b"), block([
+                ifThen(greaterThan(variable("a"), intLiteral(2)), \break())
+            ]))
+        ])
+    }));
+}
+
+test bool testForeachStatementWithLevelledBreak() {
+    str code
+        = "module Example;
+        'entity User {
+        '   User(int[] a) {
+        '       for (a as b) 
+        '           for (c as d)
+        '               if (c \> 2) break 2;
+        '       
+        '   }
+        '}";
+
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        constructor([param(typedArray(integer()), "a")], [
+            foreach(variable("a"), variable("b"), 
+                foreach(variable("c"), variable("d"), 
+                    ifThen(greaterThan(variable("c"), intLiteral(2)), \break(2))
+                )
             )
         ])
     }));

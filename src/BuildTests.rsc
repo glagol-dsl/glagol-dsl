@@ -34,6 +34,7 @@ public void main(list[str] args)
                         '
                         'import IO;
                         'import List;
+                        'import Exception;
                         '<for (moduleName <- modules) {>import <moduleName>;
                         '<}>
                         '
@@ -49,7 +50,7 @@ public void main(list[str] args)
                         '           print(\"F\");
                         '       }
                         '   } catch e: {
-                        '       throw \"Test <\test.function> threw an exception (located in <\test.fileName>)\";
+                        '       throw \"Test <\test.function> threw an exception (located in <\test.fileName>) with text \\\'\<e\>\\\'\";
                         '       return;
                         '   }
                         '<}>

@@ -96,9 +96,12 @@ data Statement
     | ifThenElse(Expression condition, Statement then, Statement \else)
     | assign(Expression assignable, AssignOperator operator, Statement \value)
     | emptyStmt()
-    | \return(Expression expr)
+    | \return(Statement stmt)
     | declare(Type varType, Expression varName)
     | declare(Type varType, Expression varName, Statement defaultValue)
+    | foreach(Expression \list, Expression varName, Statement body)
+    | \break()
+    | \break(int level)
     ;
 
 data AssignOperator

@@ -23,4 +23,6 @@ keyword GlagolPreserved
     | "constructor"
     | "throws"
     | "if"
+    | "return"
+    | "break"
     ;

@@ -41,19 +41,19 @@ public Declaration convertDeclaration(
     
 public Declaration convertDeclaration(
     (Declaration) `<Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr>;`, _) 
-    = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))]);
+    = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))]);
 
 public Declaration convertDeclaration(
     (Declaration) `<Modifier modifier><Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr>;`, _) 
-    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))]);
+    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))]);
 
 public Declaration convertDeclaration(
     (Declaration) `<Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr><When when>;`, _) 
-    = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))], convertWhen(when));
+    = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))], convertWhen(when));
 
 public Declaration convertDeclaration(
     (Declaration) `<Modifier modifier><Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr><When when>;`, _) 
-    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))], convertWhen(when));
+    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))], convertWhen(when));
     
 private Modifier convertModifier((Modifier) `public`) = \public();
 private Modifier convertModifier((Modifier) `private`) = \private();
@@ -220,11 +220,17 @@ public Statement convertStmt((Statement) `if ( <Expression condition> ) <Stateme
 public Statement convertStmt((Statement) `<Assignable assignable><AssignOperator operator><Statement val>`) 
     = assign(convertAssignable(assignable), convertAssignOperator(operator), convertStmt(val));
 
-public Statement convertStmt((Statement) `return <Expression expr>;`) = \return(convertExpression(expr));
+public Statement convertStmt((Statement) `return <Statement stmt>`) = \return(convertStmt(stmt));
+
+public Statement convertStmt((Statement) `break ;`) = \break();
+public Statement convertStmt((Statement) `break<Integer level>;`) = \break(toInt("<level>"));
 
 public Statement convertStmt((Statement) `<Type t> <MemberName varName>;`) = declare(convertType(t), variable("<varName>"));
 public Statement convertStmt((Statement) `<Type t> <MemberName varName>=<Statement defValue>`) 
     = declare(convertType(t), variable("<varName>"), convertStmt(defValue));
+
+public Statement convertStmt((Statement) `for (<Expression l>as<MemberName var>)<Statement body>`)
+    = foreach(convertExpression(l), variable("<var>"), convertStmt(body));
 
 
 public Annotation convertAnnotation((Annotation) `@<Identifier id>`) = annotation("<id>", []);
