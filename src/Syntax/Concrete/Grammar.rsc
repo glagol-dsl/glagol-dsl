@@ -113,6 +113,7 @@ syntax Expression
     | floatLiteral: DeciFloatNumeral number
     | booleanLiteral: Boolean boolean
     | variable: MemberName varName
+    | newInstance: "new" ArtifactName ("(" {Expression ","}* args ")")?
     > left ( product: Expression lhs "*" () !>> "*" Expression rhs
            | remainder: Expression lhs "%" Expression rhs
            | division: Expression lhs "/" Expression rhs

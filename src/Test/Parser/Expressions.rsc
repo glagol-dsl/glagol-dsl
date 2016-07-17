@@ -125,3 +125,54 @@ test bool shouldParseAllTypesOfLiterals()
           ])
     }));
 }
+
+test bool testNewInstance()
+{
+    str code = "module Example;
+               'entity User {
+               '    void newInstance() {
+               '        new DateTime;
+               '    }
+               '}";
+    
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        method(\public(), voidValue(), "newInstance", [], [
+            expression(new("DateTime", []))
+          ])
+    }));
+}
+
+test bool testNewInstanceWithArg()
+{
+    str code = "module Example;
+               'entity User {
+               '    void newInstance() {
+               '        new DateTime(\"now\");
+               '    }
+               '}";
+    
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        method(\public(), voidValue(), "newInstance", [], [
+            expression(new("DateTime", [strLiteral("now")]))
+          ])
+    }));
+}
+
+test bool testNewInstanceWithArgs()
+{
+    str code = "module Example;
+               'entity User {
+               '    void newInstance() {
+               '        new DateTime(\"now\", new Money(2300, \"USD\"));
+               '    }
+               '}";
+    
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        method(\public(), voidValue(), "newInstance", [], [
+            expression(new("DateTime", [strLiteral("now"), new("Money", [
+                intLiteral(2300), strLiteral("USD")
+            ])]))
+          ])
+    }));
+}
+
