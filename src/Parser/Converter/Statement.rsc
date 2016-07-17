@@ -26,6 +26,9 @@ public Statement convertStmt((Statement) `return <Statement stmt>`) = \return(co
 public Statement convertStmt((Statement) `break ;`) = \break();
 public Statement convertStmt((Statement) `break<Integer level>;`) = \break(toInt("<level>"));
 
+public Statement convertStmt((Statement) `continue ;`) = \continue();
+public Statement convertStmt((Statement) `continue<Integer level>;`) = \continue(toInt("<level>"));
+
 public Statement convertStmt((Statement) `<Type t> <MemberName varName>;`) = declare(convertType(t), variable("<varName>"));
 public Statement convertStmt((Statement) `<Type t> <MemberName varName>=<Statement defValue>`) 
     = declare(convertType(t), variable("<varName>"), convertStmt(defValue));

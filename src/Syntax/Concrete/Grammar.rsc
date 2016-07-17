@@ -144,6 +144,7 @@ syntax Statement
     > non-assoc  (
             \return: "return" Statement stmt !block!ifThen!ifThenElse!foreach!declare!break
         |   \break: "break" Integer? level ";"
+        |   \continue: "continue" Integer? level ";"
         |   declare: Type type MemberName varName "=" Statement defaultValue !emptyStmt!block!ifThen!ifThenElse!return!declare
         |   declare: Type type MemberName varName ";"
     )

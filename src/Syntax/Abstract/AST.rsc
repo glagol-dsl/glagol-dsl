@@ -103,6 +103,8 @@ data Statement
     | foreach(Expression \list, Expression varName, Statement body, list[Expression] conditions)
     | \break()
     | \break(int level)
+    | \continue()
+    | \continue(int level)
     ;
 
 data AssignOperator
