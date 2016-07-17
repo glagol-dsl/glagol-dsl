@@ -277,3 +277,22 @@ test bool testForeachStatementWithCondition() {
         ])
     }));
 }
+
+test bool testForeachStatementWithContinue() {
+    str code
+        = "module Example;
+        'entity User {
+        '   User(DateTime[] a, DateTime now) {
+        '       for (a as b)
+        '           if (a \< now) continue;
+        '   }
+        '}";
+
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        constructor([param(typedArray(artifactType("DateTime")), "a"), param(artifactType("DateTime"), "now")], [
+            foreach(variable("a"), variable("b"), ifThen(
+                lessThan(variable("a"), variable("now")), \continue()
+            ))
+        ])
+    }));
+}
