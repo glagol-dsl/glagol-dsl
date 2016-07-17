@@ -1,6 +1,6 @@
 module BuildTests
 
-import Prelude;
+import IO;
 
 private set[loc] collectTestFiles(loc location)
 {
@@ -32,7 +32,8 @@ public void main(list[str] args)
 
     str testAggregate = "module Tests
                         '
-                        'import Prelude;
+                        'import IO;
+                        'import List;
                         '<for (moduleName <- modules) {>import <moduleName>;
                         '<}>
                         '

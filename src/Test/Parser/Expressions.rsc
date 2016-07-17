@@ -2,7 +2,6 @@ module Test::Parser::Expressions
 
 import Parser::ParseAST;
 import Syntax::Abstract::AST;
-import Prelude;
 
 test bool testShouldParseVariableInBrackets()
 {
@@ -12,13 +11,13 @@ test bool testShouldParseVariableInBrackets()
                '        ((theVariable));
                '        (theVariable) + 1;
                '    }
-               '}";
-               
-    return parseModule(code) == \module("Example", {}, entity({}, "User", {
-        method(\public(), voidValue(), "variableInBrackets", {parameter(integer(), "theVariable", none())}, [
-            expression(variable("theVariable")),
-            expression(addition(variable("theVariable"), intLiteral(1)))
-        ], none())
+               '}"; 
+    
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        method(\public(), voidValue(), "variableInBrackets", [param(integer(), "theVariable")], [
+            expression(\bracket(\bracket(variable("theVariable")))),
+            expression(addition(\bracket(variable("theVariable")), intLiteral(1)))
+        ])
     }));
 }
 
@@ -34,13 +33,13 @@ test bool testShouldParseArray()
                '    }
                '}";
                
-    return parseModule(code) == \module("Example", {}, entity({}, "User", {
-        method(\public(), voidValue(), "arrayExpression", {}, [
-            expression(array([stringLiteral("First thing"), stringLiteral("Second thing")])),
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        method(\public(), voidValue(), "arrayExpression", [], [
+            expression(array([strLiteral("First thing"), strLiteral("Second thing")])),
             expression(array([intLiteral(1), intLiteral(2), intLiteral(3), intLiteral(4), intLiteral(5)])),
             expression(array([floatLiteral(1.34), floatLiteral(2.35), floatLiteral(23.56)])),
             expression(array([array([intLiteral(1), intLiteral(2), intLiteral(3)]), array([intLiteral(3), intLiteral(4), intLiteral(5)])]))
-        ], none())
+        ])
     }));
 }
 
@@ -53,10 +52,10 @@ test bool testShouldParseExpressionsWithNegativeLiterals()
                '    }
                '}";
                
-    return parseModule(code) == \module("Example", {}, entity({}, "User", {
-        method(\public(), voidValue(), "nestedNegative", {}, [
-            expression(negative(negative(negative(intLiteral(23)))))
-        ], none())
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        method(\public(), voidValue(), "nestedNegative", [], [
+            expression(negative(\bracket(negative(\bracket(negative(\bracket(intLiteral(23))))))))
+        ])
     }));
 }
 
@@ -65,7 +64,7 @@ test bool testShouldParseMathExpressions()
     str code = "module Example;
                'entity User {
                '    void math() {
-               '        3*4*(23+3)-4/2 mod 32 \> 3;
+               '        3*4*(23+3)-4/2;
                '        3 \< 5;
                '        1 \>= 1;
                '        2 == 2;
@@ -75,35 +74,29 @@ test bool testShouldParseMathExpressions()
                '    }
                '}";
     
-    return parseModule(code) == \module("Example", {}, entity({}, "User", {
-        method(\public(), voidValue(), "math", {}, [
-            expression(greaterThan(
-              modulo(
-                subtraction(
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        method(\public(), voidValue(), "math", [], [
+            expression(subtraction(
                   product(
                     product(
                       intLiteral(3),
                       intLiteral(4)),
-                    addition(
+                    \bracket(addition(
                       intLiteral(23),
-                      intLiteral(3))
+                      intLiteral(3)))
                   ),
                   division(
                     intLiteral(4),
                     intLiteral(2)
                   )
-                 ),
-                 intLiteral(32)
-                ),
-              intLiteral(3))
-            ),
+                 )),
             expression(lessThan(intLiteral(3), intLiteral(5))),
             expression(greaterThanOrEq(intLiteral(1), intLiteral(1))),
             expression(equals(intLiteral(2), intLiteral(2))),
             expression(lessThanOrEq(intLiteral(9), intLiteral(19))),
-            expression(or(or(and(intLiteral(1), booleanLiteral("true")), booleanLiteral("false")), booleanLiteral("true"))),
-            expression(ifThenElse(greaterThan(variable("argument"), intLiteral(0)), stringLiteral("argument is positive"), stringLiteral("argument is negative")))
-          ], none())
+            expression(or(or(and(intLiteral(1), boolLiteral(true)), boolLiteral(false)), boolLiteral(true))),
+            expression(ifThenElse(greaterThan(variable("argument"), intLiteral(0)), strLiteral("argument is positive"), strLiteral("argument is negative")))
+          ])
     }));
 }
 
@@ -121,14 +114,14 @@ test bool shouldParseAllTypesOfLiterals()
                '    }
                '}";
     
-    return parseModule(code) == \module("Example", {}, entity({}, "User", {
-        method(\public(), voidValue(), "literals", {parameter(integer(), "var", none())}, [
-            expression(stringLiteral("simple string literal")),
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        method(\public(), voidValue(), "literals", [param(integer(), "var")], [
+            expression(strLiteral("simple string literal")),
             expression(intLiteral(123)),
             expression(floatLiteral(1.23)),
-            expression(booleanLiteral("true")),
-            expression(booleanLiteral("false")),
+            expression(boolLiteral(true)),
+            expression(boolLiteral(false)),
             expression(variable("var"))
-          ], none())
+          ])
     }));
 }

@@ -2,14 +2,15 @@ module Test::Parser::Entity::Basics
 
 import Parser::ParseAST;
 import Syntax::Abstract::AST;
-import Prelude;
+import IO;
 
-test bool testShouldParseEmptyEntityWithName()
-{
-    str code = "module Example;
-               'entity User {}";
-
-    return parseModule(code) == \module("Example", {}, entity({}, "User", {}));
+test bool entityDeclaration() {
+    str code 
+        = "module Testing;
+        'entity User {}
+        '";
+        
+    return parseModule(code) == \module("Testing", {}, entity("User", {}));
 }
 
 test bool testShouldParseEmptyEntityWithModuleImports()
@@ -22,11 +23,11 @@ test bool testShouldParseEmptyEntityWithModuleImports()
                'entity User {}";
 
    set[Declaration] expectedImports = {
-        \import("User", "entity", from("Auth"), \alias("UserEntity")),
-        \import("Money", "value", localImport(), noAlias()),
-        \import("Money", "collection", localImport(), \alias("MoneySet")),
-        \import("Language", "entity", from("I18n"), noAlias())
+        use("User", "entity", externalUse("Auth"), "UserEntity"),
+        use("Money", "value", internalUse(), "Money"),
+        use("Money", "collection", internalUse(), "MoneySet"),
+        use("Language", "entity", externalUse("I18n"), "Language")
    };
 
-    return parseModule(code) == \module("Example", expectedImports, entity({}, "User", {}));
+    return parseModule(code) == \module("Example", expectedImports, entity("User", {}));
 }

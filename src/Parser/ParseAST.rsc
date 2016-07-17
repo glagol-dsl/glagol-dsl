@@ -1,8 +1,19 @@
 module Parser::ParseAST
 
 import Syntax::Abstract::AST;
+import Syntax::Concrete::Grammar;
 import Parser::ParseCode;
 import ParseTree;
+import Parser::Converter::Use;
+import Parser::Converter::Artifact;
 
-public Declaration parseModule(str code) = implode(#Declaration, parseCode(code));
-public Declaration parseModule(loc file) = implode(#Declaration, parseFile(file));
+public Declaration parseModule(str code) = buildAST(parseCode(code));
+public Declaration parseModule(loc file) = buildAST(parseFile(file));
+
+public Declaration buildAST(start[Test] t) = buildAST(t.top);
+
+public Declaration buildAST((Module) `module <Name name>;<Use* uses>`) = \module("<name>", {convertUse(use) | use <- uses});
+
+public Declaration buildAST((Module) `module <Name name>;<Use* uses><Artifact artifact>`) 
+    = \module("<name>", {convertUse(use) | use <- uses}, convertArtifact(artifact));
+    

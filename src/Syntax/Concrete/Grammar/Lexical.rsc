@@ -20,20 +20,20 @@ lexical AlphaIdentifier
 lexical Name
     =  ([A-Z a-z _] !<< [A-Z _ a-z] [0-9 A-Z _ a-z]* !>> [0-9 A-Z _ a-z]) \ GlagolPreserved
     ;
+    
+lexical AnnotationKey
+    =  ([A-Z a-z _] !<< [A-Z _ a-z] [0-9 A-Z _ a-z]* !>> [0-9 A-Z _ a-z])
+    ;
 
 lexical ArtifactType
     = "entity" | "value" | "repository" | "collection" | "util" | "service";
 
-lexical ValueProperty
-    = "get" | "set" 
+lexical AccessProperty
+    = "get" | "set" | "add" | "reset" | "clear" 
     ;
 
 lexical RelationDir
     = "one" | "many" 
-    ;
-
-lexical RelProperty
-    = "get" | "set" | "add" | "reset" | "clear" 
     ;
 
 lexical UnicodeEscape
@@ -71,32 +71,4 @@ lexical DeciFloatNumeral
     | [0-9] !<< [0-9]+ >> [D F d f]
     | [0-9] !<< [0-9]+ "." [0-9]* !>> [0-9] DeciFloatExponentPart?
     | [0-9] !<< "." [0-9]+ !>> [0-9] DeciFloatExponentPart?
-    ;
-
-lexical AnnotationFieldKeyIndex
-    = "key"
-    ;
-
-lexical AnnotationFieldSequenceIndex
-    = "sequence"
-    ;
-
-lexical AnnotationFieldTypeIndex
-    = "type"
-    ;
-
-lexical AnnotationFieldSizeIndex
-    = "size" | "precision"
-    ;
-
-lexical AnnotationFieldScaleIndex
-    = "scale"
-    ;
-
-lexical AnnotationFieldColumnIndex
-    = "column"
-    ;
-
-lexical AnnotationFieldKeyValue
-    = "primary" | "unique"
     ;

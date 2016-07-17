@@ -1,51 +1,52 @@
 module Syntax::Abstract::AST
 
-data Declaration
-    = \module(str name, set[Declaration] imports, Declaration artifact)
-    | \import(str target, str artifactType, Declaration fromModule, Declaration \alias)
-    // artifact: entity
-    | entity(set[Declaration] annotations, str name, set[Declaration] declarations)
-    | entityValue(set[Declaration] annotations, Type \type, str name, Declaration valueProperties)
-    | relation(str local, str foreign, str entity, str artifactAlias, Declaration relProperties)
-    | properties(set[str] props)
-    | defaultProperties()
-    // annotations
-    | annoTable(str name)
-    | annoField(set[Expression] pairs)
-    | index(str name, set[str] columns)
-    // methods
-    | method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, Expression expr, Expression when)
-    | method(Modifier modifier, Type returnType, str name, set[Declaration] parameters, list[Statement] body, Expression when)
-    | constructor(set[Declaration] parameters, Statement constructorBody, Expression when, Declaration conditionalThrow)
-    | parameter(Type paramType, str name, Expression defaultValue)
-    | conditionalThrow(str exceptionName, list[Expression] arguments, Expression condition)
-    | \alias(str aliasName)
-    | noAlias()
-    | localImport()
-    | from(str sourceModule)
-    | emptyDeclaration()
+data Declaration 
+    = \module(str name, set[Declaration] imports)
+    | \module(str name, set[Declaration] imports, Declaration artifact)
+    | use(str target, str \type, UseSource source, str as)
+    | annotated(set[Annotation] annotations, Declaration declaration)
+    | entity(str name, set[Declaration] declarations)
+    | \value(Type \valueType, str name, set[AccessProperty] valueProperties)
+    | relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties)
+    | constructor(list[Declaration] params, list[Statement] body)
+    | constructor(list[Declaration] params, list[Statement] body, Expression when)
+    | method(Modifier modifier, Type returnType, str name, list[Declaration] params, list[Statement] body)
+    | method(Modifier modifier, Type returnType, str name, list[Declaration] params, list[Statement] body, Expression when)
+    | param(Type paramType, str name)
+    | param(Type paramType, str name, Expression defaultValue)
     ;
 
-data Statement
-    = methodCall()
-    | block(list[Statement] stmts)
-    | methodBody(list[Statement] stmts)
-    | expression(Expression expr)
-    | ifThen(Expression condition, Statement then)
-    | ifThenElse(Expression condition, Statement then, Statement \else)
-    | assign(set[Expression] assignables, AssignOperator operator, Statement \value)
-    | empty()
+data RelationDir
+    = \one() 
+    | many()
+    ;
+
+data UseSource
+    = externalUse(str \module)
+    | internalUse()
+    ;
+
+data Annotation
+    = annotation(str annotationName, list[Annotation] arguments)
+    | annotationMap(map[str key, Annotation \value] \map)
+    | annotationVal(Annotation \value)
+    | annotationVal(list[Annotation] listValue)
+    | annotationVal(str strValue)
+    | annotationVal(bool boolValue)
+    | annotationVal(int intValue)
+    | annotationVal(real floatValue)
+    | annotationVal(Type \typeValue)
+    | annotationValPrimary()
     ;
 
 data Expression
-    = annoPair(str key, str \value)
-    | intLiteral(int intValue)
+    = intLiteral(int intValue)
     | floatLiteral(real floatValue)
-    | booleanLiteral(str boolValue)
-    | stringLiteral(str stringValue)
-    | variable(str name)
+    | strLiteral(str strValue)
+    | boolLiteral(bool boolValue)
+    | array(list[Expression] values)
     | arrayAccess(Expression variable, Expression arrayIndexKey)
-    | when(Expression expr)
+    | variable(str name)
     | \bracket(Expression expr)
     | product(Expression lhs, Expression rhs)
     | remainder(Expression lhs, Expression rhs)
@@ -63,15 +64,39 @@ data Expression
     | and(Expression lhs, Expression rhs)
     | or(Expression lhs, Expression rhs)
     | ifThenElse(Expression condition, Expression ifThen, Expression \else)
-    | array(list[Expression] values)
-    | expr(Expression expr)
-    | defaultValue(Expression defaultValue)
-    | none()
-	;
+    | emptyExpr()
+    ;
 
+data Type
+    = integer()
+    | float()
+    | string()
+    | voidValue()
+    | boolean()
+    | typedArray(Type \type)
+    | artifactType(str name)
+    ;
+    
 data Modifier
-    = \private()
-    | \public()
+    = \public()
+    | \private()
+    ;
+    
+data AccessProperty
+    = get()
+    | \set()
+    | add()
+    | clear()
+    ;
+
+data Statement
+    = block(list[Statement] stmts)
+    | expression(Expression expr)
+    | ifThen(Expression condition, Statement then)
+    | ifThenElse(Expression condition, Statement then, Statement \else)
+    | assign(Expression assignable, AssignOperator operator, Statement \value)
+    | emptyStmt()
+    | \return(Expression expr)
     ;
 
 data AssignOperator
@@ -80,14 +105,4 @@ data AssignOperator
     | productAssign()
     | subtractionAssign()
     | additionAssign()
-    ;
-
-data Type
-    = integer()
-    | \float()
-    | \string()
-    | voidValue()
-    | \bool()
-    | typedArray(Type \type)
-    | artifactType(str name)
     ;
