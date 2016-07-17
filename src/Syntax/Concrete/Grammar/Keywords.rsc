@@ -25,4 +25,5 @@ keyword GlagolPreserved
     | "if"
     | "return"
     | "break"
+    | "continue"
     ;
