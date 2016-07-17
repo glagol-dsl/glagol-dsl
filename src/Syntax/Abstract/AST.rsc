@@ -100,6 +100,7 @@ data Statement
     | declare(Type varType, Expression varName)
     | declare(Type varType, Expression varName, Statement defaultValue)
     | foreach(Expression \list, Expression varName, Statement body)
+    | foreach(Expression \list, Expression varName, Statement body, list[Expression] conditions)
     | \break()
     | \break(int level)
     ;

@@ -261,3 +261,19 @@ test bool testForeachStatementWithLevelledBreak() {
         ])
     }));
 }
+
+test bool testForeachStatementWithCondition() {
+    str code
+        = "module Example;
+        'entity User {
+        '   User(DateTime[] a, DateTime now) {
+        '       for (a as b, a \< now);
+        '   }
+        '}";
+
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        constructor([param(typedArray(artifactType("DateTime")), "a"), param(artifactType("DateTime"), "now")], [
+            foreach(variable("a"), variable("b"), emptyStmt(), [lessThan(variable("a"), variable("now"))])
+        ])
+    }));
+}

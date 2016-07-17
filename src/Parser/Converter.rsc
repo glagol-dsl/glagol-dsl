@@ -231,6 +231,9 @@ public Statement convertStmt((Statement) `<Type t> <MemberName varName>=<Stateme
 
 public Statement convertStmt((Statement) `for (<Expression l>as<MemberName var>)<Statement body>`)
     = foreach(convertExpression(l), variable("<var>"), convertStmt(body));
+    
+public Statement convertStmt((Statement) `for (<Expression l>as<MemberName var>, <{Expression ","}+ conds>)<Statement body>`)
+    = foreach(convertExpression(l), variable("<var>"), convertStmt(body), [convertExpression(cond) | cond <- conds]);
 
 
 public Annotation convertAnnotation((Annotation) `@<Identifier id>`) = annotation("<id>", []);
