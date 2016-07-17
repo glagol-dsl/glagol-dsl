@@ -2,7 +2,6 @@ module Test::Parser::ModuleBasics
 
 import Parser::ParseAST;
 import Syntax::Abstract::AST;
-import IO;
 
 test bool moduleDeclaration() {
     str code = "module Testing;";

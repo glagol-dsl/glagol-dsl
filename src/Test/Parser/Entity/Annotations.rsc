@@ -2,7 +2,6 @@ module Test::Parser::Entity::Annotations
 
 import Parser::ParseAST;
 import Syntax::Abstract::AST;
-import IO;
 
 test bool testShouldParseTableNameAnnotationForEntity()
 {

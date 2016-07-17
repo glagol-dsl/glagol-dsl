@@ -97,6 +97,8 @@ data Statement
     | assign(Expression assignable, AssignOperator operator, Statement \value)
     | emptyStmt()
     | \return(Expression expr)
+    | declare(Type varType, Expression varName)
+    | declare(Type varType, Expression varName, Expression defaultValue)
     ;
 
 data AssignOperator
