@@ -142,7 +142,8 @@ syntax Statement
     | ifThenElse: "if" "(" Expression condition ")" Statement then "else" Statement else
     | assign: Assignable assignable AssignOperator operator Statement value !empty!block!ifThen!ifThenElse
     | non-assoc  (
-        \return: "return" Expression expr ";"
+            \return: "return" Expression expr ";"
+        |   declare: Type type MemberName varName ("=" Expression expr)? ";"
     )
     ;   
 

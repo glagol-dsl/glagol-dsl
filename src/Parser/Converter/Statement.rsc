@@ -5,6 +5,7 @@ import Syntax::Concrete::Grammar;
 import Parser::Converter::Expression;
 import Parser::Converter::Assignable;
 import Parser::Converter::AssignOperator;
+import Parser::Converter::Type;
 
 public Statement convertStmt((Statement) `<Expression expr>;`) = expression(convertExpression(expr));
 public Statement convertStmt((Statement) `;`) = emptyStmt();
@@ -20,3 +21,7 @@ public Statement convertStmt((Statement) `<Assignable assignable><AssignOperator
     = assign(convertAssignable(assignable), convertAssignOperator(operator), convertStmt(val));
 
 public Statement convertStmt((Statement) `return <Expression expr>;`) = \return(convertExpression(expr));
+
+public Statement convertStmt((Statement) `<Type t> <MemberName varName>;`) = declare(convertType(t), variable("<varName>"));
+public Statement convertStmt((Statement) `<Type t> <MemberName varName>=<Expression defValue>;`) 
+    = declare(convertType(t), variable("<varName>"), convertExpression(defValue));

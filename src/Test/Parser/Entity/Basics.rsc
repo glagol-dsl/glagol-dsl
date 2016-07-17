@@ -2,7 +2,6 @@ module Test::Parser::Entity::Basics
 
 import Parser::ParseAST;
 import Syntax::Abstract::AST;
-import IO;
 
 test bool entityDeclaration() {
     str code 
