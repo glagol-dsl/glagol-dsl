@@ -1,2 +1,2 @@
 #!/bin/sh
-java -Xmx2G -Xss32m -jar /usr/local/bin/rascal.jar $@
+java -Xmx2G -Xss32m -jar /usr/local/bin/rascal-shell-stable.jar $@

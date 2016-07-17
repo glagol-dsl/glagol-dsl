@@ -3,9 +3,11 @@ jdk:
   - oraclejdk8
 sudo: required
 install: 
-  - sudo mv support/bin/rascal.jar /usr/local/bin/rascal.jar
+  - sudo mv support/bin/rascal-shell-stable.jar /usr/local/bin/rascal-shell-stable.jar
+  - sudo mv support/bin/rascal-shell-unstable.jar /usr/local/bin/rascal-shell-unstable.jar
   - sudo mv support/bin/rascal /usr/local/bin/rascal
-  - sudo chmod +x /usr/local/bin/rascal
+  - sudo mv support/bin/rascalu /usr/local/bin/rascalu
+  - sudo chmod +x /usr/local/bin/rascal /usr/local/bin/rascalu
 script:
   - cd src
-  - rascal Build && rascal BuildTests && rascal Tests
+  - rascalu Build && rascalu BuildTests && rascalu Tests
