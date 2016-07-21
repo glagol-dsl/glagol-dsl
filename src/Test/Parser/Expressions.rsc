@@ -2,6 +2,7 @@ module Test::Parser::Expressions
 
 import Parser::ParseAST;
 import Syntax::Abstract::AST;
+import IO;
 
 test bool testShouldParseVariableInBrackets()
 {
@@ -174,5 +175,63 @@ test bool testNewInstanceWithArgs()
             ])]))
           ])
     }));
+}
+
+test bool testMethodInvoke()
+{
+    str code = "module Example;
+               'entity User {
+               '    void methodInvoke() {
+               '        methodInvoke();
+               '    }
+               '}";
+    
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        method(\public(), voidValue(), "methodInvoke", [], [
+            expression(invoke("methodInvoke", []))
+          ])
+    }));
+}
+
+test bool testMethodInvokeChainedToAVariable()
+{
+    str code = "module Example;
+               'entity User {
+               '    void methodInvoke() {
+               '        SomeEntity eee = new SomeEntity();
+               '        eee.methodInvoke();
+               '        eee.nested([\"string\"]).methodInvoke();
+               '        eee.blah.blah2.methodInvoke();
+               '        new MyClass().methodInvoke();
+               '    }
+               '}";
+    
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        method(\public(), voidValue(), "methodInvoke", [], [
+            declare(artifactType("SomeEntity"), variable("eee"), expression(
+                new("SomeEntity", [])
+            )),
+            expression(invoke(variable("eee"), "methodInvoke", [])),
+            expression(invoke(invoke(variable("eee"), "nested", [array([strLiteral("string")])]), "methodInvoke", [])),
+            expression(invoke(fieldAccess(fieldAccess(variable("eee"), "blah"), "blah2"), "methodInvoke", [])),
+            expression(invoke(new("MyClass", []), "methodInvoke", []))
+          ])
+    }));
+}
+
+test bool shouldFailWhenUsingWrongExpressionsForChainedAccess()
+{
+    str code = "module Example;
+               'entity User {
+               '    void methodInvoke() {
+               '        SomeEntity eee = new SomeEntity();
+               '        (1+2).methodInvoke();
+               '    }
+               '}";
+               
+    try parseModule(code);
+    catch IllegalObjectOperator(str msg): return true;
+    
+    return false;
 }
 
