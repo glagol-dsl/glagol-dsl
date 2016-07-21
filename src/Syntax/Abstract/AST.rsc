@@ -71,6 +71,7 @@ data Expression
     | fieldAccess(Expression prev, str field)
     | chain(list[Expression] elements)
     | emptyExpr()
+    | this()
     ;
 
 data Type

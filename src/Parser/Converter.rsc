@@ -122,6 +122,8 @@ public Expression convertExpression((Expression) `<MemberName varName>`)
 public Expression convertExpression((Expression) `-<Expression expr>`) 
     = negative(convertExpression(expr));
 
+public Expression convertExpression((Expression) `this`) = this();
+
 public Expression convertExpression((DefaultValue) `<StringQuoted string>`)
     = strLiteral(convertStringQuoted(string));
     
@@ -163,6 +165,7 @@ public Expression convertExpression((Expression) `<Expression prev>.<MemberName 
 }
 
 private bool isValidForAccessChain((Expression) `<MemberName varName>`) = true;
+private bool isValidForAccessChain((Expression) `this`) = true;
 private bool isValidForAccessChain((Expression) `<MemberName method>(<{Expression ","}* args>)`) = true;
 private bool isValidForAccessChain((Expression) `new <ArtifactName name>`) = true;
 private bool isValidForAccessChain((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) = true;

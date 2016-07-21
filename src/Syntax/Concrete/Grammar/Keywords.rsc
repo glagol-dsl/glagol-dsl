@@ -27,4 +27,5 @@ keyword GlagolPreserved
     | "break"
     | "continue"
     | "new"
+    | "this"
     ;

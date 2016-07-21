@@ -219,6 +219,22 @@ test bool testMethodInvokeChainedToAVariable()
     }));
 }
 
+test bool testMethodInvokeUsingThis()
+{
+    str code = "module Example;
+               'entity User {
+               '    void methodInvoke() {
+               '        this.field.nested.invoke();
+               '    }
+               '}";
+    
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        method(\public(), voidValue(), "methodInvoke", [], [
+            expression(invoke(fieldAccess(fieldAccess(this(), "field"), "nested"), "invoke", []))
+          ])
+    }));
+}
+
 test bool shouldFailWhenUsingWrongExpressionsForChainedAccess()
 {
     str code = "module Example;
