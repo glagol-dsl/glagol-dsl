@@ -65,7 +65,13 @@ data Expression
     | or(Expression lhs, Expression rhs)
     | ifThenElse(Expression condition, Expression ifThen, Expression \else)
     | new(str artifact, list[Expression] args)
+    | invoke(str methodName, list[Expression] args)
+    | invoke(Expression prev, str methodName, list[Expression] args)
+    | fieldAccess(str field)
+    | fieldAccess(Expression prev, str field)
+    | chain(list[Expression] elements)
     | emptyExpr()
+    | this()
     ;
 
 data Type

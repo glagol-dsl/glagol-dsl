@@ -122,6 +122,8 @@ public Expression convertExpression((Expression) `<MemberName varName>`)
 public Expression convertExpression((Expression) `-<Expression expr>`) 
     = negative(convertExpression(expr));
 
+public Expression convertExpression((Expression) `this`) = this();
+
 public Expression convertExpression((DefaultValue) `<StringQuoted string>`)
     = strLiteral(convertStringQuoted(string));
     
@@ -140,7 +142,37 @@ public Expression convertExpression((DefaultValue) `[<{DefaultValue ","}* items>
 public Expression convertExpression((Expression) `new <ArtifactName name>`) = new("<name>", []);
 public Expression convertExpression((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) 
     = new("<name>", [convertExpression(arg) | arg <- args]);
+    
+public Expression convertExpression((Expression) `<MemberName method>(<{Expression ","}* args>)`) 
+    = invoke("<method>", [convertExpression(arg) | arg <- args]);
+    
+public Expression convertExpression((Expression) `<Expression prev>.<MemberName method>(<{Expression ","}* args>)`) {
+    
+    if (!isValidForAccessChain(prev)) {
+        throw IllegalObjectOperator("Invalid expression followed by object operator");
+    }
+    
+    return invoke(convertExpression(prev), "<method>", [convertExpression(arg) | arg <- args]);
+}
 
+public Expression convertExpression((Expression) `<Expression prev>.<MemberName field>`) {
+
+    if (!isValidForAccessChain(prev)) {
+        throw IllegalObjectOperator("Invalid expression followed by object operator");
+    }
+
+    return fieldAccess(convertExpression(prev), "<field>");
+}
+
+private bool isValidForAccessChain((Expression) `<MemberName varName>`) = true;
+private bool isValidForAccessChain((Expression) `this`) = true;
+private bool isValidForAccessChain((Expression) `<MemberName method>(<{Expression ","}* args>)`) = true;
+private bool isValidForAccessChain((Expression) `new <ArtifactName name>`) = true;
+private bool isValidForAccessChain((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) = true;
+private bool isValidForAccessChain((Expression) `<MemberName method>(<{Expression ","}* args>)`) = true;
+private bool isValidForAccessChain((Expression) `<Expression prev>.<MemberName method>(<{Expression ","}* args>)`) = true;
+private bool isValidForAccessChain((Expression) `<Expression prev>.<MemberName field>`) = true;
+private default bool isValidForAccessChain(_) = false;
 
 
 public Declaration convertDeclaration((Declaration) `value <Type valueType><MemberName name>;`, _) 

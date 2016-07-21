@@ -113,7 +113,11 @@ syntax Expression
     | floatLiteral: DeciFloatNumeral number
     | booleanLiteral: Boolean boolean
     | variable: MemberName varName
-    | newInstance: "new" ArtifactName ("(" {Expression ","}* args ")")?
+    | newInstance: "new" ArtifactName
+    | newInstance: "new" ArtifactName "(" {Expression ","}* args ")"
+    | invoke: (Expression prev ".")? MemberName method "(" {Expression ","}* args ")"
+    | fieldAccess: Expression prev "." MemberName field
+    | this: "this"
     > left ( product: Expression lhs "*" () !>> "*" Expression rhs
            | remainder: Expression lhs "%" Expression rhs
            | division: Expression lhs "/" Expression rhs
@@ -133,6 +137,10 @@ syntax Expression
     > left and: Expression lhs "&&" Expression rhs
     > left or: Expression lhs "||" Expression rhs
     > right ifThenElse: Expression condition "?" Expression thenExp ":" Expression elseExp
+    ;
+
+syntax MemberAccess
+    = 
     ;
 
 syntax Statement
