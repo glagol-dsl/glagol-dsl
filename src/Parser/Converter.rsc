@@ -21,6 +21,10 @@ public Declaration convertArtifact((Artifact) `repository for <ArtifactName name
 public Declaration convertArtifact((Artifact) `<Annotation* annotations> repository for <ArtifactName name> {<Declaration* declarations>}`)
     = annotated({convertAnnotation(annotation) | annotation <- annotations}, repository("<name>", {convertDeclaration(d, "<name>", "repository") | d <- declarations}));
 
+public Declaration convertArtifact((Artifact) `value <ArtifactName name> {<Declaration* declarations>}`)
+    = valueObject("<name>", {convertDeclaration(d, "<name>", "value") | d <- declarations});
+    
+
 
 public AssignOperator convertAssignOperator((AssignOperator) `/=`) = divisionAssign();
 public AssignOperator convertAssignOperator((AssignOperator) `*=`) = productAssign();

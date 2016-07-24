@@ -23,6 +23,7 @@ syntax ImportAlias
 syntax Artifact
     = Annotation* annotations "entity" ArtifactName name "{" Declaration* declarations "}"
     | Annotation* annotations "repository" "for" ArtifactName name "{" Declaration* declarations "}"
+    | "value" ArtifactName name "{" Declaration* declarations "}"
     ;
 
 syntax Annotation
