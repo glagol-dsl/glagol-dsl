@@ -139,10 +139,6 @@ syntax Expression
     > right ifThenElse: Expression condition "?" Expression thenExp ":" Expression elseExp
     ;
 
-syntax MemberAccess
-    = 
-    ;
-
 syntax Statement
     = expression: Expression expression ";"
     | block: "{" Statement* statements "}"
@@ -162,6 +158,7 @@ syntax Statement
 
 syntax Assignable
     = variable: MemberName varName
+    | fieldAccess: Expression prev "." MemberName field
     | arrayAccess: Assignable variable "[" Expression key "]"
     ;
 
