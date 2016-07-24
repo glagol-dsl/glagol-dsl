@@ -2,7 +2,6 @@ module Test::Parser::Statements
 
 import Parser::ParseAST;
 import Syntax::Abstract::AST;
-import IO;
 
 test bool testDeclarationsWithPrimitiveTypes() {
     str code
@@ -177,7 +176,7 @@ test bool testForeachStatementWithEmptyStmt() {
         '}";
 
     return parseModule(code) == \module("Example", {}, entity("User", {
-        constructor([param(typedArray(integer()), "a")], [
+        constructor([param(typedList(integer()), "a")], [
             foreach(variable("a"), variable("b"), emptyStmt())
         ])
     }));
@@ -194,7 +193,7 @@ test bool testForeachStatementWithEmptyStmtAndDirectList() {
 
     return parseModule(code) == \module("Example", {}, entity("User", {
         constructor([], [
-            foreach(array([intLiteral(1), intLiteral(2), intLiteral(3), intLiteral(4), intLiteral(5)]), 
+            foreach(\list([intLiteral(1), intLiteral(2), intLiteral(3), intLiteral(4), intLiteral(5)]), 
                 variable("b"), emptyStmt())
         ])
     }));
@@ -213,7 +212,7 @@ test bool testForeachStatementWithIncrementStmtAndDirectList() {
     return parseModule(code) == \module("Example", {}, entity("User", {
         constructor([], [
             declare(integer(), variable("i")),
-            foreach(array([intLiteral(1), intLiteral(2), intLiteral(3), intLiteral(4), intLiteral(5)]), 
+            foreach(\list([intLiteral(1), intLiteral(2), intLiteral(3), intLiteral(4), intLiteral(5)]), 
                 variable("b"), assign(variable("i"), additionAssign(), expression(intLiteral(1))))
         ])
     }));
@@ -231,7 +230,7 @@ test bool testForeachStatementWithBreak() {
         '}";
 
     return parseModule(code) == \module("Example", {}, entity("User", {
-        constructor([param(typedArray(integer()), "a")], [
+        constructor([param(typedList(integer()), "a")], [
             foreach(variable("a"), variable("b"), block([
                 ifThen(greaterThan(variable("a"), intLiteral(2)), \break())
             ]))
@@ -252,7 +251,7 @@ test bool testForeachStatementWithLevelledBreak() {
         '}";
 
     return parseModule(code) == \module("Example", {}, entity("User", {
-        constructor([param(typedArray(integer()), "a")], [
+        constructor([param(typedList(integer()), "a")], [
             foreach(variable("a"), variable("b"), 
                 foreach(variable("c"), variable("d"), 
                     ifThen(greaterThan(variable("c"), intLiteral(2)), \break(2))
@@ -272,7 +271,7 @@ test bool testForeachStatementWithCondition() {
         '}";
 
     return parseModule(code) == \module("Example", {}, entity("User", {
-        constructor([param(typedArray(artifactType("DateTime")), "a"), param(artifactType("DateTime"), "now")], [
+        constructor([param(typedList(artifactType("DateTime")), "a"), param(artifactType("DateTime"), "now")], [
             foreach(variable("a"), variable("b"), emptyStmt(), [lessThan(variable("a"), variable("now"))])
         ])
     }));
@@ -289,7 +288,7 @@ test bool testForeachStatementWithContinue() {
         '}";
 
     return parseModule(code) == \module("Example", {}, entity("User", {
-        constructor([param(typedArray(artifactType("DateTime")), "a"), param(artifactType("DateTime"), "now")], [
+        constructor([param(typedList(artifactType("DateTime")), "a"), param(artifactType("DateTime"), "now")], [
             foreach(variable("a"), variable("b"), ifThen(
                 lessThan(variable("a"), variable("now")), \continue()
             ))

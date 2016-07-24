@@ -22,6 +22,7 @@ syntax UseSource
 
 syntax Artifact
     = Annotation* annotations "entity" ArtifactName name "{" Declaration* declarations "}"
+    | Annotation* annotations "repository" "for" ArtifactName name "{" Declaration* declarations "}"
     ;
 
 syntax Annotation
@@ -82,7 +83,7 @@ syntax DefaultValue
     | intLiteral : DecimalIntegerLiteral number
     | floatLiteral : DeciFloatNumeral number
     | booleanLiteral : Boolean boolean
-    | array : "[" {DefaultValue ","}* items "]" array
+    | \list : "[" {DefaultValue ","}* items "]" list
     ;
 
 syntax AccessProperties
@@ -96,7 +97,8 @@ syntax Type
     | \bool: "bool"
     | \bool: "boolean"
     | voidValue: "void"
-    | typedArray: Type type "[]"
+    | typedList: Type type "[]"
+    | typedMap: "{" Type key "," Type v "}"
     > artifactType: ArtifactName name
     ;
 
@@ -106,7 +108,8 @@ syntax StringQuoted
 
 syntax Expression
     = bracket \bracket: "(" Expression expression ")"
-    | \array: "[" {Expression ","}* items "]"
+    | \list: "[" {Expression ","}* items "]"
+    | \map: "{" {MapPair ","}* items "}"
     | negative: "-" Expression argument
     | stringLiteral: StringQuoted string
     | intLiteral: DecimalIntegerLiteral number
@@ -137,6 +140,10 @@ syntax Expression
     > left and: Expression lhs "&&" Expression rhs
     > left or: Expression lhs "||" Expression rhs
     > right ifThenElse: Expression condition "?" Expression thenExp ":" Expression elseExp
+    ;
+
+syntax MapPair
+    = Expression key ":" Expression val
     ;
 
 syntax Statement

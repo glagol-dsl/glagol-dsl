@@ -16,7 +16,7 @@ test bool shouldParseMethodWithoutModifier()
         entity("User", { 
             method(\public(), integer(), "example", [
                     param(integer(), "blabla", intLiteral(5)),
-                    param(typedArray(string()), "names", array([strLiteral("a"), strLiteral("b"), strLiteral("c")]))
+                    param(typedList(string()), "names", \list([strLiteral("a"), strLiteral("b"), strLiteral("c")]))
                 ], [
                     \return(expression(product(\bracket(addition(intLiteral(23), intLiteral(5))), intLiteral(8))))
                 ]

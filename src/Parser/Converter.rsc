@@ -15,6 +15,12 @@ public Declaration convertArtifact((Artifact) `entity <ArtifactName name> {<Decl
 public Declaration convertArtifact((Artifact) `<Annotation* annotations> entity <ArtifactName name> {<Declaration* declarations>}`) 
     = annotated({convertAnnotation(annotation) | annotation <- annotations}, entity("<name>", {convertDeclaration(d, "<name>") | d <- declarations}));
 
+public Declaration convertArtifact((Artifact) `repository for <ArtifactName name> {<Declaration* declarations>}`)
+    = repository("<name>", {convertDeclaration(d, "<name>") | d <- declarations});
+
+public Declaration convertArtifact((Artifact) `<Annotation* annotations> repository for <ArtifactName name> {<Declaration* declarations>}`)
+    = annotated({convertAnnotation(annotation) | annotation <- annotations}, repository("<name>", {convertDeclaration(d, "<name>") | d <- declarations}));
+
 
 public AssignOperator convertAssignOperator((AssignOperator) `/=`) = divisionAssign();
 public AssignOperator convertAssignOperator((AssignOperator) `*=`) = productAssign();
@@ -114,7 +120,7 @@ public Expression convertExpression((Expression) `<Boolean boolean>`)
     = boolLiteral(convertBoolean(boolean));
     
 public Expression convertExpression((Expression) `[<{Expression ","}* items>]`)
-    = array([convertExpression(i) | i <- items]);
+    = \list([convertExpression(i) | i <- items]);
     
 public Expression convertExpression((Expression) `<MemberName varName>`)
     = variable("<varName>");
@@ -137,7 +143,7 @@ public Expression convertExpression((DefaultValue) `<Boolean boolean>`)
     = boolLiteral(convertBoolean(boolean));
     
 public Expression convertExpression((DefaultValue) `[<{DefaultValue ","}* items>]`)
-    = array([convertExpression(i) | i <- items]);
+    = \list([convertExpression(i) | i <- items]);
     
 public Expression convertExpression((Expression) `new <ArtifactName name>`) = new("<name>", []);
 public Expression convertExpression((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) 
@@ -163,6 +169,13 @@ public Expression convertExpression((Expression) `<Expression prev>.<MemberName 
 
     return fieldAccess(convertExpression(prev), "<field>");
 }
+
+public Expression convertExpression((Expression) `{<{MapPair ","}* pairs>}`) = \map(
+    ( key: v | p <- pairs, <Expression key, Expression v> := convertMapPair(p) )
+);
+
+private tuple[Expression key, Expression \value] convertMapPair((MapPair) `<Expression key>:<Expression v>`)
+    = <convertExpression(key), convertExpression(v)>;
 
 private bool isValidForAccessChain((Expression) `<MemberName varName>`) = true;
 private bool isValidForAccessChain((Expression) `this`) = true;
@@ -339,7 +352,7 @@ public Type convertType((Type) `bool`) = boolean();
 public Type convertType((Type) `boolean`) = boolean();
 public Type convertType((Type) `void`) = voidValue();
 public Type convertType((Type) `string`) = string();
-public Type convertType((Type) `<Type t>[]`) = typedArray(convertType(t));
+public Type convertType((Type) `<Type t>[]`) = typedList(convertType(t));
 public Type convertType((Type) `<ArtifactName name>`) = artifactType("<name>");
 
 
