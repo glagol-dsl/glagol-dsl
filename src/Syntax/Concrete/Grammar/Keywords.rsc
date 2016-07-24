@@ -2,7 +2,7 @@ module Syntax::Concrete::Grammar::Keywords
 
 keyword GlagolPreserved
     = "module"
-    | "use"
+    | "import"
     | "from"
     | "as"
     | "entity"

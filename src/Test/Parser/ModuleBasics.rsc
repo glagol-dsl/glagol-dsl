@@ -20,17 +20,17 @@ test bool moduleDeclarationWithWhitespace() {
 
 test bool moduleDeclarationWithImports() {
     str code = "module Testing;
-    'use User entity;
-    'use Language entity as LanguageEntity;
-    'use Comment entity from News;
-    'use Article entity from News as ArticleEntity;
+    'import User;
+    'import I18n::Language as LanguageEntity;
+    'import News::Comment;
+    'import News::Article as ArticleEntity;
     ";
     
     return parseModule(code) == \module("Testing", {
-        use("User", "entity", internalUse(), "User"),
-        use("Language", "entity", internalUse(), "LanguageEntity"),
-        use("Article", "entity", externalUse("News"), "ArticleEntity"),
-        use("Comment", "entity", externalUse("News"), "Comment")
+        \import("User", [], "User"),
+        \import("Language", ["I18n"], "LanguageEntity"),
+        \import("Article", ["News"], "ArticleEntity"),
+        \import("Comment", ["News"], "Comment")
     });
 }
 

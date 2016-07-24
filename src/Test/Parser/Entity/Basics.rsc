@@ -15,17 +15,15 @@ test bool entityDeclaration() {
 test bool testShouldParseEmptyEntityWithModuleImports()
 {
     str code = "module Example;
-               'use User entity from Auth as UserEntity;
-               'use Money value;
-               'use Money collection as MoneySet;
-               'use Language entity from I18n;
+               'import Auth::User as UserEntity;
+               'import I18n::Money;
+               'import I18n::Language;
                'entity User {}";
 
    set[Declaration] expectedImports = {
-        use("User", "entity", externalUse("Auth"), "UserEntity"),
-        use("Money", "value", internalUse(), "Money"),
-        use("Money", "collection", internalUse(), "MoneySet"),
-        use("Language", "entity", externalUse("I18n"), "Language")
+        \import("User", ["Auth"], "UserEntity"),
+        \import("Money", ["I18n"], "Money"),
+        \import("Language", ["I18n"], "Language")
    };
 
     return parseModule(code) == \module("Example", expectedImports, entity("User", {}));
