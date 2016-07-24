@@ -83,6 +83,7 @@ data Type
     | voidValue()
     | boolean()
     | typedList(Type \type)
+    | typedMap(Type key, Type v)
     | artifactType(str name)
     ;
     

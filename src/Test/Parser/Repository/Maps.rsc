@@ -1,0 +1,25 @@
+module Test::Parser::Repository::Maps
+
+import Parser::ParseAST;
+import Syntax::Abstract::AST;
+
+test bool shouldParseMapDeclaration()
+{
+    str code 
+        = "module Example;
+          'repository for User {
+          '     User[] findById(int id) {
+          '         {string, int} query = {\"id\": id};
+          '         return findOneBy(query);
+          '     }
+          '}";
+    
+    return parseModule(code) == \module("Example", {}, repository("User", {
+        method(\public(), typedList(artifactType("User")), "findById", [
+            param(integer(), "id")
+        ], [
+            declare(typedMap(string(), integer()), variable("query"), expression(\map((strLiteral("id"): variable("id"))))),
+            \return(expression(invoke("findOneBy", [variable("query")])))
+        ])
+    }));
+}
