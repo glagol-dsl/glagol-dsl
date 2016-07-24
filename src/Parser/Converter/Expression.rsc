@@ -61,7 +61,7 @@ public Expression convertExpression((Expression) `<Boolean boolean>`)
     = boolLiteral(convertBoolean(boolean));
     
 public Expression convertExpression((Expression) `[<{Expression ","}* items>]`)
-    = array([convertExpression(i) | i <- items]);
+    = \list([convertExpression(i) | i <- items]);
     
 public Expression convertExpression((Expression) `<MemberName varName>`)
     = variable("<varName>");
@@ -84,7 +84,7 @@ public Expression convertExpression((DefaultValue) `<Boolean boolean>`)
     = boolLiteral(convertBoolean(boolean));
     
 public Expression convertExpression((DefaultValue) `[<{DefaultValue ","}* items>]`)
-    = array([convertExpression(i) | i <- items]);
+    = \list([convertExpression(i) | i <- items]);
     
 public Expression convertExpression((Expression) `new <ArtifactName name>`) = new("<name>", []);
 public Expression convertExpression((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) 
@@ -110,6 +110,13 @@ public Expression convertExpression((Expression) `<Expression prev>.<MemberName 
 
     return fieldAccess(convertExpression(prev), "<field>");
 }
+
+public Expression convertExpression((Expression) `{<{MapPair ","}* pairs>}`) = \map(
+    ( key: v | p <- pairs, <Expression key, Expression v> := convertMapPair(p) )
+);
+
+private tuple[Expression key, Expression \value] convertMapPair((MapPair) `<Expression key>:<Expression v>`)
+    = <convertExpression(key), convertExpression(v)>;
 
 private bool isValidForAccessChain((Expression) `<MemberName varName>`) = true;
 private bool isValidForAccessChain((Expression) `this`) = true;

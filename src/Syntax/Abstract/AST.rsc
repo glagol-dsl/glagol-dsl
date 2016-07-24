@@ -6,6 +6,7 @@ data Declaration
     | use(str target, str \type, UseSource source, str as)
     | annotated(set[Annotation] annotations, Declaration declaration)
     | entity(str name, set[Declaration] declarations)
+    | repository(str name, set[Declaration] declarations)
     | \value(Type \valueType, str name, set[AccessProperty] valueProperties)
     | relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties)
     | constructor(list[Declaration] params, list[Statement] body)
@@ -44,8 +45,9 @@ data Expression
     | floatLiteral(real floatValue)
     | strLiteral(str strValue)
     | boolLiteral(bool boolValue)
-    | array(list[Expression] values)
+    | \list(list[Expression] values)
     | arrayAccess(Expression variable, Expression arrayIndexKey)
+    | \map(map[Expression key, Expression \value])
     | variable(str name)
     | \bracket(Expression expr)
     | product(Expression lhs, Expression rhs)
@@ -80,7 +82,7 @@ data Type
     | string()
     | voidValue()
     | boolean()
-    | typedArray(Type \type)
+    | typedList(Type \type)
     | artifactType(str name)
     ;
     

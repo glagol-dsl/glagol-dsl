@@ -22,7 +22,7 @@ test bool testShouldParseVariableInBrackets()
     }));
 }
 
-test bool testShouldParseArray()
+test bool testShouldParseList()
 {
     str code = "module Example;
                'entity User {
@@ -36,10 +36,10 @@ test bool testShouldParseArray()
                
     return parseModule(code) == \module("Example", {}, entity("User", {
         method(\public(), voidValue(), "arrayExpression", [], [
-            expression(array([strLiteral("First thing"), strLiteral("Second thing")])),
-            expression(array([intLiteral(1), intLiteral(2), intLiteral(3), intLiteral(4), intLiteral(5)])),
-            expression(array([floatLiteral(1.34), floatLiteral(2.35), floatLiteral(23.56)])),
-            expression(array([array([intLiteral(1), intLiteral(2), intLiteral(3)]), array([intLiteral(3), intLiteral(4), intLiteral(5)])]))
+            expression(\list([strLiteral("First thing"), strLiteral("Second thing")])),
+            expression(\list([intLiteral(1), intLiteral(2), intLiteral(3), intLiteral(4), intLiteral(5)])),
+            expression(\list([floatLiteral(1.34), floatLiteral(2.35), floatLiteral(23.56)])),
+            expression(\list([\list([intLiteral(1), intLiteral(2), intLiteral(3)]), \list([intLiteral(3), intLiteral(4), intLiteral(5)])]))
         ])
     }));
 }
@@ -212,7 +212,7 @@ test bool testMethodInvokeChainedToAVariable()
                 new("SomeEntity", [])
             )),
             expression(invoke(variable("eee"), "methodInvoke", [])),
-            expression(invoke(invoke(variable("eee"), "nested", [array([strLiteral("string")])]), "methodInvoke", [])),
+            expression(invoke(invoke(variable("eee"), "nested", [\list([strLiteral("string")])]), "methodInvoke", [])),
             expression(invoke(fieldAccess(fieldAccess(variable("eee"), "blah"), "blah2"), "methodInvoke", [])),
             expression(invoke(new("MyClass", []), "methodInvoke", []))
           ])
