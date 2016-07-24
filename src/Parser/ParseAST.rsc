@@ -11,8 +11,9 @@ public Declaration parseModule(loc file) = buildAST(parseFile(file));
 
 public Declaration buildAST(start[Test] t) = buildAST(t.top);
 
-public Declaration buildAST((Module) `module <Name name>;<Use* uses>`) = \module("<name>", {convertUse(use) | use <- uses});
+public Declaration buildAST((Module) `module <Name name>;<Import* imports>`) 
+    = \module("<name>", {convertImport(\import) | \import <- imports});
 
-public Declaration buildAST((Module) `module <Name name>;<Use* uses><Artifact artifact>`) 
-    = \module("<name>", {convertUse(use) | use <- uses}, convertArtifact(artifact));
+public Declaration buildAST((Module) `module <Name name>;<Import* imports><Artifact artifact>`) 
+    = \module("<name>", {convertImport(\import) | \import <- imports}, convertArtifact(artifact));
     

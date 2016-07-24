@@ -8,10 +8,15 @@ test bool shouldParseEmptyRepository()
 {
     str code 
         = "module Example;
+          '
+          'import Glagol::ORM::EntityManager;
+          '
           'repository for User {
           '}";
     
-    return parseModule(code) == \module("Example", {}, repository("User", {}));
+    return parseModule(code) == \module("Example", {
+        \import("EntityManager", ["Glagol", "ORM"], "EntityManager")
+    }, repository("User", {}));
 }
 
 test bool shouldParseRepositoryWithMethodAndAMap()

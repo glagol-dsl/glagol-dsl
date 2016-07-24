@@ -28,14 +28,14 @@ test bool moduleArtifactImportsShouldStartWithCapital()
     
     str failCode 
         = "module Example;
-          'use user entity from I18n;";
+          'import I18n::user;";
     
     try parseModule(failCode);
     catch e: success = true;
     
     str successCode 
         = "module Example;
-          'use User entity from I18n;
+          'import I18n::User;
           '";
     
     try parseModule(successCode);
@@ -50,14 +50,14 @@ test bool moduleArtifactImportsShouldNotContainUnderscores()
     
     str failCode 
         = "module Example;
-          'use User_Entity entity from I18n;";
+          'import I18n::User_Entity;";
     
     try parseModule(failCode);
     catch e: success = true;
     
     str successCode 
         = "module Example;
-          'use UserEntity entity from I18n;
+          'import I18n::UserEntity;
           '";
     
     try parseModule(successCode);

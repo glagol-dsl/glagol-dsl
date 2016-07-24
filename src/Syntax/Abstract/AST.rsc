@@ -3,7 +3,7 @@ module Syntax::Abstract::AST
 data Declaration 
     = \module(str name, set[Declaration] imports)
     | \module(str name, set[Declaration] imports, Declaration artifact)
-    | use(str target, str \type, UseSource source, str as)
+    | \import(str artifactName, list[str] namespace, str as)
     | annotated(set[Annotation] annotations, Declaration declaration)
     | entity(str name, set[Declaration] declarations)
     | repository(str name, set[Declaration] declarations)
