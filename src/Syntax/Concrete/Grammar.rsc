@@ -59,6 +59,7 @@ syntax Declaration
     | ArtifactName "(" {Parameter ","}* parameters ")" When? when ";"
     | Modifier? modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
     | Modifier? modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "=" Expression expr When? when ";"
+    | "inject" ArtifactName artifact "as" MemberName alias ";"
     ;
 
 syntax Modifier

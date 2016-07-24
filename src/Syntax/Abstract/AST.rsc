@@ -8,6 +8,7 @@ data Declaration
     | entity(str name, set[Declaration] declarations)
     | repository(str name, set[Declaration] declarations)
     | \value(Type \valueType, str name, set[AccessProperty] valueProperties)
+    | inject(str artifactName, str as)
     | relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties)
     | constructor(list[Declaration] params, list[Statement] body)
     | constructor(list[Declaration] params, list[Statement] body, Expression when)
