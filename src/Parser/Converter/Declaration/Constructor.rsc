@@ -11,7 +11,7 @@ import Exceptions::ParserExceptions;
 
 public Declaration convertDeclaration(
     (Declaration) `<ArtifactName name> (<{Parameter ","}* parameters>) { <Statement* body> }`, 
-    str artifactName) 
+    str artifactName, _) 
 {
     if (artifactName != "<name>") {
         throw IllegalConstructorName("\'<name>\' is invalid constructor name");
@@ -22,7 +22,7 @@ public Declaration convertDeclaration(
     
 public Declaration convertDeclaration(
     (Declaration) `<ArtifactName name> (<{Parameter ","}* parameters>) { <Statement* body> }<When when>;`, 
-    str artifactName)
+    str artifactName, _)
 {
     if (artifactName != "<name>") {
         throw IllegalConstructorName("\'<name>\' is invalid constructor name");
@@ -33,7 +33,7 @@ public Declaration convertDeclaration(
 
 public Declaration convertDeclaration(
     (Declaration) `<ArtifactName name> (<{Parameter ","}* parameters>);`, 
-    str artifactName) 
+    str artifactName, _) 
 {
     if (artifactName != "<name>") {
         throw IllegalConstructorName("\'<name>\' is invalid constructor name");

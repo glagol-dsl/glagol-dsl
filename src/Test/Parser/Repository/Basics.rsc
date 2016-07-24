@@ -2,7 +2,6 @@ module Test::Parser::Repository::Basics
 
 import Parser::ParseAST;
 import Syntax::Abstract::AST;
-import IO;
 
 test bool shouldParseEmptyRepository()
 {
