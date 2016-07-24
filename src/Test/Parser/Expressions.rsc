@@ -251,3 +251,22 @@ test bool shouldFailWhenUsingWrongExpressionsForChainedAccess()
     return false;
 }
 
+test bool testFieldAccessWithAssign()
+{
+    str code = "module Example;
+               'entity User {
+               '    void methodInvoke() {
+               '        this.field = \"adsdsasad\";
+               '        this.invoke().field2 += 33;
+               '        this.var = that.var2;
+               '    }
+               '}";
+    
+    return parseModule(code) == \module("Example", {}, entity("User", {
+        method(\public(), voidValue(), "methodInvoke", [], [
+            assign(fieldAccess(this(), "field"), defaultAssign(), expression(strLiteral("adsdsasad"))),
+            assign(fieldAccess(invoke(this(), "invoke", []), "field2"), additionAssign(), expression(intLiteral(33))),
+            assign(fieldAccess(this(), "var"), defaultAssign(), expression(fieldAccess(variable("that"), "var2")))
+          ])
+    }));
+}

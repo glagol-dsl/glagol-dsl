@@ -359,3 +359,5 @@ public Expression convertParameterDefaultVal((ParameterDefaultValue) `=<DefaultV
 public Expression convertAssignable((Assignable) `<MemberName name>`) = variable("<name>");
 public Expression convertAssignable((Assignable) `<Assignable variable>[<Expression key>]`)
     = arrayAccess(convertAssignable(variable), convertExpression(key));
+public Expression convertAssignable((Assignable) `<Expression prev>.<MemberName field>`) 
+    = fieldAccess(convertExpression(prev), "<field>");
