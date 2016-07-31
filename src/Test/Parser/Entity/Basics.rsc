@@ -3,7 +3,8 @@ module Test::Parser::Entity::Basics
 import Parser::ParseAST;
 import Syntax::Abstract::AST;
 
-test bool entityDeclaration() {
+test bool entityDeclaration() 
+{
     str code 
         = "module Testing;
         'entity User {}

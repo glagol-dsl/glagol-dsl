@@ -7,6 +7,7 @@ data Declaration
     | annotated(set[Annotation] annotations, Declaration declaration)
     | entity(str name, set[Declaration] declarations)
     | repository(str name, set[Declaration] declarations)
+    | valueObject(str name, set[Declaration] declarations)
     | \value(Type \valueType, str name, set[AccessProperty] valueProperties)
     | inject(str artifactName, str as)
     | relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties)

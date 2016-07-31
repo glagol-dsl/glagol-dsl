@@ -21,6 +21,10 @@ public Declaration convertArtifact((Artifact) `repository for <ArtifactName name
 public Declaration convertArtifact((Artifact) `<Annotation* annotations> repository for <ArtifactName name> {<Declaration* declarations>}`)
     = annotated({convertAnnotation(annotation) | annotation <- annotations}, repository("<name>", {convertDeclaration(d, "<name>", "repository") | d <- declarations}));
 
+public Declaration convertArtifact((Artifact) `value <ArtifactName name> {<Declaration* declarations>}`)
+    = valueObject("<name>", {convertDeclaration(d, "<name>", "value") | d <- declarations});
+    
+
 
 public AssignOperator convertAssignOperator((AssignOperator) `/=`) = divisionAssign();
 public AssignOperator convertAssignOperator((AssignOperator) `*=`) = productAssign();
@@ -188,16 +192,16 @@ private bool isValidForAccessChain((Expression) `<Expression prev>.<MemberName f
 private default bool isValidForAccessChain(_) = false;
 
 
-public Declaration convertDeclaration((Declaration) `value <Type valueType><MemberName name>;`, _, _) 
+public Declaration convertDeclaration((Declaration) `<Type valueType><MemberName name>;`, _, _) 
     = \value(convertType(valueType), "<name>");
     
-public Declaration convertDeclaration((Declaration) `value <Type valueType><MemberName name><AccessProperties accessProperties>;`, _, _) 
+public Declaration convertDeclaration((Declaration) `<Type valueType><MemberName name><AccessProperties accessProperties>;`, _, _) 
     = \value(convertType(valueType), "<name>", convertAccessProperties(accessProperties));
     
-public Declaration convertDeclaration((Declaration) `<Annotation* annotations>value <Type valueType><MemberName name>;`, _, _) 
+public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type valueType><MemberName name>;`, _, _) 
     = annotated({convertAnnotation(annotation) | annotation <- annotations}, \value(convertType(valueType), "<name>"));
     
-public Declaration convertDeclaration((Declaration) `<Annotation* annotations>value <Type valueType><MemberName name><AccessProperties accessProperties>;`, _, _) 
+public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type valueType><MemberName name><AccessProperties accessProperties>;`, _, _) 
     = annotated({convertAnnotation(annotation) | annotation <- annotations}, \value(convertType(valueType), "<name>", convertAccessProperties(accessProperties)));
 
 
@@ -228,7 +232,8 @@ public Statement convertStmt((Statement) `if ( <Expression condition> ) <Stateme
 public Statement convertStmt((Statement) `<Assignable assignable><AssignOperator operator><Statement val>`) 
     = assign(convertAssignable(assignable), convertAssignOperator(operator), convertStmt(val));
 
-public Statement convertStmt((Statement) `return <Statement stmt>`) = \return(convertStmt(stmt));
+public Statement convertStmt((Statement) `return;`) = \return(expression(emptyStmt()));
+public Statement convertStmt((Statement) `return <Expression expr>;`) = \return(expression(convertExpression(expr)));
 
 public Statement convertStmt((Statement) `break ;`) = \break();
 public Statement convertStmt((Statement) `break<Integer level>;`) = \break(toInt("<level>"));
