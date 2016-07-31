@@ -54,7 +54,7 @@ syntax AnnotationValue
     ;
 
 syntax Declaration
-    = Annotation* annotations "value" Type type MemberName name AccessProperties? accessProperties ";"
+    = Annotation* annotations Type type MemberName name AccessProperties? accessProperties ";"
     | "relation" RelationDir l ":" RelationDir r ArtifactName entity "as" MemberName alias AccessProperties? accessProperties ";"
     | ArtifactName "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
     | ArtifactName "(" {Parameter ","}* parameters ")" When? when ";"
@@ -156,7 +156,7 @@ syntax Statement
     | assign: Assignable assignable AssignOperator operator Statement value !emptyStmt!block!ifThen!ifThenElse!return!break
     | foreach: "for" "(" Expression list "as" MemberName var (","  {Expression ","}+ conditions)? ")" Statement body
     > non-assoc  (
-            \return: "return" Statement stmt !block!ifThen!ifThenElse!foreach!declare!break
+            \return: "return" Expression? expr ";"
         |   \break: "break" Integer? level ";"
         |   \continue: "continue" Integer? level ";"
         |   declare: Type type MemberName varName "=" Statement defaultValue !emptyStmt!block!ifThen!ifThenElse!return!declare

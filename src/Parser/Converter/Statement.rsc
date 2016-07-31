@@ -21,7 +21,8 @@ public Statement convertStmt((Statement) `if ( <Expression condition> ) <Stateme
 public Statement convertStmt((Statement) `<Assignable assignable><AssignOperator operator><Statement val>`) 
     = assign(convertAssignable(assignable), convertAssignOperator(operator), convertStmt(val));
 
-public Statement convertStmt((Statement) `return <Statement stmt>`) = \return(convertStmt(stmt));
+public Statement convertStmt((Statement) `return;`) = \return(expression(emptyStmt()));
+public Statement convertStmt((Statement) `return <Expression expr>;`) = \return(expression(convertExpression(expr)));
 
 public Statement convertStmt((Statement) `break ;`) = \break();
 public Statement convertStmt((Statement) `break<Integer level>;`) = \break(toInt("<level>"));

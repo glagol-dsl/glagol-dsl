@@ -7,8 +7,8 @@ test bool testShouldParseEntityWithValues()
 {
     str code = "module Example;
                'entity User {
-               '    value int id with {get};
-               '    value Date addedOn with {get, set};
+               '    int id with {get};
+               '    Date addedOn with {get, set};
                '}";
                
     set[Declaration] expectedValues = {
@@ -31,7 +31,7 @@ test bool testShouldParseEntityWithValuesAndAnnotations()
                '        size: 11,
                '        column: \"id\"
                '    })
-               '    value int id with {get};
+               '    int id with {get};
                '}";
 
     return parseModule(code) == \module("Example", {}, entity("User", {

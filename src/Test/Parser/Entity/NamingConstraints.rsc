@@ -109,7 +109,7 @@ test bool entityValuesShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     str failCodeUpperCaseFirst
         = "module Example;
           'entity User {
-          '    value int MyValue with {get, set};
+          '    int MyValue with {get, set};
           '}
           '";
     
@@ -119,7 +119,7 @@ test bool entityValuesShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     str failCodeUnderscore 
         = "module Example;
           'entity User {
-          '    value int my_Value with {get, set};
+          '    int my_Value with {get, set};
           '}
           '";
     
@@ -131,7 +131,7 @@ test bool entityValuesShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     str successCode 
         = "module Example;
           'entity User {
-          '    value int myValue with {get, set};
+          '    int myValue with {get, set};
           '}
           '";
     
