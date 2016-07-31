@@ -16,7 +16,7 @@ test bool testShouldParseEntityWithValues()
         \value(artifactType("Date"), "addedOn", {get(), \set()})
     };
 
-    return parseModule(code) == \module("Example", {}, entity("User", expectedValues));
+    return parseModule(code) == \module(namespace("Example"), {}, entity("User", expectedValues));
 }
 
 
@@ -34,7 +34,7 @@ test bool testShouldParseEntityWithValuesAndAnnotations()
                '    int id with {get};
                '}";
 
-    return parseModule(code) == \module("Example", {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
         annotated({
             annotation("field", [
                 annotationMap((

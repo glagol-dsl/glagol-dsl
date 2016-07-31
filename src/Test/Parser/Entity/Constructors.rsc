@@ -13,7 +13,7 @@ test bool shouldParseConstructWithOneParam()
           '}
           '";
     
-    return parseModule(code) == \module("Example", {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
         constructor([param(integer(), "param")], [])
     }));
 }
@@ -44,7 +44,7 @@ test bool shouldParseConstructWithTwoParamsAndDefaultValue()
           '}
           '";
     
-    return parseModule(code) == \module("Example", {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
         constructor([
             param(integer(), "param"),
             param(float(), "param2", floatLiteral(0.55)),
@@ -65,7 +65,7 @@ test bool shouldParseConstructWithBody()
           '}
           '";
     
-    return parseModule(code) == \module("Example", {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
         constructor([
             param(integer(), "param"),
             param(float(), "param2", floatLiteral(0.55)),
@@ -87,7 +87,7 @@ test bool shouldParseConstructWithoutParams()
           '}
           '";
     
-    return parseModule(code) == \module("Example", {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
         constructor([], [])
     }));
 }
@@ -101,7 +101,7 @@ test bool shouldParseConstructWithoutBody()
           '}
           '";
     
-    return parseModule(code) == \module("Example", {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
         constructor([], [])
     }));
 }
@@ -115,7 +115,7 @@ test bool shouldParseConstructWithoutBodyWithParams()
           '}
           '";
     
-    return parseModule(code) == \module("Example", {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
         constructor([
             param(integer(), "param"),
             param(float(), "param2", floatLiteral(0.55)),
@@ -135,7 +135,7 @@ test bool shouldParseConstructWithWhen()
           '}
           '";
     
-    return parseModule(code) == \module("Example", {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
         constructor([
                 param(integer(), "param")
             ], [], and(

@@ -9,6 +9,13 @@ import Exceptions::ParserExceptions;
 
 
 
+public Declaration buildAST((Module) `module <Namespace n>;<Import* imports>`) 
+    = \module(convertModuleNamespace(n), {convertImport(\import) | \import <- imports});
+
+public Declaration buildAST((Module) `module <Namespace n>;<Import* imports><Artifact artifact>`) 
+    = \module(convertModuleNamespace(n), {convertImport(\import) | \import <- imports}, convertArtifact(artifact));
+
+
 public Declaration convertArtifact((Artifact) `entity <ArtifactName name> {<Declaration* declarations>}`) 
     = entity("<name>", {convertDeclaration(d, "<name>", "entity") | d <- declarations});
 
@@ -225,6 +232,11 @@ public bool convertBoolean((Boolean) `true`) = true;
 public bool convertBoolean((Boolean) `false`) = false;
 
 
+public Declaration convertModuleNamespace((Namespace) `<Name name>`) = namespace("<name>");
+public Declaration convertModuleNamespace((Namespace) `<Name name>::<Namespace n>`) 
+    = namespace("<name>", convertModuleNamespace(n));
+
+
 public Statement convertStmt((Statement) `<Expression expr>;`) = expression(convertExpression(expr));
 public Statement convertStmt((Statement) `;`) = emptyStmt();
 public Statement convertStmt((Statement) `{<Statement* stmts>}`) = block([convertStmt(stmt) | stmt <- stmts]);
@@ -330,13 +342,12 @@ public Type convertType((Type) `<ArtifactName name>`) = artifactType("<name>");
 public Expression convertWhen((When) `when <Expression expr>`) = convertExpression(expr);
 
 
-public Declaration convertImport((Import) `import <ImportNamespace* namespace><ArtifactName artifact><ImportAlias as>;`)
-    = \import("<artifact>", [convertImportNamespace(n) | n <- namespace], convertImportAlias(as));
+public Declaration convertImport((Import) `import <Namespace n>::<ArtifactName artifact><ImportAlias as>;`)
+    = \import("<artifact>", convertModuleNamespace(n), convertImportAlias(as));
     
-public Declaration convertImport((Import) `import <ImportNamespace* namespace><ArtifactName artifact>;`)
-    = \import("<artifact>", [convertImportNamespace(n) | n <- namespace], "<artifact>");
+public Declaration convertImport((Import) `import <Namespace n>::<ArtifactName artifact>;`)
+    = \import("<artifact>", convertModuleNamespace(n), "<artifact>");
 
-private str convertImportNamespace((ImportNamespace) `<ArtifactName part>::`) = "<part>";
 private str convertImportAlias((ImportAlias) `as <ArtifactName as>`) = "<as>";
 
 

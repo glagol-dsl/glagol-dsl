@@ -15,8 +15,8 @@ test bool shouldParseInjections()
           '     inject EntityManager as em;
           '}";
     
-    return parseModule(code) == \module("Example", {
-        \import("EntityManager", ["Glagol", "ORM"], "EntityManager")
+    return parseModule(code) == \module(namespace("Example"), {
+        \import("EntityManager", namespace("Glagol", namespace("ORM")), "EntityManager")
     }, repository("User", {
         inject("EntityManager", "em")
     }));
