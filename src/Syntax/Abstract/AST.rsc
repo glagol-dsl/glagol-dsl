@@ -9,6 +9,7 @@ data Declaration
     | repository(str name, set[Declaration] declarations)
     | valueObject(str name, set[Declaration] declarations)
     | \value(Type \valueType, str name, set[AccessProperty] valueProperties)
+    | util(str name, set[Declaration] declarations)
     | inject(str artifactName, str as)
     | relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties)
     | constructor(list[Declaration] params, list[Statement] body)
