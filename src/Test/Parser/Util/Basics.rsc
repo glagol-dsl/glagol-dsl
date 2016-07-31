@@ -9,7 +9,7 @@ test bool shouldParseEmptyUtil()
         = "module Test;
           'util UserCreator {}";
           
-    return parseModule(code) == \module("Test", {}, util("UserCreator", {}));
+    return parseModule(code) == \module(namespace("Test"), {}, util("UserCreator", {}));
 }
 
 test bool shouldParseUtilUsingTheServiceKeyword()
@@ -18,5 +18,5 @@ test bool shouldParseUtilUsingTheServiceKeyword()
         = "module Test;
           'service UserCreator {}";
           
-    return parseModule(code) == \module("Test", {}, util("UserCreator", {}));
+    return parseModule(code) == \module(namespace("Test"), {}, util("UserCreator", {}));
 }

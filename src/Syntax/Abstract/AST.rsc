@@ -1,9 +1,11 @@
 module Syntax::Abstract::AST
 
 data Declaration 
-    = \module(str name, set[Declaration] imports)
-    | \module(str name, set[Declaration] imports, Declaration artifact)
-    | \import(str artifactName, list[str] namespace, str as)
+    = \module(Declaration namespace, set[Declaration] imports)
+    | \module(Declaration namespace, set[Declaration] imports, Declaration artifact)
+    | namespace(str name)
+    | namespace(str name, Declaration subNamespace)
+    | \import(str artifactName, Declaration namespace, str as)
     | annotated(set[Annotation] annotations, Declaration declaration)
     | entity(str name, set[Declaration] declarations)
     | repository(str name, set[Declaration] declarations)

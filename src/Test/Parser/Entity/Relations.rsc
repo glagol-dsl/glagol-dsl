@@ -11,7 +11,7 @@ test bool testShouldParseEntityRelations()
                '    relation one:many User as userFriends with {add, set, get, clear};
                '}";
 
-   return parseModule(code) == \module("Example", {}, entity("User", {
+   return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
        relation(\one(), \one(), "Language", "userLanguage", {}),
        relation(\one(), many(), "User", "userFriends", {add(), \set(), get(), clear()})
    }));

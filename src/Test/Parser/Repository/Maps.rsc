@@ -14,7 +14,7 @@ test bool shouldParseMapDeclaration()
           '     }
           '}";
     
-    return parseModule(code) == \module("Example", {}, repository("User", {
+    return parseModule(code) == \module(namespace("Example"), {}, repository("User", {
         method(\public(), typedList(artifactType("User")), "findById", [
             param(integer(), "id")
         ], [

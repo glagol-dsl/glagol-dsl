@@ -5,15 +5,16 @@ extend Syntax::Concrete::Grammar::Layout;
 extend Syntax::Concrete::Grammar::Lexical;
 
 start syntax Module
-   = \module: ^"module" Name name ";" Import* imports Artifact? artifact
+   = \module: ^"module" Namespace namespace ";" Import* imports Artifact? artifact
    ;
 
-syntax Import
-    = \import: "import" ImportNamespace* namespace ArtifactName artifact ImportAlias? alias ";"
+syntax Namespace 
+    = Name name
+    | Name name "::" Namespace sub
     ;
-    
-syntax ImportNamespace
-    = namespace: ArtifactName "::"
+
+syntax Import
+    = \import: "import" Namespace namespace "::" ArtifactName artifact ImportAlias? alias ";"
     ;
     
 syntax ImportAlias

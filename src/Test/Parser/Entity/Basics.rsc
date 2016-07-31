@@ -10,7 +10,7 @@ test bool entityDeclaration()
         'entity User {}
         '";
         
-    return parseModule(code) == \module("Testing", {}, entity("User", {}));
+    return parseModule(code) == \module(namespace("Testing"), {}, entity("User", {}));
 }
 
 test bool testShouldParseEmptyEntityWithModuleImports()
@@ -22,10 +22,10 @@ test bool testShouldParseEmptyEntityWithModuleImports()
                'entity User {}";
 
    set[Declaration] expectedImports = {
-        \import("User", ["Auth"], "UserEntity"),
-        \import("Money", ["I18n"], "Money"),
-        \import("Language", ["I18n"], "Language")
+        \import("User", namespace("Auth"), "UserEntity"),
+        \import("Money", namespace("I18n"), "Money"),
+        \import("Language", namespace("I18n"), "Language")
    };
 
-    return parseModule(code) == \module("Example", expectedImports, entity("User", {}));
+    return parseModule(code) == \module(namespace("Example"), expectedImports, entity("User", {}));
 }

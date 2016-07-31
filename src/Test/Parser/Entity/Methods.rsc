@@ -12,7 +12,7 @@ test bool shouldParseMethodWithoutModifier()
         '}";
     
     return parseModule(code) == 
-      \module("Example", {}, 
+      \module(namespace("Example"), {},
         entity("User", { 
             method(\public(), integer(), "example", [
                     param(integer(), "blabla", intLiteral(5)),
@@ -35,7 +35,7 @@ test bool shouldParseMethodWithModifierAndWhenExpression()
         '}";
         
     return parseModule(code) == 
-      \module("Example", {}, 
+      \module(namespace("Example"), {},
         entity("User", { 
             method(\private(), integer(), "example", [
                     param(integer(), "argument")
@@ -59,7 +59,7 @@ test bool shouldParseMethodWithModifierBodyAndWhen()
         '}";
         
     return parseModule(code) == 
-      \module("Example", {}, 
+      \module(namespace("Example"), {},
         entity("User", { 
             method(\private(), voidValue(), "processEntry", [
                     param(integer(), "limit", intLiteral(15))
