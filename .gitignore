@@ -6,3 +6,4 @@ build.properties
 .classpath
 src/Tests.rsc
 *.orig
+glagol-dsl.iml

@@ -32,10 +32,10 @@ public Declaration convertArtifact((Artifact) `value <ArtifactName name> {<Decla
     = valueObject("<name>", {convertDeclaration(d, "<name>", "value") | d <- declarations});
     
 public Declaration convertArtifact((Artifact) `util <ArtifactName name> {<Declaration* declarations>}`)
-    = util("<name>", {convertDeclaration(d, "<name>", "value") | d <- declarations});
+    = util("<name>", {convertDeclaration(d, "<name>", "util") | d <- declarations});
     
 public Declaration convertArtifact((Artifact) `service <ArtifactName name> {<Declaration* declarations>}`)
-    = util("<name>", {convertDeclaration(d, "<name>", "value") | d <- declarations});
+    = util("<name>", {convertDeclaration(d, "<name>", "util") | d <- declarations});
     
 
 
@@ -168,6 +168,9 @@ public Expression convertExpression((Expression) `new <ArtifactName name>(<{Expr
     
 public Expression convertExpression((Expression) `<MemberName method>(<{Expression ","}* args>)`) 
     = invoke("<method>", [convertExpression(arg) | arg <- args]);
+
+public Expression convertExpression((Expression) `<AssocArtifact a>`) 
+    = assocArtifact(convertAssocArtifact(a));
     
 public Expression convertExpression((Expression) `<Expression prev>.<MemberName method>(<{Expression ","}* args>)`) {
     
@@ -196,6 +199,7 @@ private tuple[Expression key, Expression \value] convertMapPair((MapPair) `<Expr
 
 private bool isValidForAccessChain((Expression) `<MemberName varName>`) = true;
 private bool isValidForAccessChain((Expression) `this`) = true;
+private bool isValidForAccessChain((Expression) `<AssocArtifact assocArtifact>`) = true;
 private bool isValidForAccessChain((Expression) `<MemberName method>(<{Expression ","}* args>)`) = true;
 private bool isValidForAccessChain((Expression) `new <ArtifactName name>`) = true;
 private bool isValidForAccessChain((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) = true;
@@ -218,14 +222,28 @@ public Declaration convertDeclaration((Declaration) `<Annotation* annotations><T
     = annotated({convertAnnotation(annotation) | annotation <- annotations}, \value(convertType(valueType), "<name>", convertAccessProperties(accessProperties)));
 
 
+private list[str] allowedArtifactTypes = ["repository", "util"];
+
 public Declaration convertDeclaration((Declaration) `inject <ArtifactName artifact>as<MemberName as>;`, _, str artifactType) {
     
-    if (artifactType != "repository") {
+    if (artifactType notin allowedArtifactTypes) {
         throw IllegalMember("Injection is not allowed in \"<artifactType>\"");
     }
     
     return inject("<artifact>", "<as>");   
 }
+
+public Declaration convertDeclaration((Declaration) `inject <AssocArtifact assocArtifact>as<MemberName as>;`, _, str artifactType) {
+    
+    if (artifactType notin allowedArtifactTypes) {
+        throw IllegalMember("Injection is not allowed in \"<artifactType>\"");
+    }
+    
+    return inject(convertAssocArtifact(assocArtifact), "<as>");   
+}
+
+public AssocArtifact convertAssocArtifact((AssocArtifact) `repository\<<ArtifactName artifact>\>`)
+    = assocRepository("<artifact>");
 
 
 public bool convertBoolean((Boolean) `true`) = true;

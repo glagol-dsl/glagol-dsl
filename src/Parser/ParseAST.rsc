@@ -4,7 +4,6 @@ import Syntax::Abstract::AST;
 import Syntax::Concrete::Grammar;
 import Parser::ParseCode;
 import ParseTree;
-import Parser::Converter::Module;
 import Parser::Converter;
 
 public Declaration parseModule(str code) = buildAST(parseCode(code));

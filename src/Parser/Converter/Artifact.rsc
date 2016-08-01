@@ -24,8 +24,8 @@ public Declaration convertArtifact((Artifact) `value <ArtifactName name> {<Decla
     = valueObject("<name>", {convertDeclaration(d, "<name>", "value") | d <- declarations});
     
 public Declaration convertArtifact((Artifact) `util <ArtifactName name> {<Declaration* declarations>}`)
-    = util("<name>", {convertDeclaration(d, "<name>", "value") | d <- declarations});
+    = util("<name>", {convertDeclaration(d, "<name>", "util") | d <- declarations});
     
 public Declaration convertArtifact((Artifact) `service <ArtifactName name> {<Declaration* declarations>}`)
-    = util("<name>", {convertDeclaration(d, "<name>", "value") | d <- declarations});
+    = util("<name>", {convertDeclaration(d, "<name>", "util") | d <- declarations});
     
