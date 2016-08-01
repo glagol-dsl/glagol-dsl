@@ -13,6 +13,7 @@ data Declaration
     | \value(Type \valueType, str name, set[AccessProperty] valueProperties)
     | util(str name, set[Declaration] declarations)
     | inject(str artifactName, str as)
+    | inject(AssocArtifact assocArtifact, str as)
     | relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties)
     | constructor(list[Declaration] params, list[Statement] body)
     | constructor(list[Declaration] params, list[Statement] body, Expression when)
@@ -23,8 +24,12 @@ data Declaration
     ;
 
 data RelationDir
-    = \one() 
+    = \one()
     | many()
+    ;
+
+data AssocArtifact
+    = assocRepository(str target)
     ;
 
 data UseSource
@@ -78,6 +83,7 @@ data Expression
     | fieldAccess(Expression prev, str field)
     | chain(list[Expression] elements)
     | emptyExpr()
+    | assocArtifact(AssocArtifact aArtifact)
     | this()
     ;
 

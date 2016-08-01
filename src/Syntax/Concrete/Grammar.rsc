@@ -63,6 +63,11 @@ syntax Declaration
     | Modifier? modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
     | Modifier? modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "=" Expression expr When? when ";"
     | "inject" ArtifactName artifact "as" MemberName alias ";"
+    | "inject" AssocArtifact assocArtifact "as" MemberName alias ";"
+    ;
+
+syntax AssocArtifact
+    = "repository" "\<" ArtifactName name "\>" 
     ;
 
 syntax Modifier
@@ -124,6 +129,7 @@ syntax Expression
     | newInstance: "new" ArtifactName "(" {Expression ","}* args ")"
     | invoke: (Expression prev ".")? MemberName method "(" {Expression ","}* args ")"
     | fieldAccess: Expression prev "." MemberName field
+    | assocArtifact: AssocArtifact 
     | this: "this"
     > left ( product: Expression lhs "*" () !>> "*" Expression rhs
            | remainder: Expression lhs "%" Expression rhs
