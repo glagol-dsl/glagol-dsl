@@ -1,7 +1,8 @@
 module Syntax::Abstract::AST
 
 data Declaration 
-    = \module(Declaration namespace, set[Declaration] imports)
+    = file(loc file, Declaration \module)
+    | \module(Declaration namespace, set[Declaration] imports)
     | \module(Declaration namespace, set[Declaration] imports, Declaration artifact)
     | namespace(str name)
     | namespace(str name, Declaration subNamespace)
