@@ -5,7 +5,7 @@ extend Syntax::Concrete::Grammar::Layout;
 extend Syntax::Concrete::Grammar::Lexical;
 
 start syntax Module
-   = \module: ^"module" Namespace namespace ";" Import* imports Artifact? artifact
+   = \module: ^"module" Namespace namespace ";" Import* imports Artifact? artifact LAYOUTLIST l1
    ;
 
 syntax Namespace 
@@ -186,3 +186,4 @@ syntax AssignOperator
     | defaultAssign: "=" 
     | additionAssign: "+=" 
     ;
+    

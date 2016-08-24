@@ -132,8 +132,7 @@ test bool shouldParseConstructWithWhen()
           '    User(int param) {
           '        
           '    } when param \> 3 && param \<= 11;
-          '}
-          '";
+          '}";
     
     return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
         constructor([
