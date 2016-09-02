@@ -12,6 +12,7 @@ data Declaration
     | repository(str name, set[Declaration] declarations)
     | valueObject(str name, set[Declaration] declarations)
     | \value(Type \valueType, str name, set[AccessProperty] valueProperties)
+    | \value(Type \valueType, str name, set[AccessProperty] valueProperties, Expression defaultValue)
     | util(str name, set[Declaration] declarations)
     | inject(str artifactName, str as)
     | inject(AssocArtifact assocArtifact, str as)

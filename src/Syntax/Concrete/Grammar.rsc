@@ -56,18 +56,12 @@ syntax AnnotationValue
     ;
 
 syntax Declaration
-    = Annotation* annotations Type type MemberName name AccessProperties? accessProperties ";"
+    = Annotation* annotations Type type MemberName name AssignDefaultValue? AccessProperties? accessProperties ";"
     | "relation" RelationDir l ":" RelationDir r ArtifactName entity "as" MemberName alias AccessProperties? accessProperties ";"
     | ArtifactName "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
     | ArtifactName "(" {Parameter ","}* parameters ")" When? when ";"
     | Modifier? modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
     | Modifier? modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "=" Expression expr When? when ";"
-    | "inject" ArtifactName artifact "as" MemberName alias ";"
-    | "inject" AssocArtifact assocArtifact "as" MemberName alias ";"
-    ;
-
-syntax AssocArtifact
-    = "repository" "\<" ArtifactName name "\>" 
     ;
 
 syntax Modifier
@@ -80,10 +74,10 @@ syntax When
     ;
 
 syntax Parameter
-    = Type paramType MemberName name ParameterDefaultValue? defaultValue
+    = Type paramType MemberName name AssignDefaultValue? defaultValue
     ;
 
-syntax ParameterDefaultValue
+syntax AssignDefaultValue
     = "=" DefaultValue defaultValue
     ;
 
@@ -93,6 +87,7 @@ syntax DefaultValue
     | floatLiteral : DeciFloatNumeral number
     | booleanLiteral : Boolean boolean
     | \list : "[" {DefaultValue ","}* items "]" list
+    | getInstance: "get" Type
     ;
 
 syntax AccessProperties
@@ -108,6 +103,7 @@ syntax Type
     | voidValue: "void"
     | typedList: Type type "[]"
     | typedMap: "{" Type key "," Type v "}"
+    | repositoryType: "repository" "\<" ArtifactName name "\>" 
     > artifactType: ArtifactName name
     ;
 
@@ -127,9 +123,9 @@ syntax Expression
     | variable: MemberName varName
     | newInstance: "new" ArtifactName
     | newInstance: "new" ArtifactName "(" {Expression ","}* args ")"
+    | newInstance: "get" Type
     | invoke: (Expression prev ".")? MemberName method "(" {Expression ","}* args ")"
     | fieldAccess: Expression prev "." MemberName field
-    | assocArtifact: AssocArtifact 
     | this: "this"
     > left ( product: Expression lhs "*" () !>> "*" Expression rhs
            | remainder: Expression lhs "%" Expression rhs
