@@ -1,2 +1,3 @@
 #!/bin/sh
-java -Xmx2G -Xss32m -jar /usr/local/bin/rascal-shell-unstable.jar $@
+BASEDIR=$(dirname "$0")
+java -Xmx2G -Xss32m -cp "$BASEDIR/rascal-shell-unstable.jar:$BASEDIR/tcp-server.jar:$BASEDIR/../../src:." org.rascalmpl.shell.RascalShell $@
