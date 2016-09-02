@@ -1,5 +1,6 @@
 #!/bin/sh
 BASEDIR=$(dirname "$0")
+echo $BASEDIR
 cd $BASEDIR
 cd ../../bin
 jar cf ../support/bin/tcp-server.jar Daemon/TcpServer.class
