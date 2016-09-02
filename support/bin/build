@@ -1,0 +1,8 @@
+#!/bin/sh
+BASEDIR=$(dirname "$0")
+cd $BASEDIR
+cd ../../bin
+jar cf ../support/bin/tcp-server.jar Daemon/TcpServer.class
+cd ../src
+../support/bin/rascalu Build
+../support/bin/rascalu BuildTests
