@@ -4,5 +4,5 @@ jdk:
 sudo: required
 script:
   - cd src
-  - ../bin/support/build 
-  - ../bin/support/rascalu Tests
+  - ../support/bin/build 
+  - ../support/bin/rascalu Tests
