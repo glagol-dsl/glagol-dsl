@@ -2,10 +2,7 @@ language: java
 jdk:
   - oraclejdk8
 sudo: required
-install: 
-  - sudo mv support/bin/rascal-shell-unstable.jar /usr/local/bin/rascal-shell-unstable.jar
-  - sudo mv support/bin/rascalu /usr/local/bin/rascal
-  - sudo chmod +x /usr/local/bin/rascal
 script:
   - cd src
-  - rascal Build && rascal BuildTests && rascal Tests
+  - ../bin/support/build 
+  - ../bin/support/rascalu Tests
