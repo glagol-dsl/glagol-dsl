@@ -8,3 +8,4 @@ build.properties
 src/Tests.rsc
 *.orig
 glagol-dsl.iml
+/bin/

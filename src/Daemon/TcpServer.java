@@ -17,39 +17,41 @@ import org.rascalmpl.value.type.Type;
 public class TcpServer {
 
 	private IValueFactory values;
+	private static PrintWriter outputBuffer = null;
 	
 	public TcpServer(IValueFactory values) throws IOException {	
 		this.values = values;
 	}
 	
-	public void createServer(IInteger port, IValue handler) {	
+	public void openSocket(IInteger port, IValue handler) throws IOException {	
 		try ( 
 		    ServerSocket serverSocket = new ServerSocket(port.intValue());
 		    Socket clientSocket = serverSocket.accept();
 		    PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 		    BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 		) {
-			String inputLine, outputLine;
+			outputBuffer = out;
+			String inputLine;
 
 		    while ((inputLine = in.readLine()) != null) {
 		    	
-		    	outputLine = processHandler((ICallableValue) handler, inputLine);
-		    	
-		    	if (inputLine.equals("quit") || outputLine.equals("break")) 
+		    	if (inputLine.equals("quit")) 
 		    		break;
 		    	
-		        out.println(outputLine);
+		    	processHandler((ICallableValue) handler, inputLine);
 		    }
 
 		    clientSocket.close();
-		} catch (IOException e) {
-			
 		}
 	}
 
-	private String processHandler(ICallableValue handler, String inputLine) {
+	public void socketWriteLn(IString line) {
+		if (outputBuffer != null)
+			outputBuffer.println(line.getValue());
+	}
+	
+	private void processHandler(ICallableValue handler, String inputLine) {
 		IString input = values.string(inputLine);
-		
-		return handler.call(new Type[]{input.getType()}, new IValue[]{input}, null).getValue().toString();
+		handler.call(new Type[]{input.getType()}, new IValue[]{input}, null);
 	}
 }
