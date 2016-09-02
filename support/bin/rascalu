@@ -1,4 +1,3 @@
-#!/bin/bash
+#!/bin/sh
 BASEDIR=$(dirname "$0")
-BASEDIR=$(realpath "$BASEDIR")
 java -Xmx2G -Xss32m -cp "$BASEDIR/rascal-shell-unstable.jar:$BASEDIR/tcp-server.jar:$BASEDIR/../../src:." org.rascalmpl.shell.RascalShell $@
