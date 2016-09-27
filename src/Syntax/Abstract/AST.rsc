@@ -11,10 +11,9 @@ data Declaration
     | entity(str name, set[Declaration] declarations)
     | repository(str name, set[Declaration] declarations)
     | valueObject(str name, set[Declaration] declarations)
-    | \value(Type \valueType, str name, set[AccessProperty] valueProperties)
+    | property(Type \valueType, str name, set[AccessProperty] valueProperties)
+    | property(Type \valueType, str name, set[AccessProperty] valueProperties, Expression defaultValue)
     | util(str name, set[Declaration] declarations)
-    | inject(str artifactName, str as)
-    | inject(AssocArtifact assocArtifact, str as)
     | relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties)
     | constructor(list[Declaration] params, list[Statement] body)
     | constructor(list[Declaration] params, list[Statement] body, Expression when)
@@ -78,6 +77,7 @@ data Expression
     | or(Expression lhs, Expression rhs)
     | ifThenElse(Expression condition, Expression ifThen, Expression \else)
     | new(str artifact, list[Expression] args)
+    | get(Type t)
     | invoke(str methodName, list[Expression] args)
     | invoke(Expression prev, str methodName, list[Expression] args)
     | fieldAccess(str field)
@@ -97,6 +97,7 @@ data Type
     | typedList(Type \type)
     | typedMap(Type key, Type v)
     | artifactType(str name)
+    | repositoryType(str name)
     ;
     
 data Modifier
@@ -105,7 +106,7 @@ data Modifier
     ;
     
 data AccessProperty
-    = get()
+    = read()
     | \set()
     | add()
     | clear()

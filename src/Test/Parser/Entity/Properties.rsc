@@ -1,4 +1,4 @@
-module Test::Parser::Entity::Values
+module Test::Parser::Entity::Properties
 
 import Parser::ParseAST;
 import Syntax::Abstract::AST;
@@ -12,8 +12,8 @@ test bool testShouldParseEntityWithValues()
                '}";
                
     set[Declaration] expectedValues = {
-        \value(integer(), "id", {get()}),
-        \value(artifactType("Date"), "addedOn", {get(), \set()})
+        property(integer(), "id", {read()}),
+        property(artifactType("Date"), "addedOn", {read(), \set()})
     };
 
     return parseModule(code) == \module(namespace("Example"), {}, entity("User", expectedValues));
@@ -45,6 +45,6 @@ test bool testShouldParseEntityWithValuesAndAnnotations()
                     "column": annotationVal("id")
                 ))
             ])
-        }, \value(integer(), "id", {get()}))
+        }, property(integer(), "id", {read()}))
     }));
 }

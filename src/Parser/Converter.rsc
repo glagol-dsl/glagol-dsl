@@ -16,6 +16,10 @@ public Declaration buildAST((Module) `module <Namespace n>;<Import* imports><Art
     = \module(convertModuleNamespace(n), {convertImport(\import) | \import <- imports}, convertArtifact(artifact));
 
 
+public Expression convertParameterDefaultVal((AssignDefaultValue) `=<DefaultValue defaultValue>`)
+    = convertExpression(defaultValue);
+
+
 public Declaration convertArtifact((Artifact) `entity <ArtifactName name> {<Declaration* declarations>}`) 
     = entity("<name>", {convertDeclaration(d, "<name>", "entity") | d <- declarations});
 
@@ -162,15 +166,18 @@ public Expression convertExpression((DefaultValue) `<Boolean boolean>`)
 public Expression convertExpression((DefaultValue) `[<{DefaultValue ","}* items>]`)
     = \list([convertExpression(i) | i <- items]);
     
+public Expression convertExpression((DefaultValue) `get <Type t>`)
+    = get(convertType(t));
+    
 public Expression convertExpression((Expression) `new <ArtifactName name>`) = new("<name>", []);
 public Expression convertExpression((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) 
     = new("<name>", [convertExpression(arg) | arg <- args]);
     
+public Expression convertExpression((Expression) `get <Type t>`)
+    = get(convertType(t));
+    
 public Expression convertExpression((Expression) `<MemberName method>(<{Expression ","}* args>)`) 
     = invoke("<method>", [convertExpression(arg) | arg <- args]);
-
-public Expression convertExpression((Expression) `<AssocArtifact a>`) 
-    = assocArtifact(convertAssocArtifact(a));
     
 public Expression convertExpression((Expression) `<Expression prev>.<MemberName method>(<{Expression ","}* args>)`) {
     
@@ -199,9 +206,9 @@ private tuple[Expression key, Expression \value] convertMapPair((MapPair) `<Expr
 
 private bool isValidForAccessChain((Expression) `<MemberName varName>`) = true;
 private bool isValidForAccessChain((Expression) `this`) = true;
-private bool isValidForAccessChain((Expression) `<AssocArtifact assocArtifact>`) = true;
 private bool isValidForAccessChain((Expression) `<MemberName method>(<{Expression ","}* args>)`) = true;
 private bool isValidForAccessChain((Expression) `new <ArtifactName name>`) = true;
+private bool isValidForAccessChain((Expression) `get <Type t>`) = true;
 private bool isValidForAccessChain((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) = true;
 private bool isValidForAccessChain((Expression) `<MemberName method>(<{Expression ","}* args>)`) = true;
 private bool isValidForAccessChain((Expression) `<Expression prev>.<MemberName method>(<{Expression ","}* args>)`) = true;
@@ -209,45 +216,33 @@ private bool isValidForAccessChain((Expression) `<Expression prev>.<MemberName f
 private default bool isValidForAccessChain(_) = false;
 
 
-public Declaration convertDeclaration((Declaration) `<Type valueType><MemberName name>;`, _, _) 
-    = \value(convertType(valueType), "<name>");
-    
-public Declaration convertDeclaration((Declaration) `<Type valueType><MemberName name><AccessProperties accessProperties>;`, _, _) 
-    = \value(convertType(valueType), "<name>", convertAccessProperties(accessProperties));
-    
-public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type valueType><MemberName name>;`, _, _) 
-    = annotated({convertAnnotation(annotation) | annotation <- annotations}, \value(convertType(valueType), "<name>"));
-    
-public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type valueType><MemberName name><AccessProperties accessProperties>;`, _, _) 
-    = annotated({convertAnnotation(annotation) | annotation <- annotations}, \value(convertType(valueType), "<name>", convertAccessProperties(accessProperties)));
-
-
-private list[str] allowedArtifactTypes = ["repository", "util"];
-
-public Declaration convertDeclaration((Declaration) `inject <ArtifactName artifact>as<MemberName as>;`, _, str artifactType) {
-    
-    if (artifactType notin allowedArtifactTypes) {
-        throw IllegalMember("Injection is not allowed in \"<artifactType>\"");
-    }
-    
-    return inject("<artifact>", "<as>");   
-}
-
-public Declaration convertDeclaration((Declaration) `inject <AssocArtifact assocArtifact>as<MemberName as>;`, _, str artifactType) {
-    
-    if (artifactType notin allowedArtifactTypes) {
-        throw IllegalMember("Injection is not allowed in \"<artifactType>\"");
-    }
-    
-    return inject(convertAssocArtifact(assocArtifact), "<as>");   
-}
-
-public AssocArtifact convertAssocArtifact((AssocArtifact) `repository\<<ArtifactName artifact>\>`)
-    = assocRepository("<artifact>");
-
-
 public bool convertBoolean((Boolean) `true`) = true;
 public bool convertBoolean((Boolean) `false`) = false;
+
+
+public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name>;`, _, _) 
+    = property(convertType(prop), "<name>", {});
+
+public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name><AssignDefaultValue defVal>;`, _, _) 
+    = property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal));
+    
+public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name><AccessProperties accessProperties>;`, _, _) 
+    = property(convertType(prop), "<name>", convertAccessProperties(accessProperties));
+    
+public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`, _, _) 
+    = property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal));
+    
+public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name>;`, _, _) 
+    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>"));
+
+public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name><AssignDefaultValue defVal>;`, _, _) 
+    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal)));
+    
+public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name><AccessProperties accessProperties>;`, _, _) 
+    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", convertAccessProperties(accessProperties)));
+    
+public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`, _, _) 
+    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal)));
 
 
 public Declaration convertModuleNamespace((Namespace) `<Name name>`) = namespace("<name>");
@@ -336,7 +331,7 @@ public Declaration convertDeclaration((Declaration) `relation <RelationDir l>:<R
 public set[AccessProperty] convertAccessProperties((AccessProperties) `with { <{AccessProperty ","}* props> }`)
     = {convertAccessProperty(p) | p <- props};
 
-public AccessProperty convertAccessProperty((AccessProperty) `get`) = get();
+public AccessProperty convertAccessProperty((AccessProperty) `get`) = read();
 public AccessProperty convertAccessProperty((AccessProperty) `set`) = \set();
 public AccessProperty convertAccessProperty((AccessProperty) `add`) = add();
 public AccessProperty convertAccessProperty((AccessProperty) `clear`) = clear();
@@ -352,6 +347,7 @@ public Type convertType((Type) `bool`) = boolean();
 public Type convertType((Type) `boolean`) = boolean();
 public Type convertType((Type) `void`) = voidValue();
 public Type convertType((Type) `string`) = string();
+public Type convertType((Type) `repository\<<ArtifactName name>\>`) = repositoryType("<name>");
 public Type convertType((Type) `<Type t>[]`) = typedList(convertType(t));
 public Type convertType((Type) `{<Type key>,<Type v>}`) = typedMap(convertType(key), convertType(v));
 public Type convertType((Type) `<ArtifactName name>`) = artifactType("<name>");
@@ -405,12 +401,8 @@ public Declaration convertDeclaration(
 
 public Declaration convertParameter((Parameter) `<Type paramType> <MemberName name>`) = param(convertType(paramType), "<name>");
 
-public Declaration convertParameter((Parameter) `<Type paramType> <MemberName name> <ParameterDefaultValue defaultValue>`) 
+public Declaration convertParameter((Parameter) `<Type paramType> <MemberName name> <AssignDefaultValue defaultValue>`) 
     = param(convertType(paramType), "<name>", convertParameterDefaultVal(defaultValue));
-
-public Expression convertParameterDefaultVal((ParameterDefaultValue) `=<DefaultValue defaultValue>`)
-    = convertExpression(defaultValue);
-    
 
 
 public Expression convertAssignable((Assignable) `<MemberName name>`) = variable("<name>");
