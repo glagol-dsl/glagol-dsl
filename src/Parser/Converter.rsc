@@ -173,6 +173,9 @@ public Expression convertExpression((Expression) `new <ArtifactName name>`) = ne
 public Expression convertExpression((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) 
     = new("<name>", [convertExpression(arg) | arg <- args]);
     
+public Expression convertExpression((Expression) `get <Type t>`)
+    = get(convertType(t));
+    
 public Expression convertExpression((Expression) `<MemberName method>(<{Expression ","}* args>)`) 
     = invoke("<method>", [convertExpression(arg) | arg <- args]);
     
@@ -205,6 +208,7 @@ private bool isValidForAccessChain((Expression) `<MemberName varName>`) = true;
 private bool isValidForAccessChain((Expression) `this`) = true;
 private bool isValidForAccessChain((Expression) `<MemberName method>(<{Expression ","}* args>)`) = true;
 private bool isValidForAccessChain((Expression) `new <ArtifactName name>`) = true;
+private bool isValidForAccessChain((Expression) `get <Type t>`) = true;
 private bool isValidForAccessChain((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) = true;
 private bool isValidForAccessChain((Expression) `<MemberName method>(<{Expression ","}* args>)`) = true;
 private bool isValidForAccessChain((Expression) `<Expression prev>.<MemberName method>(<{Expression ","}* args>)`) = true;
