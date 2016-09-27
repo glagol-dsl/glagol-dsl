@@ -123,7 +123,7 @@ syntax Expression
     | variable: MemberName varName
     | newInstance: "new" ArtifactName
     | newInstance: "new" ArtifactName "(" {Expression ","}* args ")"
-    | newInstance: "get" Type
+    | getInstance: "get" Type
     | invoke: (Expression prev ".")? MemberName method "(" {Expression ","}* args ")"
     | fieldAccess: Expression prev "." MemberName field
     | this: "this"

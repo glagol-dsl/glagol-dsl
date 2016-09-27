@@ -13,6 +13,6 @@ test bool testShouldParseEntityRelations()
 
    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
        relation(\one(), \one(), "Language", "userLanguage", {}),
-       relation(\one(), many(), "User", "userFriends", {add(), \set(), get(), clear()})
+       relation(\one(), many(), "User", "userFriends", {add(), \set(), read(), clear()})
    }));
 }

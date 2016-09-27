@@ -12,12 +12,12 @@ test bool shouldParseInjections()
           'import Glagol::ORM::EntityManager;
           '
           'repository for User {
-          '     inject EntityManager as em;
+          '     EntityManager em = get EntityManager;
           '}";
     
     return parseModule(code) == \module(namespace("Example"), {
         \import("EntityManager", namespace("Glagol", namespace("ORM")), "EntityManager")
     }, repository("User", {
-        inject("EntityManager", "em")
+        property(artifactType("EntityManager"), "em", {}, get(artifactType("EntityManager")))
     }));
 }

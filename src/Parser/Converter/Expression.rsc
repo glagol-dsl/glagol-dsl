@@ -86,15 +86,15 @@ public Expression convertExpression((DefaultValue) `<Boolean boolean>`)
 public Expression convertExpression((DefaultValue) `[<{DefaultValue ","}* items>]`)
     = \list([convertExpression(i) | i <- items]);
     
+public Expression convertExpression((DefaultValue) `get <Type t>`)
+    = get(convertType(t));
+    
 public Expression convertExpression((Expression) `new <ArtifactName name>`) = new("<name>", []);
 public Expression convertExpression((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) 
     = new("<name>", [convertExpression(arg) | arg <- args]);
     
 public Expression convertExpression((Expression) `<MemberName method>(<{Expression ","}* args>)`) 
     = invoke("<method>", [convertExpression(arg) | arg <- args]);
-
-public Expression convertExpression((Expression) `<AssocArtifact a>`) 
-    = assocArtifact(convertAssocArtifact(a));
     
 public Expression convertExpression((Expression) `<Expression prev>.<MemberName method>(<{Expression ","}* args>)`) {
     
@@ -123,7 +123,6 @@ private tuple[Expression key, Expression \value] convertMapPair((MapPair) `<Expr
 
 private bool isValidForAccessChain((Expression) `<MemberName varName>`) = true;
 private bool isValidForAccessChain((Expression) `this`) = true;
-private bool isValidForAccessChain((Expression) `<AssocArtifact assocArtifact>`) = true;
 private bool isValidForAccessChain((Expression) `<MemberName method>(<{Expression ","}* args>)`) = true;
 private bool isValidForAccessChain((Expression) `new <ArtifactName name>`) = true;
 private bool isValidForAccessChain((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) = true;

@@ -6,4 +6,3 @@ import Parser::Converter::Expression;
 
 public Expression convertParameterDefaultVal((AssignDefaultValue) `=<DefaultValue defaultValue>`)
     = convertExpression(defaultValue);
-    
