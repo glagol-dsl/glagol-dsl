@@ -24,6 +24,8 @@ public class TcpServer {
 	}
 	
 	public void openSocket(IInteger port, IValue handler) throws IOException {	
+		boolean reopen = true;
+		
 		try ( 
 		    ServerSocket serverSocket = new ServerSocket(port.intValue());
 		    Socket clientSocket = serverSocket.accept();
@@ -35,13 +37,19 @@ public class TcpServer {
 
 		    while ((inputLine = in.readLine()) != null) {
 		    	
-		    	if (inputLine.equals("quit")) 
+		    	if (inputLine.equals("quit")) {
+		    		reopen = false;
 		    		break;
+		    	}
 		    	
 		    	processHandler((ICallableValue) handler, inputLine);
 		    }
 
 		    clientSocket.close();
+		    serverSocket.close();
+		    
+		    if (reopen)
+		    	openSocket(port, handler);
 		}
 	}
 
