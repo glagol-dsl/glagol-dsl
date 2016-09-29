@@ -8,22 +8,22 @@ import IO;
 private alias Command = tuple[str command, loc path, bool isFile];
 
 public void listenForCompileSignals(int port) {
-    openSocket(port, compileController);
+    openSocket(port, controller);
 }
 
-private void compileController(str inputStream) {
+private void controller(str inputStream) {
 
     if (inputStream == "quit") return;
         
     try {
         Command command = decodeJSON(inputStream);
-        dispatchCommand(command);
+        dispatch(command);
     } catch e: {
         socketWriteLn("Invalid JSON");
     }
 }
 
-private void dispatchCommand(Command command) {
+private void dispatch(Command command) {
     switch (command.command) {
         case "compile":
             socketWriteLn("It will compile some day");
