@@ -16,8 +16,17 @@ public Declaration buildAST((Module) `module <Namespace n>;<Import* imports><Art
     = \module(convertModuleNamespace(n), {convertImport(\import) | \import <- imports}, convertArtifact(artifact));
 
 
-public Expression convertParameterDefaultVal((AssignDefaultValue) `=<DefaultValue defaultValue>`)
-    = convertExpression(defaultValue);
+public Expression convertParameterDefaultVal((AssignDefaultValue) `=<DefaultValue defaultValue>`, Type onType) {
+
+    Expression defaultValue = convertExpression(defaultValue);
+    
+    if (defaultValue := get(selfie())) {
+        defaultValue = get(onType);
+    }
+
+    return defaultValue;
+}
+    
 
 
 public Declaration convertArtifact((Artifact) `entity <ArtifactName name> {<Declaration* declarations>}`) 
@@ -166,8 +175,11 @@ public Expression convertExpression((DefaultValue) `<Boolean boolean>`)
 public Expression convertExpression((DefaultValue) `[<{DefaultValue ","}* items>]`)
     = \list([convertExpression(i) | i <- items]);
     
-public Expression convertExpression((DefaultValue) `get <Type t>`)
-    = get(convertType(t));
+public Expression convertExpression((DefaultValue) `get <InstanceType t>`)
+    = get(convertInstanceType(t));
+    
+public Type convertInstanceType((InstanceType) `<Type t>`) = convertType(t);
+public Type convertInstanceType((InstanceType) `selfie`) = selfie();
     
 public Expression convertExpression((Expression) `new <ArtifactName name>`) = new("<name>", []);
 public Expression convertExpression((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) 
@@ -224,25 +236,25 @@ public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name
     = property(convertType(prop), "<name>", {});
 
 public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name><AssignDefaultValue defVal>;`, _, _) 
-    = property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal));
+    = property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop)));
     
 public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name><AccessProperties accessProperties>;`, _, _) 
     = property(convertType(prop), "<name>", convertAccessProperties(accessProperties));
     
 public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`, _, _) 
-    = property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal));
+    = property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop)));
     
 public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name>;`, _, _) 
     = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>"));
 
 public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name><AssignDefaultValue defVal>;`, _, _) 
-    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal)));
+    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop))));
     
 public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name><AccessProperties accessProperties>;`, _, _) 
     = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", convertAccessProperties(accessProperties)));
     
 public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`, _, _) 
-    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal)));
+    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop))));
 
 
 public Declaration convertModuleNamespace((Namespace) `<Name name>`) = namespace("<name>");
@@ -402,7 +414,7 @@ public Declaration convertDeclaration(
 public Declaration convertParameter((Parameter) `<Type paramType> <MemberName name>`) = param(convertType(paramType), "<name>");
 
 public Declaration convertParameter((Parameter) `<Type paramType> <MemberName name> <AssignDefaultValue defaultValue>`) 
-    = param(convertType(paramType), "<name>", convertParameterDefaultVal(defaultValue));
+    = param(convertType(paramType), "<name>", convertParameterDefaultVal(defaultValue, convertType(paramType)));
 
 
 public Expression convertAssignable((Assignable) `<MemberName name>`) = variable("<name>");

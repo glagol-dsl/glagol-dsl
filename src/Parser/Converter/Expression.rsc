@@ -86,8 +86,11 @@ public Expression convertExpression((DefaultValue) `<Boolean boolean>`)
 public Expression convertExpression((DefaultValue) `[<{DefaultValue ","}* items>]`)
     = \list([convertExpression(i) | i <- items]);
     
-public Expression convertExpression((DefaultValue) `get <Type t>`)
-    = get(convertType(t));
+public Expression convertExpression((DefaultValue) `get <InstanceType t>`)
+    = get(convertInstanceType(t));
+    
+public Type convertInstanceType((InstanceType) `<Type t>`) = convertType(t);
+public Type convertInstanceType((InstanceType) `selfie`) = selfie();
     
 public Expression convertExpression((Expression) `new <ArtifactName name>`) = new("<name>", []);
 public Expression convertExpression((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) 
