@@ -2,6 +2,7 @@ module Test::Parser::Util::Injections
 
 import Parser::ParseAST;
 import Syntax::Abstract::AST;
+import IO;
 
 test bool canParseRepositoryInjection() 
 {
@@ -17,7 +18,7 @@ test bool canParseRepositoryInjection()
         }));
 }
 
-test bool canParseRepositoryInjection() 
+test bool canParseUtilRepositoryInjection() 
 {
     str code
         = "module Test;
