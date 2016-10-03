@@ -1,11 +1,12 @@
 module Daemon::Compile
 
 import Daemon::TcpServer;
+import Compiler::Compiler;
 import lang::json::IO;
 import lang::json::ast::JSON;
 import IO;
 
-private alias Command = tuple[str command, loc path, bool isFile];
+private alias Command = tuple[str command, loc path];
 
 public void listenForCompileSignals(int port) {
     openSocket(port, controller);
@@ -26,7 +27,7 @@ private void controller(str inputStream) {
 private void dispatch(Command command) {
     switch (command.command) {
         case "compile":
-            socketWriteLn("It will compile some day");
+            compile(command.path);
     }
 }
 
@@ -35,5 +36,5 @@ private Command decodeJSON(str inputStream) {
     JSON json = fromJSON(#JSON, inputStream);    
     loc path = |file:///| + json.properties["path"].s;
     
-    return <json.properties["command"].s, path, isFile(path)>;
+    return <json.properties["command"].s, path, isFile(path), json.properties["orm"].s>;
 }
