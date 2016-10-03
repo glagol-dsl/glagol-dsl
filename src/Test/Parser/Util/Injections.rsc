@@ -2,6 +2,7 @@ module Test::Parser::Util::Injections
 
 import Parser::ParseAST;
 import Syntax::Abstract::AST;
+import IO;
 
 test bool canParseRepositoryInjection() 
 {
@@ -17,7 +18,7 @@ test bool canParseRepositoryInjection()
         }));
 }
 
-test bool canParseRepositoryInjection() 
+test bool canParseUtilRepositoryInjection() 
 {
     str code
         = "module Test;
@@ -28,6 +29,36 @@ test bool canParseRepositoryInjection()
     return parseModule(code) ==
         \module(namespace("Test"), {}, util("UserCreator", {
             property(repositoryType("User"), "userRepository", {}, get(repositoryType("User")))
+        }));
+}   
+
+test bool canUseRepositorySelfie() 
+{
+    str code
+        = "module Test;
+          'service UserCreator {
+          '    repository\<User\> userRepository = get selfie;
+          '}";
+    
+    return parseModule(code) ==
+        \module(namespace("Test"), {}, util("UserCreator", {
+            property(repositoryType("User"), "userRepository", {}, get(repositoryType("User")))
+        }));
+}
+
+test bool canUseRepositorySelfieAsParamDefaultValue() 
+{
+    str code
+        = "module Test;
+          'service UserCreator {
+          '    public void make(repository\<User\> userRepository = get selfie) { }
+          '}";
+    
+    return parseModule(code) ==
+        \module(namespace("Test"), {}, util("UserCreator", {
+            method(\public(), voidValue(), "make", [
+                param(repositoryType("User"), "userRepository", get(repositoryType("User")))
+            ], [])
         }));
 }
 

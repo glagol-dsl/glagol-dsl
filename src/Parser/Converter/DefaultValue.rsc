@@ -4,5 +4,14 @@ import Syntax::Abstract::AST;
 import Syntax::Concrete::Grammar;
 import Parser::Converter::Expression;
 
-public Expression convertParameterDefaultVal((AssignDefaultValue) `=<DefaultValue defaultValue>`)
-    = convertExpression(defaultValue);
+public Expression convertParameterDefaultVal((AssignDefaultValue) `=<DefaultValue defaultValue>`, Type onType) {
+
+    Expression defaultValue = convertExpression(defaultValue);
+    
+    if (defaultValue := get(selfie())) {
+        defaultValue = get(onType);
+    }
+
+    return defaultValue;
+}
+    

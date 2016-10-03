@@ -9,4 +9,4 @@ import Parser::Converter::DefaultValue;
 public Declaration convertParameter((Parameter) `<Type paramType> <MemberName name>`) = param(convertType(paramType), "<name>");
 
 public Declaration convertParameter((Parameter) `<Type paramType> <MemberName name> <AssignDefaultValue defaultValue>`) 
-    = param(convertType(paramType), "<name>", convertParameterDefaultVal(defaultValue));
+    = param(convertType(paramType), "<name>", convertParameterDefaultVal(defaultValue, convertType(paramType)));
