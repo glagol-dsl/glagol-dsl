@@ -87,11 +87,16 @@ syntax DefaultValue
     | floatLiteral : DeciFloatNumeral number
     | booleanLiteral : Boolean boolean
     | \list : "[" {DefaultValue ","}* items "]" list
-    | getInstance: "get" Type
+    | getInstance: "get" InstanceType
     ;
 
 syntax AccessProperties
     = "with" "{" {AccessProperty ","}* props "}"
+    ;
+
+syntax InstanceType
+    = "selfie"
+    | Type
     ;
 
 syntax Type

@@ -9,4 +9,4 @@ import Parser::Converter;
 public Declaration parseModule(str code) = buildAST(parseCode(code));
 public Declaration parseModule(loc file) = file(file, buildAST(parseFile(file)));
 
-public Declaration buildAST(start[Test] t) = buildAST(t.top);
+public Declaration buildAST(start[Module] t) = buildAST(t.top);

@@ -11,22 +11,22 @@ public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name
     = property(convertType(prop), "<name>", {});
 
 public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name><AssignDefaultValue defVal>;`, _, _) 
-    = property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal));
+    = property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop)));
     
 public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name><AccessProperties accessProperties>;`, _, _) 
     = property(convertType(prop), "<name>", convertAccessProperties(accessProperties));
     
 public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`, _, _) 
-    = property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal));
+    = property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop)));
     
 public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name>;`, _, _) 
     = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>"));
 
 public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name><AssignDefaultValue defVal>;`, _, _) 
-    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal)));
+    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop))));
     
 public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name><AccessProperties accessProperties>;`, _, _) 
     = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", convertAccessProperties(accessProperties)));
     
 public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`, _, _) 
-    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal)));
+    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop))));

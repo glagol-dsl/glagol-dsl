@@ -98,6 +98,7 @@ data Type
     | typedMap(Type key, Type v)
     | artifactType(str name)
     | repositoryType(str name)
+    | selfie()
     ;
     
 data Modifier
