@@ -1,17 +1,19 @@
 module Config::Reader
 
+import Exceptions::ConfigExceptions;
 import lang::yaml::Model;
 import IO;
 import String;
 
 data Framework
     = zend()
-    | symfony()
-    | laravel()
+// TODO    | symfony()
+// TODO    | laravel()
     ;
 
 data ORM
     = doctrine()
+// TODO    | eloquent()
     ;
 
 alias Config = tuple[Framework framework, ORM orm];
@@ -25,9 +27,18 @@ private Framework findFramework(map[Node, Node] vals) = convertFramework(toSimpl
 private ORM findOrm(map[Node, Node] vals) = convertORM(toSimpleMap(vals)["orm"]);
 
 private Framework convertFramework("zend") = zend();
-private Framework convertFramework("symfony") = symfony();
-private Framework convertFramework("laravel") = laravel();
+// TODO private Framework convertFramework("symfony") = symfony();
+// TODO private Framework convertFramework("laravel") = laravel();
+
+private Framework convertFramework(str invalid) {
+    throw InvalidFramework("Invalid framework \"<invalid>\"");
+}
 
 private ORM convertORM("doctrine") = doctrine();
+// TODO private ORM convertORM("eloquent") = eloquent();
+
+private ORM convertORM(str invalid) {
+    throw InvalidORM("Invalid ORM \"<invalid>\"");
+}
 
 private map[str, str] toSimpleMap(map[Node, Node] nodes) = ("<s.\value>" : "<nodes[s].\value>" | s <- nodes);

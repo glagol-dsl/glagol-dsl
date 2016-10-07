@@ -8,14 +8,12 @@ test bool testShouldLoadDotGlagolFileFromString()
     str config = "framework: zend
     'orm: doctrine";
     
-    Config strConfig = loadGlagolConfig(config);
-    
-    return strConfig == <zend(), doctrine()>;
+    return loadGlagolConfig(config) == <zend(), doctrine()>;
 }
 
 test bool testShouldLoadDotGlagolFileFromProjectPath()
 {
-    str config = "framework: symfony
+    str config = "framework: zend
     'orm: doctrine";
     
     loc tempProjectDir = |tmp:///glagol_test_dot_glagol|;
@@ -28,5 +26,33 @@ test bool testShouldLoadDotGlagolFileFromProjectPath()
     remove(tempProjectDir + ".glagol");
     remove(tempProjectDir);
 
-    return projectConfig == <symfony(), doctrine()>;
+    return projectConfig == <zend(), doctrine()>;
+}
+
+test bool testShouldThrowExceptionOnInvalidFramework()
+{
+    str config = "framework: pizda
+    'orm: doctrine";
+    
+    try {
+        loadGlagolConfig(config);
+    } catch InvalidFramework(str msg): {
+        return msg == "Invalid framework \"pizda\"";
+    }
+        
+    return false;   
+}
+
+test bool testShouldThrowExceptionOnInvalidORM()
+{
+    str config = "framework: zend
+    'orm: pizda";
+    
+    try {
+        loadGlagolConfig(config);
+    } catch InvalidORM(str msg): {
+        return msg == "Invalid ORM \"pizda\"";
+    }
+        
+    return false;   
 }
