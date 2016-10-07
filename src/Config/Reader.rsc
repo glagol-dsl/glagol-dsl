@@ -16,11 +16,8 @@ data ORM
 
 alias Config = tuple[Framework framework, ORM orm];
 
-public Config loadGlagolConfig(loc projectPath) {
-    loc configFilePath = projectPath + ".glagol";
-    
-    return parseRawYaml(loadYAML(readFile(configFilePath)));
-}
+public Config loadGlagolConfig(loc projectPath) = loadGlagolConfig(readFile(projectPath + ".glagol"));
+public Config loadGlagolConfig(str configSource) = parseRawYaml(loadYAML(configSource));
 
 private Config parseRawYaml(mapping(vals)) = <findFramework(vals), findOrm(vals)>;
 
