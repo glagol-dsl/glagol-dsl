@@ -1,6 +1,6 @@
 module Parser::Converter::Type
 
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 
 public Type convertType((Type) `int`) = integer();

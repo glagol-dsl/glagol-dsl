@@ -1,7 +1,7 @@
 module Test::Parser::Entity::Properties
 
 import Parser::ParseAST;
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 
 test bool testShouldParseEntityWithValues()
 {

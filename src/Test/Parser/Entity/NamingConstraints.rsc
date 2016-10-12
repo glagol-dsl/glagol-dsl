@@ -1,7 +1,7 @@
 module Test::Parser::Entity::NamingConstraints
 
 import Parser::ParseAST;
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 
 test bool moduleNameCannotUsePreservedKeywords()
 {

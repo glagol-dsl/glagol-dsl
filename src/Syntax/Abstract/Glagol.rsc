@@ -1,8 +1,7 @@
-module Syntax::Abstract::AST
+module Syntax::Abstract::Glagol
 
 data Declaration 
     = file(loc file, Declaration \module)
-    | \module(Declaration namespace, set[Declaration] imports)
     | \module(Declaration namespace, set[Declaration] imports, Declaration artifact)
     | namespace(str name)
     | namespace(str name, Declaration subNamespace)

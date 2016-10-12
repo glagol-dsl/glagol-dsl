@@ -1,6 +1,6 @@
 module Parser::Converter::Parameter
 
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 import Parser::Converter::Type;
 import Parser::Converter::Expression;

@@ -1,6 +1,6 @@
 module Parser::Converter::Artifact
 
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 import Parser::Converter::Declaration::Value;
 import Parser::Converter::Declaration::Constructor;

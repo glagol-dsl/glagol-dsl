@@ -1,7 +1,7 @@
 module Test::Parser::Expressions
 
 import Parser::ParseAST;
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 import IO;
 
 test bool testShouldParseVariableInBrackets()

@@ -1,6 +1,6 @@
 module Parser::Converter::Annotation
 
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 import String;
 import Parser::Converter::Boolean;

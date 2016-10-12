@@ -1,6 +1,6 @@
 @doc="This is automatically generated file. Do not edit"
 module Parser::Converter
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 import Parser::ParseCode;
 import ParseTree;

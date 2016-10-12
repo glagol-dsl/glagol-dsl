@@ -1,6 +1,6 @@
 module Test::Parser::Util::Basics
 
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 import Parser::ParseAST;
 
 test bool shouldParseEmptyUtil()

@@ -1,7 +1,7 @@
 module Test::Parser::ValueObject::Basics
 
 import Parser::ParseAST;
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 
 test bool shouldParseEmptyValueObject()
 {
