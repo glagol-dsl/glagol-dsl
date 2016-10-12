@@ -16,7 +16,8 @@ test bool shouldTransformSimpleEntityToPhpScriptUsingDoctrine()
         phpNamespace(phpSomeName(phpName("User\\Entity")), [
             phpUse({
                 phpUse(phpName("Currency\\Value\\Money"), phpNoName()),
-                phpUse(phpName("Currency\\Value\\Currency"), phpSomeName(phpName("CurrencyVB")))
+                phpUse(phpName("Currency\\Value\\Currency"), phpSomeName(phpName("CurrencyVB"))),
+                phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM")))
             }),
             phpClassDef(phpClass(
                 "Customer", {}, phpNoName(), [], [
@@ -25,3 +26,56 @@ test bool shouldTransformSimpleEntityToPhpScriptUsingDoctrine()
             ))
         ])
     ]);
+
+test bool shouldTransformSimpleAnnotatedEntityToPhpScriptUsingDoctrine()
+    = toPHPScript(<zend(), doctrine()>, \module(namespace("User", namespace("Entity")), {
+        \import("Money", namespace("Currency", namespace("Value")), "Money"),
+        \import("Currency", namespace("Currency", namespace("Value")), "CurrencyVB")
+    }, annotated({
+        annotation("table", [])
+    }, entity("Customer", {
+        property(integer(), "id", {})
+    }))))
+    == phpScript([
+        phpNamespace(phpSomeName(phpName("User\\Entity")), [
+            phpUse({
+                phpUse(phpName("Currency\\Value\\Money"), phpNoName()),
+                phpUse(phpName("Currency\\Value\\Currency"), phpSomeName(phpName("CurrencyVB"))),
+                phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM")))
+            }),
+            phpClassDef(phpClass(
+                "Customer", {}, phpNoName(), [], [
+                    phpProperty({phpPrivate()}, [phpProperty("id", phpNoExpr())])
+                ]
+            )[@phpAnnotations={
+                phpAnnotation("table")
+            }])
+        ])
+    ]);
+    
+test bool shouldTransformSimpleAnnotatedWithValueEntityToPhpScriptUsingDoctrine()
+    = toPHPScript(<zend(), doctrine()>, \module(namespace("User", namespace("Entity")), {
+        \import("Money", namespace("Currency", namespace("Value")), "Money"),
+        \import("Currency", namespace("Currency", namespace("Value")), "CurrencyVB")
+    }, annotated({
+        annotation("table", [annotationVal("customers")])
+    }, entity("Customer", {
+        property(integer(), "id", {})
+    }))))
+    == phpScript([
+        phpNamespace(phpSomeName(phpName("User\\Entity")), [
+            phpUse({
+                phpUse(phpName("Currency\\Value\\Money"), phpNoName()),
+                phpUse(phpName("Currency\\Value\\Currency"), phpSomeName(phpName("CurrencyVB"))),
+                phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM")))
+            }),
+            phpClassDef(phpClass(
+                "Customer", {}, phpNoName(), [], [
+                    phpProperty({phpPrivate()}, [phpProperty("id", phpNoExpr())])
+                ]
+            )[@phpAnnotations={
+                phpAnnotation("table", ("name": "customers"))
+            }])
+        ])
+    ]);
+    

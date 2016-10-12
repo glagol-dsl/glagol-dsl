@@ -167,3 +167,11 @@ public data PhpTraitDef = phpTrait(str traitName, list[PhpClassItem] members);
 public data PhpStaticVar = phpStaticVar(str name, PhpOptionExpr defaultValue);
 
 public data PhpScript = phpScript(list[PhpStmt] body) | phpErrscript(str err);
+
+public data PhpAnnotation 
+    = phpAnnotation(str key)
+    | phpAnnotation(str key, map[str k, value v])
+    ;
+
+public anno set[PhpAnnotation] PhpClassDef@phpAnnotations;
+public anno str PhpClassDef@phpdoc;
