@@ -8,13 +8,15 @@ test bool moduleNameCannotUsePreservedKeywords()
     bool success = false;
     
     str failCode 
-        = "module true;";
+        = "module true;
+        'entity Blah {}";
     
     try parseModule(failCode);
     catch e: success = true;
     
     str successCode 
-        = "module ThisIsOk_IGuess;";
+        = "module ThisIsOk_IGuess;
+        'entity Blah {}";
     
     try parseModule(successCode);
     catch e: success = false;
@@ -28,7 +30,8 @@ test bool moduleArtifactImportsShouldStartWithCapital()
     
     str failCode 
         = "module Example;
-          'import I18n::user;";
+          'import I18n::user;
+          'entity Blah {}";
     
     try parseModule(failCode);
     catch e: success = true;
@@ -36,6 +39,7 @@ test bool moduleArtifactImportsShouldStartWithCapital()
     str successCode 
         = "module Example;
           'import I18n::User;
+          'entity Blah {}
           '";
     
     try parseModule(successCode);
@@ -50,7 +54,8 @@ test bool moduleArtifactImportsShouldNotContainUnderscores()
     
     str failCode 
         = "module Example;
-          'import I18n::User_Entity;";
+          'import I18n::User_Entity;
+           'entity Blah {}";
     
     try parseModule(failCode);
     catch e: success = true;
@@ -58,6 +63,7 @@ test bool moduleArtifactImportsShouldNotContainUnderscores()
     str successCode 
         = "module Example;
           'import I18n::UserEntity;
+          'entity Blah {}
           '";
     
     try parseModule(successCode);

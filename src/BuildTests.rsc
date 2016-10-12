@@ -27,7 +27,7 @@ public void main(list[str] args)
 
     testFiles = collectTestFiles(testsLoc);
 
-    list[str] modules = [moduleName | file <- testFiles, line := readFileLines(file)[0], /module <moduleName:[a-zA-Z:]+?>$/i := line];
+    list[str] modules = [moduleName | file <- testFiles, line := readFileLines(file)[0], /module <moduleName:[a-zA-Z0-9:]+?>$/i := line];
     list[tuple[str function, str fileName]] functions = [<function, file.path> | file <- testFiles, line <- readFileLines(file), /test bool <function:.+?>\(\)/i := line];
 
     str testAggregate = "module Tests
