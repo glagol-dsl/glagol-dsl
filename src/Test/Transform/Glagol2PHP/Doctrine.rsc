@@ -82,21 +82,21 @@ test bool shouldTransformSimpleAnnotatedWithValueEntityToPhpScriptUsingDoctrine(
               phpAnnotation("Entity"),
               phpAnnotation(
                 "ORM\\Table",
-                ("name":"customers"))
+                phpAnnotationVal(("name":phpAnnotationVal("customers"))))
             } &&
            ast.body[0].body[1].classDef.members[0]@phpAnnotations == {
                   phpAnnotation(
                     "ORM\\Column",
-                    (
-                        "name": "customer_id",
-                        "type": "integer",
-                        "length": 11,
-                        "unique": true,
-                        "options": (
-                            "comment": "This is the primary key"
-                        ),
-                        "scale": 12.35
-                    )),
+                    phpAnnotationVal((
+                        "name": phpAnnotationVal("customer_id"),
+                        "type": phpAnnotationVal("integer"),
+                        "length": phpAnnotationVal(11),
+                        "unique": phpAnnotationVal(true),
+                        "options": phpAnnotationVal((
+                            "comment": phpAnnotationVal("This is the primary key")
+                        )),
+                        "scale": phpAnnotationVal(12.35)
+                    ))),
                   phpAnnotation("ORM\\Id")
            };
 }

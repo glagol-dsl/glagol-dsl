@@ -170,8 +170,14 @@ public data PhpScript = phpScript(list[PhpStmt] body) | phpErrscript(str err);
 
 public data PhpAnnotation 
     = phpAnnotation(str key)
-    // TODO use node structure instead of just generic value
-    | phpAnnotation(str key, map[str k, value v])
+    | phpAnnotation(str key, PhpAnnotation \map)
+    | phpAnnotationVal(map[str k, PhpAnnotation v])
+    | phpAnnotationVal(str string)
+    | phpAnnotationVal(int integer)
+    | phpAnnotationVal(real float)
+    | phpAnnotationVal(bool boolean)
+    | phpAnnotationVal(list[PhpAnnotation] items)
+    | phpAnnotationVal(PhpAnnotation \map)
     ;
 
 public anno set[PhpAnnotation] PhpClassDef@phpAnnotations;
