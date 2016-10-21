@@ -13,7 +13,7 @@ test bool shouldTransformSimpleEntityToPhpScriptUsingDoctrine()
     }, entity("Customer", {
         property(integer(), "id", {})
     })))
-    == phpScript([
+    == ("User/Entity/Customer.php": phpScript([
         phpNamespace(phpSomeName(phpName("User\\Entity")), [
             phpUse({
                 phpUse(phpName("Currency\\Value\\Money"), phpNoName()),
@@ -26,7 +26,7 @@ test bool shouldTransformSimpleEntityToPhpScriptUsingDoctrine()
                 ]
             ))
         ])
-    ]);
+    ]));
 
 test bool shouldTransformSimpleAnnotatedEntityToPhpScriptUsingDoctrine()
     = toPHPScript(<zend(), doctrine()>, \module(namespace("User", namespace("Entity")), {
@@ -37,7 +37,7 @@ test bool shouldTransformSimpleAnnotatedEntityToPhpScriptUsingDoctrine()
     }, entity("Customer", {
         property(integer(), "id", {})
     }))))
-    == phpScript([
+    == ("User/Entity/Customer.php": phpScript([
         phpNamespace(phpSomeName(phpName("User\\Entity")), [
             phpUse({
                 phpUse(phpName("Currency\\Value\\Money"), phpNoName()),
@@ -52,10 +52,10 @@ test bool shouldTransformSimpleAnnotatedEntityToPhpScriptUsingDoctrine()
                 phpAnnotation("ORM\\Table")
             }])
         ])
-    ]);
+    ]));
     
 test bool shouldTransformSimpleAnnotatedWithValueEntityToPhpScriptUsingDoctrine() {
-    PhpScript ast = toPHPScript(<zend(), doctrine()>, \module(namespace("User", namespace("Entity")), {
+    map[str, PhpScript] asts = toPHPScript(<zend(), doctrine()>, \module(namespace("User", namespace("Entity")), {
         \import("Money", namespace("Currency", namespace("Value")), "Money"),
         \import("Currency", namespace("Currency", namespace("Value")), "CurrencyVB")
     }, annotated({
@@ -77,6 +77,8 @@ test bool shouldTransformSimpleAnnotatedWithValueEntityToPhpScriptUsingDoctrine(
             ])
         }, property(integer(), "id", {}))
     }))));
+    
+    PhpScript ast = asts["User/Entity/Customer.php"];
     
     return ast.body[0].body[1].classDef@phpAnnotations == {
               phpAnnotation("Entity"),

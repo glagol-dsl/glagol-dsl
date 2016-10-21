@@ -11,9 +11,15 @@ extend Transform::Glagol2PHP::Doctrine::Annotations;
 private str NS_DL = "\\";
 private str ORM_AS = "ORM";
 
-public PhpScript toPHPScript(<_, doctrine()>, \module(Declaration namespace, imports, artifact))
-    = phpScript([toPhpStmt(namespace, imports, artifact)]) 
+public map[str, PhpScript] toPHPScript(<_, doctrine()>, \module(Declaration namespace, imports, artifact))
+    = (makeFilename(namespace, artifact): phpScript([toPhpStmt(namespace, imports, artifact)])) 
     when entity(_, _) := artifact || annotated(_, entity(_, _)) := artifact;
+
+private str makeFilename(Declaration namespace, entity(str name, _)) = namespaceToDir(namespace) + name + ".php";
+private str makeFilename(Declaration namespace, annotated(_, Declaration entity)) = makeFilename(namespace, entity);
+
+private str namespaceToDir(namespace(str name)) = name + "/";
+private str namespaceToDir(namespace(str name, Declaration sub)) = name + "/" + namespaceToDir(sub);
 
 private PhpStmt toPhpStmt(Declaration namespace, set[Declaration] imports, Declaration artifact)
     = phpNamespace(
