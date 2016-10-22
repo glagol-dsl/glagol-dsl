@@ -13,4 +13,8 @@ test bool shouldTransformParamWithDefaultIntValueAndScalarType()
 test bool shouldTransformParamWithDefaultFloatValueAndScalarType()
     = toPhpParam(param(integer(), "param1", floatLiteral(53.36))) == 
         phpParam("param1", phpSomeExpr(phpScalar(phpFloat(53.36))), phpSomeName(phpName("int")), false);
+        
+test bool shouldTransformParamWithDefaultSelfieValueIntoNullDefaultValue()
+    = toPhpParam(param(artifactType("SomeUtil"), "param1", get(selfie()))) == 
+        phpParam("param1", phpNoExpr(), phpSomeName(phpName("SomeUtil")), false);
     

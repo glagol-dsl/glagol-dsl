@@ -40,10 +40,13 @@ public void main(list[str] args)
                         'import List;
                         'import Exception;
                         'import Map;
+                        'import util::Math;
                         '<for (moduleName <- modules) {>import <moduleName>;
                         '<}>
                         '
                         'private list[str] errorMessages = [];
+                        '
+                        'private int testsPassed = 0;
                         '
                         'private void runTest(bool () t, loc location) {
                         '   try {
@@ -52,6 +55,8 @@ public void main(list[str] args)
                         '           errorMessages += \"Test \<t\> failed in \<location.path\>\";
                         '           print(\"F\");
                         '       }
+                        '       testsPassed += 1;
+                        '       if (testsPassed % 30 == 0) println(\" \<toInt((toReal(testsPassed)/<toReal("<size(functions)>")>)*100)\>%\");
                         '   } catch e: {
                         '       throw \"Test \<t\> threw an exception (located in \<location.path\>) with text \\\'\<e\>\\\'\";
                         '       return;
@@ -64,6 +69,8 @@ public void main(list[str] args)
                         '
                         '   for (t \<- tests) runTest(t, tests[t]);
                         '
+                        '   println(\" 100%\");
+                        '
                         '   if (size(errorMessages) \> 0) {
                         '       println();
                         '       println(\"Not all tests passed:\");
@@ -72,7 +79,7 @@ public void main(list[str] args)
                         '       println(\"OK\");
                         '   }
                         '
-                        '   println(\"Total tests: <size(functions)>, successful: \<size(tests) - size(errorMessages)\>, failed: \<size(errorMessages)\>\");
+                        '   println(\"Total tests: \<size(tests)\>, successful: \<size(tests) - size(errorMessages)\>, failed: \<size(errorMessages)\>\");
                         '
                         '   return size(errorMessages) \> 0 ? 1 : 0;
                         '}

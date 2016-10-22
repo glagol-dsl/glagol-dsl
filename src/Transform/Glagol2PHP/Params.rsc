@@ -8,5 +8,8 @@ import Transform::Glagol2PHP::Expressions;
 public PhpParam toPhpParam(param(Type paramType, str name)) 
     = phpParam(name, phpNoExpr(), phpSomeName(toPhpTypeName(paramType)), false);
     
+public PhpParam toPhpParam(param(Type paramType, str name, get(_))) 
+    = phpParam(name, phpNoExpr(), phpSomeName(toPhpTypeName(paramType)), false);
+    
 public PhpParam toPhpParam(param(Type paramType, str name, Expression expr)) 
     = phpParam(name, phpSomeExpr(toPhpExpr(expr)), phpSomeName(toPhpTypeName(paramType)), false);
