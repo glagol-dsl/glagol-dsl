@@ -12,3 +12,8 @@ test bool shouldTransformConstructorToPhpConstructorWithOneParamAndNoDefaultValu
         phpParam("param1", phpNoExpr(), phpSomeName(phpName("int")), false)
     ], []);
 
+test bool shouldTransformConstructorToPhpConstructorWithOneParamWithDefaultValue() =
+    toPhpClassItem(constructor([param(integer(), "param1", intLiteral(55))], [])) == phpMethod("__construct", {phpPublic()}, false, [
+        phpParam("param1", phpSomeExpr(phpScalar(phpInteger(55))), phpSomeName(phpName("int")), false)
+    ], []);
+

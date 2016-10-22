@@ -86,6 +86,7 @@ public data PhpScalar
     | phpFloat(real realVal)
     | phpInteger(int intVal)
     | phpString(str strVal)
+    | phpBoolean(bool boolVal)
     | phpEncapsed(list[PhpExpr] parts)
     ;
 
