@@ -39,3 +39,4 @@ test bool shouldTransformToScalarListPhpExpr()
 test bool shouldTransformToFetchLocalPropPhpExpr()
     = toPhpExpr(get(artifactType("SomeUtil"))) == phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("someUtil")));
     
+

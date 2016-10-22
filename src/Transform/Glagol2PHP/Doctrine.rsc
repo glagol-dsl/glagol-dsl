@@ -2,6 +2,7 @@ module Transform::Glagol2PHP::Doctrine
 
 import Transform::Glagol2PHP::Common;
 import Transform::Glagol2PHP::Constructors;
+import Transform::Glagol2PHP::Properties;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Config::Reader;
@@ -30,14 +31,6 @@ private PhpStmt toPhpStmt(entity(str name, list[Declaration] declarations))
     = phpClassDef(phpClass(name, {}, phpNoName(), [], [toPhpClassItem(m) | m <- declarations])[
         @phpAnnotations={phpAnnotation("ORM\\Entity")}
     ]);
-
-@doc="Converts Glagol property into PHP property (without default value)"
-private PhpClassItem toPhpClassItem(property(Type \valueType, str name, _)) 
-    = phpProperty({phpPrivate()}, [phpProperty(name, phpNoExpr())]);
-
-@doc="Converts Glagol property into PHP pproperty (WITH default value)"
-private PhpClassItem toPhpClassItem(property(Type \valueType, str name, _, Expression defaultValue)) 
-    = phpProperty({phpPrivate()}, [phpProperty(name, phpSomeExpr(toPhpExpr(defaultValue)))]);
 
 @doc="Will apply annotations to all php class items that were converted from Glagol in-artefact declarations"
 private PhpClassItem toPhpClassItem(annotated(list[Annotation] annotations, Declaration declaration))
