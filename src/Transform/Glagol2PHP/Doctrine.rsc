@@ -1,6 +1,7 @@
 module Transform::Glagol2PHP::Doctrine
 
 import Transform::Glagol2PHP::Common;
+import Transform::Glagol2PHP::Constructors;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Config::Reader;
