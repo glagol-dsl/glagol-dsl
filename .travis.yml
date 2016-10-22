@@ -3,6 +3,6 @@ jdk:
   - oraclejdk8
 sudo: required
 script:
-  - cd src
-  - ../support/bin/build 
-  - ../support/bin/rascalu Tests
+  - cd support
+  - ./bin/build 
+  - ./bin/run_tests
