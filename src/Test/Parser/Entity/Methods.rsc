@@ -12,8 +12,8 @@ test bool shouldParseMethodWithoutModifier()
         '}";
     
     return parseModule(code) == 
-      \module(namespace("Example"), {},
-        entity("User", { 
+      \module(namespace("Example"), [],
+        entity("User", [ 
             method(\public(), integer(), "example", [
                     param(integer(), "blabla", intLiteral(5)),
                     param(typedList(string()), "names", \list([strLiteral("a"), strLiteral("b"), strLiteral("c")]))
@@ -21,7 +21,7 @@ test bool shouldParseMethodWithoutModifier()
                     \return(expression(product(\bracket(addition(intLiteral(23), intLiteral(5))), intLiteral(8))))
                 ]
             )
-          }
+          ]
         )
       );
 }
@@ -32,18 +32,28 @@ test bool shouldParseMethodWithModifierAndWhenExpression()
         = "module Example;
         'entity User {
         '    private int example(int argument) = (23 + 5)*8 when argument \> 5;
+        '    @doc(\"This is a doc\")
+        '    private int example(int argument) = (23 + 5)*8 when argument \> 5;
         '}";
         
     return parseModule(code) == 
-      \module(namespace("Example"), {},
-        entity("User", { 
+      \module(namespace("Example"), [],
+        entity("User", [
             method(\private(), integer(), "example", [
                     param(integer(), "argument")
                 ], [
                     \return(expression(product(\bracket(addition(intLiteral(23), intLiteral(5))), intLiteral(8))))
                 ], greaterThan(variable("argument"), intLiteral(5))
+            ),
+            annotated([annotation("doc", [annotationVal("This is a doc")])], 
+                method(\private(), integer(), "example", [
+                        param(integer(), "argument")
+                    ], [
+                        \return(expression(product(\bracket(addition(intLiteral(23), intLiteral(5))), intLiteral(8))))
+                    ], greaterThan(variable("argument"), intLiteral(5))
+                )
             )
-          }
+          ]
         )
       );
 }
@@ -59,15 +69,15 @@ test bool shouldParseMethodWithModifierBodyAndWhen()
         '}";
         
     return parseModule(code) == 
-      \module(namespace("Example"), {},
-        entity("User", { 
+      \module(namespace("Example"), [],
+        entity("User", [ 
             method(\private(), voidValue(), "processEntry", [
                     param(integer(), "limit", intLiteral(15))
                 ], [
                     \return(expression(addition(intLiteral(1), intLiteral(5))))
                 ], equals(variable("limit"), intLiteral(15))
             )
-          }
+          ]
         )
       );
 }

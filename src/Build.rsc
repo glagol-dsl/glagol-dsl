@@ -17,6 +17,8 @@ private void buildConverters() {
         'import Parser::ParseCode;
         'import ParseTree;
         'import String;
+        'import List;
+        'import Set;
         'import Exceptions::ParserExceptions;
         '";
     

@@ -8,49 +8,36 @@ import List;
 
 extend Transform::Glagol2PHP::Doctrine::Annotations;
 
-private str NS_DL = "\\";
-private str ORM_AS = "ORM";
-
 public map[str, PhpScript] toPHPScript(<_, doctrine()>, \module(Declaration namespace, imports, artifact))
     = (makeFilename(namespace, artifact): phpScript([toPhpStmt(namespace, imports, artifact)])) 
     when entity(_, _) := artifact || annotated(_, entity(_, _)) := artifact;
 
-private str makeFilename(Declaration namespace, entity(str name, _)) = namespaceToDir(namespace) + name + ".php";
-private str makeFilename(Declaration namespace, annotated(_, Declaration entity)) = makeFilename(namespace, entity);
-
-private str namespaceToDir(namespace(str name)) = name + "/";
-private str namespaceToDir(namespace(str name, Declaration sub)) = name + "/" + namespaceToDir(sub);
-
-private PhpStmt toPhpStmt(Declaration namespace, set[Declaration] imports, Declaration artifact)
+private PhpStmt toPhpStmt(Declaration namespace, list[Declaration] imports, Declaration artifact)
     = phpNamespace(
-        phpSomeName(phpName(namespaceToString(namespace, NS_DL))),
+        phpSomeName(phpName(namespaceToString(namespace, "\\"))),
         [phpUse(
-            {toPhpUse(i) | i <- imports} + {phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName(ORM_AS)))}
+            {toPhpUse(i) | i <- imports} + {phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM")))}
         )] + [toPhpStmt(artifact)]
     );
 
-// imports
-private PhpUse toPhpUse(\import(str artifactName, Declaration namespace, str as))
-    = phpUse(phpName(namespaceToString(namespace, NS_DL) + NS_DL + artifactName), phpSomeName(phpName(as))) when as != artifactName;
-
-private PhpUse toPhpUse(\import(str artifactName, Declaration namespace, str as))
-    = phpUse(phpName(namespaceToString(namespace, NS_DL) + NS_DL + artifactName), phpNoName()) when as == artifactName;
-
-// annotated declarations
-private PhpStmt toPhpStmt(annotated(set[Annotation] annotations, Declaration artifact)) 
+@doc="Will attach php annotations to all annotated Glagol declarations"
+private PhpStmt toPhpStmt(annotated(list[Annotation] annotations, Declaration artifact)) 
     = applyAnnotationsOnStmt(toPhpStmt(artifact), annotations);
 
-// entities
-private PhpStmt toPhpStmt(entity(str name, set[Declaration] declarations))
+@doc="Convert entity to a PHP class"
+private PhpStmt toPhpStmt(entity(str name, list[Declaration] declarations))
     = phpClassDef(phpClass(name, {}, phpNoName(), [], [toPhpClassItem(m) | m <- declarations])[
-        @phpAnnotations={phpAnnotation("Entity")}
+        @phpAnnotations={phpAnnotation("ORM\\Entity")}
     ]);
 
-private PhpClassItem toPhpClassItem(annotated(set[Annotation] annotations, Declaration declaration))
-    = applyAnnotationsOnClassItem(toPhpClassItem(declaration), annotations);
-
+@doc="Converts Glagol property into PHP property (without default value)"
 private PhpClassItem toPhpClassItem(property(Type \valueType, str name, _)) 
     = phpProperty({phpPrivate()}, [phpProperty(name, phpNoExpr())]);
 
+@doc="Converts Glagol property into PHP pproperty (WITH default value)"
 private PhpClassItem toPhpClassItem(property(Type \valueType, str name, _, Expression defaultValue)) 
     = phpProperty({phpPrivate()}, [phpProperty(name, phpSomeExpr(toPhpExpr(defaultValue)))]);
+
+@doc="Will apply annotations to all php class items that were converted from Glagol in-artefact declarations"
+private PhpClassItem toPhpClassItem(annotated(list[Annotation] annotations, Declaration declaration))
+    = applyAnnotationsOnClassItem(toPhpClassItem(declaration), annotations);

@@ -5,12 +5,14 @@ import Syntax::Concrete::Grammar;
 import Parser::ParseCode;
 import ParseTree;
 import String;
+import List;
+import Set;
 import Exceptions::ParserExceptions;
 
 
 
 public Declaration buildAST((Module) `module <Namespace n>;<Import* imports><Artifact artifact>`) 
-    = \module(convertModuleNamespace(n), {convertImport(\import) | \import <- imports}, convertArtifact(artifact));
+    = \module(convertModuleNamespace(n), [convertImport(\import) | \import <- imports], convertArtifact(artifact));
 
 
 public Expression convertParameterDefaultVal((AssignDefaultValue) `=<DefaultValue defaultValue>`, Type onType) {
@@ -27,25 +29,25 @@ public Expression convertParameterDefaultVal((AssignDefaultValue) `=<DefaultValu
 
 
 public Declaration convertArtifact((Artifact) `entity <ArtifactName name> {<Declaration* declarations>}`) 
-    = entity("<name>", {convertDeclaration(d, "<name>", "entity") | d <- declarations});
+    = entity("<name>", [convertDeclaration(d, "<name>", "entity") | d <- declarations]);
 
 public Declaration convertArtifact((Artifact) `<Annotation* annotations> entity <ArtifactName name> {<Declaration* declarations>}`) 
-    = annotated({convertAnnotation(annotation) | annotation <- annotations}, entity("<name>", {convertDeclaration(d, "<name>", "entity") | d <- declarations}));
+    = annotated([convertAnnotation(annotation) | annotation <- annotations], entity("<name>", [convertDeclaration(d, "<name>", "entity") | d <- declarations]));
 
 public Declaration convertArtifact((Artifact) `repository for <ArtifactName name> {<Declaration* declarations>}`)
-    = repository("<name>", {convertDeclaration(d, "<name>", "repository") | d <- declarations});
+    = repository("<name>", [convertDeclaration(d, "<name>", "repository") | d <- declarations]);
 
 public Declaration convertArtifact((Artifact) `<Annotation* annotations> repository for <ArtifactName name> {<Declaration* declarations>}`)
-    = annotated({convertAnnotation(annotation) | annotation <- annotations}, repository("<name>", {convertDeclaration(d, "<name>", "repository") | d <- declarations}));
+    = annotated([convertAnnotation(annotation) | annotation <- annotations], repository("<name>", [convertDeclaration(d, "<name>", "repository") | d <- declarations]));
 
 public Declaration convertArtifact((Artifact) `value <ArtifactName name> {<Declaration* declarations>}`)
-    = valueObject("<name>", {convertDeclaration(d, "<name>", "value") | d <- declarations});
+    = valueObject("<name>", [convertDeclaration(d, "<name>", "value") | d <- declarations]);
     
 public Declaration convertArtifact((Artifact) `util <ArtifactName name> {<Declaration* declarations>}`)
-    = util("<name>", {convertDeclaration(d, "<name>", "util") | d <- declarations});
+    = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations]);
     
 public Declaration convertArtifact((Artifact) `service <ArtifactName name> {<Declaration* declarations>}`)
-    = util("<name>", {convertDeclaration(d, "<name>", "util") | d <- declarations});
+    = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations]);
     
 
 
@@ -56,41 +58,45 @@ public AssignOperator convertAssignOperator((AssignOperator) `=`) = defaultAssig
 public AssignOperator convertAssignOperator((AssignOperator) `+=`) = additionAssign();
 
 
-public Declaration convertDeclaration(
-    (Declaration) `<Type returnType><MemberName name> (<{Parameter ","}* parameters>) { <Statement* body> }`, _, _) 
+public Declaration convertMethod(
+    (Method) `<Type returnType><MemberName name> (<{Parameter ","}* parameters>) { <Statement* body> }`) 
     = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body]);
 
-public Declaration convertDeclaration(
-    (Declaration) `<Modifier modifier><Type returnType><MemberName name> (<{Parameter ","}* parameters>) { <Statement* body> }`, _, _) 
+public Declaration convertMethod(
+    (Method) `<Modifier modifier><Type returnType><MemberName name> (<{Parameter ","}* parameters>) { <Statement* body> }`) 
     = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body]);
 
-public Declaration convertDeclaration(
-    (Declaration) `<Type returnType><MemberName name> (<{Parameter ","}* parameters>) { <Statement* body> } <When when>;`, _, _) 
+public Declaration convertMethod(
+    (Method) `<Type returnType><MemberName name> (<{Parameter ","}* parameters>) { <Statement* body> } <When when>;`) 
     = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], convertWhen(when));
     
-public Declaration convertDeclaration(
-    (Declaration) `<Modifier modifier><Type returnType><MemberName name> (<{Parameter ","}* parameters>) { <Statement* body> } <When when>;`, _, _) 
+public Declaration convertMethod(
+    (Method) `<Modifier modifier><Type returnType><MemberName name> (<{Parameter ","}* parameters>) { <Statement* body> } <When when>;`) 
     = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], convertWhen(when));
     
-public Declaration convertDeclaration(
-    (Declaration) `<Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr>;`, _, _) 
+public Declaration convertMethod(
+    (Method) `<Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr>;`) 
     = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))]);
 
-public Declaration convertDeclaration(
-    (Declaration) `<Modifier modifier><Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr>;`, _, _) 
+public Declaration convertMethod(
+    (Method) `<Modifier modifier><Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr>;`) 
     = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))]);
 
-public Declaration convertDeclaration(
-    (Declaration) `<Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr><When when>;`, _, _) 
+public Declaration convertMethod(
+    (Method) `<Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr><When when>;`) 
     = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))], convertWhen(when));
 
-public Declaration convertDeclaration(
-    (Declaration) `<Modifier modifier><Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr><When when>;`, _, _) 
+public Declaration convertMethod(
+    (Method) `<Modifier modifier><Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr><When when>;`) 
     = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))], convertWhen(when));
     
 private Modifier convertModifier((Modifier) `public`) = \public();
 private Modifier convertModifier((Modifier) `private`) = \private();
-    
+
+public Declaration convertDeclaration((Declaration) `<Method method>`, _, _) = convertMethod(method);
+public Declaration convertDeclaration((Declaration) `<Annotation+ annotations><Method method>`, _, _) 
+    = annotated([convertAnnotation(annotation) | annotation <- annotations], convertMethod(method));
+
 
 
 public Expression convertExpression((Expression) `(<Expression expr>)`) = \bracket(convertExpression(expr));
@@ -229,29 +235,22 @@ public bool convertBoolean((Boolean) `true`) = true;
 public bool convertBoolean((Boolean) `false`) = false;
 
 
-public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name>;`, _, _) 
+public Declaration convertProperty((Property) `<Type prop><MemberName name>;`) 
     = property(convertType(prop), "<name>", {});
 
-public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name><AssignDefaultValue defVal>;`, _, _) 
+public Declaration convertProperty((Property) `<Type prop><MemberName name><AssignDefaultValue defVal>;`) 
     = property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop)));
     
-public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name><AccessProperties accessProperties>;`, _, _) 
+public Declaration convertProperty((Property) `<Type prop><MemberName name><AccessProperties accessProperties>;`) 
     = property(convertType(prop), "<name>", convertAccessProperties(accessProperties));
     
-public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`, _, _) 
+public Declaration convertProperty((Property) `<Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`) 
     = property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop)));
     
-public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name>;`, _, _) 
-    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>"));
-
-public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name><AssignDefaultValue defVal>;`, _, _) 
-    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop))));
+public Declaration convertDeclaration((Declaration) `<Annotation+ annotations><Property prop>`, _, _) 
+    = annotated([convertAnnotation(annotation) | annotation <- annotations], convertProperty(prop));
     
-public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name><AccessProperties accessProperties>;`, _, _) 
-    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", convertAccessProperties(accessProperties)));
-    
-public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`, _, _) 
-    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop))));
+public Declaration convertDeclaration((Declaration) `<Property prop>`, _, _) = convertProperty(prop);
 
 
 public Declaration convertModuleNamespace((Namespace) `<Name name>`) = namespace("<name>");
@@ -374,9 +373,9 @@ public Declaration convertImport((Import) `import <Namespace n>::<ArtifactName a
 private str convertImportAlias((ImportAlias) `as <ArtifactName as>`) = "<as>";
 
 
-public Declaration convertDeclaration(
-    (Declaration) `<ArtifactName name> (<{Parameter ","}* parameters>) { <Statement* body> }`, 
-    str artifactName, _) 
+public Declaration convertConstructor(
+    (Constructor) `<ArtifactName name> (<{Parameter ","}* parameters>) { <Statement* body> }`, 
+    str artifactName) 
 {
     if (artifactName != "<name>") {
         throw IllegalConstructorName("\'<name>\' is invalid constructor name");
@@ -385,9 +384,9 @@ public Declaration convertDeclaration(
     return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body]);
 }
     
-public Declaration convertDeclaration(
-    (Declaration) `<ArtifactName name> (<{Parameter ","}* parameters>) { <Statement* body> }<When when>;`, 
-    str artifactName, _)
+public Declaration convertConstructor(
+    (Constructor) `<ArtifactName name> (<{Parameter ","}* parameters>) { <Statement* body> }<When when>;`, 
+    str artifactName)
 {
     if (artifactName != "<name>") {
         throw IllegalConstructorName("\'<name>\' is invalid constructor name");
@@ -396,9 +395,9 @@ public Declaration convertDeclaration(
     return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], convertWhen(when));
 }
 
-public Declaration convertDeclaration(
-    (Declaration) `<ArtifactName name> (<{Parameter ","}* parameters>);`, 
-    str artifactName, _) 
+public Declaration convertConstructor(
+    (Constructor) `<ArtifactName name> (<{Parameter ","}* parameters>);`, 
+    str artifactName) 
 {
     if (artifactName != "<name>") {
         throw IllegalConstructorName("\'<name>\' is invalid constructor name");
@@ -406,6 +405,10 @@ public Declaration convertDeclaration(
     
     return constructor([convertParameter(p) | p <- parameters], []);
 }
+
+public Declaration convertDeclaration((Declaration) `<Constructor construct>`, str artifactName, _) = convertConstructor(construct, artifactName);
+public Declaration convertDeclaration((Declaration) `<Annotation+ annotations><Constructor construct>`, str artifactName, _) 
+    = annotated([convertAnnotation(annotation) | annotation <- annotations], convertConstructor(construct, artifactName));
 
 
 public Declaration convertParameter((Parameter) `<Type paramType> <MemberName name>`) = param(convertType(paramType), "<name>");

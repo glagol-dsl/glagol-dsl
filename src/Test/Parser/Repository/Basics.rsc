@@ -13,9 +13,9 @@ test bool shouldParseEmptyRepository()
           'repository for User {
           '}";
     
-    return parseModule(code) == \module(namespace("Example"), {
+    return parseModule(code) == \module(namespace("Example"), [
         \import("EntityManager", namespace("Glagol", namespace("ORM")), "EntityManager")
-    }, repository("User", {}));
+    ], repository("User", []));
 }
 
 test bool shouldParseRepositoryWithMethodAndAMap()
@@ -26,11 +26,11 @@ test bool shouldParseRepositoryWithMethodAndAMap()
           '     User[] findById(int id) = findOneBy({\"id\": id});
           '}";
     
-    return parseModule(code) == \module(namespace("Example"), {}, repository("User", {
+    return parseModule(code) == \module(namespace("Example"), [], repository("User", [
         method(\public(), typedList(artifactType("User")), "findById", [
             param(integer(), "id")
         ], [\return(expression(
             invoke("findOneBy", [\map((strLiteral("id"): variable("id")))])
         ))])
-    }));
+    ]));
 }

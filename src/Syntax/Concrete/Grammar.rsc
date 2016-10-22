@@ -56,11 +56,25 @@ syntax AnnotationValue
     ;
 
 syntax Declaration
-    = Annotation* annotations Type type MemberName name AssignDefaultValue? AccessProperties? accessProperties ";"
+    = Property property
+    | Annotation+ annotations Property property
+    | Constructor constructor
+    | Annotation+ annotations Constructor constructor
     | "relation" RelationDir l ":" RelationDir r ArtifactName entity "as" MemberName alias AccessProperties? accessProperties ";"
-    | ArtifactName "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
+    | Method method
+    | Annotation+ annotations Method method
+    ;
+
+syntax Property 
+    = Type type MemberName name AssignDefaultValue? AccessProperties? accessProperties ";";
+
+syntax Constructor
+    = ArtifactName "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
     | ArtifactName "(" {Parameter ","}* parameters ")" When? when ";"
-    | Modifier? modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
+    ;
+
+syntax Method
+    = Modifier? modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
     | Modifier? modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "=" Expression expr When? when ";"
     ;
 

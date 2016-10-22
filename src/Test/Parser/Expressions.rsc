@@ -14,12 +14,12 @@ test bool testShouldParseVariableInBrackets()
                '    }
                '}"; 
     
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "variableInBrackets", [param(integer(), "theVariable")], [
             expression(\bracket(\bracket(variable("theVariable")))),
             expression(addition(\bracket(variable("theVariable")), intLiteral(1)))
         ])
-    }));
+    ]));
 }
 
 test bool testShouldParseList()
@@ -34,14 +34,14 @@ test bool testShouldParseList()
                '    }
                '}";
                
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "arrayExpression", [], [
             expression(\list([strLiteral("First thing"), strLiteral("Second thing")])),
             expression(\list([intLiteral(1), intLiteral(2), intLiteral(3), intLiteral(4), intLiteral(5)])),
             expression(\list([floatLiteral(1.34), floatLiteral(2.35), floatLiteral(23.56)])),
             expression(\list([\list([intLiteral(1), intLiteral(2), intLiteral(3)]), \list([intLiteral(3), intLiteral(4), intLiteral(5)])]))
         ])
-    }));
+    ]));
 }
 
 test bool testShouldParseExpressionsWithNegativeLiterals()
@@ -53,11 +53,11 @@ test bool testShouldParseExpressionsWithNegativeLiterals()
                '    }
                '}";
                
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "nestedNegative", [], [
             expression(negative(\bracket(negative(\bracket(negative(\bracket(intLiteral(23))))))))
         ])
-    }));
+    ]));
 }
 
 test bool testShouldParseMathExpressions()
@@ -75,7 +75,7 @@ test bool testShouldParseMathExpressions()
                '    }
                '}";
     
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "math", [], [
             expression(subtraction(
                   product(
@@ -98,7 +98,7 @@ test bool testShouldParseMathExpressions()
             expression(or(or(and(intLiteral(1), boolLiteral(true)), boolLiteral(false)), boolLiteral(true))),
             expression(ifThenElse(greaterThan(variable("argument"), intLiteral(0)), strLiteral("argument is positive"), strLiteral("argument is negative")))
           ])
-    }));
+    ]));
 }
 
 test bool shouldParseAllTypesOfLiterals()
@@ -115,7 +115,7 @@ test bool shouldParseAllTypesOfLiterals()
                '    }
                '}";
     
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "literals", [param(integer(), "var")], [
             expression(strLiteral("simple string literal")),
             expression(intLiteral(123)),
@@ -124,7 +124,7 @@ test bool shouldParseAllTypesOfLiterals()
             expression(boolLiteral(false)),
             expression(variable("var"))
           ])
-    }));
+    ]));
 }
 
 test bool testNewInstance()
@@ -136,11 +136,11 @@ test bool testNewInstance()
                '    }
                '}";
     
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "newInstance", [], [
             expression(new("DateTime", []))
           ])
-    }));
+    ]));
 }
 
 test bool testNewInstanceWithArg()
@@ -152,11 +152,11 @@ test bool testNewInstanceWithArg()
                '    }
                '}";
     
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "newInstance", [], [
             expression(new("DateTime", [strLiteral("now")]))
           ])
-    }));
+    ]));
 }
 
 test bool testNewInstanceWithArgs()
@@ -168,13 +168,13 @@ test bool testNewInstanceWithArgs()
                '    }
                '}";
     
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "newInstance", [], [
             expression(new("DateTime", [strLiteral("now"), new("Money", [
                 intLiteral(2300), strLiteral("USD")
             ])]))
           ])
-    }));
+    ]));
 }
 
 test bool testMethodInvoke()
@@ -186,11 +186,11 @@ test bool testMethodInvoke()
                '    }
                '}";
     
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "methodInvoke", [], [
             expression(invoke("methodInvoke", []))
           ])
-    }));
+    ]));
 }
 
 test bool testMethodInvokeChainedToAVariable()
@@ -206,7 +206,7 @@ test bool testMethodInvokeChainedToAVariable()
                '    }
                '}";
     
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "methodInvoke", [], [
             declare(artifactType("SomeEntity"), variable("eee"), expression(
                 new("SomeEntity", [])
@@ -216,7 +216,7 @@ test bool testMethodInvokeChainedToAVariable()
             expression(invoke(fieldAccess(fieldAccess(variable("eee"), "blah"), "blah2"), "methodInvoke", [])),
             expression(invoke(new("MyClass", []), "methodInvoke", []))
           ])
-    }));
+    ]));
 }
 
 test bool testMethodInvokeUsingThis()
@@ -228,11 +228,11 @@ test bool testMethodInvokeUsingThis()
                '    }
                '}";
     
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "methodInvoke", [], [
             expression(invoke(fieldAccess(fieldAccess(this(), "field"), "nested"), "invoke", []))
           ])
-    }));
+    ]));
 }
 
 test bool shouldFailWhenUsingWrongExpressionsForChainedAccess()
@@ -262,11 +262,11 @@ test bool testFieldAccessWithAssign()
                '    }
                '}";
     
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "methodInvoke", [], [
             assign(fieldAccess(this(), "field"), defaultAssign(), expression(strLiteral("adsdsasad"))),
             assign(fieldAccess(invoke(this(), "invoke", []), "field2"), additionAssign(), expression(intLiteral(33))),
             assign(fieldAccess(this(), "var"), defaultAssign(), expression(fieldAccess(variable("that"), "var2")))
           ])
-    }));
+    ]));
 }

@@ -15,9 +15,9 @@ test bool shouldParseInjections()
           '     EntityManager em = get EntityManager;
           '}";
     
-    return parseModule(code) == \module(namespace("Example"), {
+    return parseModule(code) == \module(namespace("Example"), [
         \import("EntityManager", namespace("Glagol", namespace("ORM")), "EntityManager")
-    }, repository("User", {
+    ], repository("User", [
         property(artifactType("EntityManager"), "em", {}, get(artifactType("EntityManager")))
-    }));
+    ]));
 }

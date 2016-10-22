@@ -31,13 +31,13 @@ private str toPhpAnnotationKey("id") = "ORM\\Id";
 private str toPhpAnnotationKey("field") = "ORM\\Column";
 private str toPhpAnnotationKey("column") = "ORM\\Column";
 
-private PhpStmt applyAnnotationsOnStmt(phpClassDef(PhpClassDef classDef), set[Annotation] annotations)
+private PhpStmt applyAnnotationsOnStmt(phpClassDef(PhpClassDef classDef), list[Annotation] annotations)
     = phpClassDef(classDef[
             @phpAnnotations=((classDef@phpAnnotations?) ? classDef@phpAnnotations : {}) + {toPhpAnnotation(a) | a <- annotations}
         ]
     );
 
-private PhpClassItem applyAnnotationsOnClassItem(PhpClassItem classItem, set[Annotation] annotations)
+private PhpClassItem applyAnnotationsOnClassItem(PhpClassItem classItem, list[Annotation] annotations)
     = classItem[
             @phpAnnotations=((classItem@phpAnnotations?) ? classItem@phpAnnotations : {}) + {toPhpAnnotation(a) | a <- annotations}
         ];

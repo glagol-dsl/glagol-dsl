@@ -10,5 +10,5 @@ test bool shouldParseEmptyValueObject()
         'value DateTime {}
         '";
         
-    return parseModule(code) == \module(namespace("Testing"), {}, valueObject("DateTime", {}));
+    return parseModule(code) == \module(namespace("Testing"), [], valueObject("DateTime", []));
 }

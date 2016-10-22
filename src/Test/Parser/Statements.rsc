@@ -15,14 +15,14 @@ test bool testDeclarationsWithPrimitiveTypes() {
         '   }
         '}";
         
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [
             declare(float(), variable("myVariable"), expression(floatLiteral(5.4))),
             declare(integer(), variable("yourVariable"), expression(intLiteral(23))),
             declare(string(), variable("myString"), expression(strLiteral("hello world"))),
             declare(boolean(), variable("withExpr"), expression(greaterThan(variable("myVariable"), variable("yourVariable"))))
         ])
-    }));
+    ]));
 }
 
 test bool testDeclarationsWithoutDefaultValue() {
@@ -37,13 +37,13 @@ test bool testDeclarationsWithoutDefaultValue() {
         '   }
         '}";
         
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [
             declare(float(), variable("myVariable")),
             declare(integer(), variable("yourVariable")),
             assign(variable("yourVariable"), defaultAssign(), expression(addition(variable("yourVariable"), intLiteral(5))))
         ])
-    }));
+    ]));
 }
 
 test bool testDeclarationsWithCustomTypes() {
@@ -55,11 +55,11 @@ test bool testDeclarationsWithCustomTypes() {
         '   }
         '}";
         
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [
             declare(artifactType("DateTime"), variable("myDate"))
         ])
-    }));
+    ]));
 }
 
 test bool testDeclarationsWithNestedAssignment() {
@@ -71,11 +71,11 @@ test bool testDeclarationsWithNestedAssignment() {
         '   }
         '}";
         
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a")], [
             declare(integer(), variable("myNumber"), assign(variable("a"), defaultAssign(), expression(intLiteral(5))))
         ])
-    }));
+    ]));
 }
 
 test bool testIfStatement() {
@@ -87,11 +87,11 @@ test bool testIfStatement() {
         '   }
         '}";
 
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a")], [
             ifThen(equals(variable("a"), intLiteral(5)), \return(expression(intLiteral(5))))
         ])
-    }));
+    ]));
 }
 
 test bool testIfStatementWithBlock() {
@@ -103,11 +103,11 @@ test bool testIfStatementWithBlock() {
         '   }
         '}";
 
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a")], [
             ifThen(equals(variable("a"), intLiteral(5)), block([\return(expression(intLiteral(5)))]))
         ])
-    }));
+    ]));
 }
 
 test bool testIfElseStatement() {
@@ -120,11 +120,11 @@ test bool testIfElseStatement() {
         '   }
         '}";
 
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a")], [
             ifThenElse(equals(variable("a"), intLiteral(5)), \return(expression(intLiteral(5))), \return(expression(intLiteral(6))))
         ])
-    }));
+    ]));
 }
 
 test bool testIfElseIfStatement() {
@@ -137,13 +137,13 @@ test bool testIfElseIfStatement() {
         '   }
         '}";
 
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a")], [
             ifThenElse(equals(variable("a"), intLiteral(5)), \return(expression(intLiteral(5))), 
                 ifThen(equals(variable("a"), intLiteral(6)), \return(expression(intLiteral(6))))    
             )
         ])
-    }));
+    ]));
 }
 
 test bool testIfElseIfEndingWithElseStatement() {
@@ -157,13 +157,13 @@ test bool testIfElseIfEndingWithElseStatement() {
         '   }
         '}";
 
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a")], [
             ifThenElse(equals(variable("a"), intLiteral(5)), \return(expression(intLiteral(5))), 
                 ifThenElse(equals(variable("a"), intLiteral(6)), \return(expression(intLiteral(6))), \return(expression(intLiteral(0))))
             )
         ])
-    }));
+    ]));
 }
 
 test bool testForeachStatementWithEmptyStmt() {
@@ -175,11 +175,11 @@ test bool testForeachStatementWithEmptyStmt() {
         '   }
         '}";
 
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(typedList(integer()), "a")], [
             foreach(variable("a"), variable("b"), emptyStmt())
         ])
-    }));
+    ]));
 }
 
 test bool testForeachStatementWithEmptyStmtAndDirectList() {
@@ -191,12 +191,12 @@ test bool testForeachStatementWithEmptyStmtAndDirectList() {
         '   }
         '}";
 
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [
             foreach(\list([intLiteral(1), intLiteral(2), intLiteral(3), intLiteral(4), intLiteral(5)]), 
                 variable("b"), emptyStmt())
         ])
-    }));
+    ]));
 }
 
 test bool testForeachStatementWithIncrementStmtAndDirectList() {
@@ -209,13 +209,13 @@ test bool testForeachStatementWithIncrementStmtAndDirectList() {
         '   }
         '}";
 
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [
             declare(integer(), variable("i")),
             foreach(\list([intLiteral(1), intLiteral(2), intLiteral(3), intLiteral(4), intLiteral(5)]), 
                 variable("b"), assign(variable("i"), additionAssign(), expression(intLiteral(1))))
         ])
-    }));
+    ]));
 }
 
 test bool testForeachStatementWithBreak() {
@@ -229,13 +229,13 @@ test bool testForeachStatementWithBreak() {
         '   }
         '}";
 
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(typedList(integer()), "a")], [
             foreach(variable("a"), variable("b"), block([
                 ifThen(greaterThan(variable("a"), intLiteral(2)), \break())
             ]))
         ])
-    }));
+    ]));
 }
 
 test bool testForeachStatementWithLevelledBreak() {
@@ -250,7 +250,7 @@ test bool testForeachStatementWithLevelledBreak() {
         '   }
         '}";
 
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(typedList(integer()), "a")], [
             foreach(variable("a"), variable("b"), 
                 foreach(variable("c"), variable("d"), 
@@ -258,7 +258,7 @@ test bool testForeachStatementWithLevelledBreak() {
                 )
             )
         ])
-    }));
+    ]));
 }
 
 test bool testForeachStatementWithCondition() {
@@ -270,11 +270,11 @@ test bool testForeachStatementWithCondition() {
         '   }
         '}";
 
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(typedList(artifactType("DateTime")), "a"), param(artifactType("DateTime"), "now")], [
             foreach(variable("a"), variable("b"), emptyStmt(), [lessThan(variable("a"), variable("now"))])
         ])
-    }));
+    ]));
 }
 
 test bool testForeachStatementWithContinue() {
@@ -287,11 +287,11 @@ test bool testForeachStatementWithContinue() {
         '   }
         '}";
 
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(typedList(artifactType("DateTime")), "a"), param(artifactType("DateTime"), "now")], [
             foreach(variable("a"), variable("b"), ifThen(
                 lessThan(variable("a"), variable("now")), \continue()
             ))
         ])
-    }));
+    ]));
 }

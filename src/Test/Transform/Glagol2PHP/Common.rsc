@@ -8,3 +8,6 @@ test bool shouldMakeStringFromNamespaceChainUsingDelimiter()
 
 test bool shouldMakeStringFromNamespaceChainUsingAltDelimiter() 
     = "Another\\Example\\Namespace" == namespaceToString(namespace("Another", namespace("Example", namespace("Namespace"))), "\\");
+
+test bool shouldMakeFilenameFromNamespaceAndEntity()
+    = "Some/Example/Entity/Test.php" == makeFilename(namespace("Some", namespace("Example", namespace("Entity"))), entity("Test", []));

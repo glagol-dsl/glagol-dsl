@@ -13,9 +13,25 @@ test bool shouldParseConstructWithOneParam()
           '}
           '";
     
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "param")], [])
-    }));
+    ]));
+}
+
+test bool shouldParseAnnotatedConstructWithOneParam()
+{
+    str code 
+        = "module Example;
+          'entity User {
+          '    @doc(\"This is a doc\")
+          '    User(int param) {
+          '    }
+          '}
+          '";
+    
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
+        annotated([annotation("doc", [annotationVal("This is a doc")])], constructor([param(integer(), "param")], []))
+    ]));
 }
 
 test bool shouldFailWhenInvalidConstructorNameIsUsed()
@@ -44,13 +60,13 @@ test bool shouldParseConstructWithTwoParamsAndDefaultValue()
           '}
           '";
     
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([
             param(integer(), "param"),
             param(float(), "param2", floatLiteral(0.55)),
             param(boolean(), "param3", boolLiteral(true))
         ], [])
-    }));
+    ]));
 }
 
 test bool shouldParseConstructWithBody()
@@ -65,7 +81,7 @@ test bool shouldParseConstructWithBody()
           '}
           '";
     
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([
             param(integer(), "param"),
             param(float(), "param2", floatLiteral(0.55)),
@@ -74,7 +90,7 @@ test bool shouldParseConstructWithBody()
             expression(addition(variable("param"), variable("param2"))),
             assign(variable("param3"), defaultAssign(), expression(greaterThan(variable("param"), variable("param2"))))
         ])
-    }));
+    ]));
 }
 
 test bool shouldParseConstructWithoutParams()
@@ -87,9 +103,9 @@ test bool shouldParseConstructWithoutParams()
           '}
           '";
     
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [])
-    }));
+    ]));
 }
 
 test bool shouldParseConstructWithoutBody()
@@ -101,9 +117,9 @@ test bool shouldParseConstructWithoutBody()
           '}
           '";
     
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [])
-    }));
+    ]));
 }
 
 test bool shouldParseConstructWithoutBodyWithParams()
@@ -115,13 +131,13 @@ test bool shouldParseConstructWithoutBodyWithParams()
           '}
           '";
     
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([
             param(integer(), "param"),
             param(float(), "param2", floatLiteral(0.55)),
             param(boolean(), "param3", boolLiteral(true))
         ], [])
-    }));
+    ]));
 }
 
 test bool shouldParseConstructWithWhen()
@@ -134,7 +150,7 @@ test bool shouldParseConstructWithWhen()
           '    } when param \> 3 && param \<= 11;
           '}";
     
-    return parseModule(code) == \module(namespace("Example"), {}, entity("User", {
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([
                 param(integer(), "param")
             ], [], and(
@@ -142,5 +158,5 @@ test bool shouldParseConstructWithWhen()
                 lessThanOrEq(variable("param"), intLiteral(11))
             )
         )
-    }));
+    ]));
 }

@@ -14,12 +14,12 @@ test bool shouldParseMapDeclaration()
           '     }
           '}";
     
-    return parseModule(code) == \module(namespace("Example"), {}, repository("User", {
+    return parseModule(code) == \module(namespace("Example"), [], repository("User", [
         method(\public(), typedList(artifactType("User")), "findById", [
             param(integer(), "id")
         ], [
             declare(typedMap(string(), integer()), variable("query"), expression(\map((strLiteral("id"): variable("id"))))),
             \return(expression(invoke("findOneBy", [variable("query")])))
         ])
-    }));
+    ]));
 }
