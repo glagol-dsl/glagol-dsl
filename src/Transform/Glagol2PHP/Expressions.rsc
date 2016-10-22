@@ -2,9 +2,7 @@ module Transform::Glagol2PHP::Expressions
 
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
-import String;
-
-private str toLowerCaseFirstChar(str text) = toLowerCase(text[0]) + substring(text, 1);
+import Utils::String;
 
 public PhpExpr toPhpExpr(intLiteral(int i)) = phpScalar(phpInteger(i));
 public PhpExpr toPhpExpr(floatLiteral(real r)) = phpScalar(phpFloat(r));
