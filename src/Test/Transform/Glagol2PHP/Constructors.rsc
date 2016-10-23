@@ -17,3 +17,12 @@ test bool shouldTransformConstructorToPhpConstructorWithOneParamWithDefaultValue
         phpParam("param1", phpSomeExpr(phpScalar(phpInteger(55))), phpSomeName(phpName("int")), false)
     ], []);
 
+test bool shouldTransformConstructorToPhpConstructorWithOneParamWithWhen() =
+    toPhpClassItem(constructor([param(integer(), "a")], [], equals(variable("a"), intLiteral(7)))) == 
+    phpMethod("__construct", {phpPublic()}, false, [
+        phpParam("a", phpNoExpr(), phpSomeName(phpName("int")), false)
+    ], [
+        phpIf(phpBinaryOperation(phpVar(phpName(phpName("a"))), phpScalar(phpInteger(7)), phpIdentical()), [], [], phpNoElse())
+    ]);
+
+

@@ -30,7 +30,16 @@ private PhpStmt toPhpStmt(annotated(list[Annotation] annotations, Declaration ar
 private PhpStmt toPhpStmt(entity(str name, list[Declaration] declarations))
     = phpClassDef(phpClass(name, {}, phpNoName(), [], [toPhpClassItem(m) | m <- declarations])[
         @phpAnnotations={phpAnnotation("ORM\\Entity")}
-    ]);
+    ])
+    when size(getConstructors(declarations)) <= 1;
+
+private PhpStmt toPhpStmt(entity(str name, list[Declaration] declarations))
+    = phpClassDef(phpClass(name, {}, phpNoName(), [], 
+        [toPhpClassItem(m) | m <- getNonConstructors(declarations)] + createOverridedConstructor(getConstructors(declarations))
+      )[
+        @phpAnnotations={phpAnnotation("ORM\\Entity")}
+    ])
+    when size(getConstructors(declarations)) > 1;
 
 @doc="Will apply annotations to all php class items that were converted from Glagol in-artefact declarations"
 private PhpClassItem toPhpClassItem(annotated(list[Annotation] annotations, Declaration declaration))
