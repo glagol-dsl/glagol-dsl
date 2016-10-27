@@ -69,10 +69,9 @@ public data PhpOp = phpBitwiseAnd() | phpBitwiseOr() | phpBitwiseXor() | phpConc
                | phpPreInc() | phpLt() | phpLeq() | phpUnaryPlus() | phpUnaryMinus() 
                | phpEqual() | phpIdentical() ;
 
-public data PhpParam = phpParam(str paramName, 
-                          PhpOptionExpr paramDefault, 
-                          PhpOptionName paramType,
-                          bool byRef);
+public data PhpParam 
+    = phpParam(str paramName, PhpOptionExpr paramDefault, PhpOptionName paramType, bool byRef, bool isVariadic)
+    ;
                           
 public data PhpScalar
     = phpClassConstant()
