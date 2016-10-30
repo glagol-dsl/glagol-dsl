@@ -2,6 +2,7 @@ module Transform::Glagol2PHP::Doctrine::Annotations
 
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
+import List;
 
 private PhpAnnotation toPhpAnnotation(annotation(str annotationName, list[Annotation] arguments))
     = phpAnnotation(toPhpAnnotationKey(annotationName)) when size(arguments) == 0;
@@ -31,13 +32,13 @@ private str toPhpAnnotationKey("id") = "ORM\\Id";
 private str toPhpAnnotationKey("field") = "ORM\\Column";
 private str toPhpAnnotationKey("column") = "ORM\\Column";
 
-private PhpStmt applyAnnotationsOnStmt(phpClassDef(PhpClassDef classDef), list[Annotation] annotations)
+public PhpStmt applyAnnotationsOnStmt(phpClassDef(PhpClassDef classDef), list[Annotation] annotations)
     = phpClassDef(classDef[
             @phpAnnotations=((classDef@phpAnnotations?) ? classDef@phpAnnotations : {}) + {toPhpAnnotation(a) | a <- annotations}
         ]
     );
 
-private PhpClassItem applyAnnotationsOnClassItem(PhpClassItem classItem, list[Annotation] annotations)
+public PhpClassItem applyAnnotationsOnClassItem(PhpClassItem classItem, list[Annotation] annotations)
     = classItem[
             @phpAnnotations=((classItem@phpAnnotations?) ? classItem@phpAnnotations : {}) + {toPhpAnnotation(a) | a <- annotations}
         ];

@@ -3,16 +3,13 @@ module Transform::Glagol2PHP::Statements
 import Transform::Glagol2PHP::Common;
 import Transform::Glagol2PHP::Constructors;
 import Transform::Glagol2PHP::Properties;
-import Transform::Glagol2PHP::Statements;
+import Transform::Glagol2PHP::Doctrine::Annotations;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Config::Reader;
 import List;
 import IO;
 
-extend Transform::Glagol2PHP::Doctrine::Annotations;
-
-@doc="Will attach php annotations to all annotated Glagol declarations"
 public PhpStmt toPhpStmt(annotated(list[Annotation] annotations, Declaration artifact)) 
     = applyAnnotationsOnStmt(toPhpStmt(artifact), annotations);
 

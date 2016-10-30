@@ -3,7 +3,7 @@ module Test::Transform::Glagol2PHP::Constructors::Overriding
 extend Transform::Glagol2PHP::Doctrine;
 
 test bool shouldAddIfElseIfBlocksWhenTransformingOverridedConstructors() = 
-    toPhpStmt(entity("User", [
+    toPhpClassDef(entity("User", [
         constructor([param(integer(), "a")], []),
         constructor([param(string(), "b")], []),
         constructor([param(float(), "c")], [], equals(variable("a"), intLiteral(7)))

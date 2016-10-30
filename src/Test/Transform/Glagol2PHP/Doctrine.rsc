@@ -48,9 +48,7 @@ test bool shouldTransformSimpleAnnotatedEntityToPhpScriptUsingDoctrine()
                 "Customer", {}, phpNoName(), [], [
                     phpProperty({phpPrivate()}, [phpProperty("id", phpNoExpr())])
                 ]
-            )[@phpAnnotations={
-                phpAnnotation("ORM\\Table")
-            }])
+            ))
         ])
     ]));
     

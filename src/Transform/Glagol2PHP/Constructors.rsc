@@ -1,11 +1,10 @@
 module Transform::Glagol2PHP::Constructors
 
 import Transform::Glagol2PHP::Params;
-//import Transform::Glagol2PHP::Statements;
 import Transform::Glagol2PHP::Expressions;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
-import IO;
+import List;
 
 public PhpClassItem toPhpClassItem(constructor(list[Declaration] params, list[Statement] body)) 
     = phpMethod("__construct", {phpPublic()}, false, [toPhpParam(p) | p <- params], [toPhpStmt(stmt) | stmt <- body]);
@@ -27,10 +26,15 @@ public list[Declaration] getConditionalConstructors(list[Declaration] declaratio
 public list[Declaration] getNonConditionalConstructors(list[Declaration] declarations)
     = [c | c <- declarations, constructor(_, _) !:= c];
 
-public PhpClassItem createOverridedConstructor(list[Declaration] declarations)
+public PhpClassItem createConstructor(list[Declaration] declarations)
     = phpMethod("__construct", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
         phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))
-    ] + [createOverrideRule(d) | d <- declarations]);
+    ] + [createOverrideRule(d) | d <- declarations])
+    when size(declarations) > 1;
+
+public PhpClassItem createConstructor(list[Declaration] declarations) = toPhpClassItem(declarations[0]) when size(declarations) == 1;
+
+public PhpClassItem createConstructor(list[Declaration] declarations) = emptyConstructor() when size(declarations) == 0;
 
 private PhpStmt createOverrideRule(constructor(list[Declaration] params, list[Statement] body))
     = phpExprstmt(phpMethodCall(
@@ -58,3 +62,5 @@ private PhpExpr createOverrideType(param(artifactType(str name), _)) = phpNew(ph
 private PhpExpr createOverrideType(param(repositoryType(str name), _)) = phpNew(phpName(phpName("Parameter\\Custom")), [
     phpActualParameter(phpScalar(phpString(name + "Repository")), false)
 ]);
+
+private PhpClassItem emptyConstructor() = phpMethod("__construct", {phpPublic()}, false, [], []);
