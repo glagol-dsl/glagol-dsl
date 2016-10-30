@@ -2,6 +2,7 @@ module Transform::Glagol2PHP::Constructors
 
 import Transform::Glagol2PHP::Params;
 import Transform::Glagol2PHP::Expressions;
+import Transform::Glagol2PHP::Statements;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import List;
@@ -29,22 +30,24 @@ public list[Declaration] getNonConditionalConstructors(list[Declaration] declara
 public PhpClassItem createConstructor(list[Declaration] declarations)
     = phpMethod("__construct", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
         phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))
-    ] + [createOverrideRule(d) | d <- declarations])
+    ] + [phpExprstmt(createOverrideRule(d)) | d <- declarations])
     when size(declarations) > 1;
 
 public PhpClassItem createConstructor(list[Declaration] declarations) = toPhpClassItem(declarations[0]) when size(declarations) == 1;
 
-public PhpClassItem createConstructor(list[Declaration] declarations) = emptyConstructor() when size(declarations) == 0;
-
-private PhpStmt createOverrideRule(constructor(list[Declaration] params, list[Statement] body))
-    = phpExprstmt(phpMethodCall(
+private PhpExpr createOverrideRule(constructor(list[Declaration] params, list[Statement] body))
+    = phpMethodCall(
         phpVar(phpName(phpName("overrider"))), phpName(phpName("override")), [
             phpActualParameter(phpClosure([toPhpStmt(stmt) | stmt <- body], [toPhpParam(p) | p <- params], [], false, false), false)
         ] + [phpActualParameter(createOverrideType(p), false) | p <- params]
-    ));
+    );
     
-private PhpStmt createOverrideRule(constructor(list[Declaration] params, list[Statement] body, Expression when))
-    = phpIf(toPhpExpr(when), [createOverrideRule(constructor(params, body))], [], phpNoElse());
+private PhpExpr createOverrideRule(constructor(list[Declaration] params, list[Statement] body, Expression when))
+    = phpMethodCall(createOverrideRule(constructor(params, body)), phpName(phpName("when")), [
+        phpActualParameter(phpClosure([
+            phpReturn(phpSomeExpr(toPhpExpr(when)))
+        ], [toPhpParam(param) | param <- params], [], false, false), false)
+    ]);
     
 private PhpExpr createOverrideType(param(integer(), _)) = phpNew(phpName(phpName("Parameter\\Integer")), []);
 private PhpExpr createOverrideType(param(float(), _)) = phpNew(phpName(phpName("Parameter\\Real")), []);
@@ -62,5 +65,3 @@ private PhpExpr createOverrideType(param(artifactType(str name), _)) = phpNew(ph
 private PhpExpr createOverrideType(param(repositoryType(str name), _)) = phpNew(phpName(phpName("Parameter\\Custom")), [
     phpActualParameter(phpScalar(phpString(name + "Repository")), false)
 ]);
-
-private PhpClassItem emptyConstructor() = phpMethod("__construct", {phpPublic()}, false, [], []);

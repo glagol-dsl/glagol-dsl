@@ -13,5 +13,10 @@ public PhpExpr toPhpExpr(\list(list[Expression] items))
 public PhpExpr toPhpExpr(get(artifactType(str name))) 
     = phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName(toLowerCaseFirstChar(name))));
 public PhpExpr toPhpExpr(variable(str name)) = phpVar(phpName(phpName(name)));
+
+// Logical binary operations
 public PhpExpr toPhpExpr(equals(Expression l, Expression r))
     = phpBinaryOperation(toPhpExpr(l), toPhpExpr(r), phpIdentical());
+
+public PhpExpr toPhpExpr(greaterThan(Expression l, Expression r))
+    = phpBinaryOperation(toPhpExpr(l), toPhpExpr(r), phpGt());
