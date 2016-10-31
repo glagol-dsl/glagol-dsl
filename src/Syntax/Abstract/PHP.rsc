@@ -139,7 +139,7 @@ public data PhpUse = phpUse(PhpName importName, PhpOptionName asName);
 public data PhpClassItem 
     = phpProperty(set[PhpModifier] modifiers, list[PhpProperty] prop)
     | phpConstCI(list[PhpConst] consts)
-    | phpMethod(str name, set[PhpModifier] modifiers, bool byRef, list[PhpParam] params, list[PhpStmt] body)
+    | phpMethod(str name, set[PhpModifier] modifiers, bool byRef, list[PhpParam] params, list[PhpStmt] body, PhpOptionName returnType)
     | phpTraitUse(list[PhpName] traits, list[PhpAdaptation] adaptations)
     ;
 
