@@ -106,7 +106,7 @@ data Modifier
     = \public()
     | \private()
     ;
-    
+
 data AccessProperty
     = read()
     | \set()
@@ -139,27 +139,3 @@ data AssignOperator
     | subtractionAssign()
     | additionAssign()
     ;
-
-public bool isProperty(property(Type \valueType, str name, set[AccessProperty] valueProperties)) = true;
-public bool isProperty(property(Type \valueType, str name, set[AccessProperty] valueProperties, Expression defaultValue)) = true;
-public default bool isProperty(_) = false;
-
-public bool isAnnotated(annotated(list[Annotation] annotations, Declaration declaration), bool (Declaration) innerValidator) 
-    = innerValidator(declaration);
-public default bool isAnnotated(_, _) = false;
-
-public bool isMethod(method(_, _, _, _, _)) = true;
-public bool isMethod(method(_, _, _, _, _, Expression when)) = true;
-public bool isMethod(_) = false;
-
-public bool isConstructor(constructor(_, _)) = true;
-public bool isConstructor(constructor(_, _, _)) = true;
-public bool isConstructor(_) = false;
-
-public bool hasConstructors(list[Declaration] declarations) = size([d | d <- declarations, isConstructor(d)]) > 0;
-
-private list[Declaration] getMethodsByName(list[Declaration] declarations, str name)
-    = [m | m <- declarations, isMethod(m), name == m.name];
-
-public map[str name, list[Declaration] methods] categorizeMethods(list[Declaration] declarations)
-    = (m.name: getMethodsByName(declarations, m.name) | m <- {ms | ms <- declarations, isMethod(ms)});
