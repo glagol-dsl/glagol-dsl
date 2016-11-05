@@ -16,5 +16,13 @@ public PhpClassItem toPhpClassItem(method(Modifier modifier, \Type returnType, s
     );
 
 private PhpOptionName toPhpReturnType(voidValue()) = phpNoName();
+private PhpOptionName toPhpReturnType(integer()) = phpSomeName(phpName("int"));
+private PhpOptionName toPhpReturnType(string()) = phpSomeName(phpName("string"));
+private PhpOptionName toPhpReturnType(boolean()) = phpSomeName(phpName("boolean"));
+private PhpOptionName toPhpReturnType(float()) = phpSomeName(phpName("float"));
+private PhpOptionName toPhpReturnType(typedList(_)) = phpSomeName(phpName("Vector"));
+private PhpOptionName toPhpReturnType(typedMap(_,_)) = phpSomeName(phpName("Map"));
+private PhpOptionName toPhpReturnType(artifactType(str name)) = phpSomeName(phpName(name));
+private PhpOptionName toPhpReturnType(repositoryType(str name)) = phpSomeName(phpName(name + "Repository"));
 
 private PhpModifier toPhpModifier(\public()) = phpPublic();

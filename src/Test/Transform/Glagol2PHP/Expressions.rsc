@@ -26,15 +26,15 @@ test bool shouldTransformToScalarBooleanPhpExpr()
     
 test bool shouldTransformToScalarListPhpExpr()
     = toPhpExpr(\list([strLiteral("first"), strLiteral("second")])) 
-    == phpArray([
+    == phpNew(phpName(phpName("Vector")), [phpActualParameter(phpArray([
             phpArrayElement(phpNoExpr(), phpScalar(phpString("first")), false), 
             phpArrayElement(phpNoExpr(), phpScalar(phpString("second")), false)
-        ]) &&
+        ]), false)]) &&
     toPhpExpr(\list([intLiteral(1), intLiteral(2)]))
-    == phpArray([
+    == phpNew(phpName(phpName("Vector")), [phpActualParameter(phpArray([
             phpArrayElement(phpNoExpr(), phpScalar(phpInteger(1)), false), 
             phpArrayElement(phpNoExpr(), phpScalar(phpInteger(2)), false)
-        ]);
+        ]), false)]);
 
 test bool shouldTransformToFetchLocalPropPhpExpr()
     = toPhpExpr(get(artifactType("SomeUtil"))) == phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("someUtil")));

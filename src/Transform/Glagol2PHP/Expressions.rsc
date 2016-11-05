@@ -9,7 +9,7 @@ public PhpExpr toPhpExpr(floatLiteral(real r)) = phpScalar(phpFloat(r));
 public PhpExpr toPhpExpr(strLiteral(str s)) = phpScalar(phpString(s));
 public PhpExpr toPhpExpr(boolLiteral(bool b)) = phpScalar(phpBoolean(b));
 public PhpExpr toPhpExpr(\list(list[Expression] items)) 
-    = phpArray([phpArrayElement(phpNoExpr(), toPhpExpr(i), false) | i <- items]);
+    = phpNew(phpName(phpName("Vector")), [phpActualParameter(phpArray([phpArrayElement(phpNoExpr(), toPhpExpr(i), false) | i <- items]), false)]);
 public PhpExpr toPhpExpr(get(artifactType(str name))) 
     = phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName(toLowerCaseFirstChar(name))));
 public PhpExpr toPhpExpr(variable(str name)) = phpVar(phpName(phpName(name)));
