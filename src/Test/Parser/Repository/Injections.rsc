@@ -7,7 +7,7 @@ import IO;
 test bool shouldParseInjections() 
 {    
     str code 
-        = "module Example;
+        = "namespace Example;
           '
           'import Glagol::ORM::EntityManager;
           '

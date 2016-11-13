@@ -7,7 +7,7 @@ import IO;
 test bool canParseRepositoryInjection() 
 {
     str code
-        = "module Test;
+        = "namespace Test;
           'service UserCreator {
           '    repository\<User\> userRepository = get repository\<User\>;
           '}";
@@ -21,7 +21,7 @@ test bool canParseRepositoryInjection()
 test bool canParseUtilRepositoryInjection() 
 {
     str code
-        = "module Test;
+        = "namespace Test;
           'service UserCreator {
           '    repository\<User\> userRepository = get repository\<User\>;
           '}";
@@ -35,7 +35,7 @@ test bool canParseUtilRepositoryInjection()
 test bool canUseRepositorySelfie() 
 {
     str code
-        = "module Test;
+        = "namespace Test;
           'service UserCreator {
           '    repository\<User\> userRepository = get selfie;
           '}";
@@ -49,7 +49,7 @@ test bool canUseRepositorySelfie()
 test bool canUseRepositorySelfieAsParamDefaultValue() 
 {
     str code
-        = "module Test;
+        = "namespace Test;
           'service UserCreator {
           '    public void make(repository\<User\> userRepository = get selfie) { }
           '}";
@@ -65,7 +65,7 @@ test bool canUseRepositorySelfieAsParamDefaultValue()
 test bool canUseRepositoryAssocArtifactInExpression() 
 {
     str code
-        = "module Test;
+        = "namespace Test;
           'service UserCreator {
           '    UserCreator() {
           '        get repository\<User\>;

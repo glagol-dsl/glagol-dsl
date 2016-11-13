@@ -26,3 +26,4 @@ private PhpOptionName toPhpReturnType(artifactType(str name)) = phpSomeName(phpN
 private PhpOptionName toPhpReturnType(repositoryType(str name)) = phpSomeName(phpName(name + "Repository"));
 
 private PhpModifier toPhpModifier(\public()) = phpPublic();
+private PhpModifier toPhpModifier(\private()) = phpPrivate();

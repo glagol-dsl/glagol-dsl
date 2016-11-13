@@ -6,7 +6,7 @@ import Parser::ParseAST;
 test bool shouldParseEmptyUtil()
 {
     str code 
-        = "module Test;
+        = "namespace Test;
           'util UserCreator {}";
           
     return parseModule(code) == \module(namespace("Test"), [], util("UserCreator", []));
@@ -15,7 +15,7 @@ test bool shouldParseEmptyUtil()
 test bool shouldParseUtilUsingTheServiceKeyword()
 {
     str code 
-        = "module Test;
+        = "namespace Test;
           'service UserCreator {}";
           
     return parseModule(code) == \module(namespace("Test"), [], util("UserCreator", []));

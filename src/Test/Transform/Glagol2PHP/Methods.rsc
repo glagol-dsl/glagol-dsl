@@ -44,3 +44,7 @@ test bool shouldTransformMethodWithArtifactReturnValue() =
     toPhpClassItem(method(\public(), repositoryType("User"), "test", [], [])) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("UserRepository")));
 
+test bool shouldTransformMethodWithPrivateModifier() =
+    toPhpClassItem(method(\private(), voidValue(), "test", [], [])) == 
+    phpMethod("test", {phpPrivate()}, false, [], [], phpNoName());
+

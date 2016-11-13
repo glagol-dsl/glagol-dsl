@@ -5,7 +5,7 @@ import Syntax::Abstract::Glagol;
 
 test bool testShouldParseEntityRelations()
 {
-    str code = "module Example;
+    str code = "namespace Example;
                'entity User {
                '    relation one:one Language as userLanguage;
                '    relation one:many User as userFriends with {add, set, get, clear};

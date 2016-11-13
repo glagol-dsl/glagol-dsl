@@ -5,7 +5,7 @@ import Syntax::Abstract::Glagol;
 
 test bool testShouldParseEntityWithValues()
 {
-    str code = "module Example;
+    str code = "namespace Example;
                'entity User {
                '    int id with {get};
                '    Date addedOn with {get, set};
@@ -22,7 +22,7 @@ test bool testShouldParseEntityWithValues()
 
 test bool testShouldParseEntityWithValuesAndAnnotations()
 {
-    str code = "module Example;
+    str code = "namespace Example;
                'entity User {
                '    @field({
                '        key: primary,

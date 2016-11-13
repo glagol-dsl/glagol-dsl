@@ -6,7 +6,7 @@ import Syntax::Abstract::Glagol;
 test bool shouldParseEmptyValueObject()
 {
     str code 
-        = "module Testing;
+        = "namespace Testing;
         'value DateTime {}
         '";
         

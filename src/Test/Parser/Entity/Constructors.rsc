@@ -6,7 +6,7 @@ import Syntax::Abstract::Glagol;
 test bool shouldParseConstructWithOneParam()
 {
     str code 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    User(int param) {
           '    }
@@ -21,7 +21,7 @@ test bool shouldParseConstructWithOneParam()
 test bool shouldParseAnnotatedConstructWithOneParam()
 {
     str code 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    @doc(\"This is a doc\")
           '    User(int param) {
@@ -37,7 +37,7 @@ test bool shouldParseAnnotatedConstructWithOneParam()
 test bool shouldFailWhenInvalidConstructorNameIsUsed()
 {
     str code 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    UserFail(int param) {
           '    }
@@ -53,7 +53,7 @@ test bool shouldFailWhenInvalidConstructorNameIsUsed()
 test bool shouldParseConstructWithTwoParamsAndDefaultValue()
 {
     str code 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    User(int param, float param2 = 0.55, bool param3 = true) {
           '    }
@@ -72,7 +72,7 @@ test bool shouldParseConstructWithTwoParamsAndDefaultValue()
 test bool shouldParseConstructWithBody()
 {
     str code 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    User(int param, float param2 = 0.55, bool param3 = true) {
           '        param + param2;
@@ -96,7 +96,7 @@ test bool shouldParseConstructWithBody()
 test bool shouldParseConstructWithoutParams()
 {
     str code 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    User() {
           '    }
@@ -111,7 +111,7 @@ test bool shouldParseConstructWithoutParams()
 test bool shouldParseConstructWithoutBody()
 {
     str code 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    User();
           '}
@@ -125,7 +125,7 @@ test bool shouldParseConstructWithoutBody()
 test bool shouldParseConstructWithoutBodyWithParams()
 {
     str code 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    User(int param, float param2 = 0.55, bool param3 = true);
           '}
@@ -143,7 +143,7 @@ test bool shouldParseConstructWithoutBodyWithParams()
 test bool shouldParseConstructWithWhen()
 {
     str code 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    User(int param) {
           '        

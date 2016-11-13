@@ -8,14 +8,14 @@ test bool moduleNameCannotUsePreservedKeywords()
     bool success = false;
     
     str failCode 
-        = "module true;
+        = "namespace true;
         'entity Blah {}";
     
     try parseModule(failCode);
     catch e: success = true;
     
     str successCode 
-        = "module ThisIsOk_IGuess;
+        = "namespace ThisIsOk_IGuess;
         'entity Blah {}";
     
     try parseModule(successCode);
@@ -29,7 +29,7 @@ test bool moduleArtifactImportsShouldStartWithCapital()
     bool success = false;
     
     str failCode 
-        = "module Example;
+        = "namespace Example;
           'import I18n::user;
           'entity Blah {}";
     
@@ -37,7 +37,7 @@ test bool moduleArtifactImportsShouldStartWithCapital()
     catch e: success = true;
     
     str successCode 
-        = "module Example;
+        = "namespace Example;
           'import I18n::User;
           'entity Blah {}
           '";
@@ -53,7 +53,7 @@ test bool moduleArtifactImportsShouldNotContainUnderscores()
     bool success = false;
     
     str failCode 
-        = "module Example;
+        = "namespace Example;
           'import I18n::User_Entity;
            'entity Blah {}";
     
@@ -61,7 +61,7 @@ test bool moduleArtifactImportsShouldNotContainUnderscores()
     catch e: success = true;
     
     str successCode 
-        = "module Example;
+        = "namespace Example;
           'import I18n::UserEntity;
           'entity Blah {}
           '";
@@ -77,7 +77,7 @@ test bool artifactsShouldBeAlphabeticalStartingWithCapital()
     bool success = false;
     
     str failCodeLowerCaseFirst
-        = "module Example;
+        = "namespace Example;
           'entity user {
           '}
           '";
@@ -86,7 +86,7 @@ test bool artifactsShouldBeAlphabeticalStartingWithCapital()
     catch e: success = true;
     
     str failCodeUnderscore 
-        = "module Example;
+        = "namespace Example;
           'entity Underscored_Entity {
           '}
           '";
@@ -97,7 +97,7 @@ test bool artifactsShouldBeAlphabeticalStartingWithCapital()
     } catch e: success = true;
     
     str successCode 
-        = "module Example;
+        = "namespace Example;
           'entity UserExampleEntity {
           '}
           '";
@@ -113,7 +113,7 @@ test bool entityValuesShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     bool success = false;
     
     str failCodeUpperCaseFirst
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    int MyValue with {get, set};
           '}
@@ -123,7 +123,7 @@ test bool entityValuesShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     catch e: success = true;
     
     str failCodeUnderscore 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    int my_Value with {get, set};
           '}
@@ -135,7 +135,7 @@ test bool entityValuesShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     } catch e: success = true;
     
     str successCode 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    int myValue with {get, set};
           '}
@@ -152,7 +152,7 @@ test bool entityRelationsShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     bool success = false;
     
     str failCodeLowerCaseFirst
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    relation one:one language as userLanguage;
           '}
@@ -162,7 +162,7 @@ test bool entityRelationsShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     catch e: success = true;
     
     str failCodeUpperCaseAlias 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    relation one:one Language as UserLanguage;
           '}
@@ -174,7 +174,7 @@ test bool entityRelationsShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     } catch e: success = true;
     
     str failCodeUnderscore
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    relation one:one User_Language as userLanguage;
           '}
@@ -186,7 +186,7 @@ test bool entityRelationsShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     } catch e: success = true;
     
     str failCodeUnderscoreAlias 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    relation one:one Language as user_language;
           '}
@@ -198,7 +198,7 @@ test bool entityRelationsShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     } catch e: success = true;
     
     str successCode 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    relation one:one Language as userLanguage;
           '}
@@ -215,7 +215,7 @@ test bool methodsShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     bool success = false;
     
     str failCodeUpperCaseFirst
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    int BadFunctionName() = 4;
           '}
@@ -225,7 +225,7 @@ test bool methodsShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     catch e: success = true;
     
     str failCodeUnderscore 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    string bad_FunctionName() = \"bad\";
           '}
@@ -237,7 +237,7 @@ test bool methodsShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     } catch e: success = true;
     
     str successCode 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    string goodFunctionName() = \"correct\";
           '}
@@ -254,7 +254,7 @@ test bool parametersShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     bool success = false;
     
     str failCodeUpperCaseFirst
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    int badParameters(int BadExample) = 2;
           '}
@@ -264,7 +264,7 @@ test bool parametersShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     catch e: success = true;
     
     str failCodeUnderscore 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    int badParameters(int bad_Example) = 2;
           '}
@@ -276,7 +276,7 @@ test bool parametersShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     } catch e: success = true;
     
     str successCode 
-        = "module Example;
+        = "namespace Example;
           'entity User {
           '    bool goodParameters(int goodExample) = true;
           '}
