@@ -53,4 +53,12 @@ test bool shouldTransformMethodWithPrivateModifier() =
     phpMethod("test", {phpPrivate()}, false, [], [], phpNoName());
 
 // TODO add tests using when expressions
+test bool shouldTransformMethodUsingWhenExpression() = 
+    toPhpClassItem(method(\private(), voidValue(), "test", [param(integer(), "a")], [], equals(variable("a"), intLiteral(7)))) == 
+    phpMethod("test", {phpPrivate()}, false, [
+        phpParam("a", phpNoExpr(), phpSomeName(phpName("int")), false, false)
+    ], [
+        phpIf(phpBinaryOperation(phpVar(phpName(phpName("a"))), phpScalar(phpInteger(7)), phpIdentical()), [], [], phpNoElse())
+    ], phpNoName());
+
 

@@ -2,6 +2,7 @@ module Transform::Glagol2PHP::Methods
 
 import Transform::Glagol2PHP::Statements;
 import Transform::Glagol2PHP::Expressions;
+import Transform::Glagol2PHP::Params;
 import Transform::Glagol2PHP::Overriding;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
@@ -14,6 +15,16 @@ public PhpClassItem toPhpClassItem(method(Modifier modifier, \Type returnType, s
         false, 
         [toPhpParam(p) | p <- params], 
         [toPhpStmt(stmt) | stmt <- body], 
+        toPhpReturnType(returnType)
+    );
+
+public PhpClassItem toPhpClassItem(method(Modifier modifier, \Type returnType, str name, list[Declaration] params, list[Statement] body, Expression when))
+    = phpMethod(
+        name,
+        {toPhpModifier(modifier)}, 
+        false, 
+        [toPhpParam(p) | p <- params], 
+        [phpIf(toPhpExpr(when), [toPhpStmt(stmt) | stmt <- body], [], phpNoElse())], 
         toPhpReturnType(returnType)
     );
 
