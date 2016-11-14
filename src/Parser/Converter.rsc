@@ -59,35 +59,35 @@ public AssignOperator convertAssignOperator((AssignOperator) `+=`) = additionAss
 
 
 public Declaration convertMethod(
-    (Method) `<Type returnType><MemberName name> (<{Parameter ","}* parameters>) { <Statement* body> }`) 
+    (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`) 
     = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body]);
 
 public Declaration convertMethod(
-    (Method) `<Modifier modifier><Type returnType><MemberName name> (<{Parameter ","}* parameters>) { <Statement* body> }`) 
+    (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`) 
     = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body]);
 
 public Declaration convertMethod(
-    (Method) `<Type returnType><MemberName name> (<{Parameter ","}* parameters>) { <Statement* body> } <When when>;`) 
+    (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> } <When when>;`) 
     = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], convertWhen(when));
     
 public Declaration convertMethod(
-    (Method) `<Modifier modifier><Type returnType><MemberName name> (<{Parameter ","}* parameters>) { <Statement* body> } <When when>;`) 
+    (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> } <When when>;`) 
     = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], convertWhen(when));
     
 public Declaration convertMethod(
-    (Method) `<Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr>;`) 
+    (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr>;`) 
     = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))]);
 
 public Declaration convertMethod(
-    (Method) `<Modifier modifier><Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr>;`) 
+    (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr>;`) 
     = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))]);
 
 public Declaration convertMethod(
-    (Method) `<Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr><When when>;`) 
+    (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr><When when>;`) 
     = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))], convertWhen(when));
 
 public Declaration convertMethod(
-    (Method) `<Modifier modifier><Type returnType><MemberName name> (<{Parameter ","}* parameters>) = <Expression expr><When when>;`) 
+    (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr><When when>;`) 
     = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))], convertWhen(when));
     
 private Modifier convertModifier((Modifier) `public`) = \public();
@@ -374,7 +374,7 @@ private str convertImportAlias((ImportAlias) `as <ArtifactName as>`) = "<as>";
 
 
 public Declaration convertConstructor(
-    (Constructor) `<ArtifactName name> (<{Parameter ","}* parameters>) { <Statement* body> }`, 
+    (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`, 
     str artifactName) 
 {
     if (artifactName != "<name>") {
@@ -385,7 +385,7 @@ public Declaration convertConstructor(
 }
     
 public Declaration convertConstructor(
-    (Constructor) `<ArtifactName name> (<{Parameter ","}* parameters>) { <Statement* body> }<When when>;`, 
+    (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }<When when>;`, 
     str artifactName)
 {
     if (artifactName != "<name>") {
@@ -396,7 +396,7 @@ public Declaration convertConstructor(
 }
 
 public Declaration convertConstructor(
-    (Constructor) `<ArtifactName name> (<{Parameter ","}* parameters>);`, 
+    (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>);`, 
     str artifactName) 
 {
     if (artifactName != "<name>") {
@@ -410,6 +410,10 @@ public Declaration convertDeclaration((Declaration) `<Constructor construct>`, s
 public Declaration convertDeclaration((Declaration) `<Annotation+ annotations><Constructor construct>`, str artifactName, _) 
     = annotated([convertAnnotation(annotation) | annotation <- annotations], convertConstructor(construct, artifactName));
 
+
+public Declaration convertParameter((AbstractParameter) `<Parameter p>`) = convertParameter(p);
+public Declaration convertParameter((AbstractParameter) `<Annotation+ annotations><Parameter p>`) 
+    = annotated([convertAnnotation(annotation) | annotation <- annotations], convertParameter(p));
 
 public Declaration convertParameter((Parameter) `<Type paramType> <MemberName name>`) = param(convertType(paramType), "<name>");
 

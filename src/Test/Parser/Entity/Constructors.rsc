@@ -18,6 +18,36 @@ test bool shouldParseConstructWithOneParam()
     ]));
 }
 
+test bool shouldParseConstructWithOneAnnotatedParam()
+{
+    str code 
+        = "namespace Example;
+          'entity User {
+          '    User(@anno int param) {
+          '    }
+          '}
+          '";
+    
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
+        constructor([annotated([annotation("anno", [])], param(integer(), "param"))], [])
+    ]));
+}
+
+test bool shouldParseConstructWithOneAnnotatedParamAndOneSimple()
+{
+    str code 
+        = "namespace Example;
+          'entity User {
+          '    User(@anno int param, int param2) {
+          '    }
+          '}
+          '";
+    
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
+        constructor([annotated([annotation("anno", [])], param(integer(), "param")), param(integer(), "param2")], [])
+    ]));
+}
+
 test bool shouldParseAnnotatedConstructWithOneParam()
 {
     str code 

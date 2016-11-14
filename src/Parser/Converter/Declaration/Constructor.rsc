@@ -10,7 +10,7 @@ import Parser::Converter::Type;
 import Exceptions::ParserExceptions;
 
 public Declaration convertConstructor(
-    (Constructor) `<ArtifactName name> (<{Parameter ","}* parameters>) { <Statement* body> }`, 
+    (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`, 
     str artifactName) 
 {
     if (artifactName != "<name>") {
@@ -21,7 +21,7 @@ public Declaration convertConstructor(
 }
     
 public Declaration convertConstructor(
-    (Constructor) `<ArtifactName name> (<{Parameter ","}* parameters>) { <Statement* body> }<When when>;`, 
+    (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }<When when>;`, 
     str artifactName)
 {
     if (artifactName != "<name>") {
@@ -32,7 +32,7 @@ public Declaration convertConstructor(
 }
 
 public Declaration convertConstructor(
-    (Constructor) `<ArtifactName name> (<{Parameter ","}* parameters>);`, 
+    (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>);`, 
     str artifactName) 
 {
     if (artifactName != "<name>") {

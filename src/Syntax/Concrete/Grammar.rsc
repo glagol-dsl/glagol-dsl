@@ -69,13 +69,13 @@ syntax Property
     = Type type MemberName name AssignDefaultValue? AccessProperties? accessProperties ";";
 
 syntax Constructor
-    = ArtifactName "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
-    | ArtifactName "(" {Parameter ","}* parameters ")" When? when ";"
+    = ArtifactName "(" {AbstractParameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
+    | ArtifactName "(" {AbstractParameter ","}* parameters ")" When? when ";"
     ;
 
 syntax Method
-    = Modifier? modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
-    | Modifier? modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "=" Expression expr When? when ";"
+    = Modifier? modifier Type returnType MemberName name "(" {AbstractParameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
+    | Modifier? modifier Type returnType MemberName name "(" {AbstractParameter ","}* parameters ")" "=" Expression expr When? when ";"
     ;
 
 syntax Modifier
@@ -86,6 +86,10 @@ syntax Modifier
 syntax When
     = "when" Expression expr
     ;
+
+syntax AbstractParameter
+    = Parameter parameter
+    | Annotation+ annotations Parameter parameter;
 
 syntax Parameter
     = Type paramType MemberName name AssignDefaultValue? defaultValue
