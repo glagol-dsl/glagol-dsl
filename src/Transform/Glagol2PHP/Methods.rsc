@@ -2,8 +2,10 @@ module Transform::Glagol2PHP::Methods
 
 import Transform::Glagol2PHP::Statements;
 import Transform::Glagol2PHP::Expressions;
+import Transform::Glagol2PHP::Overriding;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
+import List;
 
 public PhpClassItem toPhpClassItem(method(Modifier modifier, \Type returnType, str name, list[Declaration] params, list[Statement] body))
     = phpMethod(
@@ -14,6 +16,16 @@ public PhpClassItem toPhpClassItem(method(Modifier modifier, \Type returnType, s
         [toPhpStmt(stmt) | stmt <- body], 
         toPhpReturnType(returnType)
     );
+
+public PhpClassItem createMethod(list[Declaration] methods)
+    = toPhpClassItem(methods[0])
+    when size(methods) == 1;
+
+public PhpClassItem createMethod(list[Declaration] methods)
+    = phpMethod(methods[0].name, {toPhpModifier(methods[0].modifier)}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
+        phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))
+    ] + [phpExprstmt(createOverrideRule(m)) | m <- methods], toPhpReturnType(methods[0].returnType))
+    when size(methods) > 1;
 
 private PhpOptionName toPhpReturnType(voidValue()) = phpNoName();
 private PhpOptionName toPhpReturnType(integer()) = phpSomeName(phpName("int"));

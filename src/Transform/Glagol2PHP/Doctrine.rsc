@@ -2,6 +2,7 @@ module Transform::Glagol2PHP::Doctrine
 
 import Transform::Glagol2PHP::Common;
 import Transform::Glagol2PHP::Constructors;
+import Transform::Glagol2PHP::Methods;
 import Transform::Glagol2PHP::Statements;
 import Transform::Glagol2PHP::Properties;
 import Transform::Glagol2PHP::Doctrine::Annotations;
@@ -40,7 +41,9 @@ private list[PhpClassItem] toPhpClassItems(list[Declaration] declarations) {
         classItems = classItems + [createConstructor(getConstructors(declarations))];
     }
     
-    //map[str, list[Declaration]] methodsByName = categorizeMethods(declarations);
+    map[str, list[Declaration]] methodsByName = categorizeMethods(declarations);
+    
+    classItems = classItems + [createMethod(methodsByName[m]) | m <- methodsByName];
     
     return classItems;
 }

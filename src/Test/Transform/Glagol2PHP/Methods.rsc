@@ -48,3 +48,9 @@ test bool shouldTransformMethodWithPrivateModifier() =
     toPhpClassItem(method(\private(), voidValue(), "test", [], [])) == 
     phpMethod("test", {phpPrivate()}, false, [], [], phpNoName());
 
+test bool shouldTransformMethodWithPrivateModifier() =
+    toPhpClassItem(method(\private(), voidValue(), "test", [], [])) == 
+    phpMethod("test", {phpPrivate()}, false, [], [], phpNoName());
+
+// TODO add tests using when expressions
+
