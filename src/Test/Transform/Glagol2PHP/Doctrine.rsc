@@ -134,5 +134,7 @@ test bool shouldTransformEntityWithRelationsToPhpScriptUsingDoctrine() {
                     phpAnnotationVal((
                         "targetEntity": phpAnnotationVal("Language")
                     )))
-           };
+           } && ast.body[0].body[1].classDef.members[1] == phpProperty(
+               {phpPrivate()}, [phpProperty("userLang", phpNoExpr())]
+           );
 }
