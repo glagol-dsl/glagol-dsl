@@ -18,6 +18,3 @@ test bool propertyShouldTransformToPhpPropertyWithDefaultValue() =
     
     toPhpClassItem(property(float(), "price", {}, floatLiteral(25.4))) ==
     phpProperty({phpPrivate()}, [phpProperty("price", phpSomeExpr(phpScalar(phpFloat(25.4))))]);
-
-
-    

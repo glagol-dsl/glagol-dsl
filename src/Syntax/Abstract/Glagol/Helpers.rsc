@@ -15,6 +15,9 @@ public bool isMethod(method(_, _, _, _, _)) = true;
 public bool isMethod(method(_, _, _, _, _, _)) = true;
 public bool isMethod(_) = false;
 
+public bool isRelation(relation(_, _, _, _, _)) = true;
+public bool isRelation(_) = false;
+
 public bool isConstructor(constructor(_, _)) = true;
 public bool isConstructor(constructor(_, _, _)) = true;
 public bool isConstructor(_) = false;
@@ -26,3 +29,6 @@ private list[Declaration] getMethodsByName(list[Declaration] declarations, str n
 
 public map[str name, list[Declaration] methods] categorizeMethods(list[Declaration] declarations)
     = (m.name: getMethodsByName(declarations, m.name) | m <- {ms | ms <- declarations, isMethod(ms)});
+
+public list[Declaration] getRelations(list[Declaration] declarations) = [d | d <- declarations, isRelation(d)];
+

@@ -6,6 +6,7 @@ import Transform::Glagol2PHP::Methods;
 import Transform::Glagol2PHP::Statements;
 import Transform::Glagol2PHP::Properties;
 import Transform::Glagol2PHP::Doctrine::Annotations;
+import Transform::Glagol2PHP::Doctrine::Relations;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
@@ -43,7 +44,8 @@ private list[PhpClassItem] toPhpClassItems(list[Declaration] declarations) {
     
     map[str, list[Declaration]] methodsByName = categorizeMethods(declarations);
     
-    classItems = classItems + [createMethod(methodsByName[m]) | m <- methodsByName];
+    classItems = classItems + [createMethod(methodsByName[m]) | m <- methodsByName] 
+                            + [toPhpClassItem(r) | r <- getRelations(declarations)];
     
     return classItems;
 }
