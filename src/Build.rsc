@@ -31,6 +31,8 @@ private void buildConverters() {
         }
     };
     
+    content += "\n";
+    
     writeFile(|cwd:///Parser/Converter.rsc|, content);
     
     print("Generated ");
