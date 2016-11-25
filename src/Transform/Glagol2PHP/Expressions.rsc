@@ -4,14 +4,26 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Utils::String;
 
+// literals
 public PhpExpr toPhpExpr(intLiteral(int i)) = phpScalar(phpInteger(i));
 public PhpExpr toPhpExpr(floatLiteral(real r)) = phpScalar(phpFloat(r));
 public PhpExpr toPhpExpr(strLiteral(str s)) = phpScalar(phpString(s));
 public PhpExpr toPhpExpr(boolLiteral(bool b)) = phpScalar(phpBoolean(b));
+
+// arrays
 public PhpExpr toPhpExpr(\list(list[Expression] items)) 
     = phpNew(phpName(phpName("Vector")), [phpActualParameter(phpArray([phpArrayElement(phpNoExpr(), toPhpExpr(i), false) | i <- items]), false)]);
+
+public PhpExpr toPhpExpr(arrayAccess(Expression variable, Expression arrayIndexKey)) = phpFetchArrayDim(toPhpExpr(variable), phpSomeExpr(toPhpExpr(arrayIndexKey)));
+
+public PhpExpr toPhpExpr(\map(map[Expression key, Expression \value] m)) = 
+    phpStaticCall(phpName(phpName("MapFactory")), phpName(phpName("createFromPairs")), [
+        phpActualParameter(phpNew(phpName(phpName("Pair")), [phpActualParameter(toPhpExpr(k), false), phpActualParameter(toPhpExpr(m[k]), false)]), false) | k <- m
+    ]);
+
 public PhpExpr toPhpExpr(get(artifactType(str name))) 
     = phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName(toLowerCaseFirstChar(name))));
+
 public PhpExpr toPhpExpr(variable(str name)) = phpVar(phpName(phpName(name)));
 
 // Logical binary operations

@@ -39,4 +39,17 @@ test bool shouldTransformToScalarListPhpExpr()
 test bool shouldTransformToFetchLocalPropPhpExpr()
     = toPhpExpr(get(artifactType("SomeUtil"))) == phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("someUtil")));
     
+test bool shouldTransformToFetchArrayDim() = toPhpExpr(arrayAccess(variable("test"), intLiteral(0))) == phpFetchArrayDim(phpVar(phpName(phpName("test"))), phpSomeExpr(phpScalar(phpInteger(0))));
+test bool shouldTransformToFetchArrayDim2() = toPhpExpr(arrayAccess(variable("test"), strLiteral("dasdasasd"))) == phpFetchArrayDim(phpVar(phpName(phpName("test"))), phpSomeExpr(phpScalar(phpString("dasdasasd"))));
 
+test bool shouldTransformToMap() = toPhpExpr(\map((intLiteral(1): strLiteral("first")))) == phpStaticCall(phpName(phpName("MapFactory")), phpName(phpName("createFromPairs")), [
+    phpActualParameter(phpNew(phpName(phpName("Pair")), [phpActualParameter(phpScalar(phpInteger(1)), false), phpActualParameter(phpScalar(phpString("first")), false)]), false)
+]);
+
+@todo="Type check: make sure that pairs are from the same type further in the sequence"
+test bool shouldTransformToMap2() = toPhpExpr(\map((strLiteral("key1"): strLiteral("val1"), strLiteral("key2"): strLiteral("val2")))) == phpStaticCall(phpName(phpName("MapFactory")), phpName(phpName("createFromPairs")), [
+    phpActualParameter(phpNew(phpName(phpName("Pair")), [phpActualParameter(phpScalar(phpString("key1")), false), phpActualParameter(phpScalar(phpString("val1")), false)]), false),
+    phpActualParameter(phpNew(phpName(phpName("Pair")), [phpActualParameter(phpScalar(phpString("key2")), false), phpActualParameter(phpScalar(phpString("val2")), false)]), false)
+]);
+
+test bool shouldTransformToVar() = toPhpExpr(variable("myVar")) == phpVar(phpName(phpName("myVar")));
