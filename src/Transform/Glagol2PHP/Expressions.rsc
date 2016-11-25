@@ -32,3 +32,5 @@ public PhpExpr toPhpExpr(equals(Expression l, Expression r))
 
 public PhpExpr toPhpExpr(greaterThan(Expression l, Expression r))
     = phpBinaryOperation(toPhpExpr(l), toPhpExpr(r), phpGt());
+
+public PhpExpr toPhpExpr(\bracket(Expression e)) = phpBracket(phpSomeExpr(toPhpExpr(e)));

@@ -46,10 +46,12 @@ test bool shouldTransformToMap() = toPhpExpr(\map((intLiteral(1): strLiteral("fi
     phpActualParameter(phpNew(phpName(phpName("Pair")), [phpActualParameter(phpScalar(phpInteger(1)), false), phpActualParameter(phpScalar(phpString("first")), false)]), false)
 ]);
 
-@todo="Type check: make sure that pairs are from the same type further in the sequence"
+@todo="Type check: check that pairs are from the same type further in the sequence"
 test bool shouldTransformToMap2() = toPhpExpr(\map((strLiteral("key1"): strLiteral("val1"), strLiteral("key2"): strLiteral("val2")))) == phpStaticCall(phpName(phpName("MapFactory")), phpName(phpName("createFromPairs")), [
     phpActualParameter(phpNew(phpName(phpName("Pair")), [phpActualParameter(phpScalar(phpString("key1")), false), phpActualParameter(phpScalar(phpString("val1")), false)]), false),
     phpActualParameter(phpNew(phpName(phpName("Pair")), [phpActualParameter(phpScalar(phpString("key2")), false), phpActualParameter(phpScalar(phpString("val2")), false)]), false)
 ]);
 
 test bool shouldTransformToVar() = toPhpExpr(variable("myVar")) == phpVar(phpName(phpName("myVar")));
+
+test bool shouldTransformToBracket() = toPhpExpr(\bracket(variable("test"))) == phpBracket(phpSomeExpr(phpVar(phpName(phpName("test")))));

@@ -59,6 +59,7 @@ public data PhpExpr
     | phpVar(PhpNameOrExpr varName)   
     | phpYield(PhpOptionExpr keyExpr, PhpOptionExpr valueExpr)
     | phpListExpr(list[PhpOptionExpr] listExprs)
+    | phpBracket(PhpOptionExpr bracketExpr)
     ;
 
 public data PhpOp = phpBitwiseAnd() | phpBitwiseOr() | phpBitwiseXor() | phpConcat() | phpDiv() 
