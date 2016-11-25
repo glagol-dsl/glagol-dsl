@@ -45,6 +45,9 @@ public Expression convertExpression((Expression) `<Expression lhs> && <Expressio
 public Expression convertExpression((Expression) `<Expression lhs> || <Expression rhs>`) 
     = or(convertExpression(lhs), convertExpression(rhs));
     
+public Expression convertExpression((Expression) `<Expression lhs> % <Expression rhs>`) 
+    = remainder(convertExpression(lhs), convertExpression(rhs));
+    
 public Expression convertExpression((Expression) `<Expression condition>?<Expression thenExp>:<Expression elseExp>`) 
     = ifThenElse(convertExpression(condition), convertExpression(thenExp), convertExpression(elseExp));
 

@@ -67,6 +67,7 @@ test bool testShouldParseMathExpressions()
                '    void math() {
                '        3*4*(23+3)-4/2;
                '        3 \< 5;
+               '        3 % 5;
                '        1 \>= 1;
                '        2 == 2;
                '        9 \<= 19;
@@ -92,6 +93,7 @@ test bool testShouldParseMathExpressions()
                   )
                  )),
             expression(lessThan(intLiteral(3), intLiteral(5))),
+            expression(remainder(intLiteral(3), intLiteral(5))),
             expression(greaterThanOrEq(intLiteral(1), intLiteral(1))),
             expression(equals(intLiteral(2), intLiteral(2))),
             expression(lessThanOrEq(intLiteral(9), intLiteral(19))),

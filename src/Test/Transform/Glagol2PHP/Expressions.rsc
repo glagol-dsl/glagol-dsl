@@ -55,3 +55,9 @@ test bool shouldTransformToMap2() = toPhpExpr(\map((strLiteral("key1"): strLiter
 test bool shouldTransformToVar() = toPhpExpr(variable("myVar")) == phpVar(phpName(phpName("myVar")));
 
 test bool shouldTransformToBracket() = toPhpExpr(\bracket(variable("test"))) == phpBracket(phpSomeExpr(phpVar(phpName(phpName("test")))));
+
+test bool shouldTransformToBinaryProductOp() = toPhpExpr(product(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpMul());
+test bool shouldTransformToBinaryModOp() = toPhpExpr(remainder(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpMod());
+test bool shouldTransformToBinaryDivOp() = toPhpExpr(division(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpDiv());
+test bool shouldTransformToBinaryPlusOp() = toPhpExpr(addition(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpPlus());
+test bool shouldTransformToBinaryMinusOp() = toPhpExpr(subtraction(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpMinus());

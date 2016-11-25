@@ -27,10 +27,11 @@ public PhpExpr toPhpExpr(get(artifactType(str name)))
 public PhpExpr toPhpExpr(variable(str name)) = phpVar(phpName(phpName(name)));
 
 // Logical binary operations
-public PhpExpr toPhpExpr(equals(Expression l, Expression r))
-    = phpBinaryOperation(toPhpExpr(l), toPhpExpr(r), phpIdentical());
-
-public PhpExpr toPhpExpr(greaterThan(Expression l, Expression r))
-    = phpBinaryOperation(toPhpExpr(l), toPhpExpr(r), phpGt());
-
+public PhpExpr toPhpExpr(equals(Expression l, Expression r)) = phpBinaryOperation(toPhpExpr(l), toPhpExpr(r), phpIdentical());
+public PhpExpr toPhpExpr(greaterThan(Expression l, Expression r)) = phpBinaryOperation(toPhpExpr(l), toPhpExpr(r), phpGt());
+public PhpExpr toPhpExpr(product(Expression lhs, Expression rhs)) = phpBinaryOperation(toPhpExpr(lhs), toPhpExpr(rhs), phpMul());
+public PhpExpr toPhpExpr(remainder(Expression lhs, Expression rhs)) = phpBinaryOperation(toPhpExpr(lhs), toPhpExpr(rhs), phpMod());
+public PhpExpr toPhpExpr(division(Expression lhs, Expression rhs)) = phpBinaryOperation(toPhpExpr(lhs), toPhpExpr(rhs), phpDiv());
+public PhpExpr toPhpExpr(addition(Expression lhs, Expression rhs)) = phpBinaryOperation(toPhpExpr(lhs), toPhpExpr(rhs), phpPlus());
+public PhpExpr toPhpExpr(subtraction(Expression lhs, Expression rhs)) = phpBinaryOperation(toPhpExpr(lhs), toPhpExpr(rhs), phpMinus());
 public PhpExpr toPhpExpr(\bracket(Expression e)) = phpBracket(phpSomeExpr(toPhpExpr(e)));
