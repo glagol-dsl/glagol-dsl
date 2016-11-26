@@ -139,6 +139,7 @@ syntax Expression
     | \list: "[" {Expression ","}* items "]"
     | \map: "{" {MapPair ","}* items "}"
     | negative: "-" Expression argument
+    | positive: "+" Expression argument
     | stringLiteral: StringQuoted string
     | intLiteral: DecimalIntegerLiteral number
     | floatLiteral: DeciFloatNumeral number

@@ -163,6 +163,9 @@ public Expression convertExpression((Expression) `<MemberName varName>`)
     
 public Expression convertExpression((Expression) `-<Expression expr>`) 
     = negative(convertExpression(expr));
+    
+public Expression convertExpression((Expression) `+<Expression expr>`) 
+    = positive(convertExpression(expr));
 
 public Expression convertExpression((Expression) `this`) = this();
 

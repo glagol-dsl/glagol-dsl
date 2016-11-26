@@ -26,7 +26,7 @@ public PhpExpr toPhpExpr(get(artifactType(str name)))
 
 public PhpExpr toPhpExpr(variable(str name)) = phpVar(phpName(phpName(name)));
 
-// Logical binary operations
+// Binary operations
 public PhpExpr toPhpExpr(equals(Expression l, Expression r)) = phpBinaryOperation(toPhpExpr(l), toPhpExpr(r), phpIdentical());
 public PhpExpr toPhpExpr(greaterThan(Expression l, Expression r)) = phpBinaryOperation(toPhpExpr(l), toPhpExpr(r), phpGt());
 public PhpExpr toPhpExpr(product(Expression lhs, Expression rhs)) = phpBinaryOperation(toPhpExpr(lhs), toPhpExpr(rhs), phpMul());
@@ -43,3 +43,5 @@ public PhpExpr toPhpExpr(equals(Expression lhs, Expression rhs)) = phpBinaryOper
 public PhpExpr toPhpExpr(nonEquals(Expression lhs, Expression rhs)) = phpBinaryOperation(toPhpExpr(lhs), toPhpExpr(rhs), phpNotIdentical());
 public PhpExpr toPhpExpr(and(Expression lhs, Expression rhs)) = phpBinaryOperation(toPhpExpr(lhs), toPhpExpr(rhs), phpLogicalAnd());
 public PhpExpr toPhpExpr(or(Expression lhs, Expression rhs)) = phpBinaryOperation(toPhpExpr(lhs), toPhpExpr(rhs), phpLogicalOr());
+public PhpExpr toPhpExpr(negative(Expression e)) = phpUnaryOperation(toPhpExpr(e), phpUnaryMinus());
+public PhpExpr toPhpExpr(positive(Expression e)) = phpUnaryOperation(toPhpExpr(e), phpUnaryPlus());

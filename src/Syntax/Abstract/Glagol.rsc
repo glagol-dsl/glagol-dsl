@@ -75,6 +75,7 @@ data Expression
     | and(Expression lhs, Expression rhs)
     | or(Expression lhs, Expression rhs)
     | negative(Expression expr)
+    | positive(Expression expr)
     | ifThenElse(Expression condition, Expression ifThen, Expression \else)
     | new(str artifact, list[Expression] args)
     | get(Type t)
