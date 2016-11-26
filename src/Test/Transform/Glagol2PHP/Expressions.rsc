@@ -63,4 +63,10 @@ test bool shouldTransformToBinaryPlusOp() = toPhpExpr(addition(intLiteral(3), fl
 test bool shouldTransformToBinaryMinusOp() = toPhpExpr(subtraction(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpMinus());
 test bool shouldTransformToBinaryGeqOp() = toPhpExpr(greaterThanOrEq(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpGeq());
 test bool shouldTransformToBinaryLeqOp() = toPhpExpr(lessThanOrEq(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpLeq());
+test bool shouldTransformToBinaryLtOp() = toPhpExpr(lessThan(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpLt());
+test bool shouldTransformToBinaryGtOp() = toPhpExpr(greaterThan(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpGt());
+test bool shouldTransformToBinaryEqOp() = toPhpExpr(equals(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpIdentical());
+test bool shouldTransformToBinaryNonEqOp() = toPhpExpr(nonEquals(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpNotIdentical());
+test bool shouldTransformToBinaryAndOp() = toPhpExpr(and(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpLogicalAnd());
+test bool shouldTransformToBinaryOrOp() = toPhpExpr(or(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpLogicalOr());
 
