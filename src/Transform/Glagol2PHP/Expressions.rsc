@@ -35,3 +35,5 @@ public PhpExpr toPhpExpr(division(Expression lhs, Expression rhs)) = phpBinaryOp
 public PhpExpr toPhpExpr(addition(Expression lhs, Expression rhs)) = phpBinaryOperation(toPhpExpr(lhs), toPhpExpr(rhs), phpPlus());
 public PhpExpr toPhpExpr(subtraction(Expression lhs, Expression rhs)) = phpBinaryOperation(toPhpExpr(lhs), toPhpExpr(rhs), phpMinus());
 public PhpExpr toPhpExpr(\bracket(Expression e)) = phpBracket(phpSomeExpr(toPhpExpr(e)));
+public PhpExpr toPhpExpr(greaterThanOrEq(Expression lhs, Expression rhs)) = phpBinaryOperation(toPhpExpr(lhs), toPhpExpr(rhs), phpGeq());
+public PhpExpr toPhpExpr(lessThanOrEq(Expression lhs, Expression rhs)) = phpBinaryOperation(toPhpExpr(lhs), toPhpExpr(rhs), phpLeq());

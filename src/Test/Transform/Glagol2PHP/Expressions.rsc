@@ -61,3 +61,6 @@ test bool shouldTransformToBinaryModOp() = toPhpExpr(remainder(intLiteral(3), fl
 test bool shouldTransformToBinaryDivOp() = toPhpExpr(division(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpDiv());
 test bool shouldTransformToBinaryPlusOp() = toPhpExpr(addition(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpPlus());
 test bool shouldTransformToBinaryMinusOp() = toPhpExpr(subtraction(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpMinus());
+test bool shouldTransformToBinaryGeqOp() = toPhpExpr(greaterThanOrEq(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpGeq());
+test bool shouldTransformToBinaryLeqOp() = toPhpExpr(lessThanOrEq(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpLeq());
+
