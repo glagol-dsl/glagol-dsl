@@ -56,6 +56,9 @@ test bool shouldTransformToVar() = toPhpExpr(variable("myVar")) == phpVar(phpNam
 
 test bool shouldTransformToBracket() = toPhpExpr(\bracket(variable("test"))) == phpBracket(phpSomeExpr(phpVar(phpName(phpName("test")))));
 
+test bool shouldTransformToTernary() = toPhpExpr(ifThenElse(greaterThan(intLiteral(3), floatLiteral(4.5)), intLiteral(3), intLiteral(4))) 
+    == phpTernary(phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpGt()), phpSomeExpr(phpScalar(phpInteger(3))), phpScalar(phpInteger(4)));
+
 test bool shouldTransformToBinaryProductOp() = toPhpExpr(product(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpMul());
 test bool shouldTransformToBinaryModOp() = toPhpExpr(remainder(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpMod());
 test bool shouldTransformToBinaryDivOp() = toPhpExpr(division(intLiteral(3), floatLiteral(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpDiv());
