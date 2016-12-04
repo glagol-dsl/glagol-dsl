@@ -106,6 +106,8 @@ syntax DefaultValue
     | booleanLiteral : Boolean boolean
     | \list : "[" {DefaultValue ","}* items "]" list
     | getInstance: "get" InstanceType
+    | newInstance: "new" InstanceType 
+    | newInstance: "new" InstanceType "(" {Expression ","}* args ")"
     ;
 
 syntax AccessProperties

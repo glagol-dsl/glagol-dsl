@@ -95,6 +95,10 @@ public Expression convertExpression((DefaultValue) `[<{DefaultValue ","}* items>
 public Expression convertExpression((DefaultValue) `get <InstanceType t>`)
     = get(convertInstanceType(t));
     
+public Expression convertExpression((DefaultValue) `new <ArtifactName name>`) = new("<name>", []);
+public Expression convertExpression((DefaultValue) `new <ArtifactName name>(<{Expression ","}* args>)`) 
+    = new("<name>", [convertExpression(arg) | arg <- args]);
+    
 public Type convertInstanceType((InstanceType) `<Type t>`) = convertType(t);
 public Type convertInstanceType((InstanceType) `selfie`) = selfie();
     

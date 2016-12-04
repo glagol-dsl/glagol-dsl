@@ -81,3 +81,17 @@ test bool canUseRepositoryAssocArtifactInExpression()
             ])
         ]));
 }
+
+test bool canCreateNewServiceAsAPropertyDefaultValue() 
+{
+    str code
+        = "namespace Test;
+          'service UserCreator {
+          '    UserService userService = new UserService;
+          '}";
+    
+    return parseModule(code) ==
+        \module(namespace("Test"), [], util("UserCreator", [
+            property(artifactType("UserService"), "userService", {}, new("UserService", []))
+        ]));
+}

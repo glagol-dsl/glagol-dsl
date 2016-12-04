@@ -8,7 +8,7 @@ public Expression convertParameterDefaultVal((AssignDefaultValue) `=<DefaultValu
 
     Expression defaultValue = convertExpression(defaultValue);
     
-    if (defaultValue := get(selfie())) {
+    if (defaultValue == get(selfie())) {
         defaultValue = get(onType);
     }
 
