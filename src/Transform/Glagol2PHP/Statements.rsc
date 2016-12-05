@@ -12,7 +12,12 @@ import IO;
 
 public PhpStmt toPhpStmt(ifThen(Expression when, Statement body)) = 
     phpIf(toPhpExpr(when), [toPhpStmt(body)], [], phpNoElse());
+    
+public PhpStmt toPhpStmt(ifThenElse(Expression when, Statement body, Statement \else)) = 
+    phpIf(toPhpExpr(when), [toPhpStmt(body)], [], phpSomeElse(phpElse([toPhpStmt(\else)])));
 
 public PhpStmt toPhpStmt(expression(Expression expr)) = phpExprstmt(toPhpExpr(expr));
 
 public PhpStmt toPhpStmt(block(list[Statement] body)) = phpBlock([toPhpStmt(stmt) | stmt <- body]);
+
+

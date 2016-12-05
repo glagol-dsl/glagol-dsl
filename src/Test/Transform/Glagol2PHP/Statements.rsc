@@ -30,3 +30,15 @@ test bool shouldTransformToABlock() =
         phpExprstmt(phpBinaryOperation(phpVar(phpName(phpName("input"))), phpScalar(phpString("blah")), phpGeq())),
         phpExprstmt(phpBinaryOperation(phpScalar(phpFloat(1.32)), phpVar(phpName(phpName("input"))), phpIdentical()))
     ]);
+
+test bool shouldTransformToIfThenElse() =
+    toPhpStmt(ifThenElse(equals(strLiteral("SOME_CONST"), variable("input")), expression(invoke("someFunc", [])), expression(invoke("someOtherFunc", [])))) ==
+    phpIf(
+        phpBinaryOperation(phpScalar(phpString("SOME_CONST")), phpVar(phpName(phpName("input"))), phpIdentical()),
+        [
+            phpExprstmt(phpMethodCall(phpVar(phpName(phpName("this"))), phpName(phpName("someFunc")), []))
+        ], [], phpSomeElse(phpElse([
+            phpExprstmt(phpMethodCall(phpVar(phpName(phpName("this"))), phpName(phpName("someOtherFunc")), []))
+        ]))
+    );
+    
