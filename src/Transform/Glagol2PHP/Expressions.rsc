@@ -21,7 +21,7 @@ public PhpExpr toPhpExpr(\map(map[Expression key, Expression \value] m)) =
         phpActualParameter(phpNew(phpName(phpName("Pair")), [phpActualParameter(toPhpExpr(k), false), phpActualParameter(toPhpExpr(m[k]), false)]), false) | k <- m
     ]);
 
-public PhpExpr toPhpExpr(get(artifactType(str name))) 
+public PhpExpr toPhpExpr(get(artifactType(str name)))
     = phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("_<toLowerCaseFirstChar(name)>")));
 
 public PhpExpr toPhpExpr(variable(str name)) = phpVar(phpName(phpName(name)));
@@ -53,3 +53,19 @@ public PhpExpr toPhpExpr(or(Expression lhs, Expression rhs)) = phpBinaryOperatio
 // Unary operations
 public PhpExpr toPhpExpr(negative(Expression e)) = phpUnaryOperation(toPhpExpr(e), phpUnaryMinus());
 public PhpExpr toPhpExpr(positive(Expression e)) = phpUnaryOperation(toPhpExpr(e), phpUnaryPlus());
+
+// Method call
+public PhpExpr toPhpExpr(invoke(str methodName, list[Expression] args)) =
+    phpMethodCall(phpVar(phpName(phpName("this"))), phpName(phpName(methodName)), [phpActualParameter(toPhpExpr(arg), false) | arg <- args]);
+
+public PhpExpr toPhpExpr(invoke(Expression prev, str methodName, list[Expression] args)) =
+    phpMethodCall(toPhpExpr(prev), phpName(phpName(methodName)), [phpActualParameter(toPhpExpr(arg), false) | arg <- args]);
+
+// Property fetch
+public PhpExpr toPhpExpr(fieldAccess(str name)) =
+    phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName(name)));
+    
+public PhpExpr toPhpExpr(fieldAccess(Expression prev, str name)) =
+    phpPropertyFetch(toPhpExpr(prev), phpName(phpName(name)));
+
+    

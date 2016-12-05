@@ -80,3 +80,25 @@ test bool shouldTransformToBinaryOrOp() = toPhpExpr(or(intLiteral(3), floatLiter
 test bool shouldTransformToUnaryMinusOp() = toPhpExpr(negative(floatLiteral(4.5))) == phpUnaryOperation(phpScalar(phpFloat(4.5)), phpUnaryMinus());
 test bool shouldTransformToUnaryPlusOp() = toPhpExpr(positive(floatLiteral(4.5))) == phpUnaryOperation(phpScalar(phpFloat(4.5)), phpUnaryPlus());
 
+test bool shouldTransformToLocalMethodCall() = 
+    toPhpExpr(invoke("doSomething", [floatLiteral(4.3), intLiteral(34)])) ==
+    phpMethodCall(phpVar(phpName(phpName("this"))), phpName(phpName("doSomething")), [
+        phpActualParameter(phpScalar(phpFloat(4.3)), false),
+        phpActualParameter(phpScalar(phpInteger(34)), false)
+    ]);
+    
+// TODO Add transformation: if local variable is not defined, try to access a property (using $this)
+test bool shouldTransformToExternalMethodCall() = 
+    toPhpExpr(invoke(variable("someService"), "doSomething", [floatLiteral(4.3), intLiteral(34)])) ==
+    phpMethodCall(phpVar(phpName(phpName("someService"))), phpName(phpName("doSomething")), [
+        phpActualParameter(phpScalar(phpFloat(4.3)), false),
+        phpActualParameter(phpScalar(phpInteger(34)), false)
+    ]);
+    
+test bool shouldTransformToLocalPropertyFetch() =
+    toPhpExpr(fieldAccess("counter")) ==
+    phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("counter")));
+    
+test bool shouldTransformToExternalPropertyFetch() =
+    toPhpExpr(fieldAccess(variable("someService"), "counter")) ==
+    phpPropertyFetch(phpVar(phpName(phpName("someService"))), phpName(phpName("counter")));

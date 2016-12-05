@@ -11,13 +11,15 @@ test bool testShouldParseVariableInBrackets()
                '    void variableInBrackets(int theVariable) {
                '        ((theVariable));
                '        (theVariable) + 1;
+               '        anotherVar;
                '    }
                '}"; 
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "variableInBrackets", [param(integer(), "theVariable")], [
             expression(\bracket(\bracket(variable("theVariable")))),
-            expression(addition(\bracket(variable("theVariable")), intLiteral(1)))
+            expression(addition(\bracket(variable("theVariable")), intLiteral(1))),
+            expression(variable("anotherVar"))
         ])
     ]));
 }
