@@ -19,7 +19,7 @@ test bool shouldParseMapDeclaration()
             param(integer(), "id")
         ], [
             declare(typedMap(string(), integer()), variable("query"), expression(\map((strLiteral("id"): variable("id"))))),
-            \return(expression(invoke("findOneBy", [variable("query")])))
+            \return(invoke("findOneBy", [variable("query")]))
         ])
     ]));
 }

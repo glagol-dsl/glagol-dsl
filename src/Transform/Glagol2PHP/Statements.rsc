@@ -37,3 +37,6 @@ public PhpStmt toPhpStmt(assign(Expression assignable, subtractionAssign(), expr
     
 public PhpStmt toPhpStmt(assign(Expression assignable, additionAssign(), expression(Expression val)))
     = phpExprstmt(phpAssignWOp(toPhpExpr(assignable), toPhpExpr(val), phpPlus()));
+    
+public PhpStmt toPhpStmt(\return(emptyExpr())) = phpReturn(phpNoExpr());
+public PhpStmt toPhpStmt(\return(Expression expr)) = phpReturn(phpSomeExpr(toPhpExpr(expr)));

@@ -61,3 +61,11 @@ test bool shouldTransformToAssignUsingSubOperator() =
 test bool shouldTransformToAssignUsingAddOperator() =
     toPhpStmt(assign(variable("trackID"), additionAssign(), expression(intLiteral(89)))) == 
     phpExprstmt(phpAssignWOp(phpVar(phpName(phpName("trackID"))), phpScalar(phpInteger(89)), phpPlus()));
+
+test bool shouldTransformToReturnStmt() =
+    toPhpStmt(\return(variable("output"))) ==
+    phpReturn(phpSomeExpr(phpVar(phpName(phpName("output")))));
+
+test bool shouldTransformToEmptyReturnStmt() = toPhpStmt(\return(emptyExpr())) == phpReturn(phpNoExpr());
+
+

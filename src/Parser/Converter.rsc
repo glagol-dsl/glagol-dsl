@@ -76,19 +76,19 @@ public Declaration convertMethod(
     
 public Declaration convertMethod(
     (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr>;`) 
-    = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))]);
+    = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))]);
 
 public Declaration convertMethod(
     (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr>;`) 
-    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))]);
+    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))]);
 
 public Declaration convertMethod(
     (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr><When when>;`) 
-    = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))], convertWhen(when));
+    = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))], convertWhen(when));
 
 public Declaration convertMethod(
     (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr><When when>;`) 
-    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(expression(convertExpression(expr)))], convertWhen(when));
+    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))], convertWhen(when));
     
 private Modifier convertModifier((Modifier) `public`) = \public();
 private Modifier convertModifier((Modifier) `private`) = \private();
@@ -281,8 +281,8 @@ public Statement convertStmt((Statement) `if ( <Expression condition> ) <Stateme
 public Statement convertStmt((Statement) `<Assignable assignable><AssignOperator operator><Statement val>`) 
     = assign(convertAssignable(assignable), convertAssignOperator(operator), convertStmt(val));
 
-public Statement convertStmt((Statement) `return;`) = \return(expression(emptyStmt()));
-public Statement convertStmt((Statement) `return <Expression expr>;`) = \return(expression(convertExpression(expr)));
+public Statement convertStmt((Statement) `return;`) = \return(emptyExpr());
+public Statement convertStmt((Statement) `return <Expression expr>;`) = \return(convertExpression(expr));
 
 public Statement convertStmt((Statement) `break ;`) = \break();
 public Statement convertStmt((Statement) `break<Integer level>;`) = \break(toInt("<level>"));

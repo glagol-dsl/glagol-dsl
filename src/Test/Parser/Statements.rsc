@@ -89,7 +89,7 @@ test bool testIfStatement() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a")], [
-            ifThen(equals(variable("a"), intLiteral(5)), \return(expression(intLiteral(5))))
+            ifThen(equals(variable("a"), intLiteral(5)), \return(intLiteral(5)))
         ])
     ]));
 }
@@ -105,7 +105,7 @@ test bool testIfStatementWithBlock() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a")], [
-            ifThen(equals(variable("a"), intLiteral(5)), block([\return(expression(intLiteral(5)))]))
+            ifThen(equals(variable("a"), intLiteral(5)), block([\return(intLiteral(5))]))
         ])
     ]));
 }
@@ -122,7 +122,7 @@ test bool testIfElseStatement() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a")], [
-            ifThenElse(equals(variable("a"), intLiteral(5)), \return(expression(intLiteral(5))), \return(expression(intLiteral(6))))
+            ifThenElse(equals(variable("a"), intLiteral(5)), \return(intLiteral(5)), \return(intLiteral(6)))
         ])
     ]));
 }
@@ -139,8 +139,8 @@ test bool testIfElseIfStatement() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a")], [
-            ifThenElse(equals(variable("a"), intLiteral(5)), \return(expression(intLiteral(5))), 
-                ifThen(equals(variable("a"), intLiteral(6)), \return(expression(intLiteral(6))))    
+            ifThenElse(equals(variable("a"), intLiteral(5)), \return(intLiteral(5)), 
+                ifThen(equals(variable("a"), intLiteral(6)), \return(intLiteral(6)))    
             )
         ])
     ]));
@@ -159,8 +159,8 @@ test bool testIfElseIfEndingWithElseStatement() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a")], [
-            ifThenElse(equals(variable("a"), intLiteral(5)), \return(expression(intLiteral(5))), 
-                ifThenElse(equals(variable("a"), intLiteral(6)), \return(expression(intLiteral(6))), \return(expression(intLiteral(0))))
+            ifThenElse(equals(variable("a"), intLiteral(5)), \return(intLiteral(5)), 
+                ifThenElse(equals(variable("a"), intLiteral(6)), \return(intLiteral(6)), \return(intLiteral(0)))
             )
         ])
     ]));
