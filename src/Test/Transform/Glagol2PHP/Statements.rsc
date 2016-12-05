@@ -17,3 +17,7 @@ test bool shouldTransformToIfWithoutElse() =
         ], [], phpNoElse()
     );
 
+test bool shouldTransformToAnExpression() = 
+    toPhpStmt(expression(greaterThanOrEq(floatLiteral(1.32), variable("input")))) ==
+    phpExprstmt(phpBinaryOperation(phpScalar(phpFloat(1.32)), phpVar(phpName(phpName("input"))), phpGeq()));
+    
