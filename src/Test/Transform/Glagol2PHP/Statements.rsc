@@ -21,3 +21,12 @@ test bool shouldTransformToAnExpression() =
     toPhpStmt(expression(greaterThanOrEq(floatLiteral(1.32), variable("input")))) ==
     phpExprstmt(phpBinaryOperation(phpScalar(phpFloat(1.32)), phpVar(phpName(phpName("input"))), phpGeq()));
     
+test bool shouldTransformToABlock() =
+    toPhpStmt(block([
+        expression(greaterThanOrEq(variable("input"), strLiteral("blah"))),
+        expression(equals(floatLiteral(1.32), variable("input")))
+    ])) ==
+    phpBlock([
+        phpExprstmt(phpBinaryOperation(phpVar(phpName(phpName("input"))), phpScalar(phpString("blah")), phpGeq())),
+        phpExprstmt(phpBinaryOperation(phpScalar(phpFloat(1.32)), phpVar(phpName(phpName("input"))), phpIdentical()))
+    ]);
