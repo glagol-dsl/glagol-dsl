@@ -67,5 +67,7 @@ public PhpExpr toPhpExpr(fieldAccess(str name)) =
     
 public PhpExpr toPhpExpr(fieldAccess(Expression prev, str name)) =
     phpPropertyFetch(toPhpExpr(prev), phpName(phpName(name)));
+    
+public PhpExpr toPhpExpr(this()) = phpVar(phpName(phpName("this")));
 
     

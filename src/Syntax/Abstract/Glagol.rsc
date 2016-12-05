@@ -29,10 +29,6 @@ data RelationDir
     | many()
     ;
 
-data AssocArtifact
-    = assocRepository(str target)
-    ;
-
 data UseSource
     = externalUse(str \module)
     | internalUse()
@@ -83,9 +79,7 @@ data Expression
     | invoke(Expression prev, str methodName, list[Expression] args)
     | fieldAccess(str field)
     | fieldAccess(Expression prev, str field)
-    | chain(list[Expression] elements)
     | emptyExpr()
-    | assocArtifact(AssocArtifact aArtifact)
     | this()
     ;
 

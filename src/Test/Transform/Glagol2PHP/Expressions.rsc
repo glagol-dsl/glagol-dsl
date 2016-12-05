@@ -102,3 +102,5 @@ test bool shouldTransformToLocalPropertyFetch() =
 test bool shouldTransformToExternalPropertyFetch() =
     toPhpExpr(fieldAccess(variable("someService"), "counter")) ==
     phpPropertyFetch(phpVar(phpName(phpName("someService"))), phpName(phpName("counter")));
+
+test bool shouldTransformToThis() = toPhpExpr(this()) == phpVar(phpName(phpName("this")));
