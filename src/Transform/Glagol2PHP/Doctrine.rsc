@@ -35,6 +35,11 @@ private PhpStmt toPhpClassDef(entity(str name, list[Declaration] declarations))
         @phpAnnotations={phpAnnotation("ORM\\Entity")}
     ]);
 
+
+@doc="Will apply annotations to all php class items that were converted from Glagol in-artefact declarations"
+private PhpClassItem toPhpClassItem(annotated(list[Annotation] annotations, Declaration declaration))
+    = applyAnnotationsOnClassItem(toPhpClassItem(declaration), annotations);
+    
 private list[PhpClassItem] toPhpClassItems(list[Declaration] declarations) {
     list[PhpClassItem] classItems = [toPhpClassItem(ci) | ci <- declarations, isProperty(ci) || isAnnotated(ci, isProperty)];
     
