@@ -40,3 +40,12 @@ public PhpStmt toPhpStmt(assign(Expression assignable, additionAssign(), express
     
 public PhpStmt toPhpStmt(\return(emptyExpr())) = phpReturn(phpNoExpr());
 public PhpStmt toPhpStmt(\return(Expression expr)) = phpReturn(phpSomeExpr(toPhpExpr(expr)));
+
+public PhpStmt toPhpStmt(declare(Type t, Expression var)) 
+    = phpExprstmt(phpAssign(toPhpExpr(var), phpScalar(phpNull())));
+    
+public PhpStmt toPhpStmt(declare(Type t, Expression var, expression(Expression val)))
+    = phpExprstmt(phpAssign(toPhpExpr(var), toPhpExpr(val)));
+    
+public PhpStmt toPhpStmt(declare(Type t, Expression var, defaultValue: assign(assignable, op, expr)))
+    = phpExprstmt(phpAssign(toPhpExpr(var), toPhpStmt(defaultValue).expr));

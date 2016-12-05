@@ -68,4 +68,14 @@ test bool shouldTransformToReturnStmt() =
 
 test bool shouldTransformToEmptyReturnStmt() = toPhpStmt(\return(emptyExpr())) == phpReturn(phpNoExpr());
 
-
+test bool shouldTransformToNulledDeclaration() =
+    toPhpStmt(declare(integer(), variable("var1"))) ==
+    phpExprstmt(phpAssign(phpVar(phpName(phpName("var1"))), phpScalar(phpNull())));
+    
+test bool shouldTransformToDeclarationWithDefaultValue() =
+    toPhpStmt(declare(integer(), variable("var1"), expression(intLiteral(23)))) ==
+    phpExprstmt(phpAssign(phpVar(phpName(phpName("var1"))), phpScalar(phpInteger(23))));
+    
+test bool shouldTransformToDeclarationWithAssignAsDefaultValue() =
+    toPhpStmt(declare(integer(), variable("var1"), assign(variable("var2"), defaultAssign(), expression(intLiteral(44))))) ==
+    phpExprstmt(phpAssign(phpVar(phpName(phpName("var1"))), phpAssign(phpVar(phpName(phpName("var2"))), phpScalar(phpInteger(44)))));

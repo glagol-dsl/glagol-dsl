@@ -83,6 +83,7 @@ public data PhpScalar
     | phpMethodConstant()
     | phpNamespaceConstant()
     | phpTraitConstant()
+    | phpNull()
     | phpFloat(real realVal)
     | phpInteger(int intVal)
     | phpString(str strVal)
