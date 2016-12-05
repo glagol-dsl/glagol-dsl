@@ -20,4 +20,20 @@ public PhpStmt toPhpStmt(expression(Expression expr)) = phpExprstmt(toPhpExpr(ex
 
 public PhpStmt toPhpStmt(block(list[Statement] body)) = phpBlock([toPhpStmt(stmt) | stmt <- body]);
 
+public PhpStmt toPhpStmt(assign(Expression assignable, defaultAssign(), expression(Expression val)))
+    = phpExprstmt(phpAssign(toPhpExpr(assignable), toPhpExpr(val)));
 
+public PhpStmt toPhpStmt(assign(Expression assignable, defaultAssign(), expression(Expression val)))
+    = phpExprstmt(phpAssign(toPhpExpr(assignable), toPhpExpr(val)));
+
+public PhpStmt toPhpStmt(assign(Expression assignable, divisionAssign(), expression(Expression val)))
+    = phpExprstmt(phpAssignWOp(toPhpExpr(assignable), toPhpExpr(val), phpDiv()));
+
+public PhpStmt toPhpStmt(assign(Expression assignable, productAssign(), expression(Expression val)))
+    = phpExprstmt(phpAssignWOp(toPhpExpr(assignable), toPhpExpr(val), phpMul()));
+    
+public PhpStmt toPhpStmt(assign(Expression assignable, subtractionAssign(), expression(Expression val)))
+    = phpExprstmt(phpAssignWOp(toPhpExpr(assignable), toPhpExpr(val), phpMinus()));
+    
+public PhpStmt toPhpStmt(assign(Expression assignable, additionAssign(), expression(Expression val)))
+    = phpExprstmt(phpAssignWOp(toPhpExpr(assignable), toPhpExpr(val), phpPlus()));

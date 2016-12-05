@@ -41,4 +41,23 @@ test bool shouldTransformToIfThenElse() =
             phpExprstmt(phpMethodCall(phpVar(phpName(phpName("this"))), phpName(phpName("someOtherFunc")), []))
         ]))
     );
+
+test bool shouldTransformToAssignUsingDefaultOperator() =
+    toPhpStmt(assign(variable("trackID"), defaultAssign(), expression(intLiteral(89)))) == 
+    phpExprstmt(phpAssign(phpVar(phpName(phpName("trackID"))), phpScalar(phpInteger(89))));
+
+test bool shouldTransformToAssignUsingDivisionOperator() =
+    toPhpStmt(assign(variable("trackID"), divisionAssign(), expression(intLiteral(89)))) == 
+    phpExprstmt(phpAssignWOp(phpVar(phpName(phpName("trackID"))), phpScalar(phpInteger(89)), phpDiv()));
+
+test bool shouldTransformToAssignUsingProductOperator() =
+    toPhpStmt(assign(variable("trackID"), productAssign(), expression(intLiteral(89)))) == 
+    phpExprstmt(phpAssignWOp(phpVar(phpName(phpName("trackID"))), phpScalar(phpInteger(89)), phpMul()));
     
+test bool shouldTransformToAssignUsingSubOperator() =
+    toPhpStmt(assign(variable("trackID"), subtractionAssign(), expression(intLiteral(89)))) == 
+    phpExprstmt(phpAssignWOp(phpVar(phpName(phpName("trackID"))), phpScalar(phpInteger(89)), phpMinus()));
+    
+test bool shouldTransformToAssignUsingAddOperator() =
+    toPhpStmt(assign(variable("trackID"), additionAssign(), expression(intLiteral(89)))) == 
+    phpExprstmt(phpAssignWOp(phpVar(phpName(phpName("trackID"))), phpScalar(phpInteger(89)), phpPlus()));
