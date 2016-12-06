@@ -49,3 +49,23 @@ public PhpStmt toPhpStmt(declare(Type t, Expression var, expression(Expression v
     
 public PhpStmt toPhpStmt(declare(Type t, Expression var, defaultValue: assign(assignable, op, expr)))
     = phpExprstmt(phpAssign(toPhpExpr(var), toPhpStmt(defaultValue).expr));
+
+public PhpStmt toPhpStmt(foreach(Expression \list, Expression varName, Statement body))
+    = phpForeach(toPhpExpr(\list), phpNoExpr(), false, toPhpExpr(varName), [toPhpStmt(body)]);
+    
+private PhpExpr toBinaryOperation(list[Expression] conditions, PhpOp op) = toPhpExpr(conditions[0]) when size(conditions) == 1;
+    
+private PhpExpr toBinaryOperation(list[Expression] conditions, PhpOp op) 
+    = phpBinaryOperation(toPhpExpr(conditions[0]), toPhpExpr(conditions[1]), op) when size(conditions) == 2;
+    
+private PhpExpr toBinaryOperation(list[Expression] conditions, PhpOp op) {
+    tuple[Expression element, list[Expression] rest] first = pop(conditions);
+
+    return phpBinaryOperation(toPhpExpr(first.element), toBinaryOperation(first.rest, op), op);
+}
+    
+public PhpStmt toPhpStmt(foreach(Expression \list, Expression varName, Statement body, list[Expression] conditions))
+    = phpForeach(toPhpExpr(\list), phpNoExpr(), false, toPhpExpr(varName), [
+        phpIf(toBinaryOperation(conditions, phpLogicalAnd()), [toPhpStmt(body)], [], phpNoElse())
+    ]);
+    
