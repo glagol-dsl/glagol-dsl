@@ -4,8 +4,6 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import List;
 
-// TODO Make non-expected annotations work
-// TODO make doc annotations work
 private PhpAnnotation toPhpAnnotation(annotation(str annotationName, list[Annotation] arguments))
     = phpAnnotation(toPhpAnnotationKey(annotationName)) when size(arguments) == 0;
 

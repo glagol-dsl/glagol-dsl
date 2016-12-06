@@ -7,6 +7,7 @@ import Transform::Glagol2PHP::Statements;
 import Transform::Glagol2PHP::Properties;
 import Transform::Glagol2PHP::Doctrine::Annotations;
 import Transform::Glagol2PHP::Doctrine::Relations;
+import Transform::Glagol2PHP::Utils;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
@@ -15,14 +16,14 @@ import List;
 import IO;
 
 public map[str, PhpScript] toPHPScript(<Framework f, doctrine()>, \module(Declaration namespace, imports, artifact))
-    = (makeFilename(namespace, artifact): phpScript([toPhpNamespace(namespace, imports, artifact)])) 
-    when entity(_, _) := artifact || annotated(_, entity(_, _)) := artifact;
+    = (makeFilename(namespace, artifact): phpScript([toPhpNamespace(namespace, imports, artifact)]));
 
-public PhpStmt toPhpNamespace(Declaration namespace, list[Declaration] imports, Declaration artifact)
+private PhpStmt toPhpNamespace(Declaration namespace, list[Declaration] imports, Declaration artifact)
     = phpNamespace(
         phpSomeName(phpName(namespaceToString(namespace, "\\"))),
         [phpUse(
-            {toPhpUse(i) | i <- imports} + {phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM")))}
+            {toPhpUse(i) | i <- imports} + 
+            (isEntity(artifact) ? {phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM")))} : {})
         )] + [toPhpClassDef(artifact)]
     );
     
@@ -35,22 +36,6 @@ private PhpStmt toPhpClassDef(entity(str name, list[Declaration] declarations))
         @phpAnnotations={phpAnnotation("ORM\\Entity")}
     ]);
 
-
 @doc="Will apply annotations to all php class items that were converted from Glagol in-artefact declarations"
 private PhpClassItem toPhpClassItem(annotated(list[Annotation] annotations, Declaration declaration))
     = applyAnnotationsOnClassItem(toPhpClassItem(declaration), annotations);
-    
-private list[PhpClassItem] toPhpClassItems(list[Declaration] declarations) {
-    list[PhpClassItem] classItems = [toPhpClassItem(ci) | ci <- declarations, isProperty(ci) || isAnnotated(ci, isProperty)];
-    
-    if (hasConstructors(declarations)) {
-        classItems = classItems + [createConstructor(getConstructors(declarations))];
-    }
-    
-    map[str, list[Declaration]] methodsByName = categorizeMethods(declarations);
-    
-    classItems = classItems + [createMethod(methodsByName[m]) | m <- methodsByName] 
-                            + [toPhpClassItem(r) | r <- getRelations(declarations)];
-    
-    return classItems;
-}

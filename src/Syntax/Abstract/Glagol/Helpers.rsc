@@ -22,6 +22,10 @@ public bool isConstructor(constructor(_, _)) = true;
 public bool isConstructor(constructor(_, _, _)) = true;
 public bool isConstructor(_) = false;
 
+public bool isEntity(entity(_, _)) = true;
+public bool isEntity(annotated(_, Declaration d)) = isEntity(d);
+public bool isEntity(_) = false;
+
 public bool hasConstructors(list[Declaration] declarations) = size([d | d <- declarations, isConstructor(d)]) > 0;
 
 private list[Declaration] getMethodsByName(list[Declaration] declarations, str name)

@@ -12,7 +12,8 @@ public str namespaceToString(namespace(str name, Declaration subNamespace), str 
     = name + delimiter + namespaceToString(subNamespace, delimiter);
 
 public str makeFilename(Declaration namespace, entity(str name, _)) = namespaceToDir(namespace) + name + ".<EXT>";
-public str makeFilename(Declaration namespace, annotated(_, Declaration entity)) = makeFilename(namespace, entity);
+public str makeFilename(Declaration namespace, util(str name, _)) = namespaceToDir(namespace) + name + ".<EXT>";
+public str makeFilename(Declaration namespace, annotated(_, Declaration d)) = makeFilename(namespace, d);
 
 private str namespaceToDir(namespace(str name)) = name + DS;
 private str namespaceToDir(namespace(str name, Declaration sub)) = name + DS + namespaceToDir(sub);
