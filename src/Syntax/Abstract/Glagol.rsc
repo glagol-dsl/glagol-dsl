@@ -95,7 +95,7 @@ data Type
     | repositoryType(str name)
     | selfie()
     ;
-    
+
 data Modifier
     = \public()
     | \private()

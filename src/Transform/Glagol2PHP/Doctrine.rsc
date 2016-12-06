@@ -14,7 +14,7 @@ import Config::Reader;
 import List;
 import IO;
 
-public map[str, PhpScript] toPHPScript(<_, doctrine()>, \module(Declaration namespace, imports, artifact))
+public map[str, PhpScript] toPHPScript(<Framework f, doctrine()>, \module(Declaration namespace, imports, artifact))
     = (makeFilename(namespace, artifact): phpScript([toPhpNamespace(namespace, imports, artifact)])) 
     when entity(_, _) := artifact || annotated(_, entity(_, _)) := artifact;
 

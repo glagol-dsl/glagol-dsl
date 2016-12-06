@@ -8,6 +8,7 @@ import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
 import List;
 
+// TODO overriding has a bug with annotated parameters
 public PhpExpr createOverrideRule(list[Declaration] params, list[Statement] body)
     = phpMethodCall(
         phpVar(phpName(phpName("overrider"))), phpName(phpName("override")), [
