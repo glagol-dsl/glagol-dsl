@@ -111,7 +111,7 @@ test bool shouldTransformToForeachWithConditions2() =
         ]
     );
 
-test bool shouldTransformToForeachWithConditions2() = 
+test bool shouldTransformToForeachWithConditions3() = 
     toPhpStmt(foreach(variable("categories"), variable("category"), expression(invoke("func", [])), [boolLiteral(true), boolLiteral(true), boolLiteral(true)])) ==
     phpForeach(
         phpVar(phpName(phpName("categories"))), 
@@ -122,3 +122,15 @@ test bool shouldTransformToForeachWithConditions2() =
         ]
     );
     
+    
+test bool shouldTransformToContinue() =
+    toPhpStmt(\continue()) == phpContinue(phpNoExpr());
+    
+test bool shouldTransformToContinue2() =
+    toPhpStmt(\continue(2)) == phpContinue(phpSomeExpr(phpScalar(phpInteger(2))));
+    
+test bool shouldTransformToBreak() =
+    toPhpStmt(\break()) == phpBreak(phpNoExpr());
+    
+test bool shouldTransformToBreak2() =
+    toPhpStmt(\break(2)) == phpBreak(phpSomeExpr(phpScalar(phpInteger(2))));

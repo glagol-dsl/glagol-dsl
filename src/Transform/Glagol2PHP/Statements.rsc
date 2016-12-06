@@ -69,3 +69,8 @@ public PhpStmt toPhpStmt(foreach(Expression \list, Expression varName, Statement
         phpIf(toBinaryOperation(conditions, phpLogicalAnd()), [toPhpStmt(body)], [], phpNoElse())
     ]);
     
+public PhpStmt toPhpStmt(\continue()) = phpContinue(phpNoExpr());
+public PhpStmt toPhpStmt(\continue(int level)) = phpContinue(phpSomeExpr(phpScalar(phpInteger(level))));
+
+public PhpStmt toPhpStmt(\break()) = phpBreak(phpNoExpr());
+public PhpStmt toPhpStmt(\break(int level)) = phpBreak(phpSomeExpr(phpScalar(phpInteger(level))));
