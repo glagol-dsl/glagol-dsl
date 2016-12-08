@@ -36,7 +36,7 @@ test bool shouldTransformToFieldPhpAnnotation() =
             "scale": phpAnnotationVal(12.35)
     )));
 
-test bool shouldTransformToFieldPhpAnnotation() =
+test bool shouldTransformToFieldPhpAnnotation2() =
     toPhpAnnotation(annotation("column", [annotationMap((
                     "name": annotationVal("customer_id"),
                     "type": annotationVal(integer()),
