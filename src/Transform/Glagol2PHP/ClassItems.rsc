@@ -3,7 +3,6 @@ module Transform::Glagol2PHP::ClassItems
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
-import Transform::Glagol2PHP::Annotations;
 import Transform::Glagol2PHP::Constructors;
 import Transform::Glagol2PHP::Methods;
 

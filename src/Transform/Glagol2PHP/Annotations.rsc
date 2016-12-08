@@ -9,22 +9,22 @@ private PhpAnnotation toPhpAnnotation(annotation(str annotationName, list[Annota
     = phpAnnotation(toPhpAnnotationKey(annotationName)) when size(arguments) == 0;
 
 private PhpAnnotation toPhpAnnotation(annotation(str annotationName, list[Annotation] arguments))
-    = phpAnnotation(toPhpAnnotationKey(annotationName), toPhpAnnotationArgs(arguments, annotationName)) 
+    = phpAnnotation(toPhpAnnotationKey(annotationName), toPhpAnnotation(annotationName, arguments)) 
     when size(arguments) > 0;
     
-private PhpAnnotation toPhpAnnotationArgs(list[Annotation] arguments, str name) = toPhpAnnotationArgs(arguments);
+private default PhpAnnotation toPhpAnnotation(str name, list[Annotation] arguments) = toPhpAnnotation(arguments);
 
-private PhpAnnotation toPhpAnnotationArgs(list[Annotation] \list) = phpAnnotationVal([convertAnnotationValue(l) | l <- \list]);
+private PhpAnnotation toPhpAnnotation(list[Annotation] \list) = phpAnnotationVal([toPhpAnnotation(l) | l <- \list]);
 
-private PhpAnnotation toPhpAnnotationArgs(annotationMap(map[str, Annotation] settings)) = phpAnnotationVal((s : convertAnnotationValue(settings[s]) | s <- settings));
+private PhpAnnotation toPhpAnnotation(annotationMap(map[str, Annotation] settings)) = phpAnnotationVal((s : toPhpAnnotation(settings[s]) | s <- settings));
     
-private PhpAnnotation convertAnnotationValue(annotationVal(annotationMap(\map))) = toPhpAnnotationArgs(annotationMap(\map));
-private PhpAnnotation convertAnnotationValue(m: annotationMap(\map)) = toPhpAnnotationArgs(m);
-private PhpAnnotation convertAnnotationValue(annotationVal(integer())) = phpAnnotationVal("integer");
-private PhpAnnotation convertAnnotationValue(annotationVal(string())) = phpAnnotationVal("string");
-private PhpAnnotation convertAnnotationValue(annotationVal(float())) = phpAnnotationVal("float");
-private PhpAnnotation convertAnnotationValue(annotationVal(boolean())) = phpAnnotationVal("boolean");
-private PhpAnnotation convertAnnotationValue(annotationVal(val)) = phpAnnotationVal(val);
+private PhpAnnotation toPhpAnnotation(annotationVal(annotationMap(\map))) = toPhpAnnotation(annotationMap(\map));
+private PhpAnnotation toPhpAnnotation(m: annotationMap(\map)) = toPhpAnnotationArgs(m);
+private PhpAnnotation toPhpAnnotation(annotationVal(integer())) = phpAnnotationVal("integer");
+private PhpAnnotation toPhpAnnotation(annotationVal(string())) = phpAnnotationVal("string");
+private PhpAnnotation toPhpAnnotation(annotationVal(float())) = phpAnnotationVal("float");
+private PhpAnnotation toPhpAnnotation(annotationVal(boolean())) = phpAnnotationVal("boolean");
+private PhpAnnotation toPhpAnnotation(annotationVal(val)) = phpAnnotationVal(val);
 
 private default str toPhpAnnotationKey(str annotation) = annotation;
 

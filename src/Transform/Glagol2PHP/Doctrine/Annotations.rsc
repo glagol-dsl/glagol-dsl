@@ -2,14 +2,15 @@ module Transform::Glagol2PHP::Doctrine::Annotations
 
 extend Transform::Glagol2PHP::Annotations;
 
-private PhpAnnotation toPhpAnnotationArgs(list[Annotation] arguments, "table")
-    = phpAnnotationVal(("name": convertAnnotationValue(arguments[0])));
+private PhpAnnotation toPhpAnnotation("table", list[Annotation] arguments)
+    = phpAnnotationVal(("name": toPhpAnnotation(arguments[0])));
 
-private PhpAnnotation toPhpAnnotationArgs(list[Annotation] arguments, "doc")
-    = convertAnnotationValue(arguments[0]);
+private PhpAnnotation toPhpAnnotation("doc", list[Annotation] arguments) = toPhpAnnotation(arguments[0]);
     
-private PhpAnnotation toPhpAnnotationArgs(list[Annotation] arguments, /field|column/)
-    = toPhpAnnotationArgs(arguments[0]) when annotationMap(_) := arguments[0];
+private PhpAnnotation toPhpAnnotation("column", list[Annotation] arguments)
+    = toPhpAnnotation(arguments[0]) when annotationMap(_) := arguments[0];
+    
+private PhpAnnotation toPhpAnnotation("field", list[Annotation] arguments) = toPhpAnnotation("column", arguments);
     
 private str toPhpAnnotationKey("table") = "ORM\\Table";
 private str toPhpAnnotationKey("id") = "ORM\\Id";

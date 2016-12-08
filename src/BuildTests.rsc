@@ -50,7 +50,7 @@ public void main(list[str] args)
                         '
                         'private void runTest(bool () t, loc location) {
                         '   try {
-                        '       if (t()) println(\"\<t\>\");
+                        '       if (t()) print(\".\");
                         '       else {
                         '           errorMessages += \"Test \<t\> failed in \<location.path\>\";
                         '           print(\"F\");

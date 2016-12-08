@@ -1,4 +1,5 @@
 bin/*
+/Example.g
 !bin/*.class
 .idea
 .project

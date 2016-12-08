@@ -8,13 +8,13 @@ import Transform::Glagol2PHP::Properties;
 import Transform::Glagol2PHP::Doctrine::Annotations;
 import Transform::Glagol2PHP::Doctrine::Relations;
 import Transform::Glagol2PHP::Utils;
-import Transform::Glagol2PHP::ClassItems;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
 import Config::Reader;
 import List;
-import IO;
+
+extend Transform::Glagol2PHP::ClassItems;
 
 public map[str, PhpScript] toPHPScript(<Framework f, doctrine()>, \module(Declaration namespace, imports, artifact))
     = (makeFilename(namespace, artifact): phpScript([toPhpNamespace(namespace, imports, artifact)]));
