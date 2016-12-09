@@ -6,11 +6,11 @@ import Syntax::Abstract::PHP;
 extend Transform::Glagol2PHP::Doctrine::Annotations;
 
 test bool shouldTransformToTablePhpAnnotation() =
-    toPhpAnnotation(annotation("table", [annotationVal("adsdsa")])) ==
+    toPhpAnnotation(annotation("table", [annotationVal("adsdsa")]), <zend(), doctrine()>) ==
     phpAnnotation("ORM\\Table", phpAnnotationVal(("name":phpAnnotationVal("adsdsa"))));
     
 test bool shouldTransformToIdPhpAnnotation() =
-    toPhpAnnotation(annotation("id", [])) ==
+    toPhpAnnotation(annotation("id", []), <zend(), doctrine()>) ==
     phpAnnotation("ORM\\Id");
 
 test bool shouldTransformToFieldPhpAnnotation() =
@@ -23,7 +23,7 @@ test bool shouldTransformToFieldPhpAnnotation() =
                         "comment": annotationVal("This is the primary key")
                     ))),
                     "scale": annotationVal(12.35)
-                ))])) ==
+                ))]), <zend(), doctrine()>) ==
     phpAnnotation("ORM\\Column",
         phpAnnotationVal((
             "name": phpAnnotationVal("customer_id"),
@@ -46,7 +46,7 @@ test bool shouldTransformToFieldPhpAnnotation2() =
                         "comment": annotationVal("This is the primary key")
                     ))),
                     "scale": annotationVal(12.35)
-                ))])) ==
+                ))]), <zend(), doctrine()>) ==
     phpAnnotation("ORM\\Column",
         phpAnnotationVal((
             "name": phpAnnotationVal("customer_id"),
@@ -60,6 +60,5 @@ test bool shouldTransformToFieldPhpAnnotation2() =
     )));
 
 test bool shouldTransformToDocPhpAnnotation() =
-    toPhpAnnotation(annotation("doc", [annotationVal("This is a comment")])) ==
-    phpAnnotation("doc",
-        phpAnnotationVal("This is a comment"));
+    toPhpAnnotation(annotation("doc", [annotationVal("This is a comment")]), <zend(), doctrine()>) ==
+    phpAnnotation("doc", phpAnnotationVal("This is a comment"));

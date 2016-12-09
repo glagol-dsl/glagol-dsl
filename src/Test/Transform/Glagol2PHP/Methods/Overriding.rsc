@@ -7,7 +7,7 @@ test bool shouldAddOverriderWithRulesWhenTransformingOverridedMethods() =
         method(\public(), voidValue(), "test", [param(integer(), "a")], []),
         method(\public(), voidValue(), "test", [param(string(), "b")], []),
         method(\public(), voidValue(), "test", [param(float(), "c")], [], equals(variable("c"), intLiteral(7)))
-    ])) == 
+    ]), <zend(), doctrine()>) == 
     phpClassDef(phpClass(
         "User", {}, phpNoName(), [], [
             phpMethod("test", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [

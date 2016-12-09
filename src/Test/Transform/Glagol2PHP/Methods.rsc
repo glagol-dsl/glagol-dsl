@@ -3,58 +3,59 @@ module Test::Transform::Glagol2PHP::Methods
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Transform::Glagol2PHP::Methods;
+import Config::Reader;
 
 test bool shouldTransformSimpleMethod() =
-    toPhpClassItem(method(\public(), voidValue(), "test", [], [])) == 
+    toPhpClassItem(method(\public(), voidValue(), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpNoName());
 
 test bool shouldTransformMethodWithIntegerReturnValue() =
-    toPhpClassItem(method(\public(), integer(), "test", [], [])) == 
+    toPhpClassItem(method(\public(), integer(), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("int")));
 
 test bool shouldTransformMethodWithStringReturnValue() =
-    toPhpClassItem(method(\public(), string(), "test", [], [])) == 
+    toPhpClassItem(method(\public(), string(), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("string")));
 
 test bool shouldTransformMethodWithBooleanReturnValue() =
-    toPhpClassItem(method(\public(), boolean(), "test", [], [])) == 
+    toPhpClassItem(method(\public(), boolean(), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("boolean")));
 
 test bool shouldTransformMethodWithFloatReturnValue() =
-    toPhpClassItem(method(\public(), float(), "test", [], [])) == 
+    toPhpClassItem(method(\public(), float(), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("float")));
 
 test bool shouldTransformMethodWithIntegerListReturnValue() =
-    toPhpClassItem(method(\public(), typedList(integer()), "test", [], [])) == 
+    toPhpClassItem(method(\public(), typedList(integer()), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("Vector")));
 
 test bool shouldTransformMethodWithStringListReturnValue() =
-    toPhpClassItem(method(\public(), typedList(string()), "test", [], [])) == 
+    toPhpClassItem(method(\public(), typedList(string()), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("Vector")));
 
 test bool shouldTransformMethodWithMapReturnValue() =
-    toPhpClassItem(method(\public(), typedMap(string(), float()), "test", [], [])) == 
+    toPhpClassItem(method(\public(), typedMap(string(), float()), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("Map")));
 
 test bool shouldTransformMethodWithArtifactReturnValue() =
-    toPhpClassItem(method(\public(), artifactType("User"), "test", [], [])) == 
+    toPhpClassItem(method(\public(), artifactType("User"), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("User")));
 
 test bool shouldTransformMethodWithArtifactReturnValue() =
-    toPhpClassItem(method(\public(), repositoryType("User"), "test", [], [])) == 
+    toPhpClassItem(method(\public(), repositoryType("User"), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("UserRepository")));
 
 test bool shouldTransformMethodWithPrivateModifier() =
-    toPhpClassItem(method(\private(), voidValue(), "test", [], [])) == 
+    toPhpClassItem(method(\private(), voidValue(), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPrivate()}, false, [], [], phpNoName());
 
 test bool shouldTransformMethodWithPrivateModifier() =
-    toPhpClassItem(method(\private(), voidValue(), "test", [], [])) == 
+    toPhpClassItem(method(\private(), voidValue(), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPrivate()}, false, [], [], phpNoName());
 
 // TODO add tests using when expressions
 test bool shouldTransformMethodUsingWhenExpression() = 
-    toPhpClassItem(method(\private(), voidValue(), "test", [param(integer(), "a")], [], equals(variable("a"), intLiteral(7)))) == 
+    toPhpClassItem(method(\private(), voidValue(), "test", [param(integer(), "a")], [], equals(variable("a"), intLiteral(7))), <zend(), doctrine()>) == 
     phpMethod("test", {phpPrivate()}, false, [
         phpParam("a", phpNoExpr(), phpSomeName(phpName("int")), false, false)
     ], [

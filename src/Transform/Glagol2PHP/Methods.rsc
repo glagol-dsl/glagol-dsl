@@ -8,7 +8,7 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import List;
 
-public PhpClassItem toPhpClassItem(method(Modifier modifier, \Type returnType, str name, list[Declaration] params, list[Statement] body))
+public PhpClassItem toPhpClassItem(method(Modifier modifier, \Type returnType, str name, list[Declaration] params, list[Statement] body), _)
     = phpMethod(
         name, 
         {toPhpModifier(modifier)}, 
@@ -18,7 +18,7 @@ public PhpClassItem toPhpClassItem(method(Modifier modifier, \Type returnType, s
         toPhpReturnType(returnType)
     );
 
-public PhpClassItem toPhpClassItem(method(Modifier modifier, \Type returnType, str name, list[Declaration] params, list[Statement] body, Expression when))
+public PhpClassItem toPhpClassItem(method(Modifier modifier, \Type returnType, str name, list[Declaration] params, list[Statement] body, Expression when), _)
     = phpMethod(
         name,
         {toPhpModifier(modifier)}, 
@@ -28,11 +28,11 @@ public PhpClassItem toPhpClassItem(method(Modifier modifier, \Type returnType, s
         toPhpReturnType(returnType)
     );
 
-public PhpClassItem createMethod(list[Declaration] methods)
-    = toPhpClassItem(methods[0])
+public PhpClassItem createMethod(list[Declaration] methods, env)
+    = toPhpClassItem(methods[0], env)
     when size(methods) == 1;
 
-public PhpClassItem createMethod(list[Declaration] methods)
+public PhpClassItem createMethod(list[Declaration] methods, _)
     = phpMethod(methods[0].name, {toPhpModifier(methods[0].modifier)}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
         phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))
     ] + [phpExprstmt(createOverrideRule(m)) | m <- methods], toPhpReturnType(methods[0].returnType))

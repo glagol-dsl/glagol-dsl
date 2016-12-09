@@ -4,7 +4,7 @@ import Transform::Glagol2PHP::Expressions;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 
-public PhpClassItem toPhpClassItem(relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties)) 
+public PhpClassItem toPhpClassItem(relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties), env) 
     = phpProperty({phpPrivate()}, [phpProperty(as, phpNoExpr())])[@phpAnnotations={
         phpAnnotation("ORM\\<toStrDir(l, r)>", phpAnnotationVal((
             "targetEntity": phpAnnotationVal("<name>")

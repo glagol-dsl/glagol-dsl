@@ -7,7 +7,7 @@ test bool shouldAddOverriderWithRulesWhenTransformingOverridedConstructors() =
         constructor([param(integer(), "a")], []),
         constructor([param(string(), "b")], []),
         constructor([param(float(), "c")], [], equals(variable("c"), intLiteral(7)))
-    ])) == 
+    ]), <zend(), doctrine()>) == 
     phpClassDef(phpClass(
         "User", {}, phpNoName(), [], [
             phpMethod("__construct", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
@@ -44,7 +44,7 @@ test bool shouldAddOverriderWithWhenRulesWhenTransformingOverridedConstructors()
         constructor([param(integer(), "a")], [], equals(variable("a"), intLiteral(7))),
         constructor([param(integer(), "b")], []),
         constructor([param(integer(), "c")], [], greaterThan(variable("c"), intLiteral(13)))
-    ])) == 
+    ]), <zend(), doctrine()>) == 
     phpClassDef(phpClass(
         "User", {}, phpNoName(), [], [
             phpMethod("__construct", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [

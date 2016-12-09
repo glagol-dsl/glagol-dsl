@@ -186,3 +186,4 @@ public anno set[PhpAnnotation] PhpClassDef@phpAnnotations;
 public anno str PhpClassDef@phpdoc;
 
 public anno set[PhpAnnotation] PhpClassItem@phpAnnotations;
+public anno set[PhpAnnotation] PhpStmt@phpAnnotations;
