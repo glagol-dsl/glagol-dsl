@@ -3,6 +3,8 @@ module Transform::Glagol2PHP::ClassItems
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
+import Transform::Glagol2PHP::Utils;
+import Transform::Glagol2PHP::Entities;
 import Transform::Glagol2PHP::Constructors;
 import Transform::Glagol2PHP::Methods;
 import Transform::Glagol2PHP::Common;
@@ -14,12 +16,6 @@ import Transform::Glagol2PHP::Doctrine::Relations;
 public PhpStmt toPhpClassDef(annotated(list[Annotation] annotations, Declaration artifact), env) 
     = applyAnnotationsOnStmt(toPhpClassDef(artifact, env), annotations, env);
     
-@doc="Convert entity to a PHP class"
-public PhpStmt toPhpClassDef(entity(str name, list[Declaration] declarations), env)
-    = phpClassDef(phpClass(name, {}, phpNoName(), [], toPhpClassItems(declarations, env))[
-        @phpAnnotations={phpAnnotation("ORM\\Entity")}
-    ]);
-
 @doc="Will apply annotations to all php class items that were converted from Glagol in-artefact declarations"
 public PhpClassItem toPhpClassItem(annotated(list[Annotation] annotations, Declaration declaration), env)
     = applyAnnotationsOnClassItem(toPhpClassItem(declaration, env), annotations, env);

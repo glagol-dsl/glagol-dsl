@@ -20,3 +20,16 @@ test bool shouldParseUtilUsingTheServiceKeyword()
           
     return parseModule(code) == \module(namespace("Test"), [], util("UserCreator", []));
 }
+
+test bool testShouldParseFlatDocAnnotationForUtil()
+{
+    str code = "namespace Example;
+               '@doc=\"This is a doc\"
+               'util UserCreator { }";
+
+    Declaration expectedEntity = annotated([
+        annotation("doc", [annotationVal("This is a doc")])
+    ], util("UserCreator", []));
+
+    return parseModule(code) == \module(namespace("Example"), [], expectedEntity);
+}

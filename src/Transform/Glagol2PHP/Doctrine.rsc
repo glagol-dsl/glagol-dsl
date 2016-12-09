@@ -1,11 +1,12 @@
 module Transform::Glagol2PHP::Doctrine
 
 import Transform::Glagol2PHP::Utils;
+import Transform::Glagol2PHP::Entities;
 import Transform::Glagol2PHP::ClassItems;
 import Transform::Glagol2PHP::Common;
 import Syntax::Abstract::Glagol;
-import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
+import Syntax::Abstract::Glagol::Helpers;
 import Config::Reader;
 import List;
 

@@ -25,6 +25,12 @@ public Declaration convertArtifact((Artifact) `value <ArtifactName name> {<Decla
 public Declaration convertArtifact((Artifact) `util <ArtifactName name> {<Declaration* declarations>}`)
     = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations]);
     
+public Declaration convertArtifact((Artifact) `<Annotation* annotations> util <ArtifactName name> {<Declaration* declarations>}`) 
+    = annotated([convertAnnotation(annotation) | annotation <- annotations], util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations]));
+    
 public Declaration convertArtifact((Artifact) `service <ArtifactName name> {<Declaration* declarations>}`)
     = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations]);
+    
+public Declaration convertArtifact((Artifact) `<Annotation* annotations> service <ArtifactName name> {<Declaration* declarations>}`) 
+    = annotated([convertAnnotation(annotation) | annotation <- annotations], util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations]));
     

@@ -7,12 +7,14 @@ import String;
 
 data Framework
     = zend()
+    | anyFramework()
 // TODO    | symfony()
 // TODO    | laravel()
     ;
 
 data ORM
     = doctrine()
+    | anyORM()
 // TODO    | eloquent()
     ;
 

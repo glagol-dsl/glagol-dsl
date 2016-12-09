@@ -44,3 +44,16 @@ test bool testShouldParseCompositeAnnotationForEntity()
 
     return parseModule(code) == \module(namespace("Example"), [], expectedEntity);
 }
+
+test bool testShouldParseFlatDocAnnotationForEntity()
+{
+    str code = "namespace Example;
+               '@doc=\"This is a doc\"
+               'entity User { }";
+
+    Declaration expectedEntity = annotated([
+        annotation("doc", [annotationVal("This is a doc")])
+    ], entity("User", []));
+
+    return parseModule(code) == \module(namespace("Example"), [], expectedEntity);
+}

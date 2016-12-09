@@ -14,6 +14,8 @@ private PhpAnnotation toPhpAnnotation(annotation(str annotationName, list[Annota
     
 private default PhpAnnotation toPhpAnnotation(str name, list[Annotation] arguments, env) = toPhpAnnotation(arguments, env);
 
+private PhpAnnotation toPhpAnnotation("doc", list[Annotation] arguments, env: <Framework f, _>) = toPhpAnnotation(arguments[0], env);
+
 private PhpAnnotation toPhpAnnotation(list[Annotation] \list, env) = phpAnnotationVal([toPhpAnnotation(l, env) | l <- \list]);
 
 private PhpAnnotation toPhpAnnotation(annotationMap(map[str, Annotation] settings), env) = phpAnnotationVal((s : toPhpAnnotation(settings[s], env) | s <- settings));

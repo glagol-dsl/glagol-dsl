@@ -1,6 +1,9 @@
 module Test::Transform::Glagol2PHP::Constructors::Overriding
 
-extend Transform::Glagol2PHP::Doctrine;
+import Syntax::Abstract::Glagol;
+import Syntax::Abstract::PHP;
+import Config::Reader;
+import Transform::Glagol2PHP::Entities;
 
 test bool shouldAddOverriderWithRulesWhenTransformingOverridedConstructors() = 
     toPhpClassDef(entity("User", [

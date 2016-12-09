@@ -4,8 +4,6 @@ extend Transform::Glagol2PHP::Annotations;
 
 private PhpAnnotation toPhpAnnotation("table", list[Annotation] arguments, env: <Framework f, orm: doctrine()>)
     = phpAnnotationVal(("name": toPhpAnnotation(arguments[0], env)));
-
-private PhpAnnotation toPhpAnnotation("doc", list[Annotation] arguments, env: <Framework f, orm: doctrine()>) = toPhpAnnotation(arguments[0], env);
     
 private PhpAnnotation toPhpAnnotation("column", list[Annotation] arguments, env: <Framework f, orm: doctrine()>)
     = toPhpAnnotation(arguments[0], env) when annotationMap(_) := arguments[0];

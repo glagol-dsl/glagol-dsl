@@ -12,6 +12,9 @@ public Annotation convertAnnotation((Annotation) `@<Identifier id>`) = annotatio
 public Annotation convertAnnotation((Annotation) `@<Identifier id><AnnotationArgs args>`)
     = annotation("<id>", convertAnnotationArgs(args));
 
+public Annotation convertAnnotation((Annotation) `@<Identifier id>=<AnnotationArg arg>`)
+    = annotation("<id>", [convertAnnotationArg(arg)]);
+
 private list[Annotation] convertAnnotationArgs((AnnotationArgs) `(<{AnnotationArg ","}+ args>)`) 
     = [convertAnnotationArg(arg) | arg <- args];
 

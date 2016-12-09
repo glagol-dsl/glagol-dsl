@@ -24,12 +24,13 @@ syntax ImportAlias
 syntax Artifact
     = Annotation* annotations "entity" ArtifactName name "{" Declaration* declarations "}"
     | Annotation* annotations "repository" "for" ArtifactName name "{" Declaration* declarations "}"
-    | "value" ArtifactName name "{" Declaration* declarations "}"
-    | ("util" | "service") ArtifactName name "{" Declaration* declarations "}"
+    | Annotation* annotations "value" ArtifactName name "{" Declaration* declarations "}"
+    | Annotation* annotations ("util" | "service") ArtifactName name "{" Declaration* declarations "}"
     ;
 
 syntax Annotation
-    = "@" Identifier id AnnotationArgs?
+    = "@" Identifier id AnnotationArgs? args
+    | "@" Identifier id "=" AnnotationArg arg
     ;
 
 syntax AnnotationArgs
