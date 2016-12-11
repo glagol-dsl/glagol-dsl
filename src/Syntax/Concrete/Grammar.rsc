@@ -61,10 +61,14 @@ syntax Declaration
     | Annotation+ annotations Property property
     | Constructor constructor
     | Annotation+ annotations Constructor constructor
-    | "relation" RelationDir l ":" RelationDir r ArtifactName entity "as" MemberName alias AccessProperties? accessProperties ";"
+    | Relation relation
+    | Annotation+ annotations Relation relation
     | Method method
     | Annotation+ annotations Method method
     ;
+
+syntax Relation
+    = "relation" RelationDir l ":" RelationDir r ArtifactName entity "as" MemberName alias AccessProperties? accessProperties ";";
 
 syntax Property 
     = Type type MemberName name AssignDefaultValue? AccessProperties? accessProperties ";";

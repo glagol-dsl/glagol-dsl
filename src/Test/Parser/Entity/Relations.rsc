@@ -9,10 +9,16 @@ test bool testShouldParseEntityRelations()
                'entity User {
                '    relation one:one Language as userLanguage;
                '    relation one:many User as userFriends with {add, set, get, clear};
+               '
+               '    @doc=\"This is a relation\"
+               '    relation one:one Language as userLanguage2;
                '}";
 
    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
        relation(\one(), \one(), "Language", "userLanguage", {}),
-       relation(\one(), many(), "User", "userFriends", {add(), \set(), read(), clear()})
+       relation(\one(), many(), "User", "userFriends", {add(), \set(), read(), clear()}),
+       annotated([
+            annotation("doc", [annotationVal("This is a relation")])
+       ], relation(\one(), \one(), "Language", "userLanguage2", {}))
    ]));
 }
