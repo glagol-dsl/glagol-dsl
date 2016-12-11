@@ -10,6 +10,7 @@ public default bool isProperty(_) = false;
 public bool isAnnotated(annotated(_, _)) = true;
 public bool isAnnotated(annotated(_, Declaration declaration), bool (Declaration) innerValidator) = innerValidator(declaration);
 public default bool isAnnotated(_, _) = false;
+public default bool isAnnotated(_) = false;
 
 public bool isMethod(method(_, _, _, _, _)) = true;
 public bool isMethod(method(_, _, _, _, _, _)) = true;
@@ -28,6 +29,8 @@ public bool isEntity(_) = false;
 
 public bool hasConstructors(list[Declaration] declarations) = size([d | d <- declarations, isConstructor(d)]) > 0;
 
+public list[Declaration] getConstructors(list[Declaration] declarations) = [d | d <- declarations, isConstructor(d)];
+
 private list[Declaration] getMethodsByName(list[Declaration] declarations, str name)
     = [m | m <- declarations, isMethod(m), name == m.name];
 
@@ -36,3 +39,6 @@ public map[str name, list[Declaration] methods] categorizeMethods(list[Declarati
 
 public list[Declaration] getRelations(list[Declaration] declarations) = [d | d <- declarations, isRelation(d)];
 
+public bool hasOverriding(Declaration artifact: entity(_, list[Declaration] declarations)) =
+    size(getConstructors(declarations)) > 1 || 
+    (false | it ? true : size(ms[m]) > 1 | ms := categorizeMethods(declarations), m <- ms);

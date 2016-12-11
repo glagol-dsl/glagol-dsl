@@ -4,6 +4,7 @@ import Transform::Glagol2PHP::Utils;
 import Transform::Glagol2PHP::Entities;
 import Transform::Glagol2PHP::ClassItems;
 import Transform::Glagol2PHP::Common;
+import Transform::Glagol2PHP::Imports;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Syntax::Abstract::Glagol::Helpers;
@@ -16,9 +17,5 @@ public map[str, PhpScript] toPHPScript(env: <Framework f, orm: doctrine()>, \mod
 private PhpStmt toPhpNamespace(Declaration namespace, list[Declaration] imports, Declaration artifact, env)
     = phpNamespace(
         phpSomeName(phpName(namespaceToString(namespace, "\\"))),
-        // TODO extract into a function that constructs all needed imports
-        [phpUse(
-            {toPhpUse(i) | i <- imports} + 
-            (isEntity(artifact) ? {phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM")))} : {})
-        )] + [toPhpClassDef(artifact, env)]
+        toPhpUses(imports, artifact, env) + [toPhpClassDef(artifact, env)]
     );

@@ -17,11 +17,3 @@ public str makeFilename(Declaration namespace, annotated(_, Declaration d)) = ma
 
 private str namespaceToDir(namespace(str name)) = name + DS;
 private str namespaceToDir(namespace(str name, Declaration sub)) = name + DS + namespaceToDir(sub);
-
-@doc="Converts Glagol import into PHP use (with alias)"
-public PhpUse toPhpUse(\import(str artifactName, Declaration namespace, str as))
-    = phpUse(phpName(namespaceToString(namespace, "\\") + "\\" + artifactName), phpSomeName(phpName(as))) when as != artifactName;
-
-@doc="Converts Glagol import into PHP use (WITHOUT alias)"
-public PhpUse toPhpUse(\import(str artifactName, Declaration namespace, str as))
-    = phpUse(phpName(namespaceToString(namespace, "\\") + "\\" + artifactName), phpNoName()) when as == artifactName;
