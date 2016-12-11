@@ -22,6 +22,9 @@ public Declaration convertArtifact((Artifact) `<Annotation* annotations> reposit
 public Declaration convertArtifact((Artifact) `value <ArtifactName name> {<Declaration* declarations>}`)
     = valueObject("<name>", [convertDeclaration(d, "<name>", "value") | d <- declarations]);
     
+public Declaration convertArtifact((Artifact) `<Annotation* annotations> value <ArtifactName name> {<Declaration* declarations>}`) 
+    = annotated([convertAnnotation(annotation) | annotation <- annotations], valueObject("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations]));
+    
 public Declaration convertArtifact((Artifact) `util <ArtifactName name> {<Declaration* declarations>}`)
     = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations]);
     

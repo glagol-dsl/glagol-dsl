@@ -33,3 +33,17 @@ test bool testShouldParseFlatDocAnnotationForUtil()
 
     return parseModule(code) == \module(namespace("Example"), [], expectedEntity);
 }
+
+
+test bool testShouldParseFlatDocAnnotationForUtil()
+{
+    str code = "namespace Example;
+               '@doc=\"This is a doc\"
+               'util UserCreator { }";
+
+    Declaration expectedEntity = annotated([
+        annotation("doc", [annotationVal("This is a doc")])
+    ], util("UserCreator", []));
+
+    return parseModule(code) == \module(namespace("Example"), [], expectedEntity);
+}
