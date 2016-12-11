@@ -13,12 +13,12 @@ public list[PhpStmt] toPhpUses(list[Declaration] imports, Declaration artifact, 
     
 private list[Declaration] extractImports(annotated(_, Declaration artifact), env) = extractImports(artifact, env);
 
-private list[Declaration] extractImports(Declaration artifact: entity(_, _), <Framework f, doctrine()>) {
+private list[Declaration] extractImports(Declaration artifact: entity(_, list[Declaration] ds), <Framework f, doctrine()>) {
     list[Declaration] imports = [
         \import("Mapping", namespace("Doctrine", namespace("ORM")), "ORM")
     ];
 
-    if (hasOverriding(artifact)) {
+    if (hasOverriding(ds)) {
         imports += \import("Overrider", namespace("Glagol", namespace("Overriding")), "Overrider");
     }
 

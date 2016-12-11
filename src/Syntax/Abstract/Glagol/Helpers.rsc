@@ -39,6 +39,6 @@ public map[str name, list[Declaration] methods] categorizeMethods(list[Declarati
 
 public list[Declaration] getRelations(list[Declaration] declarations) = [d | d <- declarations, isRelation(d)];
 
-public bool hasOverriding(Declaration artifact: entity(_, list[Declaration] declarations)) =
+public bool hasOverriding(list[Declaration] declarations) =
     size(getConstructors(declarations)) > 1 || 
     (false | it ? true : size(ms[m]) > 1 | ms := categorizeMethods(declarations), m <- ms);
