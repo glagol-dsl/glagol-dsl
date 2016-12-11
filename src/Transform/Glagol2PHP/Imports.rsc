@@ -13,18 +13,16 @@ public list[PhpStmt] toPhpUses(list[Declaration] imports, Declaration artifact, 
     
 private list[Declaration] extractImports(annotated(_, Declaration artifact), env) = extractImports(artifact, env);
 
-private list[Declaration] extractImports(Declaration artifact: entity(_, list[Declaration] ds), <Framework f, doctrine()>) {
-    list[Declaration] imports = [
-        \import("Mapping", namespace("Doctrine", namespace("ORM")), "ORM")
-    ];
+private list[Declaration] extractImports(a: entity(_, list[Declaration] ds), env: <f, doctrine()>) =
+    [\import("Mapping", namespace("Doctrine", namespace("ORM")), "ORM")] +
+    commonImports(a, env);
 
-    if (hasOverriding(ds)) {
-        imports += \import("Overrider", namespace("Glagol", namespace("Overriding")), "Overrider");
-    }
+private default list[Declaration] extractImports(Declaration artifact, env) = commonImports(artifact, env);
 
-    return imports;
-}
-
+private list[Declaration] commonImports(Declaration artifact, env) =
+    hasOverriding(artifact.declarations) ? 
+        [\import("Overrider", namespace("Glagol", namespace("Overriding")), "Overrider")] : [];
+    
 private PhpUse toPhpUse(\import(str artifactName, Declaration namespace, str as))
     = phpUse(phpName(namespaceToString(namespace, "\\") + "\\" + artifactName), phpSomeName(phpName(as))) when as != artifactName;
 

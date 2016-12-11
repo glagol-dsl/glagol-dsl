@@ -2,6 +2,7 @@ module Syntax::Abstract::Glagol::Helpers
 
 import Syntax::Abstract::Glagol;
 import List;
+import IO;
 
 public bool isProperty(property(_, _, _)) = true;
 public bool isProperty(property(_, _, _, _)) = true;
@@ -32,12 +33,23 @@ public bool hasConstructors(list[Declaration] declarations) = size([d | d <- dec
 public list[Declaration] getConstructors(list[Declaration] declarations) = [d | d <- declarations, isConstructor(d)];
 
 private list[Declaration] getMethodsByName(list[Declaration] declarations, str name)
-    = [m | m <- declarations, isMethod(m), name == m.name];
+    = [ m | m <- declarations,
+        isMethod(m) || isAnnotated(m, isMethod)
+    ];
 
 public map[str name, list[Declaration] methods] categorizeMethods(list[Declaration] declarations)
-    = (m.name: getMethodsByName(declarations, m.name) | m <- {ms | ms <- declarations, isMethod(ms)});
+    = (
+        m.name: getMethodsByName(declarations, m.name) | 
+        mi <- {ms | ms <- declarations, isMethod(ms) || isAnnotated(ms, isMethod)},
+        m := getMethod(mi)
+    );
 
 public list[Declaration] getRelations(list[Declaration] declarations) = [d | d <- declarations, isRelation(d)];
+
+public Declaration getMethod(m: method(_, _, _, _, _, _)) = m;
+public Declaration getMethod(m: method(_, _, _, _, _)) = m;
+public Declaration getMethod(annotated(_, m: method(_, _, _, _, _, _))) = m;
+public Declaration getMethod(annotated(_, m: method(_, _, _, _, _))) = m;
 
 public bool hasOverriding(list[Declaration] declarations) =
     size(getConstructors(declarations)) > 1 || 
