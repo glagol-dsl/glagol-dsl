@@ -4,6 +4,7 @@ import Transform::Glagol2PHP::Statements;
 import Transform::Glagol2PHP::Expressions;
 import Transform::Glagol2PHP::Params;
 import Transform::Glagol2PHP::Overriding;
+import Transform::Glagol2PHP::ClassItems;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import List;
