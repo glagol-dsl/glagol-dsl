@@ -2,8 +2,8 @@ module Test::Transform::Glagol2PHP::Doctrine::Annotations
 
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
-
-extend Transform::Glagol2PHP::Doctrine::Annotations;
+import Config::Reader;
+import Transform::Glagol2PHP::Annotations;
 
 test bool shouldTransformToTablePhpAnnotation() =
     toPhpAnnotation(annotation("table", [annotationVal("adsdsa")]), <zend(), doctrine()>) ==

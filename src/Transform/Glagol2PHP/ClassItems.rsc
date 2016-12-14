@@ -10,7 +10,7 @@ import Transform::Glagol2PHP::Methods;
 import Transform::Glagol2PHP::Common;
 import Transform::Glagol2PHP::Statements;
 import Transform::Glagol2PHP::Properties;
-import Transform::Glagol2PHP::Doctrine::Annotations;
+import Transform::Glagol2PHP::Annotations;
 import Transform::Glagol2PHP::Doctrine::Relations;
 
 public PhpStmt toPhpClassDef(annotated(list[Annotation] annotations, Declaration artifact), env) 
