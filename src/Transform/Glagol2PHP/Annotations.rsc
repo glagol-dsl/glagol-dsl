@@ -13,13 +13,17 @@ public PhpAnnotation toPhpAnnotation(annotation(str annotationName, list[Annotat
     = phpAnnotation(toPhpAnnotationKey(annotationName, env), toPhpAnnotation(annotationName, arguments, env)) 
     when size(arguments) > 0;
     
-public default PhpAnnotation toPhpAnnotation(str name, list[Annotation] arguments, env) = toPhpAnnotation(arguments, env);
+public default PhpAnnotation toPhpAnnotation(str name, list[Annotation] arguments, env) 
+	= toPhpAnnotation(arguments, env);
 
-public PhpAnnotation toPhpAnnotation("doc", list[Annotation] arguments, env: <Framework f, _>) = toPhpAnnotation(arguments[0], env);
+public PhpAnnotation toPhpAnnotation("doc", list[Annotation] arguments, env: <Framework f, _>) 
+	= toPhpAnnotation(arguments[0], env);
 
-public PhpAnnotation toPhpAnnotation(list[Annotation] \list, env) = phpAnnotationVal([toPhpAnnotation(l, env) | l <- \list]);
+public PhpAnnotation toPhpAnnotation(list[Annotation] \list, env) 
+	= phpAnnotationVal([toPhpAnnotation(l, env) | l <- \list]);
 
-public PhpAnnotation toPhpAnnotation(annotationMap(map[str, Annotation] settings), env) = phpAnnotationVal((s : toPhpAnnotation(settings[s], env) | s <- settings));
+public PhpAnnotation toPhpAnnotation(annotationMap(map[str, Annotation] settings), env) 
+	= phpAnnotationVal((s : toPhpAnnotation(settings[s], env) | s <- settings));
     
 public PhpAnnotation toPhpAnnotation(annotationVal(annotationMap(\map)), env) = toPhpAnnotation(annotationMap(\map), env);
 public PhpAnnotation toPhpAnnotation(m: annotationMap(\map), env) = toPhpAnnotationArgs(m, env);

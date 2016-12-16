@@ -1,4 +1,4 @@
-module Test::Transform::Glagol2PHP::Doctrine::Annotations
+module Test::Transform::Glagol2PHP::Annotations
 
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
@@ -7,11 +7,22 @@ import Transform::Glagol2PHP::Annotations;
 
 test bool shouldTransformToTablePhpAnnotation() =
     toPhpAnnotation(annotation("table", [annotationVal("adsdsa")]), <zend(), doctrine()>) ==
-    phpAnnotation("ORM\\Table", phpAnnotationVal(("name":phpAnnotationVal("adsdsa"))));
+    phpAnnotation("ORM\\Table", phpAnnotationVal(("name":phpAnnotationVal("adsdsa")))) &&
+    toPhpAnnotation(annotation("table", [annotationVal("adsdsa")]), <anyFramework(), anyORM()>) ==
+    phpAnnotation("table", phpAnnotationVal([phpAnnotationVal("adsdsa")]))
+    ;
     
-test bool shouldTransformToIdPhpAnnotation() =
-    toPhpAnnotation(annotation("id", []), <zend(), doctrine()>) ==
-    phpAnnotation("ORM\\Id");
+test bool shouldTransformDocToPhpAnnotation() =
+    toPhpAnnotation(annotation("doc", [annotationVal("This is a doc")]), <zend(), doctrine()>) ==
+    phpAnnotation("doc", phpAnnotationVal("This is a doc"));
+   
+test bool shouldTransformDocToPhpAnnotationWithDiffEnv() =
+    toPhpAnnotation(annotation("doc", [annotationVal("This is a doc")]), <anyFramework(), anyORM()>) ==
+    phpAnnotation("doc", phpAnnotationVal("This is a doc"));
+
+test bool shouldTransformToTablePhpAnnotation() =
+    toPhpAnnotation(annotation("table", [annotationVal("adsdsa")]), <zend(), doctrine()>) ==
+    phpAnnotation("ORM\\Table", phpAnnotationVal(("name":phpAnnotationVal("adsdsa"))));
 
 test bool shouldTransformToFieldPhpAnnotation() =
     toPhpAnnotation(annotation("field", [annotationMap((

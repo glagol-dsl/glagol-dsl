@@ -28,28 +28,38 @@ public bool isEntity(entity(_, _)) = true;
 public bool isEntity(annotated(_, Declaration d)) = isEntity(d);
 public bool isEntity(_) = false;
 
-public bool hasConstructors(list[Declaration] declarations) = size([d | d <- declarations, isConstructor(d)]) > 0;
+public bool hasConstructors(list[Declaration] declarations) = 
+	size([d | d <- declarations, isConstructor(d) || isAnnotated(d, isConstructor)]) > 0;
 
-public list[Declaration] getConstructors(list[Declaration] declarations) = [d | d <- declarations, isConstructor(d)];
+public list[Declaration] getConstructors(list[Declaration] declarations) = 
+	[ c | d <- declarations, isConstructor(d) || isAnnotated(d, isConstructor), c := getConstructor(d)];
 
-private list[Declaration] getMethodsByName(list[Declaration] declarations, str name)
-    = [ m | m <- declarations,
-        isMethod(m) || isAnnotated(m, isMethod)
+private list[Declaration] getMethodsByName(list[Declaration] declarations, str name) = 
+	[ d | d <- declarations,
+        isMethod(d) || isAnnotated(d, isMethod),
+        m := getMethod(d),
+        m.name == name
     ];
 
-public map[str name, list[Declaration] methods] categorizeMethods(list[Declaration] declarations)
-    = (
+public map[str name, list[Declaration] methods] categorizeMethods(list[Declaration] declarations) = 
+	(
         m.name: getMethodsByName(declarations, m.name) | 
         mi <- {ms | ms <- declarations, isMethod(ms) || isAnnotated(ms, isMethod)},
         m := getMethod(mi)
     );
 
-public list[Declaration] getRelations(list[Declaration] declarations) = [d | d <- declarations, isRelation(d)];
+public list[Declaration] getRelations(list[Declaration] declarations) = 
+	[ d | d <- declarations, isRelation(d) || isAnnotated(d, isRelation)];
 
 public Declaration getMethod(m: method(_, _, _, _, _, _)) = m;
 public Declaration getMethod(m: method(_, _, _, _, _)) = m;
 public Declaration getMethod(annotated(_, m: method(_, _, _, _, _, _))) = m;
 public Declaration getMethod(annotated(_, m: method(_, _, _, _, _))) = m;
+
+public Declaration getConstructor(c: constructor(_, _)) = c;
+public Declaration getConstructor(c: constructor(_, _, _)) = c;
+public Declaration getConstructor(annotated(_, c: constructor(_, _))) = c;
+public Declaration getConstructor(annotated(_, c: constructor(_, _, _))) = c;
 
 public bool hasOverriding(list[Declaration] declarations) =
     size(getConstructors(declarations)) > 1 || 
