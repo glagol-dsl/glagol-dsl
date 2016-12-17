@@ -15,13 +15,15 @@ import Transform::Glagol2PHP::Doctrine::Relations;
 
 public PhpStmt toPhpClassDef(annotated(list[Annotation] annotations, Declaration artifact), env) 
     = applyAnnotationsOnStmt(toPhpClassDef(artifact, env), annotations, env);
-    
-@doc="Will apply annotations to all php class items that were converted from Glagol in-artefact declarations"
+
 public PhpClassItem toPhpClassItem(annotated(list[Annotation] annotations, Declaration declaration), env)
     = applyAnnotationsOnClassItem(toPhpClassItem(declaration, env), annotations, env);
 
 public list[PhpClassItem] toPhpClassItems(list[Declaration] declarations, env) {
-    list[PhpClassItem] classItems = [toPhpClassItem(ci, env) | ci <- declarations, isProperty(ci) || isAnnotated(ci, isProperty)];
+    list[PhpClassItem] classItems = [
+    	toPhpClassItem(ci, env) | ci <- declarations, isProperty(ci) || 
+    	isAnnotated(ci, isProperty)
+	];
     
     if (hasConstructors(declarations)) {
         classItems = classItems + [createConstructor(getConstructors(declarations), env)];
@@ -29,8 +31,8 @@ public list[PhpClassItem] toPhpClassItems(list[Declaration] declarations, env) {
     
     map[str, list[Declaration]] methodsByName = categorizeMethods(declarations);
     
-    classItems = classItems + [createMethod(methodsByName[m], env) | m <- methodsByName] 
-                            + [toPhpClassItem(r, env) | r <- getRelations(declarations)];
+    classItems = classItems + [toPhpClassItem(r, env) | r <- getRelations(declarations)]
+    						+ [createMethod(methodsByName[m], env) | m <- methodsByName];
     
     return classItems;
 }
