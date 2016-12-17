@@ -11,7 +11,7 @@ import Syntax::Abstract::PHP;
 import Config::Reader;
 
 @doc="Convert entity to a PHP class"
-public PhpStmt toPhpClassDef(entity(str name, list[Declaration] declarations), env)
+public PhpStmt toPhpClassDef(entity(str name, list[Declaration] declarations), env: <Framework f, doctrine()>)
     = phpClassDef(phpClass(name, {}, phpNoName(), [], toPhpClassItems(declarations, env))[
         @phpAnnotations={phpAnnotation("ORM\\Entity")}
     ]);
