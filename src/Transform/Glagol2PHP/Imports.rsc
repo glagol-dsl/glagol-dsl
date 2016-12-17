@@ -23,8 +23,10 @@ private list[Declaration] commonImports(Declaration artifact, env) =
     hasOverriding(artifact.declarations) ? 
         [\import("Overrider", namespace("Glagol", namespace("Overriding")), "Overrider")] : [];
     
-private PhpUse toPhpUse(\import(str artifactName, Declaration namespace, str as))
-    = phpUse(phpName(namespaceToString(namespace, "\\") + "\\" + artifactName), phpSomeName(phpName(as))) when as != artifactName;
+private PhpUse toPhpUse(\import(str artifactName, Declaration namespace, str as)) = 
+	phpUse(phpName(namespaceToString(namespace, "\\") + "\\" + artifactName), phpSomeName(phpName(as)))
+    when as != artifactName;
 
-private PhpUse toPhpUse(\import(str artifactName, Declaration namespace, str as))
-    = phpUse(phpName(namespaceToString(namespace, "\\") + "\\" + artifactName), phpNoName()) when as == artifactName;
+private PhpUse toPhpUse(\import(str artifactName, Declaration namespace, str as)) = 
+	phpUse(phpName(namespaceToString(namespace, "\\") + "\\" + artifactName), phpNoName()) 
+	when as == artifactName;
