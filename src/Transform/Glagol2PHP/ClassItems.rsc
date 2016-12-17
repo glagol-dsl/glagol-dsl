@@ -22,7 +22,7 @@ public PhpClassItem toPhpClassItem(annotated(list[Annotation] annotations, Decla
 
 public list[PhpClassItem] toPhpClassItems(list[Declaration] declarations, env) =
 	[toPhpClassItem(ci, env) | ci <- declarations, isProperty(ci) || isAnnotated(ci, isProperty)] +
-	(hasConstructors(declarations) ? [createConstructor(getConstructors(declarations), env)] : []) +
 	[toPhpClassItem(r, env) | r <- getRelations(declarations)] + 
+	(hasConstructors(declarations) ? [createConstructor(getConstructors(declarations), env)] : []) +
 	[createMethod(m, env) | m <- range(categorizeMethods(declarations))];
 

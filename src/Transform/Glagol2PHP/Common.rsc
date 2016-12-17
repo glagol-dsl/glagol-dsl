@@ -8,11 +8,21 @@ private str EXT = "php";
 private str DS = "/";
 
 public str namespaceToString(namespace(str name), _) = name;
-public str namespaceToString(namespace(str name, Declaration subNamespace), str delimiter) 
-    = name + delimiter + namespaceToString(subNamespace, delimiter);
+public str namespaceToString(namespace(str name, Declaration subNamespace), str delimiter) = 
+	name + delimiter + namespaceToString(subNamespace, delimiter);
 
-public str makeFilename(Declaration namespace, entity(str name, _)) = namespaceToDir(namespace) + name + ".<EXT>";
-public str makeFilename(Declaration namespace, util(str name, _)) = namespaceToDir(namespace) + name + ".<EXT>";
+public str makeFilename(Declaration namespace, entity(str name, _)) = 
+	namespaceToDir(namespace) + name + ".<EXT>";
+
+public str makeFilename(Declaration namespace, util(str name, _)) = 
+	namespaceToDir(namespace) + name + ".<EXT>";
+	
+public str makeFilename(Declaration namespace, valueObject(str name, _)) = 
+	namespaceToDir(namespace) + name + ".<EXT>";
+
+public str makeFilename(Declaration namespace, repository(str name, _)) = 
+	namespaceToDir(namespace) + name + "Repository.<EXT>";
+
 public str makeFilename(Declaration namespace, annotated(_, Declaration d)) = makeFilename(namespace, d);
 
 private str namespaceToDir(namespace(str name)) = name + DS;
