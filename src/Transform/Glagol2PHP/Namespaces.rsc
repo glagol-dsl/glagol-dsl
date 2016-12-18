@@ -7,6 +7,7 @@ import Transform::Glagol2PHP::Common;
 import Transform::Glagol2PHP::Entities;
 import Transform::Glagol2PHP::Repositories;
 import Transform::Glagol2PHP::Utils;
+import Transform::Glagol2PHP::ValueObjects;
 import Transform::Glagol2PHP::ClassItems;
 import Config::Reader;
 
