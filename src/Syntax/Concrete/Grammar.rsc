@@ -5,7 +5,7 @@ extend Syntax::Concrete::Grammar::Layout;
 extend Syntax::Concrete::Grammar::Lexical;
 
 start syntax Module
-   = \module: ^"module" Namespace namespace ";" Import* imports Artifact? artifact LAYOUTLIST l1
+   = \module: ^"namespace" Namespace namespace ";" Import* imports Artifact? artifact LAYOUTLIST l1
    ;
 
 syntax Namespace 
@@ -24,12 +24,13 @@ syntax ImportAlias
 syntax Artifact
     = Annotation* annotations "entity" ArtifactName name "{" Declaration* declarations "}"
     | Annotation* annotations "repository" "for" ArtifactName name "{" Declaration* declarations "}"
-    | "value" ArtifactName name "{" Declaration* declarations "}"
-    | ("util" | "service") ArtifactName name "{" Declaration* declarations "}"
+    | Annotation* annotations "value" ArtifactName name "{" Declaration* declarations "}"
+    | Annotation* annotations ("util" | "service") ArtifactName name "{" Declaration* declarations "}"
     ;
 
 syntax Annotation
-    = "@" Identifier id AnnotationArgs?
+    = "@" Identifier id AnnotationArgs? args
+    | "@" Identifier id "=" AnnotationArg arg
     ;
 
 syntax AnnotationArgs
@@ -56,12 +57,30 @@ syntax AnnotationValue
     ;
 
 syntax Declaration
-    = Annotation* annotations Type type MemberName name AssignDefaultValue? AccessProperties? accessProperties ";"
-    | "relation" RelationDir l ":" RelationDir r ArtifactName entity "as" MemberName alias AccessProperties? accessProperties ";"
-    | ArtifactName "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
-    | ArtifactName "(" {Parameter ","}* parameters ")" When? when ";"
-    | Modifier? modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
-    | Modifier? modifier Type returnType MemberName name "(" {Parameter ","}* parameters ")" "=" Expression expr When? when ";"
+    = Property property
+    | Annotation+ annotations Property property
+    | Constructor constructor
+    | Annotation+ annotations Constructor constructor
+    | Relation relation
+    | Annotation+ annotations Relation relation
+    | Method method
+    | Annotation+ annotations Method method
+    ;
+
+syntax Relation
+    = "relation" RelationDir l ":" RelationDir r ArtifactName entity "as" MemberName alias AccessProperties? accessProperties ";";
+
+syntax Property 
+    = Type type MemberName name AssignDefaultValue? AccessProperties? accessProperties ";";
+
+syntax Constructor
+    = ArtifactName "(" {AbstractParameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
+    | ArtifactName "(" {AbstractParameter ","}* parameters ")" When? when ";"
+    ;
+
+syntax Method
+    = Modifier? modifier Type returnType MemberName name "(" {AbstractParameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
+    | Modifier? modifier Type returnType MemberName name "(" {AbstractParameter ","}* parameters ")" "=" Expression expr When? when ";"
     ;
 
 syntax Modifier
@@ -73,6 +92,10 @@ syntax When
     = "when" Expression expr
     ;
 
+syntax AbstractParameter
+    = Parameter parameter
+    | Annotation+ annotations Parameter parameter;
+
 syntax Parameter
     = Type paramType MemberName name AssignDefaultValue? defaultValue
     ;
@@ -83,11 +106,13 @@ syntax AssignDefaultValue
 
 syntax DefaultValue
     = stringLiteral : StringQuoted string
-    | intLiteral : DecimalIntegerLiteral number
-    | floatLiteral : DeciFloatNumeral number
+    | integer : DecimalIntegerLiteral number
+    | float : DeciFloatNumeral number
     | booleanLiteral : Boolean boolean
     | \list : "[" {DefaultValue ","}* items "]" list
     | getInstance: "get" InstanceType
+    | newInstance: "new" InstanceType 
+    | newInstance: "new" InstanceType "(" {Expression ","}* args ")"
     ;
 
 syntax AccessProperties
@@ -121,9 +146,10 @@ syntax Expression
     | \list: "[" {Expression ","}* items "]"
     | \map: "{" {MapPair ","}* items "}"
     | negative: "-" Expression argument
+    | positive: "+" Expression argument
     | stringLiteral: StringQuoted string
-    | intLiteral: DecimalIntegerLiteral number
-    | floatLiteral: DeciFloatNumeral number
+    | integer: DecimalIntegerLiteral number
+    | float: DeciFloatNumeral number
     | booleanLiteral: Boolean boolean
     | variable: MemberName varName
     | newInstance: "new" ArtifactName

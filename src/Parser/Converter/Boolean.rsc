@@ -1,6 +1,6 @@
 module Parser::Converter::Boolean
 
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 
 public bool convertBoolean((Boolean) `true`) = true;

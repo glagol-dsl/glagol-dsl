@@ -1,6 +1,6 @@
 module Parser::Converter::Declaration::Constructor
 
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 import Parser::Converter::Parameter;
 import Parser::Converter::Expression;
@@ -9,9 +9,9 @@ import Parser::Converter::When;
 import Parser::Converter::Type;
 import Exceptions::ParserExceptions;
 
-public Declaration convertDeclaration(
-    (Declaration) `<ArtifactName name> (<{Parameter ","}* parameters>) { <Statement* body> }`, 
-    str artifactName, _) 
+public Declaration convertConstructor(
+    (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`, 
+    str artifactName) 
 {
     if (artifactName != "<name>") {
         throw IllegalConstructorName("\'<name>\' is invalid constructor name");
@@ -20,9 +20,9 @@ public Declaration convertDeclaration(
     return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body]);
 }
     
-public Declaration convertDeclaration(
-    (Declaration) `<ArtifactName name> (<{Parameter ","}* parameters>) { <Statement* body> }<When when>;`, 
-    str artifactName, _)
+public Declaration convertConstructor(
+    (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }<When when>;`, 
+    str artifactName)
 {
     if (artifactName != "<name>") {
         throw IllegalConstructorName("\'<name>\' is invalid constructor name");
@@ -31,9 +31,9 @@ public Declaration convertDeclaration(
     return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], convertWhen(when));
 }
 
-public Declaration convertDeclaration(
-    (Declaration) `<ArtifactName name> (<{Parameter ","}* parameters>);`, 
-    str artifactName, _) 
+public Declaration convertConstructor(
+    (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>);`, 
+    str artifactName) 
 {
     if (artifactName != "<name>") {
         throw IllegalConstructorName("\'<name>\' is invalid constructor name");
@@ -41,3 +41,9 @@ public Declaration convertDeclaration(
     
     return constructor([convertParameter(p) | p <- parameters], []);
 }
+
+public Declaration convertDeclaration((Declaration) `<Constructor construct>`, str artifactName, _) = convertConstructor(construct, artifactName);
+public Declaration convertDeclaration((Declaration) `<Annotation+ annotations><Constructor construct>`, str artifactName, _) 
+    = convertConstructor(construct, artifactName)[
+    	@annotations = convertAnnotations(annotations)
+    ];

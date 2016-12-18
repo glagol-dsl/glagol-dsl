@@ -1,19 +1,19 @@
-module Syntax::Abstract::AST
+module Syntax::Abstract::Glagol
+
+import List;
 
 data Declaration 
     = file(loc file, Declaration \module)
-    | \module(Declaration namespace, set[Declaration] imports)
-    | \module(Declaration namespace, set[Declaration] imports, Declaration artifact)
+    | \module(Declaration namespace, list[Declaration] imports, Declaration artifact)
     | namespace(str name)
     | namespace(str name, Declaration subNamespace)
     | \import(str artifactName, Declaration namespace, str as)
-    | annotated(set[Annotation] annotations, Declaration declaration)
-    | entity(str name, set[Declaration] declarations)
-    | repository(str name, set[Declaration] declarations)
-    | valueObject(str name, set[Declaration] declarations)
+    | entity(str name, list[Declaration] declarations)
+    | repository(str name, list[Declaration] declarations)
+    | valueObject(str name, list[Declaration] declarations)
     | property(Type \valueType, str name, set[AccessProperty] valueProperties)
     | property(Type \valueType, str name, set[AccessProperty] valueProperties, Expression defaultValue)
-    | util(str name, set[Declaration] declarations)
+    | util(str name, list[Declaration] declarations)
     | relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties)
     | constructor(list[Declaration] params, list[Statement] body)
     | constructor(list[Declaration] params, list[Statement] body, Expression when)
@@ -26,15 +26,6 @@ data Declaration
 data RelationDir
     = \one()
     | many()
-    ;
-
-data AssocArtifact
-    = assocRepository(str target)
-    ;
-
-data UseSource
-    = externalUse(str \module)
-    | internalUse()
     ;
 
 data Annotation
@@ -51,10 +42,10 @@ data Annotation
     ;
 
 data Expression
-    = intLiteral(int intValue)
-    | floatLiteral(real floatValue)
-    | strLiteral(str strValue)
-    | boolLiteral(bool boolValue)
+    = integer(int intValue)
+    | float(real floatValue)
+    | string(str strValue)
+    | boolean(bool boolValue)
     | \list(list[Expression] values)
     | arrayAccess(Expression variable, Expression arrayIndexKey)
     | \map(map[Expression key, Expression \value])
@@ -65,8 +56,6 @@ data Expression
     | division(Expression lhs, Expression rhs)
     | addition(Expression lhs, Expression rhs)
     | subtraction(Expression lhs, Expression rhs)
-    | modulo(Expression lhs, Expression rhs)
-    | negative(Expression expr)
     | greaterThanOrEq(Expression lhs, Expression rhs)
     | lessThanOrEq(Expression lhs, Expression rhs)
     | lessThan(Expression lhs, Expression rhs)
@@ -75,6 +64,8 @@ data Expression
     | nonEquals(Expression lhs, Expression rhs)
     | and(Expression lhs, Expression rhs)
     | or(Expression lhs, Expression rhs)
+    | negative(Expression expr)
+    | positive(Expression expr)
     | ifThenElse(Expression condition, Expression ifThen, Expression \else)
     | new(str artifact, list[Expression] args)
     | get(Type t)
@@ -82,9 +73,7 @@ data Expression
     | invoke(Expression prev, str methodName, list[Expression] args)
     | fieldAccess(str field)
     | fieldAccess(Expression prev, str field)
-    | chain(list[Expression] elements)
     | emptyExpr()
-    | assocArtifact(AssocArtifact aArtifact)
     | this()
     ;
 
@@ -100,12 +89,12 @@ data Type
     | repositoryType(str name)
     | selfie()
     ;
-    
+
 data Modifier
     = \public()
     | \private()
     ;
-    
+
 data AccessProperty
     = read()
     | \set()
@@ -120,7 +109,7 @@ data Statement
     | ifThenElse(Expression condition, Statement then, Statement \else)
     | assign(Expression assignable, AssignOperator operator, Statement \value)
     | emptyStmt()
-    | \return(Statement stmt)
+    | \return(Expression expr)
     | declare(Type varType, Expression varName)
     | declare(Type varType, Expression varName, Statement defaultValue)
     | foreach(Expression \list, Expression varName, Statement body)
@@ -138,3 +127,6 @@ data AssignOperator
     | subtractionAssign()
     | additionAssign()
     ;
+    
+public anno list[Annotation] node@annotations;
+public anno list[Annotation] Declaration@annotations;

@@ -1,32 +1,27 @@
 module Parser::Converter::Declaration::Property
 
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 import Parser::Converter::Type;
 import Parser::Converter::AccessProperty;
 import Parser::Converter::Annotation;
 import Parser::Converter::DefaultValue;
 
-public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name>;`, _, _) 
+public Declaration convertProperty((Property) `<Type prop><MemberName name>;`) 
     = property(convertType(prop), "<name>", {});
 
-public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name><AssignDefaultValue defVal>;`, _, _) 
+public Declaration convertProperty((Property) `<Type prop><MemberName name><AssignDefaultValue defVal>;`) 
     = property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop)));
     
-public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name><AccessProperties accessProperties>;`, _, _) 
+public Declaration convertProperty((Property) `<Type prop><MemberName name><AccessProperties accessProperties>;`) 
     = property(convertType(prop), "<name>", convertAccessProperties(accessProperties));
     
-public Declaration convertDeclaration((Declaration) `<Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`, _, _) 
+public Declaration convertProperty((Property) `<Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`) 
     = property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop)));
     
-public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name>;`, _, _) 
-    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>"));
-
-public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name><AssignDefaultValue defVal>;`, _, _) 
-    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop))));
+public Declaration convertDeclaration((Declaration) `<Annotation+ annotations><Property prop>`, _, _) 
+    = convertProperty(prop)[
+    	@annotations = convertAnnotations(annotations)
+    ];
     
-public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name><AccessProperties accessProperties>;`, _, _) 
-    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", convertAccessProperties(accessProperties)));
-    
-public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`, _, _) 
-    = annotated({convertAnnotation(annotation) | annotation <- annotations}, property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop))));
+public Declaration convertDeclaration((Declaration) `<Property prop>`, _, _) = convertProperty(prop);

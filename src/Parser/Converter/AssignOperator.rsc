@@ -1,6 +1,6 @@
 module Parser::Converter::AssignOperator
 
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 
 public AssignOperator convertAssignOperator((AssignOperator) `/=`) = divisionAssign();

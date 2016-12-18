@@ -1,6 +1,6 @@
 module Parser::Converter::ModuleNamespace
 
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 
 public Declaration convertModuleNamespace((Namespace) `<Name name>`) = namespace("<name>");

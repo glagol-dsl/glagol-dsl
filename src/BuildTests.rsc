@@ -1,6 +1,8 @@
 module BuildTests
 
 import IO;
+import Map;
+import String;
 
 private set[loc] collectTestFiles(loc location)
 {
@@ -27,38 +29,59 @@ public void main(list[str] args)
 
     testFiles = collectTestFiles(testsLoc);
 
-    list[str] modules = [moduleName | file <- testFiles, line := readFileLines(file)[0], /module <moduleName:[a-zA-Z:]+?>$/i := line];
-    list[tuple[str function, str fileName]] functions = [<function, file.path> | file <- testFiles, line <- readFileLines(file), /test bool <function:.+?>\(\)/i := line];
+    list[str] modules = [moduleName | file <- testFiles, line := readFileLines(file)[0], /module <moduleName:[a-zA-Z0-9:]+?>$/i := line];
+    map[str function, loc location] functions = (function : file | file <- testFiles, line <- readFileLines(file), /test bool <function:.+?>\(\)/i := line);
+    
+    str fnMap = ("" | it + "<f>:|<functions[f].uri>|," | f <- functions );
 
     str testAggregate = "module Tests
                         '
                         'import IO;
                         'import List;
                         'import Exception;
+                        'import Map;
+                        'import util::Math;
                         '<for (moduleName <- modules) {>import <moduleName>;
                         '<}>
                         '
-                        'public void main(list[str] args) {
+                        'private list[str] errorMessages = [];
                         '
-                        '   list[str] errorMessages = [];
+                        'private int testsPassed = 0;
                         '
-                        '<for (\test <- functions) {>
+                        'private void runTest(bool () t, loc location) {
                         '   try {
-                        '       if (<\test.function>()) print(\".\");
+                        '       if (t()) print(\".\");
                         '       else {
-                        '           errorMessages += \"Test <\test.function> failed in <\test.fileName>\";
+                        '           errorMessages += \"Test \<t\> failed in \<location.path\>\";
                         '           print(\"F\");
                         '       }
+                        '       testsPassed += 1;
+                        '       if (testsPassed % 30 == 0) println(\" \<toInt((toReal(testsPassed)/<toReal("<size(functions)>")>)*100)\>%\");
                         '   } catch e: {
-                        '       throw \"Test <\test.function> threw an exception (located in <\test.fileName>) with text \\\'\<e\>\\\'\";
+                        '       throw \"Test \<t\> threw an exception (located in \<location.path\>) with text \\\'\<e\>\\\'\";
                         '       return;
                         '   }
-                        '<}>
+                        '} 
+                        '
+                        'public int main(list[str] args) {
+                        '
+                        '   map[bool () fn, loc file] tests = (<substring(fnMap, 0, size(fnMap) - 1)>);
+                        '
+                        '   for (t \<- tests) runTest(t, tests[t]);
+                        '
+                        '   println(\" 100%\");
+                        '
                         '   if (size(errorMessages) \> 0) {
                         '       println();
                         '       println(\"Not all tests passed:\");
                         '       for (error \<- errorMessages) println(error);
-                        '   } else println(\"OK\");
+                        '   } else {
+                        '       println(\"OK\");
+                        '   }
+                        '
+                        '   println(\"Total tests: \<size(tests)\>, successful: \<size(tests) - size(errorMessages)\>, failed: \<size(errorMessages)\>\");
+                        '
+                        '   return size(errorMessages) \> 0 ? 1 : 0;
                         '}
                         '";
 

@@ -1,6 +1,6 @@
 module Parser::Converter::Expression
 
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 import String;
 import Parser::Converter::Boolean;
@@ -45,20 +45,23 @@ public Expression convertExpression((Expression) `<Expression lhs> && <Expressio
 public Expression convertExpression((Expression) `<Expression lhs> || <Expression rhs>`) 
     = or(convertExpression(lhs), convertExpression(rhs));
     
+public Expression convertExpression((Expression) `<Expression lhs> % <Expression rhs>`) 
+    = remainder(convertExpression(lhs), convertExpression(rhs));
+    
 public Expression convertExpression((Expression) `<Expression condition>?<Expression thenExp>:<Expression elseExp>`) 
     = ifThenElse(convertExpression(condition), convertExpression(thenExp), convertExpression(elseExp));
 
-public Expression convertExpression((Expression) `<StringQuoted string>`)
-    = strLiteral(convertStringQuoted(string));
+public Expression convertExpression((Expression) `<StringQuoted s>`)
+    = string(convertStringQuoted(s));
     
 public Expression convertExpression((Expression) `<DecimalIntegerLiteral number>`)
-    = intLiteral(toInt("<number>"));
+    = integer(toInt("<number>"));
     
 public Expression convertExpression((Expression) `<DeciFloatNumeral number>`)
-    = floatLiteral(toReal("<number>"));
+    = float(toReal("<number>"));
     
-public Expression convertExpression((Expression) `<Boolean boolean>`)
-    = boolLiteral(convertBoolean(boolean));
+public Expression convertExpression((Expression) `<Boolean b>`)
+    = boolean(convertBoolean(b));
     
 public Expression convertExpression((Expression) `[<{Expression ","}* items>]`)
     = \list([convertExpression(i) | i <- items]);
@@ -68,26 +71,33 @@ public Expression convertExpression((Expression) `<MemberName varName>`)
     
 public Expression convertExpression((Expression) `-<Expression expr>`) 
     = negative(convertExpression(expr));
+    
+public Expression convertExpression((Expression) `+<Expression expr>`) 
+    = positive(convertExpression(expr));
 
 public Expression convertExpression((Expression) `this`) = this();
 
-public Expression convertExpression((DefaultValue) `<StringQuoted string>`)
-    = strLiteral(convertStringQuoted(string));
+public Expression convertExpression((DefaultValue) `<StringQuoted s>`)
+    = string(convertStringQuoted(s));
     
 public Expression convertExpression((DefaultValue) `<DecimalIntegerLiteral number>`)
-    = intLiteral(toInt("<number>"));
+    = integer(toInt("<number>"));
     
 public Expression convertExpression((DefaultValue) `<DeciFloatNumeral number>`)
-    = floatLiteral(toReal("<number>"));
+    = float(toReal("<number>"));
     
-public Expression convertExpression((DefaultValue) `<Boolean boolean>`)
-    = boolLiteral(convertBoolean(boolean));
+public Expression convertExpression((DefaultValue) `<Boolean b>`)
+    = boolean(convertBoolean(b));
     
 public Expression convertExpression((DefaultValue) `[<{DefaultValue ","}* items>]`)
     = \list([convertExpression(i) | i <- items]);
     
 public Expression convertExpression((DefaultValue) `get <InstanceType t>`)
     = get(convertInstanceType(t));
+    
+public Expression convertExpression((DefaultValue) `new <ArtifactName name>`) = new("<name>", []);
+public Expression convertExpression((DefaultValue) `new <ArtifactName name>(<{Expression ","}* args>)`) 
+    = new("<name>", [convertExpression(arg) | arg <- args]);
     
 public Type convertInstanceType((InstanceType) `<Type t>`) = convertType(t);
 public Type convertInstanceType((InstanceType) `selfie`) = selfie();

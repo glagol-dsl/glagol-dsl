@@ -1,6 +1,6 @@
 module Parser::Converter::RelationDir
 
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 
 public RelationDir convertRelationDir((RelationDir) `one`) = \one();

@@ -1,6 +1,6 @@
 module Parser::Converter::DefaultValue
 
-import Syntax::Abstract::AST;
+import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 import Parser::Converter::Expression;
 
@@ -8,7 +8,7 @@ public Expression convertParameterDefaultVal((AssignDefaultValue) `=<DefaultValu
 
     Expression defaultValue = convertExpression(defaultValue);
     
-    if (defaultValue := get(selfie())) {
+    if (defaultValue == get(selfie())) {
         defaultValue = get(onType);
     }
 
