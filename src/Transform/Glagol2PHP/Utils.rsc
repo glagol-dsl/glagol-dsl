@@ -12,6 +12,6 @@ import Syntax::Abstract::PHP;
 import Config::Reader;
 
 public PhpStmt toPhpClassDef(u: util(str name, list[Declaration] declarations), env: <Framework f, ORM orm>)
-    = phpClassDef(phpClass(name, {}, phpNoName(), [], toPhpClassItems(declarations, <f, anyORM()>))[
+    = phpClassDef(phpClass(name, {}, phpNoName(), [], toPhpClassItems(declarations, <f, orm>, u))[
         @phpAnnotations=toPhpAnnotations(u, env)
     ]);

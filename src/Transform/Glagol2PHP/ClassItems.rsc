@@ -14,8 +14,8 @@ import Transform::Glagol2PHP::Annotations;
 import Transform::Glagol2PHP::Doctrine::Relations;
 import Map;
 
-public list[PhpClassItem] toPhpClassItems(list[Declaration] declarations, env) =
-	[toPhpClassItem(ci, env) | ci <- declarations, isProperty(ci)] +
+public list[PhpClassItem] toPhpClassItems(list[Declaration] declarations, env, context) =
+	[toPhpClassItem(ci, env, context) | ci <- declarations, isProperty(ci)] +
 	[toPhpClassItem(r, env) | r <- getRelations(declarations)] + 
 	(hasConstructors(declarations) ? [createConstructor(getConstructors(declarations), env)] : []) +
 	[createMethod(m, env) | m <- range(categorizeMethods(declarations))];

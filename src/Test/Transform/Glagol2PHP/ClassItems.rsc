@@ -23,7 +23,7 @@ test bool shouldTransformPropertiesToPhpClassItems() =
 		property(voidValue(), "prop2", {}),
 		property(voidValue(), "prop3", {}),
 		property(voidValue(), "prop4", {})[@annotations=[]]
-	], <anyFramework(), anyORM()>) == 
+	], <anyFramework(), anyORM()>, entity("", [])) == 
 	[
 		phpProperty({phpPrivate()}, [phpProperty("prop1", phpNoExpr())]),
 		phpProperty({phpPrivate()}, [phpProperty("prop2", phpNoExpr())]),
@@ -34,14 +34,14 @@ test bool shouldTransformPropertiesToPhpClassItems() =
 test bool shouldTransformConstructorsToPhpClassItems() = 
 	toPhpClassItems([
 		constructor([], [])
-	], <anyFramework(), anyORM()>) == 
+	], <anyFramework(), anyORM()>, entity("", [])) == 
 	[phpMethod("__construct", {phpPublic()}, false, [], [], phpNoName())];
 
 test bool shouldTransformOverridingConstructorsToPhpClassItems() = 
 	toPhpClassItems([
 		constructor([param(string(), "a")], []),
 		constructor([param(integer(), "b")], [])
-	], <anyFramework(), anyORM()>) == 
+	], <anyFramework(), anyORM()>, entity("", [])) == 
 	[phpMethod(
     "__construct",
     {phpPublic()},
@@ -112,7 +112,7 @@ test bool shouldTransformMethodsToPhpClassItems() =
 		method(\private(), voidValue(), "a", [], []),
 		method(\private(), voidValue(), "b", [], []),
 		method(\private(), voidValue(), "c", [], [])
-	], <anyFramework(), anyORM()>) == 
+	], <anyFramework(), anyORM()>, entity("", [])) == 
 	[
 		phpMethod("a", {phpPrivate()}, false, [], [], phpNoName()),
 		phpMethod("b", {phpPrivate()}, false, [], [], phpNoName()),
@@ -123,7 +123,7 @@ test bool shouldTransformMethodsWithOverridingToPhpClassItems() =
 	toPhpClassItems([
 		method(\private(), voidValue(), "a", [], []),
 		method(\private(), voidValue(), "a", [param(string(), "blah")], [])
-	], <anyFramework(), anyORM()>) == 
+	], <anyFramework(), anyORM()>, util("", [])) == 
 	[
 		phpMethod(
 		    "a",
@@ -182,7 +182,7 @@ test bool shouldTransformMethodsWithOverridingToPhpClassItems() =
 test bool shouldTransformRelationsToPhpClassItems() = 
 	toPhpClassItems([
 		relation(\one(), \one(), "User", "owner", {})
-	], <anyFramework(), doctrine()>) == 
+	], <anyFramework(), doctrine()>, entity("", [])) == 
 	[
 		phpProperty(
 		    {phpPrivate()},
@@ -191,6 +191,6 @@ test bool shouldTransformRelationsToPhpClassItems() =
 		        phpNoExpr())])
 	] && toPhpClassItems([
 		relation(\one(), \one(), "User", "owner", {})
-	], <anyFramework(), doctrine()>)[0]@phpAnnotations == 
+	], <anyFramework(), doctrine()>, entity("", []))[0]@phpAnnotations == 
 	{phpAnnotation("ORM\\OneToOne", phpAnnotationVal(("targetEntity":phpAnnotationVal("User"))))};
 	

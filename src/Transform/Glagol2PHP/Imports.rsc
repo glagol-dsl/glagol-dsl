@@ -14,6 +14,10 @@ public list[PhpStmt] toPhpUses(list[Declaration] imports, Declaration artifact, 
 private list[Declaration] extractImports(a: entity(_, list[Declaration] ds), env: <f, doctrine()>) =
     [\import("Mapping", namespace("Doctrine", namespace("ORM")), "ORM")] +
     commonImports(a, env);
+    
+private list[Declaration] extractImports(a: repository(_, list[Declaration] ds), env: <f, doctrine()>) =
+    [\import("EntityRepository", namespace("Doctrine", namespace("ORM")), "EntityRepository")] +
+    commonImports(a, env);
 
 private default list[Declaration] extractImports(Declaration artifact, env) = commonImports(artifact, env);
 

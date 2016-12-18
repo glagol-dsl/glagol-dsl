@@ -1,4 +1,4 @@
-module Transform::Glagol2PHP::Entities
+module Transform::Glagol2PHP::Repositories
 
 import Transform::Glagol2PHP::Annotations;
 import Transform::Glagol2PHP::Common;
@@ -11,8 +11,8 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Config::Reader;
 
-@doc="Convert entity to a PHP class"
-public PhpStmt toPhpClassDef(e: entity(str name, list[Declaration] declarations), env: <Framework f, doctrine()>)
-    = phpClassDef(phpClass(name, {}, phpNoName(), [], toPhpClassItems(declarations, env, e))[
-        @phpAnnotations={phpAnnotation("ORM\\Entity")} + toPhpAnnotations(e, env)
+public PhpStmt toPhpClassDef(r: repository(str name, list[Declaration] declarations), env: <Framework f, doctrine()>)
+    = phpClassDef(phpClass("<name>Repository", {}, phpSomeName(phpName("EntityRepository")), [], 
+    		toPhpClassItems(declarations, env, r))[
+        @phpAnnotations=toPhpAnnotations(r, env)
     ]);
