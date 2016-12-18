@@ -8,7 +8,6 @@ data Declaration
     | namespace(str name)
     | namespace(str name, Declaration subNamespace)
     | \import(str artifactName, Declaration namespace, str as)
-    | annotated(list[Annotation] annotations, Declaration declaration)
     | entity(str name, list[Declaration] declarations)
     | repository(str name, list[Declaration] declarations)
     | valueObject(str name, list[Declaration] declarations)
@@ -27,11 +26,6 @@ data Declaration
 data RelationDir
     = \one()
     | many()
-    ;
-
-data UseSource
-    = externalUse(str \module)
-    | internalUse()
     ;
 
 data Annotation
@@ -133,3 +127,6 @@ data AssignOperator
     | subtractionAssign()
     | additionAssign()
     ;
+    
+public anno list[Annotation] node@annotations;
+public anno list[Annotation] Declaration@annotations;

@@ -7,6 +7,8 @@ import Parser::Converter::Boolean;
 import Parser::Converter::Type;
 import Parser::Converter::QuotedString;
 
+public list[Annotation] convertAnnotations(annotations) = [convertAnnotation(a) | a <- annotations];
+
 public Annotation convertAnnotation((Annotation) `@<Identifier id>`) = annotation("<id>", []);
 
 public Annotation convertAnnotation((Annotation) `@<Identifier id><AnnotationArgs args>`)

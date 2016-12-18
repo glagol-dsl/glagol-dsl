@@ -9,8 +9,9 @@ test bool testShouldParseTableNameAnnotationForEntity()
                '@table(\"users\")
                'entity User { }";
 
-    return parseModule(code) == \module(namespace("Example"), [],
-        annotated([annotation("table", [annotationVal("users")])], entity("User", [])));
+    return 
+    	parseModule(code) == \module(namespace("Example"), [], entity("User", [])) && 
+        parseModule(code).artifact@annotations == [annotation("table", [annotationVal("users")])];
 }
 
 test bool testShouldParseIndexesAnnotationForEntity()
@@ -20,12 +21,14 @@ test bool testShouldParseIndexesAnnotationForEntity()
                '@index(\"second_index\", [\"quantity\", \"total\"])
                'entity User { }";
 
-    Declaration expectedEntity = annotated([
-        annotation("index", [annotationVal("my_index"), annotationVal([annotationVal("name"), annotationVal("email")])]),
-        annotation("index", [annotationVal("second_index"), annotationVal([annotationVal("quantity"), annotationVal("total")])])
-    ], entity("User", []));
+    Declaration expectedEntity = entity("User", []);
 
-    return parseModule(code) == \module(namespace("Example"), [], expectedEntity);
+    return 
+    	parseModule(code) == \module(namespace("Example"), [], expectedEntity) &&
+    	parseModule(code).artifact@annotations == [
+	        annotation("index", [annotationVal("my_index"), annotationVal([annotationVal("name"), annotationVal("email")])]),
+	        annotation("index", [annotationVal("second_index"), annotationVal([annotationVal("quantity"), annotationVal("total")])])
+	    ];
 }
 
 test bool testShouldParseCompositeAnnotationForEntity()
@@ -36,13 +39,15 @@ test bool testShouldParseCompositeAnnotationForEntity()
                '@table(\"my_users_table\")
                'entity User { }";
 
-    Declaration expectedEntity = annotated([
-        annotation("index", [annotationVal("my_index"), annotationVal([annotationVal("name"), annotationVal("email")])]),
-        annotation("index", [annotationVal("second_index"), annotationVal([annotationVal("quantity"), annotationVal("total")])]),
-        annotation("table", [annotationVal("my_users_table")])
-    ], entity("User", []));
+    Declaration expectedEntity = entity("User", []);
 
-    return parseModule(code) == \module(namespace("Example"), [], expectedEntity);
+    return 
+    	parseModule(code) == \module(namespace("Example"), [], expectedEntity) && 
+    	parseModule(code).artifact@annotations == [
+	        annotation("index", [annotationVal("my_index"), annotationVal([annotationVal("name"), annotationVal("email")])]),
+	        annotation("index", [annotationVal("second_index"), annotationVal([annotationVal("quantity"), annotationVal("total")])]),
+	        annotation("table", [annotationVal("my_users_table")])
+	    ];
 }
 
 test bool testShouldParseFlatDocAnnotationForEntity()
@@ -51,9 +56,11 @@ test bool testShouldParseFlatDocAnnotationForEntity()
                '@doc=\"This is a doc\"
                'entity User { }";
 
-    Declaration expectedEntity = annotated([
-        annotation("doc", [annotationVal("This is a doc")])
-    ], entity("User", []));
+    Declaration expectedEntity = entity("User", []);
 
-    return parseModule(code) == \module(namespace("Example"), [], expectedEntity);
+    return 
+    	parseModule(code) == \module(namespace("Example"), [], expectedEntity) &&
+    	parseModule(code).artifact@annotations == [
+	        annotation("doc", [annotationVal("This is a doc")])
+	    ];
 }

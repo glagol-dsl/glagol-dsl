@@ -51,11 +51,9 @@ test bool shouldTransformSimpleAnnotatedEntityToPhpScriptUsingDoctrine()
     = toPHPScript(<zend(), doctrine()>, \module(namespace("User", namespace("Entity")), [
         \import("Money", namespace("Currency", namespace("Value")), "Money"),
         \import("Currency", namespace("Currency", namespace("Value")), "CurrencyVB")
-    ], annotated([
-        annotation("table", [])
     ], entity("Customer", [
         property(integer(), "id", {})
-    ]))))
+    ])[@annotations=[annotation("table", [])]]))
     == ("User/Entity/Customer.php": phpScript([
         phpNamespace(phpSomeName(phpName("User\\Entity")), [
             phpUse({
@@ -75,10 +73,8 @@ test bool shouldTransformSimpleAnnotatedWithValueEntityToPhpScriptUsingDoctrine(
     map[str, PhpScript] asts = toPHPScript(<zend(), doctrine()>, \module(namespace("User", namespace("Entity")), [
         \import("Money", namespace("Currency", namespace("Value")), "Money"),
         \import("Currency", namespace("Currency", namespace("Value")), "CurrencyVB")
-    ], annotated([
-        annotation("table", [annotationVal("customers")])
     ], entity("Customer", [
-        annotated([
+        property(integer(), "id", {})[@annotations=[
             annotation("id", []),
             annotation("field", [
                 annotationMap((
@@ -92,8 +88,8 @@ test bool shouldTransformSimpleAnnotatedWithValueEntityToPhpScriptUsingDoctrine(
                     "scale": annotationVal(12.35)
                 ))
             ])
-        ], property(integer(), "id", {}))
-    ]))));
+        ]]
+    ])[@annotations=[annotation("table", [annotationVal("customers")])]]));
     
     PhpScript ast = asts["User/Entity/Customer.php"];
     
@@ -123,10 +119,8 @@ test bool shouldTransformEntityWithRelationsToPhpScriptUsingDoctrine() {
     map[str, PhpScript] asts = toPHPScript(<zend(), doctrine()>, \module(namespace("User", namespace("Entity")), [
         \import("Money", namespace("Currency", namespace("Value")), "Money"),
         \import("Currency", namespace("Currency", namespace("Value")), "CurrencyVB")
-    ], annotated([
-        annotation("table", [annotationVal("customers")])
     ], entity("Customer", [
-        annotated([
+        property(integer(), "id", {})[@annotations=[
             annotation("id", []),
             annotation("field", [
                 annotationMap((
@@ -140,10 +134,9 @@ test bool shouldTransformEntityWithRelationsToPhpScriptUsingDoctrine() {
                     "scale": annotationVal(12.35)
                 ))
             ])
-        ], 
-        property(integer(), "id", {})),
+        ]],
         relation(\one(), \one(), "Language", "userLang", {})
-    ]))));
+    ])[@annotations=[annotation("table", [annotationVal("customers")])]]));
     
     PhpScript ast = asts["User/Entity/Customer.php"];
     

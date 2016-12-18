@@ -10,8 +10,6 @@ public list[PhpStmt] toPhpUses(list[Declaration] imports, Declaration artifact, 
     [phpUse(
         {toPhpUse(i) | i <- imports + extractImports(artifact, env)}
     )];
-    
-private list[Declaration] extractImports(annotated(_, Declaration artifact), env) = extractImports(artifact, env);
 
 private list[Declaration] extractImports(a: entity(_, list[Declaration] ds), env: <f, doctrine()>) =
     [\import("Mapping", namespace("Doctrine", namespace("ORM")), "ORM")] +

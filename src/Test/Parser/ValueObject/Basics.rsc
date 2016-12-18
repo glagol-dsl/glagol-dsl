@@ -19,9 +19,9 @@ test bool testShouldParseFlatDocAnnotationForVO()
                '@doc=\"This is a doc\"
                'value DateTime { }";
 
-    Declaration expectedEntity = annotated([
-        annotation("doc", [annotationVal("This is a doc")])
-    ], valueObject("DateTime", []));
+    Declaration expectedEntity = valueObject("DateTime", []);
 
-    return parseModule(code) == \module(namespace("Example"), [], expectedEntity);
+    return 
+    	parseModule(code) == \module(namespace("Example"), [], expectedEntity) &&
+    	parseModule(code).artifact@annotations == [annotation("doc", [annotationVal("This is a doc")])];
 }

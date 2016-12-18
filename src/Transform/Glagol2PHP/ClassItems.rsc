@@ -14,14 +14,8 @@ import Transform::Glagol2PHP::Annotations;
 import Transform::Glagol2PHP::Doctrine::Relations;
 import Map;
 
-public PhpStmt toPhpClassDef(annotated(list[Annotation] annotations, Declaration artifact), env) 
-    = applyAnnotationsOnStmt(toPhpClassDef(artifact, env), annotations, env);
-
-public PhpClassItem toPhpClassItem(annotated(list[Annotation] annotations, Declaration declaration), env)
-    = applyAnnotationsOnClassItem(toPhpClassItem(declaration, env), annotations, env);
-
 public list[PhpClassItem] toPhpClassItems(list[Declaration] declarations, env) =
-	[toPhpClassItem(ci, env) | ci <- declarations, isProperty(ci) || isAnnotated(ci, isProperty)] +
+	[toPhpClassItem(ci, env) | ci <- declarations, isProperty(ci)] +
 	[toPhpClassItem(r, env) | r <- getRelations(declarations)] + 
 	(hasConstructors(declarations) ? [createConstructor(getConstructors(declarations), env)] : []) +
 	[createMethod(m, env) | m <- range(categorizeMethods(declarations))];

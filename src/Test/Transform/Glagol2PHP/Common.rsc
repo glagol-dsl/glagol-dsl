@@ -14,7 +14,7 @@ test bool shouldMakeFilenameFromNamespaceAndEntity()
 
 test bool shouldMakeFilenameFromNamespaceAndAnnotatedEntity()
     = "Some/Example/Entity/Test.php" == makeFilename(namespace(
-    	"Some", namespace("Example", namespace("Entity"))), annotated([], entity("Test", [])));
+    	"Some", namespace("Example", namespace("Entity"))), entity("Test", [])[@annotations=[]]);
 
 test bool shouldMakeFilenameFromNamespaceAndUtil()
     = "Some/Example/Util/Test.php" == makeFilename(namespace(

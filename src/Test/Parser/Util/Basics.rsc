@@ -27,11 +27,11 @@ test bool testShouldParseFlatDocAnnotationForUtil()
                '@doc=\"This is a doc\"
                'util UserCreator { }";
 
-    Declaration expectedEntity = annotated([
-        annotation("doc", [annotationVal("This is a doc")])
-    ], util("UserCreator", []));
+    Declaration expectedEntity = util("UserCreator", []);
 
-    return parseModule(code) == \module(namespace("Example"), [], expectedEntity);
+    return 
+    	parseModule(code) == \module(namespace("Example"), [], expectedEntity) &&
+    	parseModule(code).artifact@annotations == [annotation("doc", [annotationVal("This is a doc")])];
 }
 
 
@@ -41,9 +41,9 @@ test bool testShouldParseFlatDocAnnotationForUtil()
                '@doc=\"This is a doc\"
                'util UserCreator { }";
 
-    Declaration expectedEntity = annotated([
-        annotation("doc", [annotationVal("This is a doc")])
-    ], util("UserCreator", []));
+    Declaration expectedEntity = util("UserCreator", []);
 
-    return parseModule(code) == \module(namespace("Example"), [], expectedEntity);
+    return 
+    	parseModule(code) == \module(namespace("Example"), [], expectedEntity) &&
+    	parseModule(code).artifact@annotations == [annotation("doc", [annotationVal("This is a doc")])];
 }

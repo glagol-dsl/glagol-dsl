@@ -3,22 +3,26 @@ module Test::Transform::Glagol2PHP::ClassItems
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Transform::Glagol2PHP::ClassItems;
+import Transform::Glagol2PHP::Entities;
+import Transform::Glagol2PHP::Utils;
+import Transform::Glagol2PHP::Constructors;
+import Transform::Glagol2PHP::Methods;
 import Config::Reader;
 
 test bool shouldAddPhpAnnotationsToPhpClassDef() = 
-	toPhpClassDef(annotated([], entity("Bla", [])), <anyFramework(), doctrine()>).classDef@phpAnnotations?;
+	toPhpClassDef(entity("Bla", [])[@annotations=[annotation("doc", [annotationVal("a doc")])]], 
+		<anyFramework(), doctrine()>).classDef@phpAnnotations?;
 
 test bool shouldAddAnnotationsToPhpClassItems() = 
-	toPhpClassItem(annotated([
-		annotation("Id", [])
-	], constructor([], [])), <anyFramework(), doctrine()>)@phpAnnotations?;
+	toPhpClassItem(constructor([], [])[@annotations=[annotation("Id", [])]], 
+		<anyFramework(), doctrine()>)@phpAnnotations?;
 
 test bool shouldTransformPropertiesToPhpClassItems() = 
 	toPhpClassItems([
 		property(voidValue(), "prop1", {}),
 		property(voidValue(), "prop2", {}),
 		property(voidValue(), "prop3", {}),
-		annotated([], property(voidValue(), "prop4", {}))
+		property(voidValue(), "prop4", {})[@annotations=[]]
 	], <anyFramework(), anyORM()>) == 
 	[
 		phpProperty({phpPrivate()}, [phpProperty("prop1", phpNoExpr())]),

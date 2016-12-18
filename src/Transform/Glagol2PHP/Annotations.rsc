@@ -35,6 +35,12 @@ public PhpAnnotation toPhpAnnotation(annotationVal(val), _) = phpAnnotationVal(v
 
 public default str toPhpAnnotationKey(str annotation, _) = annotation;
 
+public set[PhpAnnotation] toPhpAnnotations(list[Annotation] annotations, env) =
+	{toPhpAnnotation(a, env) | a <- annotations};
+	
+public set[PhpAnnotation] toPhpAnnotations(Declaration d, env) =
+	(d@annotations?) ? toPhpAnnotations(d@annotations, env) : {};
+
 public PhpStmt applyAnnotationsOnStmt(phpClassDef(PhpClassDef classDef), list[Annotation] annotations, env)
     = phpClassDef(classDef[
             @phpAnnotations=((classDef@phpAnnotations?) ? classDef@phpAnnotations : {}) + {toPhpAnnotation(a, env) | a <- annotations}

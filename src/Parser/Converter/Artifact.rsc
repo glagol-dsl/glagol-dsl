@@ -11,29 +11,39 @@ public Declaration convertArtifact((Artifact) `entity <ArtifactName name> {<Decl
     = entity("<name>", [convertDeclaration(d, "<name>", "entity") | d <- declarations]);
 
 public Declaration convertArtifact((Artifact) `<Annotation* annotations> entity <ArtifactName name> {<Declaration* declarations>}`) 
-    = annotated([convertAnnotation(annotation) | annotation <- annotations], entity("<name>", [convertDeclaration(d, "<name>", "entity") | d <- declarations]));
+    = entity("<name>", [convertDeclaration(d, "<name>", "entity") | d <- declarations])[
+    	@annotations = convertAnnotations(annotations)
+    ];
 
 public Declaration convertArtifact((Artifact) `repository for <ArtifactName name> {<Declaration* declarations>}`)
     = repository("<name>", [convertDeclaration(d, "<name>", "repository") | d <- declarations]);
 
 public Declaration convertArtifact((Artifact) `<Annotation* annotations> repository for <ArtifactName name> {<Declaration* declarations>}`)
-    = annotated([convertAnnotation(annotation) | annotation <- annotations], repository("<name>", [convertDeclaration(d, "<name>", "repository") | d <- declarations]));
+    = repository("<name>", [convertDeclaration(d, "<name>", "repository") | d <- declarations])[
+    	@annotations = convertAnnotations(annotations)
+    ];
 
 public Declaration convertArtifact((Artifact) `value <ArtifactName name> {<Declaration* declarations>}`)
     = valueObject("<name>", [convertDeclaration(d, "<name>", "value") | d <- declarations]);
     
 public Declaration convertArtifact((Artifact) `<Annotation* annotations> value <ArtifactName name> {<Declaration* declarations>}`) 
-    = annotated([convertAnnotation(annotation) | annotation <- annotations], valueObject("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations]));
+    = valueObject("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[
+    	@annotations = convertAnnotations(annotations)
+    ];
     
 public Declaration convertArtifact((Artifact) `util <ArtifactName name> {<Declaration* declarations>}`)
     = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations]);
     
 public Declaration convertArtifact((Artifact) `<Annotation* annotations> util <ArtifactName name> {<Declaration* declarations>}`) 
-    = annotated([convertAnnotation(annotation) | annotation <- annotations], util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations]));
+    = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[
+    	@annotations = convertAnnotations(annotations)
+    ];
     
 public Declaration convertArtifact((Artifact) `service <ArtifactName name> {<Declaration* declarations>}`)
     = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations]);
     
 public Declaration convertArtifact((Artifact) `<Annotation* annotations> service <ArtifactName name> {<Declaration* declarations>}`) 
-    = annotated([convertAnnotation(annotation) | annotation <- annotations], util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations]));
+    = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[
+    	@annotations = convertAnnotations(annotations)
+    ];
     

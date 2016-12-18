@@ -45,5 +45,7 @@ private Modifier convertModifier((Modifier) `private`) = \private();
 
 public Declaration convertDeclaration((Declaration) `<Method method>`, _, _) = convertMethod(method);
 public Declaration convertDeclaration((Declaration) `<Annotation+ annotations><Method method>`, _, _) 
-    = annotated([convertAnnotation(annotation) | annotation <- annotations], convertMethod(method));
+    = convertMethod(method)[
+    	@annotations = convertAnnotations(annotations)
+    ];
 

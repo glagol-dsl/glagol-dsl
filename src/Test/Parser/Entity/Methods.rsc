@@ -45,17 +45,16 @@ test bool shouldParseMethodWithModifierAndWhenExpression()
                     \return(product(\bracket(addition(intLiteral(23), intLiteral(5))), intLiteral(8)))
                 ], greaterThan(variable("argument"), intLiteral(5))
             ),
-            annotated([annotation("doc", [annotationVal("This is a doc")])], 
-                method(\private(), integer(), "example", [
-                        param(integer(), "argument")
-                    ], [
-                        \return(product(\bracket(addition(intLiteral(23), intLiteral(5))), intLiteral(8)))
-                    ], greaterThan(variable("argument"), intLiteral(5))
-                )
+            method(\private(), integer(), "example", [
+                    param(integer(), "argument")
+                ], [
+                    \return(product(\bracket(addition(intLiteral(23), intLiteral(5))), intLiteral(8)))
+                ], greaterThan(variable("argument"), intLiteral(5))
             )
           ]
         )
-      );
+      ) &&
+      parseModule(code).artifact.declarations[1]@annotations == [annotation("doc", [annotationVal("This is a doc")])];
 }
 
 test bool shouldParseMethodWithModifierBodyAndWhen()

@@ -1,5 +1,6 @@
 module Transform::Glagol2PHP::Methods
 
+import Transform::Glagol2PHP::Annotations;
 import Transform::Glagol2PHP::Statements;
 import Transform::Glagol2PHP::Expressions;
 import Transform::Glagol2PHP::Params;
@@ -9,7 +10,7 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import List;
 
-public PhpClassItem toPhpClassItem(method(Modifier modifier, \Type returnType, str name, list[Declaration] params, list[Statement] body), _)
+public PhpClassItem toPhpClassItem(d: method(modifier, returnType, name, params, body), env)
     = phpMethod(
         name, 
         {toPhpModifier(modifier)}, 
@@ -17,9 +18,11 @@ public PhpClassItem toPhpClassItem(method(Modifier modifier, \Type returnType, s
         [toPhpParam(p) | p <- params], 
         [toPhpStmt(stmt) | stmt <- body], 
         toPhpReturnType(returnType)
-    );
+    )[
+    	@phpAnnotations=toPhpAnnotations(d, env)
+    ];
 
-public PhpClassItem toPhpClassItem(method(Modifier modifier, \Type returnType, str name, list[Declaration] params, list[Statement] body, Expression when), _)
+public PhpClassItem toPhpClassItem(d: method(modifier, returnType, name, params, body, Expression when), env)
     = phpMethod(
         name,
         {toPhpModifier(modifier)}, 
@@ -27,16 +30,20 @@ public PhpClassItem toPhpClassItem(method(Modifier modifier, \Type returnType, s
         [toPhpParam(p) | p <- params], 
         [phpIf(toPhpExpr(when), [toPhpStmt(stmt) | stmt <- body], [], phpNoElse())], 
         toPhpReturnType(returnType)
-    );
+    )[
+    	@phpAnnotations=toPhpAnnotations(d, env)
+    ];
 
 public PhpClassItem createMethod(list[Declaration] methods, env)
     = toPhpClassItem(methods[0], env)
     when size(methods) == 1;
 
-public PhpClassItem createMethod(list[Declaration] methods, _)
+public PhpClassItem createMethod(list[Declaration] methods, env)
     = phpMethod(methods[0].name, {toPhpModifier(methods[0].modifier)}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
         phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))
-    ] + [phpExprstmt(createOverrideRule(m)) | m <- methods], toPhpReturnType(methods[0].returnType))
+    ] + [phpExprstmt(createOverrideRule(m)) | m <- methods], toPhpReturnType(methods[0].returnType))[
+    	@phpAnnotations=({} | it + toPhpAnnotations(m, env) | m <- methods)
+    ]
     when size(methods) > 1;
 
 private PhpOptionName toPhpReturnType(voidValue()) = phpNoName();

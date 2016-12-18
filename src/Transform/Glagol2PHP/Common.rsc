@@ -23,7 +23,5 @@ public str makeFilename(Declaration namespace, valueObject(str name, _)) =
 public str makeFilename(Declaration namespace, repository(str name, _)) = 
 	namespaceToDir(namespace) + name + "Repository.<EXT>";
 
-public str makeFilename(Declaration namespace, annotated(_, Declaration d)) = makeFilename(namespace, d);
-
 private str namespaceToDir(namespace(str name)) = name + DS;
 private str namespaceToDir(namespace(str name, Declaration sub)) = name + DS + namespaceToDir(sub);

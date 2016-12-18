@@ -19,10 +19,8 @@ test bool shouldTransformToUtilPhpClassDefStmt() =
 	]));
 
 test bool shouldTransformAnnotatedUtilToUtilPhpClassDefStmt() = 
-	toPhpClassDef(annotated([], util("User", [])), <anyFramework(), anyORM()>) ==
+	toPhpClassDef(util("User", [])[@annotations=[]], <anyFramework(), anyORM()>) ==
 	phpClassDef(phpClass("User", {}, phpNoName(), [], [])) &&
-	toPhpClassDef(annotated([
-		annotation("doc", [annotationVal("This is a doc")])
-	], util("User", [])), <anyFramework(), anyORM()>).classDef@phpAnnotations ==
+	toPhpClassDef(util("User", [])[@annotations=[annotation("doc", [annotationVal("This is a doc")])]], <anyFramework(), anyORM()>).classDef@phpAnnotations ==
 		{phpAnnotation("doc", phpAnnotationVal("This is a doc"))};
 

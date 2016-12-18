@@ -17,8 +17,7 @@ test bool testShouldParseEntityRelations()
    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
        relation(\one(), \one(), "Language", "userLanguage", {}),
        relation(\one(), many(), "User", "userFriends", {add(), \set(), read(), clear()}),
-       annotated([
-            annotation("doc", [annotationVal("This is a relation")])
-       ], relation(\one(), \one(), "Language", "userLanguage2", {}))
-   ]));
+       relation(\one(), \one(), "Language", "userLanguage2", {})
+   ])) &&
+   parseModule(code).artifact.declarations[2]@annotations == [annotation("doc", [annotationVal("This is a relation")])];
 }

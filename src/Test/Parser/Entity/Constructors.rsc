@@ -29,8 +29,8 @@ test bool shouldParseConstructWithOneAnnotatedParam()
           '";
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([annotated([annotation("anno", [])], param(integer(), "param"))], [])
-    ]));
+        constructor([param(integer(), "param")], [])
+    ])) && parseModule(code).artifact.declarations[0].params[0]@annotations==[annotation("anno", [])];
 }
 
 test bool shouldParseConstructWithOneAnnotatedParamAndOneSimple()
@@ -44,8 +44,8 @@ test bool shouldParseConstructWithOneAnnotatedParamAndOneSimple()
           '";
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([annotated([annotation("anno", [])], param(integer(), "param")), param(integer(), "param2")], [])
-    ]));
+        constructor([param(integer(), "param"), param(integer(), "param2")], [])
+    ])) && parseModule(code).artifact.declarations[0].params[0]@annotations==[annotation("anno", [])];
 }
 
 test bool shouldParseAnnotatedConstructWithOneParam()
@@ -60,8 +60,8 @@ test bool shouldParseAnnotatedConstructWithOneParam()
           '";
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        annotated([annotation("doc", [annotationVal("This is a doc")])], constructor([param(integer(), "param")], []))
-    ]));
+        constructor([param(integer(), "param")], [])
+    ])) && parseModule(code).artifact.declarations[0]@annotations==[annotation("doc", [annotationVal("This is a doc")])];
 }
 
 test bool shouldFailWhenInvalidConstructorNameIsUsed()

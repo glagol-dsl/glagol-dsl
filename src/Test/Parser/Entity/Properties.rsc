@@ -34,8 +34,9 @@ test bool testShouldParseEntityWithValuesAndAnnotations()
                '    int id with {get};
                '}";
 
-    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        annotated([
+    return 
+    	parseModule(code) == \module(namespace("Example"), [], entity("User", [property(integer(), "id", {read()})])) &&
+    	parseModule(code).artifact.declarations[0]@annotations == [
             annotation("field", [
                 annotationMap((
                     "key": annotationValPrimary(), 
@@ -45,6 +46,5 @@ test bool testShouldParseEntityWithValuesAndAnnotations()
                     "column": annotationVal("id")
                 ))
             ])
-        ], property(integer(), "id", {read()}))
-    ]));
+        ];
 }

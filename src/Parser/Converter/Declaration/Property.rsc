@@ -20,6 +20,8 @@ public Declaration convertProperty((Property) `<Type prop><MemberName name><Assi
     = property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop)));
     
 public Declaration convertDeclaration((Declaration) `<Annotation+ annotations><Property prop>`, _, _) 
-    = annotated([convertAnnotation(annotation) | annotation <- annotations], convertProperty(prop));
+    = convertProperty(prop)[
+    	@annotations = convertAnnotations(annotations)
+    ];
     
 public Declaration convertDeclaration((Declaration) `<Property prop>`, _, _) = convertProperty(prop);

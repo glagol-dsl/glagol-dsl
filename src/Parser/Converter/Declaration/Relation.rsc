@@ -7,8 +7,10 @@ import Parser::Converter::RelationDir;
 import Parser::Converter::AccessProperty;
 
 public Declaration convertDeclaration((Declaration) `<Annotation+ annotations><Relation relation>`, _, _) 
-    = annotated([convertAnnotation(annotation) | annotation <- annotations], convertRelation(relation));
-    
+    = convertRelation(relation)[
+    	@annotations = convertAnnotations(annotations)
+    ];
+
 public Declaration convertDeclaration((Declaration) `<Relation relation>`, _, _) = convertRelation(relation);
 
 public Declaration convertRelation((Relation) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as><AccessProperties accessProperties>;`) 

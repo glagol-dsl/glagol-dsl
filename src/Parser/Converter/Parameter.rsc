@@ -9,7 +9,9 @@ import Parser::Converter::Annotation;
 
 public Declaration convertParameter((AbstractParameter) `<Parameter p>`) = convertParameter(p);
 public Declaration convertParameter((AbstractParameter) `<Annotation+ annotations><Parameter p>`) 
-    = annotated([convertAnnotation(annotation) | annotation <- annotations], convertParameter(p));
+    = convertParameter(p)[
+    	@annotations = convertAnnotations(annotations)
+    ];
 
 public Declaration convertParameter((Parameter) `<Type paramType> <MemberName name>`) = param(convertType(paramType), "<name>");
 

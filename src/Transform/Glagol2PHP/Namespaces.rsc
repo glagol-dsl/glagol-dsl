@@ -17,4 +17,3 @@ public PhpStmt toPhpNamespace(Declaration namespace, list[Declaration] imports, 
 
 public map[str, PhpScript] toPHPScript(env: <Framework f, orm: doctrine()>, \module(Declaration namespace, imports, artifact))
     = (makeFilename(namespace, artifact): phpScript([toPhpNamespace(namespace, imports, artifact, env)]));
-    

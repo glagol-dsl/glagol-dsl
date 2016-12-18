@@ -13,9 +13,8 @@ test bool shouldTransformToEntityPhpClassDefStmt() =
 		{phpAnnotation("ORM\\Entity")};
 
 test bool shouldTransformAnnotatedEntityToEntityPhpClassDefStmt() = 
-	toPhpClassDef(annotated([], entity("User", [])), <anyFramework(), doctrine()>) ==
+	toPhpClassDef(entity("User", [])[@annotations=[]], <anyFramework(), doctrine()>) ==
 	phpClassDef(phpClass("User", {}, phpNoName(), [], [])) &&
-	toPhpClassDef(annotated([
-		annotation("doc", [annotationVal("This is a doc")])
-	], entity("User", [])), <anyFramework(), doctrine()>).classDef@phpAnnotations ==
+	toPhpClassDef(entity("User", [])[@annotations=[annotation("doc", [annotationVal("This is a doc")])]], 
+		<anyFramework(), doctrine()>).classDef@phpAnnotations ==
 		{phpAnnotation("ORM\\Entity"), phpAnnotation("doc", phpAnnotationVal("This is a doc"))};

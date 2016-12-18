@@ -44,4 +44,6 @@ public Declaration convertConstructor(
 
 public Declaration convertDeclaration((Declaration) `<Constructor construct>`, str artifactName, _) = convertConstructor(construct, artifactName);
 public Declaration convertDeclaration((Declaration) `<Annotation+ annotations><Constructor construct>`, str artifactName, _) 
-    = annotated([convertAnnotation(annotation) | annotation <- annotations], convertConstructor(construct, artifactName));
+    = convertConstructor(construct, artifactName)[
+    	@annotations = convertAnnotations(annotations)
+    ];
