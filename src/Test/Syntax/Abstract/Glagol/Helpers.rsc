@@ -4,12 +4,12 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 
 test bool testIsProperty() = 
-    isProperty(property(integer(), "test", {}, intLiteral(4))) &&
+    isProperty(property(integer(), "test", {}, integer(4))) &&
     isProperty(property(integer(), "test", {})) &&
     !isProperty(integer());
 
 test bool testIsMethod() = 
-    isMethod(method(\public(), voidValue(), "test", [], [], boolLiteral(true))) &&
+    isMethod(method(\public(), voidValue(), "test", [], [], boolean(true))) &&
     isMethod(method(\public(), voidValue(), "test", [], [])) &&
     !isMethod(property(integer(), "test", {}));
 
@@ -19,7 +19,7 @@ test bool testIsRelation() =
 
 test bool testIsConstructor() = 
     isConstructor(constructor([], [])) && 
-    isConstructor(constructor([], [], boolLiteral(true))) && 
+    isConstructor(constructor([], [], boolean(true))) && 
     !isConstructor(property(integer(), "test", {}));
 
 test bool testIsEntity() =

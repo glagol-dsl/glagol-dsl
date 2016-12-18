@@ -5,7 +5,7 @@ import Syntax::Abstract::PHP;
 import Transform::Glagol2PHP::Statements;
 
 test bool shouldTransformToIfWithoutElse() = 
-    toPhpStmt(ifThen(greaterThan(intLiteral(21), variable("input")), expression(invoke("myFunc", [
+    toPhpStmt(ifThen(greaterThan(integer(21), variable("input")), expression(invoke("myFunc", [
         variable("input")
     ])))) ==
     phpIf(
@@ -18,13 +18,13 @@ test bool shouldTransformToIfWithoutElse() =
     );
 
 test bool shouldTransformToAnExpression() = 
-    toPhpStmt(expression(greaterThanOrEq(floatLiteral(1.32), variable("input")))) ==
+    toPhpStmt(expression(greaterThanOrEq(float(1.32), variable("input")))) ==
     phpExprstmt(phpBinaryOperation(phpScalar(phpFloat(1.32)), phpVar(phpName(phpName("input"))), phpGeq()));
     
 test bool shouldTransformToABlock() =
     toPhpStmt(block([
-        expression(greaterThanOrEq(variable("input"), strLiteral("blah"))),
-        expression(equals(floatLiteral(1.32), variable("input")))
+        expression(greaterThanOrEq(variable("input"), string("blah"))),
+        expression(equals(float(1.32), variable("input")))
     ])) ==
     phpBlock([
         phpExprstmt(phpBinaryOperation(phpVar(phpName(phpName("input"))), phpScalar(phpString("blah")), phpGeq())),
@@ -32,7 +32,7 @@ test bool shouldTransformToABlock() =
     ]);
 
 test bool shouldTransformToIfThenElse() =
-    toPhpStmt(ifThenElse(equals(strLiteral("SOME_CONST"), variable("input")), expression(invoke("someFunc", [])), expression(invoke("someOtherFunc", [])))) ==
+    toPhpStmt(ifThenElse(equals(string("SOME_CONST"), variable("input")), expression(invoke("someFunc", [])), expression(invoke("someOtherFunc", [])))) ==
     phpIf(
         phpBinaryOperation(phpScalar(phpString("SOME_CONST")), phpVar(phpName(phpName("input"))), phpIdentical()),
         [
@@ -43,23 +43,23 @@ test bool shouldTransformToIfThenElse() =
     );
 
 test bool shouldTransformToAssignUsingDefaultOperator() =
-    toPhpStmt(assign(variable("trackID"), defaultAssign(), expression(intLiteral(89)))) == 
+    toPhpStmt(assign(variable("trackID"), defaultAssign(), expression(integer(89)))) == 
     phpExprstmt(phpAssign(phpVar(phpName(phpName("trackID"))), phpScalar(phpInteger(89))));
 
 test bool shouldTransformToAssignUsingDivisionOperator() =
-    toPhpStmt(assign(variable("trackID"), divisionAssign(), expression(intLiteral(89)))) == 
+    toPhpStmt(assign(variable("trackID"), divisionAssign(), expression(integer(89)))) == 
     phpExprstmt(phpAssignWOp(phpVar(phpName(phpName("trackID"))), phpScalar(phpInteger(89)), phpDiv()));
 
 test bool shouldTransformToAssignUsingProductOperator() =
-    toPhpStmt(assign(variable("trackID"), productAssign(), expression(intLiteral(89)))) == 
+    toPhpStmt(assign(variable("trackID"), productAssign(), expression(integer(89)))) == 
     phpExprstmt(phpAssignWOp(phpVar(phpName(phpName("trackID"))), phpScalar(phpInteger(89)), phpMul()));
     
 test bool shouldTransformToAssignUsingSubOperator() =
-    toPhpStmt(assign(variable("trackID"), subtractionAssign(), expression(intLiteral(89)))) == 
+    toPhpStmt(assign(variable("trackID"), subtractionAssign(), expression(integer(89)))) == 
     phpExprstmt(phpAssignWOp(phpVar(phpName(phpName("trackID"))), phpScalar(phpInteger(89)), phpMinus()));
     
 test bool shouldTransformToAssignUsingAddOperator() =
-    toPhpStmt(assign(variable("trackID"), additionAssign(), expression(intLiteral(89)))) == 
+    toPhpStmt(assign(variable("trackID"), additionAssign(), expression(integer(89)))) == 
     phpExprstmt(phpAssignWOp(phpVar(phpName(phpName("trackID"))), phpScalar(phpInteger(89)), phpPlus()));
 
 test bool shouldTransformToReturnStmt() =
@@ -73,11 +73,11 @@ test bool shouldTransformToNulledDeclaration() =
     phpExprstmt(phpAssign(phpVar(phpName(phpName("var1"))), phpScalar(phpNull())));
     
 test bool shouldTransformToDeclarationWithDefaultValue() =
-    toPhpStmt(declare(integer(), variable("var1"), expression(intLiteral(23)))) ==
+    toPhpStmt(declare(integer(), variable("var1"), expression(integer(23)))) ==
     phpExprstmt(phpAssign(phpVar(phpName(phpName("var1"))), phpScalar(phpInteger(23))));
     
 test bool shouldTransformToDeclarationWithAssignAsDefaultValue() =
-    toPhpStmt(declare(integer(), variable("var1"), assign(variable("var2"), defaultAssign(), expression(intLiteral(44))))) ==
+    toPhpStmt(declare(integer(), variable("var1"), assign(variable("var2"), defaultAssign(), expression(integer(44))))) ==
     phpExprstmt(phpAssign(phpVar(phpName(phpName("var1"))), phpAssign(phpVar(phpName(phpName("var2"))), phpScalar(phpInteger(44)))));
 
 test bool shouldTransformToForeach() = 
@@ -90,7 +90,7 @@ test bool shouldTransformToForeach() =
     );
 
 test bool shouldTransformToForeachWithConditions() = 
-    toPhpStmt(foreach(variable("categories"), variable("category"), expression(invoke("func", [])), [boolLiteral(true)])) ==
+    toPhpStmt(foreach(variable("categories"), variable("category"), expression(invoke("func", [])), [boolean(true)])) ==
     phpForeach(
         phpVar(phpName(phpName("categories"))), 
         phpNoExpr(), false, phpVar(phpName(phpName("category"))), [
@@ -101,7 +101,7 @@ test bool shouldTransformToForeachWithConditions() =
     );
 
 test bool shouldTransformToForeachWithConditions2() = 
-    toPhpStmt(foreach(variable("categories"), variable("category"), expression(invoke("func", [])), [boolLiteral(true), boolLiteral(true)])) ==
+    toPhpStmt(foreach(variable("categories"), variable("category"), expression(invoke("func", [])), [boolean(true), boolean(true)])) ==
     phpForeach(
         phpVar(phpName(phpName("categories"))), 
         phpNoExpr(), false, phpVar(phpName(phpName("category"))), [
@@ -112,7 +112,7 @@ test bool shouldTransformToForeachWithConditions2() =
     );
 
 test bool shouldTransformToForeachWithConditions3() = 
-    toPhpStmt(foreach(variable("categories"), variable("category"), expression(invoke("func", [])), [boolLiteral(true), boolLiteral(true), boolLiteral(true)])) ==
+    toPhpStmt(foreach(variable("categories"), variable("category"), expression(invoke("func", [])), [boolean(true), boolean(true), boolean(true)])) ==
     phpForeach(
         phpVar(phpName(phpName("categories"))), 
         phpNoExpr(), false, phpVar(phpName(phpName("category"))), [

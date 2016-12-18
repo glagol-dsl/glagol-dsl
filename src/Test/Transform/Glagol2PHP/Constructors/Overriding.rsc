@@ -9,7 +9,7 @@ test bool shouldAddOverriderWithRulesWhenTransformingOverridedConstructors() =
     toPhpClassDef(entity("User", [
         constructor([param(integer(), "a")], []),
         constructor([param(string(), "b")], []),
-        constructor([param(float(), "c")], [], equals(variable("c"), intLiteral(7)))
+        constructor([param(float(), "c")], [], equals(variable("c"), integer(7)))
     ]), <zend(), doctrine()>) == 
     phpClassDef(phpClass(
         "User", {}, phpNoName(), [], [
@@ -44,9 +44,9 @@ test bool shouldAddOverriderWithRulesWhenTransformingOverridedConstructors() =
 
 test bool shouldAddOverriderWithWhenRulesWhenTransformingOverridedConstructors() = 
     toPhpClassDef(entity("User", [
-        constructor([param(integer(), "a")], [], equals(variable("a"), intLiteral(7))),
+        constructor([param(integer(), "a")], [], equals(variable("a"), integer(7))),
         constructor([param(integer(), "b")], []),
-        constructor([param(integer(), "c")], [], greaterThan(variable("c"), intLiteral(13)))
+        constructor([param(integer(), "c")], [], greaterThan(variable("c"), integer(13)))
     ]), <zend(), doctrine()>) == 
     phpClassDef(phpClass(
         "User", {}, phpNoName(), [], [

@@ -15,10 +15,10 @@ test bool shouldParseMethodWithoutModifier()
       \module(namespace("Example"), [],
         entity("User", [ 
             method(\public(), integer(), "example", [
-                    param(integer(), "blabla", intLiteral(5)),
-                    param(typedList(string()), "names", \list([strLiteral("a"), strLiteral("b"), strLiteral("c")]))
+                    param(integer(), "blabla", integer(5)),
+                    param(typedList(string()), "names", \list([string("a"), string("b"), string("c")]))
                 ], [
-                    \return(product(\bracket(addition(intLiteral(23), intLiteral(5))), intLiteral(8)))
+                    \return(product(\bracket(addition(integer(23), integer(5))), integer(8)))
                 ]
             )
           ]
@@ -42,14 +42,14 @@ test bool shouldParseMethodWithModifierAndWhenExpression()
             method(\private(), integer(), "example", [
                     param(integer(), "argument")
                 ], [
-                    \return(product(\bracket(addition(intLiteral(23), intLiteral(5))), intLiteral(8)))
-                ], greaterThan(variable("argument"), intLiteral(5))
+                    \return(product(\bracket(addition(integer(23), integer(5))), integer(8)))
+                ], greaterThan(variable("argument"), integer(5))
             ),
             method(\private(), integer(), "example", [
                     param(integer(), "argument")
                 ], [
-                    \return(product(\bracket(addition(intLiteral(23), intLiteral(5))), intLiteral(8)))
-                ], greaterThan(variable("argument"), intLiteral(5))
+                    \return(product(\bracket(addition(integer(23), integer(5))), integer(8)))
+                ], greaterThan(variable("argument"), integer(5))
             )
           ]
         )
@@ -71,10 +71,10 @@ test bool shouldParseMethodWithModifierBodyAndWhen()
       \module(namespace("Example"), [],
         entity("User", [ 
             method(\private(), voidValue(), "processEntry", [
-                    param(integer(), "limit", intLiteral(15))
+                    param(integer(), "limit", integer(15))
                 ], [
-                    \return(addition(intLiteral(1), intLiteral(5)))
-                ], equals(variable("limit"), intLiteral(15))
+                    \return(addition(integer(1), integer(5)))
+                ], equals(variable("limit"), integer(15))
             )
           ]
         )

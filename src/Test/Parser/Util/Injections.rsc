@@ -77,7 +77,7 @@ test bool canUseRepositoryAssocArtifactInExpression()
         \module(namespace("Test"), [], util("UserCreator", [
             constructor([], [
                 expression(get(repositoryType("User"))),
-                expression(invoke(get(repositoryType("User")), "findOneById", [intLiteral(1)]))
+                expression(invoke(get(repositoryType("User")), "findOneById", [integer(1)]))
             ])
         ]));
 }

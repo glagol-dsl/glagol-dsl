@@ -17,9 +17,9 @@ test bool testDeclarationsWithPrimitiveTypes() {
         
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [
-            declare(float(), variable("myVariable"), expression(floatLiteral(5.4))),
-            declare(integer(), variable("yourVariable"), expression(intLiteral(23))),
-            declare(string(), variable("myString"), expression(strLiteral("hello world"))),
+            declare(float(), variable("myVariable"), expression(float(5.4))),
+            declare(integer(), variable("yourVariable"), expression(integer(23))),
+            declare(string(), variable("myString"), expression(string("hello world"))),
             declare(boolean(), variable("withExpr"), expression(greaterThan(variable("myVariable"), variable("yourVariable"))))
         ])
     ]));
@@ -41,7 +41,7 @@ test bool testDeclarationsWithoutDefaultValue() {
         constructor([], [
             declare(float(), variable("myVariable")),
             declare(integer(), variable("yourVariable")),
-            assign(variable("yourVariable"), defaultAssign(), expression(addition(variable("yourVariable"), intLiteral(5))))
+            assign(variable("yourVariable"), defaultAssign(), expression(addition(variable("yourVariable"), integer(5))))
         ])
     ]));
 }
@@ -73,7 +73,7 @@ test bool testDeclarationsWithNestedAssignment() {
         
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a")], [
-            declare(integer(), variable("myNumber"), assign(variable("a"), defaultAssign(), expression(intLiteral(5))))
+            declare(integer(), variable("myNumber"), assign(variable("a"), defaultAssign(), expression(integer(5))))
         ])
     ]));
 }
@@ -89,7 +89,7 @@ test bool testIfStatement() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a")], [
-            ifThen(equals(variable("a"), intLiteral(5)), \return(intLiteral(5)))
+            ifThen(equals(variable("a"), integer(5)), \return(integer(5)))
         ])
     ]));
 }
@@ -105,7 +105,7 @@ test bool testIfStatementWithBlock() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a")], [
-            ifThen(equals(variable("a"), intLiteral(5)), block([\return(intLiteral(5))]))
+            ifThen(equals(variable("a"), integer(5)), block([\return(integer(5))]))
         ])
     ]));
 }
@@ -122,7 +122,7 @@ test bool testIfElseStatement() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a")], [
-            ifThenElse(equals(variable("a"), intLiteral(5)), \return(intLiteral(5)), \return(intLiteral(6)))
+            ifThenElse(equals(variable("a"), integer(5)), \return(integer(5)), \return(integer(6)))
         ])
     ]));
 }
@@ -139,8 +139,8 @@ test bool testIfElseIfStatement() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a")], [
-            ifThenElse(equals(variable("a"), intLiteral(5)), \return(intLiteral(5)), 
-                ifThen(equals(variable("a"), intLiteral(6)), \return(intLiteral(6)))    
+            ifThenElse(equals(variable("a"), integer(5)), \return(integer(5)), 
+                ifThen(equals(variable("a"), integer(6)), \return(integer(6)))    
             )
         ])
     ]));
@@ -159,8 +159,8 @@ test bool testIfElseIfEndingWithElseStatement() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a")], [
-            ifThenElse(equals(variable("a"), intLiteral(5)), \return(intLiteral(5)), 
-                ifThenElse(equals(variable("a"), intLiteral(6)), \return(intLiteral(6)), \return(intLiteral(0)))
+            ifThenElse(equals(variable("a"), integer(5)), \return(integer(5)), 
+                ifThenElse(equals(variable("a"), integer(6)), \return(integer(6)), \return(integer(0)))
             )
         ])
     ]));
@@ -193,7 +193,7 @@ test bool testForeachStatementWithEmptyStmtAndDirectList() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [
-            foreach(\list([intLiteral(1), intLiteral(2), intLiteral(3), intLiteral(4), intLiteral(5)]), 
+            foreach(\list([integer(1), integer(2), integer(3), integer(4), integer(5)]), 
                 variable("b"), emptyStmt())
         ])
     ]));
@@ -212,8 +212,8 @@ test bool testForeachStatementWithIncrementStmtAndDirectList() {
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [
             declare(integer(), variable("i")),
-            foreach(\list([intLiteral(1), intLiteral(2), intLiteral(3), intLiteral(4), intLiteral(5)]), 
-                variable("b"), assign(variable("i"), additionAssign(), expression(intLiteral(1))))
+            foreach(\list([integer(1), integer(2), integer(3), integer(4), integer(5)]), 
+                variable("b"), assign(variable("i"), additionAssign(), expression(integer(1))))
         ])
     ]));
 }
@@ -232,7 +232,7 @@ test bool testForeachStatementWithBreak() {
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(typedList(integer()), "a")], [
             foreach(variable("a"), variable("b"), block([
-                ifThen(greaterThan(variable("a"), intLiteral(2)), \break())
+                ifThen(greaterThan(variable("a"), integer(2)), \break())
             ]))
         ])
     ]));
@@ -254,7 +254,7 @@ test bool testForeachStatementWithLevelledBreak() {
         constructor([param(typedList(integer()), "a")], [
             foreach(variable("a"), variable("b"), 
                 foreach(variable("c"), variable("d"), 
-                    ifThen(greaterThan(variable("c"), intLiteral(2)), \break(2))
+                    ifThen(greaterThan(variable("c"), integer(2)), \break(2))
                 )
             )
         ])

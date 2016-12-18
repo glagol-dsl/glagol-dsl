@@ -5,10 +5,10 @@ import Syntax::Abstract::PHP;
 import Utils::String;
 
 // literals
-public PhpExpr toPhpExpr(intLiteral(int i)) = phpScalar(phpInteger(i));
-public PhpExpr toPhpExpr(floatLiteral(real r)) = phpScalar(phpFloat(r));
-public PhpExpr toPhpExpr(strLiteral(str s)) = phpScalar(phpString(s));
-public PhpExpr toPhpExpr(boolLiteral(bool b)) = phpScalar(phpBoolean(b));
+public PhpExpr toPhpExpr(integer(int i)) = phpScalar(phpInteger(i));
+public PhpExpr toPhpExpr(float(real r)) = phpScalar(phpFloat(r));
+public PhpExpr toPhpExpr(string(str s)) = phpScalar(phpString(s));
+public PhpExpr toPhpExpr(boolean(bool b)) = phpScalar(phpBoolean(b));
 
 // arrays
 public PhpExpr toPhpExpr(\list(list[Expression] items)) 
@@ -18,7 +18,8 @@ public PhpExpr toPhpExpr(arrayAccess(Expression variable, Expression arrayIndexK
 
 public PhpExpr toPhpExpr(\map(map[Expression key, Expression \value] m)) = 
     phpStaticCall(phpName(phpName("MapFactory")), phpName(phpName("createFromPairs")), [
-        phpActualParameter(phpNew(phpName(phpName("Pair")), [phpActualParameter(toPhpExpr(k), false), phpActualParameter(toPhpExpr(m[k]), false)]), false) | k <- m
+        phpActualParameter(phpNew(phpName(phpName("Pair")), [phpActualParameter(toPhpExpr(k), false), 
+        phpActualParameter(toPhpExpr(m[k]), false)]), false) | k <- m
     ]);
 
 public PhpExpr toPhpExpr(get(artifactType(str name)))

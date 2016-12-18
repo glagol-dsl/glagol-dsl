@@ -18,7 +18,7 @@ test bool shouldParseMapDeclaration()
         method(\public(), typedList(artifactType("User")), "findById", [
             param(integer(), "id")
         ], [
-            declare(typedMap(string(), integer()), variable("query"), expression(\map((strLiteral("id"): variable("id"))))),
+            declare(typedMap(string(), integer()), variable("query"), expression(\map((string("id"): variable("id"))))),
             \return(invoke("findOneBy", [variable("query")]))
         ])
     ]));

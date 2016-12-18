@@ -30,7 +30,7 @@ test bool shouldParseRepositoryWithMethodAndAMap()
         method(\public(), typedList(artifactType("User")), "findById", [
             param(integer(), "id")
         ], [\return(
-            invoke("findOneBy", [\map((strLiteral("id"): variable("id")))])
+            invoke("findOneBy", [\map((string("id"): variable("id")))])
         )])
     ]));
 }

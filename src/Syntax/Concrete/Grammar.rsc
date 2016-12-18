@@ -106,8 +106,8 @@ syntax AssignDefaultValue
 
 syntax DefaultValue
     = stringLiteral : StringQuoted string
-    | intLiteral : DecimalIntegerLiteral number
-    | floatLiteral : DeciFloatNumeral number
+    | integer : DecimalIntegerLiteral number
+    | float : DeciFloatNumeral number
     | booleanLiteral : Boolean boolean
     | \list : "[" {DefaultValue ","}* items "]" list
     | getInstance: "get" InstanceType
@@ -148,8 +148,8 @@ syntax Expression
     | negative: "-" Expression argument
     | positive: "+" Expression argument
     | stringLiteral: StringQuoted string
-    | intLiteral: DecimalIntegerLiteral number
-    | floatLiteral: DeciFloatNumeral number
+    | integer: DecimalIntegerLiteral number
+    | float: DeciFloatNumeral number
     | booleanLiteral: Boolean boolean
     | variable: MemberName varName
     | newInstance: "new" ArtifactName

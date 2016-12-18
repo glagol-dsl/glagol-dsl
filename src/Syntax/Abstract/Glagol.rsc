@@ -42,10 +42,10 @@ data Annotation
     ;
 
 data Expression
-    = intLiteral(int intValue)
-    | floatLiteral(real floatValue)
-    | strLiteral(str strValue)
-    | boolLiteral(bool boolValue)
+    = integer(int intValue)
+    | float(real floatValue)
+    | string(str strValue)
+    | boolean(bool boolValue)
     | \list(list[Expression] values)
     | arrayAccess(Expression variable, Expression arrayIndexKey)
     | \map(map[Expression key, Expression \value])

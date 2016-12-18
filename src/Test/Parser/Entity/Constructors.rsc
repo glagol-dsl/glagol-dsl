@@ -93,8 +93,8 @@ test bool shouldParseConstructWithTwoParamsAndDefaultValue()
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([
             param(integer(), "param"),
-            param(float(), "param2", floatLiteral(0.55)),
-            param(boolean(), "param3", boolLiteral(true))
+            param(float(), "param2", float(0.55)),
+            param(boolean(), "param3", boolean(true))
         ], [])
     ]));
 }
@@ -114,8 +114,8 @@ test bool shouldParseConstructWithBody()
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([
             param(integer(), "param"),
-            param(float(), "param2", floatLiteral(0.55)),
-            param(boolean(), "param3", boolLiteral(true))
+            param(float(), "param2", float(0.55)),
+            param(boolean(), "param3", boolean(true))
         ], [
             expression(addition(variable("param"), variable("param2"))),
             assign(variable("param3"), defaultAssign(), expression(greaterThan(variable("param"), variable("param2"))))
@@ -164,8 +164,8 @@ test bool shouldParseConstructWithoutBodyWithParams()
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([
             param(integer(), "param"),
-            param(float(), "param2", floatLiteral(0.55)),
-            param(boolean(), "param3", boolLiteral(true))
+            param(float(), "param2", float(0.55)),
+            param(boolean(), "param3", boolean(true))
         ], [])
     ]));
 }
@@ -184,8 +184,8 @@ test bool shouldParseConstructWithWhen()
         constructor([
                 param(integer(), "param")
             ], [], and(
-                greaterThan(variable("param"), intLiteral(3)),
-                lessThanOrEq(variable("param"), intLiteral(11))
+                greaterThan(variable("param"), integer(3)),
+                lessThanOrEq(variable("param"), integer(11))
             )
         )
     ]));

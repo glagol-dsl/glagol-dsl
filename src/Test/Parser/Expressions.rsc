@@ -18,7 +18,7 @@ test bool testShouldParseVariableInBrackets()
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "variableInBrackets", [param(integer(), "theVariable")], [
             expression(\bracket(\bracket(variable("theVariable")))),
-            expression(addition(\bracket(variable("theVariable")), intLiteral(1))),
+            expression(addition(\bracket(variable("theVariable")), integer(1))),
             expression(variable("anotherVar"))
         ])
     ]));
@@ -38,10 +38,10 @@ test bool testShouldParseList()
                
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "arrayExpression", [], [
-            expression(\list([strLiteral("First thing"), strLiteral("Second thing")])),
-            expression(\list([intLiteral(1), intLiteral(2), intLiteral(3), intLiteral(4), intLiteral(5)])),
-            expression(\list([floatLiteral(1.34), floatLiteral(2.35), floatLiteral(23.56)])),
-            expression(\list([\list([intLiteral(1), intLiteral(2), intLiteral(3)]), \list([intLiteral(3), intLiteral(4), intLiteral(5)])]))
+            expression(\list([string("First thing"), string("Second thing")])),
+            expression(\list([integer(1), integer(2), integer(3), integer(4), integer(5)])),
+            expression(\list([float(1.34), float(2.35), float(23.56)])),
+            expression(\list([\list([integer(1), integer(2), integer(3)]), \list([integer(3), integer(4), integer(5)])]))
         ])
     ]));
 }
@@ -57,7 +57,7 @@ test bool testShouldParseExpressionsWithNegativeLiterals()
                
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "nestedNegative", [], [
-            expression(negative(\bracket(negative(\bracket(negative(\bracket(intLiteral(23))))))))
+            expression(negative(\bracket(negative(\bracket(negative(\bracket(integer(23))))))))
         ])
     ]));
 }
@@ -73,7 +73,7 @@ test bool testShouldParseExpressionsWithPositiveLiterals()
                
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "nestedNegative", [], [
-            expression(positive(\bracket(positive(\bracket(positive(\bracket(intLiteral(23))))))))
+            expression(positive(\bracket(positive(\bracket(positive(\bracket(integer(23))))))))
         ])
     ]));
 }
@@ -99,24 +99,24 @@ test bool testShouldParseMathExpressions()
             expression(subtraction(
                   product(
                     product(
-                      intLiteral(3),
-                      intLiteral(4)),
+                      integer(3),
+                      integer(4)),
                     \bracket(addition(
-                      intLiteral(23),
-                      intLiteral(3)))
+                      integer(23),
+                      integer(3)))
                   ),
                   division(
-                    intLiteral(4),
-                    intLiteral(2)
+                    integer(4),
+                    integer(2)
                   )
                  )),
-            expression(lessThan(intLiteral(3), intLiteral(5))),
-            expression(remainder(intLiteral(3), intLiteral(5))),
-            expression(greaterThanOrEq(intLiteral(1), intLiteral(1))),
-            expression(equals(intLiteral(2), intLiteral(2))),
-            expression(lessThanOrEq(intLiteral(9), intLiteral(19))),
-            expression(or(or(and(intLiteral(1), boolLiteral(true)), boolLiteral(false)), boolLiteral(true))),
-            expression(ifThenElse(greaterThan(variable("argument"), intLiteral(0)), strLiteral("argument is positive"), strLiteral("argument is negative")))
+            expression(lessThan(integer(3), integer(5))),
+            expression(remainder(integer(3), integer(5))),
+            expression(greaterThanOrEq(integer(1), integer(1))),
+            expression(equals(integer(2), integer(2))),
+            expression(lessThanOrEq(integer(9), integer(19))),
+            expression(or(or(and(integer(1), boolean(true)), boolean(false)), boolean(true))),
+            expression(ifThenElse(greaterThan(variable("argument"), integer(0)), string("argument is positive"), string("argument is negative")))
           ])
     ]));
 }
@@ -137,11 +137,11 @@ test bool shouldParseAllTypesOfLiterals()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "literals", [param(integer(), "var")], [
-            expression(strLiteral("simple string literal")),
-            expression(intLiteral(123)),
-            expression(floatLiteral(1.23)),
-            expression(boolLiteral(true)),
-            expression(boolLiteral(false)),
+            expression(string("simple string literal")),
+            expression(integer(123)),
+            expression(float(1.23)),
+            expression(boolean(true)),
+            expression(boolean(false)),
             expression(variable("var"))
           ])
     ]));
@@ -174,7 +174,7 @@ test bool testNewInstanceWithArg()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "newInstance", [], [
-            expression(new("DateTime", [strLiteral("now")]))
+            expression(new("DateTime", [string("now")]))
           ])
     ]));
 }
@@ -190,8 +190,8 @@ test bool testNewInstanceWithArgs()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "newInstance", [], [
-            expression(new("DateTime", [strLiteral("now"), new("Money", [
-                intLiteral(2300), strLiteral("USD")
+            expression(new("DateTime", [string("now"), new("Money", [
+                integer(2300), string("USD")
             ])]))
           ])
     ]));
@@ -232,7 +232,7 @@ test bool testMethodInvokeChainedToAVariable()
                 new("SomeEntity", [])
             )),
             expression(invoke(variable("eee"), "methodInvoke", [])),
-            expression(invoke(invoke(variable("eee"), "nested", [\list([strLiteral("string")])]), "methodInvoke", [])),
+            expression(invoke(invoke(variable("eee"), "nested", [\list([string("string")])]), "methodInvoke", [])),
             expression(invoke(fieldAccess(fieldAccess(variable("eee"), "blah"), "blah2"), "methodInvoke", [])),
             expression(invoke(new("MyClass", []), "methodInvoke", []))
           ])
@@ -284,8 +284,8 @@ test bool testFieldAccessWithAssign()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "methodInvoke", [], [
-            assign(fieldAccess(this(), "field"), defaultAssign(), expression(strLiteral("adsdsasad"))),
-            assign(fieldAccess(invoke(this(), "invoke", []), "field2"), additionAssign(), expression(intLiteral(33))),
+            assign(fieldAccess(this(), "field"), defaultAssign(), expression(string("adsdsasad"))),
+            assign(fieldAccess(invoke(this(), "invoke", []), "field2"), additionAssign(), expression(integer(33))),
             assign(fieldAccess(this(), "var"), defaultAssign(), expression(fieldAccess(variable("that"), "var2")))
           ])
     ]));
