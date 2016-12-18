@@ -172,14 +172,14 @@ public data PhpScript = phpScript(list[PhpStmt] body) | phpErrscript(str err);
 
 public data PhpAnnotation 
     = phpAnnotation(str key)
-    | phpAnnotation(str key, PhpAnnotation \map)
+    | phpAnnotation(str key, PhpAnnotation v)
     | phpAnnotationVal(map[str k, PhpAnnotation v])
     | phpAnnotationVal(str string)
     | phpAnnotationVal(int integer)
     | phpAnnotationVal(real float)
     | phpAnnotationVal(bool boolean)
     | phpAnnotationVal(list[PhpAnnotation] items)
-    | phpAnnotationVal(PhpAnnotation \map)
+    | phpAnnotationVal(PhpAnnotation v)
     ;
 
 public anno set[PhpAnnotation] PhpClassDef@phpAnnotations;
