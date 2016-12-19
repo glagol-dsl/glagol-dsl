@@ -16,3 +16,6 @@ public str toCode(phpScalar(phpInteger(int intVal))) = "<intVal>";
 public str toCode(phpScalar(phpString(str strVal))) = "\"<strVal>\"";
 public str toCode(phpScalar(phpBoolean(true))) = "true";
 public str toCode(phpScalar(phpBoolean(false))) = "false";
+
+// TODO test
+public str toCode(phpNoExpr()) = "";
