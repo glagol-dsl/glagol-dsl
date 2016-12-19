@@ -112,7 +112,8 @@ test bool shouldTransformSimpleAnnotatedWithValueEntityToPhpScriptUsingDoctrine(
                         )),
                         "scale": phpAnnotationVal(12.35)
                     ))),
-                  phpAnnotation("ORM\\Id")
+                  phpAnnotation("ORM\\Id"),
+                  phpAnnotation("var", phpAnnotationVal("integer"))
            };
 }
 test bool shouldTransformEntityWithRelationsToPhpScriptUsingDoctrine() {
