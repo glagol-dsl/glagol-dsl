@@ -10,9 +10,12 @@ public PhpClassItem toPhpClassItem(d: relation(l, r, str name, str as, valueProp
         phpAnnotation("ORM\\<toStrDir(l, r)>", phpAnnotationVal((
             "targetEntity": phpAnnotationVal("<name>")
         )))
-    } + toPhpAnnotations(d, env)];
+    } + toPhpAnnotations(d, env) + typeVarAnnotations(l, r, name)];
 
 private str toStrDir(\one(), \one()) = "OneToOne";
 private str toStrDir(\one(), many()) = "OneToMany";
 private str toStrDir(many(), \one()) = "ManyToOne";
 private str toStrDir(many(), many()) = "ManyToMany";
+
+private PhpAnnotation typeVarAnnotations(_, \one(), str name) = phpAnnotation("var", phpAnnotationVal(name));
+private PhpAnnotation typeVarAnnotations(_, many(), str name) = phpAnnotation("var", phpAnnotationVal("<name>[]"));

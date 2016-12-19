@@ -4,6 +4,7 @@ import Syntax::Abstract::PHP;
 import Compiler::PHP::NewLine;
 import Compiler::PHP::Modifiers;
 import Compiler::PHP::Properties;
+import Compiler::PHP::Methods;
 import Compiler::PHP::Annotations;
 import Compiler::PHP::Glue;
 import List;

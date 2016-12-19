@@ -17,7 +17,7 @@ public str toCode(m: phpMethod(
 	PhpOptionName rt), int i) = 
 	nl() + "<s(i)><toCode(modifiers)>function <byRef ? "&" : ""><name>(" + 
 		glue([toCode(p) | p <- params], ", ") +
-	")<returnType(rt)>\n{\n<toCode(body, i + 1)>}";
+	")<returnType(rt)>\n<s(i)>{\n<toCode(body, i + 1)><s(i)>}<nl()>";
 
 public str returnType(phpNoName()) = "";
 public str returnType(phpSomeName(phpName(str name))) = ": <name>";
