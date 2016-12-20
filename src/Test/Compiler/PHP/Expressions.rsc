@@ -22,6 +22,26 @@ test bool shouldCompileVarExpr() = toCode(phpVar(phpName(phpName("var"))), 0) ==
 test bool shouldCompileVarVarExpr() = toCode(phpVar(phpExpr(phpVar(phpName(phpName("var"))))), 0) == "$$var";
 test bool shouldCompileCastType() = toCode(phpCast(phpInt(), phpVar(phpName(phpName("var")))), 0) == "(int) $var";
 test bool shouldCompileClone() = toCode(phpClone(phpVar(phpName(phpName("var")))), 0) == "clone $var";
+test bool shouldCompileFetchConst() = toCode(phpFetchConst(phpName("BLAH")), 0) == "BLAH";
+test bool shouldCompileEmpty() = toCode(phpEmpty(phpVar(phpName(phpName("var")))), 0) == "empty($var)";
+test bool shouldCompileSuppress() = toCode(phpSuppress(phpEmpty(phpVar(phpName(phpName("var"))))), 0) == "@empty($var)";
+test bool shouldCompileEmpty() = toCode(phpEmpty(phpVar(phpName(phpName("var")))), 0) == "empty($var)";
+test bool shouldCompileEval() = toCode(phpEval(phpScalar(phpString("code"))), 0) == "eval(\"code\")";
+test bool shouldCompileExit() = toCode(phpExit(phpNoExpr()), 0) == "exit";
+test bool shouldCompileExitWithParam() = toCode(phpExit(phpSomeExpr(phpVar(phpName(phpName("var"))))), 0) == "exit($var)";
+
+test bool shouldCompileFuncCall() = toCode(phpCall(phpName(phpName("test")), []), 0) == "test()";
+
+test bool shouldCompileFuncCallWithParams() = toCode(phpCall(
+	phpName(phpName("test")), [phpActualParameter(phpScalar(phpInteger(3)), false)]), 0) == 
+	"test(3)";
+
+test bool shouldCompileMethodCall() = 
+	toCode(phpMethodCall(phpVar(phpName(phpName("this"))), phpName(phpName("test")), []), 0) == "$this-\>test()";
+	
+test bool shouldCompileMethodCallWithParams() = 
+	toCode(phpMethodCall(phpVar(phpName(phpName("this"))),
+		phpName(phpName("test")), [phpActualParameter(phpScalar(phpInteger(3)), false)]), 0) == "$this-\>test(3)";
 
 test bool shouldCompileToNewInstanceWithoutParameters() = 
 	toCode(phpNew(phpName(phpName("User")), []), 0) == "new User()";

@@ -36,7 +36,7 @@ public PhpClassItem createConstructor(list[Declaration] declarations, env)
     = phpMethod("__construct", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
         phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))
     ] + [phpExprstmt(createOverrideRule(d)) | d <- declarations], phpNoName())[
-    	@phpAnnotations=({} | it + toPhpAnnotations(d, env) | d <- declarations)
+    	@phpAnnotations={annotation | d <- declarations, annotation <- toPhpAnnotations(d, env)}
     ]
     when size(declarations) > 1;
 

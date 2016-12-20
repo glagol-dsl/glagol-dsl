@@ -46,6 +46,18 @@ public str toCode(phpUnaryOperation(PhpExpr operand, phpUnaryPlus()), int i) = "
 public str toCode(phpUnaryOperation(PhpExpr operand, phpUnaryMinus()), int i) = "-<toCode(operand, i)>";
 public str toCode(phpActualParameter(PhpExpr expr, bool byRef), int i) = "<ref(byRef)><toCode(expr, i)>";
 public str toCode(phpClone(PhpExpr expr), int i) = "clone <toCode(expr, i)>";
+public str toCode(phpFetchConst(phpName(str name)), int i) = "<name>";
+public str toCode(phpEmpty(PhpExpr expr), int i) = "empty(<toCode(expr, i)>)";
+public str toCode(phpSuppress(PhpExpr expr), int i) = "@<toCode(expr, i)>";
+public str toCode(phpEval(PhpExpr expr), int i) = "eval(<toCode(expr, i)>)";
+public str toCode(phpExit(phpNoExpr()), int i) = "exit";
+public str toCode(phpExit(phpSomeExpr(PhpExpr expr)), int i) = "exit(<toCode(expr, i)>)";
+
+public str toCode(phpMethodCall(PhpExpr target, PhpNameOrExpr methodName, list[PhpActualParameter] parameters), int i) =
+	"<toCode(target, i)>-\><toCode(methodName, i)>(<glue([toCode(p, i) | p <- parameters], ", ")>)";
+	
+public str toCode(phpCall(PhpNameOrExpr funName, list[PhpActualParameter] parameters), int i) = 
+	"<toCode(funName, i)>(<glue([toCode(p, i) | p <- parameters], ", ")>)";
 
 public str toCode(phpClosure(
 			list[PhpStmt] statements, 

@@ -87,7 +87,7 @@ test bool canCreateNewServiceAsAPropertyDefaultValue()
     str code
         = "namespace Test;
           'service UserCreator {
-          '    UserService userService = new UserService;
+          '    UserService userService = new UserService();
           '}";
     
     return parseModule(code) ==

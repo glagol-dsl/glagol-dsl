@@ -208,14 +208,12 @@ public Expression convertExpression((DefaultValue) `[<{DefaultValue ","}* items>
 public Expression convertExpression((DefaultValue) `get <InstanceType t>`)
     = get(convertInstanceType(t));
     
-public Expression convertExpression((DefaultValue) `new <ArtifactName name>`) = new("<name>", []);
 public Expression convertExpression((DefaultValue) `new <ArtifactName name>(<{Expression ","}* args>)`) 
     = new("<name>", [convertExpression(arg) | arg <- args]);
     
 public Type convertInstanceType((InstanceType) `<Type t>`) = convertType(t);
 public Type convertInstanceType((InstanceType) `selfie`) = selfie();
     
-public Expression convertExpression((Expression) `new <ArtifactName name>`) = new("<name>", []);
 public Expression convertExpression((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) 
     = new("<name>", [convertExpression(arg) | arg <- args]);
     
@@ -253,7 +251,6 @@ private tuple[Expression key, Expression \value] convertMapPair((MapPair) `<Expr
 private bool isValidForAccessChain((Expression) `<MemberName varName>`) = true;
 private bool isValidForAccessChain((Expression) `this`) = true;
 private bool isValidForAccessChain((Expression) `<MemberName method>(<{Expression ","}* args>)`) = true;
-private bool isValidForAccessChain((Expression) `new <ArtifactName name>`) = true;
 private bool isValidForAccessChain((Expression) `get <Type t>`) = true;
 private bool isValidForAccessChain((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) = true;
 private bool isValidForAccessChain((Expression) `<MemberName method>(<{Expression ","}* args>)`) = true;
@@ -391,7 +388,7 @@ public AccessProperty convertAccessProperty((AccessProperty) `clear`) = clear();
 public AccessProperty convertAccessProperty((AccessProperty) `reset`) = clear();
 
 
-public str convertStringQuoted((StringQuoted) `"<StringCharacter* string>"`) = "<string>";
+public str convertStringQuoted(string) = substring("<string>", 1, size("<string>") - 1);
 
 
 public Type convertType((Type) `int`) = integer();

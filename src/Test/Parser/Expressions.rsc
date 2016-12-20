@@ -152,7 +152,7 @@ test bool testNewInstance()
     str code = "namespace Example;
                'entity User {
                '    void newInstance() {
-               '        new DateTime;
+               '        new DateTime();
                '    }
                '}";
     
