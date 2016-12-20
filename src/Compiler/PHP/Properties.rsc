@@ -14,4 +14,4 @@ public str toCode(p: phpProperty(set[PhpModifier] modifiers, list[PhpProperty] p
 	when size(prop) == 1;
 
 public str toCode(phpProperty(str propertyName, phpNoExpr())) = "$<propertyName>";
-public str toCode(phpProperty(str propertyName, phpSomeExpr(PhpExpr expr))) = "$<propertyName> = <toCode(expr)>";
+public str toCode(phpProperty(str propertyName, phpSomeExpr(PhpExpr expr))) = "$<propertyName> = <toCode(expr, 0)>";

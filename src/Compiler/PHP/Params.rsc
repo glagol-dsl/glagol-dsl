@@ -2,6 +2,7 @@ module Compiler::PHP::Params
 
 import Syntax::Abstract::PHP;
 import Compiler::PHP::Expressions;
+import Compiler::PHP::ByRef;
 
 public str toCode(phpParam(
 		str paramName, 
@@ -9,12 +10,12 @@ public str toCode(phpParam(
 		PhpOptionName \type, 
 		bool byRef,
 		bool isVariadic)) =
-	"<paramType(\type)><byRef ? "&" : "">" + 
+	"<paramType(\type)><ref(byRef)>" + 
 	"<isVariadic ? "..." : "">" + 
 	"$<paramName><defaultVal(paramDefault)>";
 
 private str paramType(phpSomeName(phpName(str paramType))) = paramType + " ";
 private str paramType(phpNoName()) = "";
 
-private str defaultVal(phpSomeExpr(PhpExpr expr)) = " = <toCode(expr)>";
+private str defaultVal(phpSomeExpr(PhpExpr expr)) = " = <toCode(expr, 0)>";
 private str defaultVal(phpNoExpr()) = "";
