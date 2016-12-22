@@ -38,10 +38,13 @@ public PhpClassItem createMethod(list[Declaration] methods, env)
     = toPhpClassItem(methods[0], env)
     when size(methods) == 1;
 
-public PhpClassItem createMethod(list[Declaration] methods, env)
-    = phpMethod(methods[0].name, {toPhpModifier(methods[0].modifier)}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
-        phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))
-    ] + [phpExprstmt(createOverrideRule(m)) | m <- methods], toPhpReturnType(methods[0].returnType))[
+public PhpClassItem createMethod(list[Declaration] methods, env) = 
+    phpMethod(methods[0].name, {toPhpModifier(methods[0].modifier)}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], 
+        [phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))] + 
+        [phpExprstmt(createOverrideRule(m)) | m <- methods] +
+        [phpReturn(phpSomeExpr(phpMethodCall(phpVar(phpName(phpName("overrider"))), phpName(phpName("execute")), [
+          phpActualParameter(phpVar(phpName(phpName("args"))), false)
+        ])))], toPhpReturnType(methods[0].returnType))[
     	@phpAnnotations={annotation | m <- methods, annotation <- toPhpAnnotations(m, env)}
     ]
     when size(methods) > 1;

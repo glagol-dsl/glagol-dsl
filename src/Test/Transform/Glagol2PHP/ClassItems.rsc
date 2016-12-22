@@ -103,7 +103,10 @@ test bool shouldTransformOverridingConstructorsToPhpClassItems() =
                 phpName(phpName("Parameter\\Integer")),
                 []),
               false)
-          ]))
+          ])),
+      phpExprstmt(phpMethodCall(phpVar(phpName(phpName("overrider"))), phpName(phpName("execute")), [
+        phpActualParameter(phpVar(phpName(phpName("args"))), false)
+      ]))
     ],
     phpNoName())];
 
@@ -174,7 +177,10 @@ test bool shouldTransformMethodsWithOverridingToPhpClassItems() =
 		                phpName(phpName("Parameter\\Str")),
 		                []),
 		              false)
-		          ]))
+		          ])),
+	            phpReturn(phpSomeExpr(phpMethodCall(phpVar(phpName(phpName("overrider"))), phpName(phpName("execute")), [
+                  phpActualParameter(phpVar(phpName(phpName("args"))), false)
+                ])))
 		    ],
 		    phpNoName())
 	];
