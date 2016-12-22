@@ -13,7 +13,7 @@ public PhpExpr createOverrideRule(list[Declaration] params, list[Statement] body
     = phpMethodCall(
         phpVar(phpName(phpName("overrider"))), phpName(phpName("override")), [
             phpActualParameter(phpClosure([toPhpStmt(stmt) | stmt <- body], [toPhpParam(p) | p <- params], [], false, false), false)
-        ] + [phpActualParameter(createOverrideType(p), false) | p <- params]
+        ] + [phpActualParameter(createOverrideType(p.paramType), false) | p <- params]
     );
     
 public PhpExpr createOverrideRule(list[Declaration] params, list[Statement] body, Expression when)
@@ -32,19 +32,19 @@ public PhpExpr createOverrideRule(method(_, _, _, list[Declaration] params, list
 public PhpExpr createOverrideRule(method(_, _, _, list[Declaration] params, list[Statement] body, Expression when))
     = createOverrideRule(params, body, when);
     
-private PhpExpr createOverrideType(param(integer(), _)) = phpNew(phpName(phpName("Parameter\\Integer")), []);
-private PhpExpr createOverrideType(param(float(), _)) = phpNew(phpName(phpName("Parameter\\Real")), []);
-private PhpExpr createOverrideType(param(string(), _)) = phpNew(phpName(phpName("Parameter\\Str")), []);
-private PhpExpr createOverrideType(param(boolean(), _)) = phpNew(phpName(phpName("Parameter\\Boolean")), []);
-private PhpExpr createOverrideType(param(typedList(Type \type), _)) = phpNew(phpName(phpName("Parameter\\TypedList")), [
+private PhpExpr createOverrideType(integer()) = phpNew(phpName(phpName("Parameter\\Integer")), []);
+private PhpExpr createOverrideType(float()) = phpNew(phpName(phpName("Parameter\\Real")), []);
+private PhpExpr createOverrideType(string()) = phpNew(phpName(phpName("Parameter\\Str")), []);
+private PhpExpr createOverrideType(boolean()) = phpNew(phpName(phpName("Parameter\\Boolean")), []);
+private PhpExpr createOverrideType(typedList(Type \type)) = phpNew(phpName(phpName("Parameter\\TypedList")), [
     phpActualParameter(createOverrideType(\type), false)
 ]);
-private PhpExpr createOverrideType(param(typedMap(Type key, Type v), _)) = phpNew(phpName(phpName("Parameter\\Map")), [
+private PhpExpr createOverrideType(typedMap(Type key, Type v)) = phpNew(phpName(phpName("Parameter\\Map")), [
     phpActualParameter(createOverrideType(key), false), phpActualParameter(createOverrideType(v), false)
 ]);
-private PhpExpr createOverrideType(param(artifactType(str name), _)) = phpNew(phpName(phpName("Parameter\\Custom")), [
+private PhpExpr createOverrideType(artifactType(str name)) = phpNew(phpName(phpName("Parameter\\Custom")), [
     phpActualParameter(phpScalar(phpString(name)), false)
 ]);
-private PhpExpr createOverrideType(param(repositoryType(str name), _)) = phpNew(phpName(phpName("Parameter\\Custom")), [
+private PhpExpr createOverrideType(repositoryType(str name)) = phpNew(phpName(phpName("Parameter\\Custom")), [
     phpActualParameter(phpScalar(phpString(name + "Repository")), false)
 ]);

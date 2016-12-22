@@ -30,6 +30,9 @@ test bool shouldCompileEval() = toCode(phpEval(phpScalar(phpString("code"))), 0)
 test bool shouldCompileExit() = toCode(phpExit(phpNoExpr()), 0) == "exit";
 test bool shouldCompileExitWithParam() = toCode(phpExit(phpSomeExpr(phpVar(phpName(phpName("var"))))), 0) == "exit($var)";
 
+test bool shouldCompilePropertyFetch() = 
+    toCode(phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("field"))), 0) == "$this-\>field";
+
 test bool shouldCompileFuncCall() = toCode(phpCall(phpName(phpName("test")), []), 0) == "test()";
 
 test bool shouldCompileFuncCallWithParams() = toCode(phpCall(
@@ -37,11 +40,18 @@ test bool shouldCompileFuncCallWithParams() = toCode(phpCall(
 	"test(3)";
 
 test bool shouldCompileMethodCall() = 
-	toCode(phpMethodCall(phpVar(phpName(phpName("this"))), phpName(phpName("test")), []), 0) == "$this-\>test()";
-	
+    toCode(phpMethodCall(phpVar(phpName(phpName("this"))), phpName(phpName("test")), []), 0) == "$this-\>test()";
+    
 test bool shouldCompileMethodCallWithParams() = 
-	toCode(phpMethodCall(phpVar(phpName(phpName("this"))),
-		phpName(phpName("test")), [phpActualParameter(phpScalar(phpInteger(3)), false)]), 0) == "$this-\>test(3)";
+    toCode(phpMethodCall(phpVar(phpName(phpName("this"))),
+        phpName(phpName("test")), [phpActualParameter(phpScalar(phpInteger(3)), false)]), 0) == "$this-\>test(3)";
+
+test bool shouldCompileStaticCall() = 
+    toCode(phpStaticCall(phpName(phpName("This")), phpName(phpName("test")), []), 0) == "This::test()";
+    
+test bool shouldCompileStaticCallWithParams() = 
+    toCode(phpStaticCall(phpExpr(phpVar(phpName(phpName("this")))),
+        phpName(phpName("test")), [phpActualParameter(phpScalar(phpInteger(3)), false)]), 0) == "$this::test(3)";
 
 test bool shouldCompileToNewInstanceWithoutParameters() = 
 	toCode(phpNew(phpName(phpName("User")), []), 0) == "new User()";

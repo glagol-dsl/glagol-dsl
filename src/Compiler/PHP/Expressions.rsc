@@ -52,9 +52,13 @@ public str toCode(phpSuppress(PhpExpr expr), int i) = "@<toCode(expr, i)>";
 public str toCode(phpEval(PhpExpr expr), int i) = "eval(<toCode(expr, i)>)";
 public str toCode(phpExit(phpNoExpr()), int i) = "exit";
 public str toCode(phpExit(phpSomeExpr(PhpExpr expr)), int i) = "exit(<toCode(expr, i)>)";
+public str toCode(phpPropertyFetch(PhpExpr target, PhpNameOrExpr propertyName), int i) = "<toCode(target, i)>-\><toCode(propertyName, i)>";
 
 public str toCode(phpMethodCall(PhpExpr target, PhpNameOrExpr methodName, list[PhpActualParameter] parameters), int i) =
 	"<toCode(target, i)>-\><toCode(methodName, i)>(<glue([toCode(p, i) | p <- parameters], ", ")>)";
+	
+public str toCode(phpStaticCall(PhpNameOrExpr target, PhpNameOrExpr methodName, list[PhpActualParameter] parameters), int i) = 
+    "<toCode(target, i)>::<toCode(methodName, i)>(<glue([toCode(p, i) | p <- parameters], ", ")>)";
 	
 public str toCode(phpCall(PhpNameOrExpr funName, list[PhpActualParameter] parameters), int i) = 
 	"<toCode(funName, i)>(<glue([toCode(p, i) | p <- parameters], ", ")>)";
@@ -91,3 +95,4 @@ private str closureUses(list[PhpClosureUse] uses) = "" when size(uses) == 0;
 private str closureUses(list[PhpClosureUse] uses) = " use (<glue([toCode(u) | u <- uses], ", ")>)" when size(uses) > 0;
 
 private str arrayKey(phpSomeExpr(PhpExpr expr), int i) = "<toCode(expr, i)> =\> ";
+private str arrayKey(phpNoExpr(), int i) = "";

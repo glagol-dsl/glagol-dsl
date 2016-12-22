@@ -19,7 +19,7 @@ test bool shouldTransformMethodWithStringReturnValue() =
 
 test bool shouldTransformMethodWithBooleanReturnValue() =
     toPhpClassItem(method(\public(), boolean(), "test", [], []), <zend(), doctrine()>) == 
-    phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("boolean")));
+    phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("bool")));
 
 test bool shouldTransformMethodWithFloatReturnValue() =
     toPhpClassItem(method(\public(), float(), "test", [], []), <zend(), doctrine()>) == 
