@@ -14,7 +14,7 @@ public str toCode(phpClassDef(class: phpClass(
 		set[PhpModifier] modifiers, 
 		PhpOptionName extending, 
 		list[PhpName] interfaces,
-		list[PhpClassItem] members)), int i) = nl(2) +
+		list[PhpClassItem] members)), int i) = nl() +
 	((class@phpAnnotations?) ? (toCode(class@phpAnnotations, i) + nl()) : "") +
 	"<toCode(modifiers)>class <className> <extends(extending)><implements(interfaces)><nl()>{" + 
 		("" | it + toCode(m, i + 1) | m <- members) +

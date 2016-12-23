@@ -67,3 +67,30 @@ test bool testHasOverriding() =
         constructor([param(integer(), "a")], []),
         method(\public(), voidValue(), "test", [param(string(), "b")], [])
     ]);
+
+test bool testHasMapUsageShouldReturnFalseOnEmptyEntity() = 
+    !hasMapUsage(entity("User", []));
+
+test bool testHasMapUsageShouldReturnTrueOnPropertyOfMapType() = 
+    hasMapUsage(entity("User", [
+        property(typedMap(integer(), string()), "prop", {})
+    ]));
+
+test bool testHasMapUsageShouldReturnTrueWhenContainsAMap() = 
+    hasMapUsage(entity("User", [
+        constructor([], [
+            expression(\map(()))
+        ])
+    ]));
+
+test bool testHasMapUsageShouldReturnTrueOnPropertyOfListType() = 
+    hasListUsage(entity("User", [
+        property(typedList(integer()), "prop", {})
+    ]));
+
+test bool testHasMapUsageShouldReturnTrueWhenContainsAList() = 
+    hasListUsage(entity("User", [
+        constructor([], [
+            expression(\list([]))
+        ])
+    ]));

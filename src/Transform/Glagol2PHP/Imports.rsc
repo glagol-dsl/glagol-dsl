@@ -26,8 +26,9 @@ private list[Declaration] commonImports(Declaration artifact, env) =
         [\import("Overrider", namespace("Glagol", namespace("Overriding")), "Overrider")] : []) +
     (hasMapUsage(artifact) ? 
         [\import("Map", namespace("Ds"), "Map"), \import("MapFactory", namespace("Glagol", namespace("Ds")), "MapFactory")] : []) +
-    (hasMapUsage(artifact) ? 
-        [\import("Map", namespace("Ds"), "Map"), \import("MapFactory", namespace("Glagol", namespace("Ds")), "MapFactory")] : []);
+    (hasListUsage(artifact) ? 
+        [\import("Vector", namespace("Ds"), "Vector")] : [])
+    ;
     
 private PhpUse toPhpUse(\import(str artifactName, Declaration namespace, str as)) = 
 	phpUse(phpName(namespaceToString(namespace, "\\") + "\\" + artifactName), phpSomeName(phpName(as)))
