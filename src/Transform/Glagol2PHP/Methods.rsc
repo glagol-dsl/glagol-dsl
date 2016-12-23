@@ -54,10 +54,10 @@ private PhpOptionName toPhpReturnType(integer()) = phpSomeName(phpName("int"));
 private PhpOptionName toPhpReturnType(string()) = phpSomeName(phpName("string"));
 private PhpOptionName toPhpReturnType(boolean()) = phpSomeName(phpName("bool"));
 private PhpOptionName toPhpReturnType(float()) = phpSomeName(phpName("float"));
-private PhpOptionName toPhpReturnType(typedList(_)) = phpSomeName(phpName("Vector"));
-private PhpOptionName toPhpReturnType(typedMap(_,_)) = phpSomeName(phpName("Map"));
-private PhpOptionName toPhpReturnType(artifactType(str name)) = phpSomeName(phpName(name));
-private PhpOptionName toPhpReturnType(repositoryType(str name)) = phpSomeName(phpName(name + "Repository"));
+private PhpOptionName toPhpReturnType(\list(_)) = phpSomeName(phpName("Vector"));
+private PhpOptionName toPhpReturnType(\map(_,_)) = phpSomeName(phpName("Map"));
+private PhpOptionName toPhpReturnType(artifact(str name)) = phpSomeName(phpName(name));
+private PhpOptionName toPhpReturnType(repository(str name)) = phpSomeName(phpName(name + "Repository"));
 
 private PhpModifier toPhpModifier(\public()) = phpPublic();
 private PhpModifier toPhpModifier(\private()) = phpPrivate();

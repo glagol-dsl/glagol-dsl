@@ -10,10 +10,10 @@ private str toString(string()) = "string";
 private str toString(voidValue()) = "void";
 private str toString(boolean()) = "bool";
 private str toString(integer()) = "integer";
-private str toString(typedList(Type \type)) = "<toString(\type)>[]";
-private str toString(typedMap(Type key, Type v)) = "Map";
-private str toString(artifactType(str name)) = name;
-private str toString(repositoryType(str name)) = "<name>Repository";
+private str toString(\list(Type \type)) = "<toString(\type)>[]";
+private str toString(\map(Type key, Type v)) = "Map";
+private str toString(artifact(str name)) = name;
+private str toString(repository(str name)) = "<name>Repository";
 
 public PhpClassItem toPhpClassItem(d: property(Type valueType, str name, _), env, context)
     = phpProperty({phpPrivate()}, [phpProperty(name, phpNoExpr())])[

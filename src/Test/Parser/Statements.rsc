@@ -57,7 +57,7 @@ test bool testDeclarationsWithCustomTypes() {
         
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [
-            declare(artifactType("DateTime"), variable("myDate"))
+            declare(artifact("DateTime"), variable("myDate"))
         ])
     ]));
 }
@@ -176,7 +176,7 @@ test bool testForeachStatementWithEmptyStmt() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(typedList(integer()), "a")], [
+        constructor([param(\list(integer()), "a")], [
             foreach(variable("a"), variable("b"), emptyStmt())
         ])
     ]));
@@ -230,7 +230,7 @@ test bool testForeachStatementWithBreak() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(typedList(integer()), "a")], [
+        constructor([param(\list(integer()), "a")], [
             foreach(variable("a"), variable("b"), block([
                 ifThen(greaterThan(variable("a"), integer(2)), \break())
             ]))
@@ -251,7 +251,7 @@ test bool testForeachStatementWithLevelledBreak() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(typedList(integer()), "a")], [
+        constructor([param(\list(integer()), "a")], [
             foreach(variable("a"), variable("b"), 
                 foreach(variable("c"), variable("d"), 
                     ifThen(greaterThan(variable("c"), integer(2)), \break(2))
@@ -271,7 +271,7 @@ test bool testForeachStatementWithCondition() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(typedList(artifactType("DateTime")), "a"), param(artifactType("DateTime"), "now")], [
+        constructor([param(\list(artifact("DateTime")), "a"), param(artifact("DateTime"), "now")], [
             foreach(variable("a"), variable("b"), emptyStmt(), [lessThan(variable("a"), variable("now"))])
         ])
     ]));
@@ -288,7 +288,7 @@ test bool testForeachStatementWithContinue() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(typedList(artifactType("DateTime")), "a"), param(artifactType("DateTime"), "now")], [
+        constructor([param(\list(artifact("DateTime")), "a"), param(artifact("DateTime"), "now")], [
             foreach(variable("a"), variable("b"), ifThen(
                 lessThan(variable("a"), variable("now")), \continue()
             ))

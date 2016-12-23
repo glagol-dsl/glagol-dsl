@@ -37,7 +37,7 @@ test bool shouldTransformToScalarListPhpExpr()
         ]), false)]);
 
 test bool shouldTransformToFetchLocalPropPhpExpr()
-    = toPhpExpr(get(artifactType("SomeUtil"))) 
+    = toPhpExpr(get(artifact("SomeUtil"))) 
     == phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("_someUtil")));
     
 test bool shouldTransformToFetchArrayDim() = toPhpExpr(arrayAccess(variable("test"), integer(0))) == phpFetchArrayDim(phpVar(phpName(phpName("test"))), phpSomeExpr(phpScalar(phpInteger(0))));

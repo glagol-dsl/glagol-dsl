@@ -73,7 +73,7 @@ test bool testHasMapUsageShouldReturnFalseOnEmptyEntity() =
 
 test bool testHasMapUsageShouldReturnTrueOnPropertyOfMapType() = 
     hasMapUsage(entity("User", [
-        property(typedMap(integer(), string()), "prop", {})
+        property(\map(integer(), string()), "prop", {})
     ]));
 
 test bool testHasMapUsageShouldReturnTrueWhenContainsAMap() = 
@@ -85,7 +85,7 @@ test bool testHasMapUsageShouldReturnTrueWhenContainsAMap() =
 
 test bool testHasMapUsageShouldReturnTrueOnPropertyOfListType() = 
     hasListUsage(entity("User", [
-        property(typedList(integer()), "prop", {})
+        property(\list(integer()), "prop", {})
     ]));
 
 test bool testHasMapUsageShouldReturnTrueWhenContainsAList() = 

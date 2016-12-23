@@ -50,7 +50,7 @@ public bool hasOverriding(list[Declaration] declarations) =
 public bool hasMapUsage(Declaration artifact) { 
     top-down visit (artifact) {
         case \map(_): return true;
-        case typedMap(_, _): return true;
+        case \map(_, _): return true;
     }
     return false;
 }
@@ -58,7 +58,7 @@ public bool hasMapUsage(Declaration artifact) {
 public bool hasListUsage(Declaration artifact) { 
     top-down visit (artifact) {
         case \list(_): return true;
-        case typedList(_): return true;
+        case \list(_): return true;
     }
     return false;
 }

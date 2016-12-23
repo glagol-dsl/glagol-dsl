@@ -14,7 +14,7 @@ test bool canParseRepositoryInjection()
     
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
-            property(repositoryType("User"), "userRepository", {}, get(repositoryType("User")))
+            property(repository("User"), "userRepository", {}, get(repository("User")))
         ]));
 }
 
@@ -28,7 +28,7 @@ test bool canParseUtilRepositoryInjection()
     
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
-            property(repositoryType("User"), "userRepository", {}, get(repositoryType("User")))
+            property(repository("User"), "userRepository", {}, get(repository("User")))
         ]));
 }   
 
@@ -42,7 +42,7 @@ test bool canUseRepositorySelfie()
     
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
-            property(repositoryType("User"), "userRepository", {}, get(repositoryType("User")))
+            property(repository("User"), "userRepository", {}, get(repository("User")))
         ]));
 }
 
@@ -57,7 +57,7 @@ test bool canUseRepositorySelfieAsParamDefaultValue()
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
             method(\public(), voidValue(), "make", [
-                param(repositoryType("User"), "userRepository", get(repositoryType("User")))
+                param(repository("User"), "userRepository", get(repository("User")))
             ], [])
         ]));
 }
@@ -76,8 +76,8 @@ test bool canUseRepositoryAssocArtifactInExpression()
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
             constructor([], [
-                expression(get(repositoryType("User"))),
-                expression(invoke(get(repositoryType("User")), "findOneById", [integer(1)]))
+                expression(get(repository("User"))),
+                expression(invoke(get(repository("User")), "findOneById", [integer(1)]))
             ])
         ]));
 }
@@ -92,6 +92,6 @@ test bool canCreateNewServiceAsAPropertyDefaultValue()
     
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
-            property(artifactType("UserService"), "userService", {}, new("UserService", []))
+            property(artifact("UserService"), "userService", {}, new("UserService", []))
         ]));
 }

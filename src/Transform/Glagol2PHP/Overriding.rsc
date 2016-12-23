@@ -36,15 +36,15 @@ private PhpExpr createOverrideType(integer()) = phpNew(phpName(phpName("Paramete
 private PhpExpr createOverrideType(float()) = phpNew(phpName(phpName("Parameter\\Real")), []);
 private PhpExpr createOverrideType(string()) = phpNew(phpName(phpName("Parameter\\Str")), []);
 private PhpExpr createOverrideType(boolean()) = phpNew(phpName(phpName("Parameter\\Boolean")), []);
-private PhpExpr createOverrideType(typedList(Type \type)) = phpNew(phpName(phpName("Parameter\\TypedList")), [
+private PhpExpr createOverrideType(\list(Type \type)) = phpNew(phpName(phpName("Parameter\\TypedList")), [
     phpActualParameter(createOverrideType(\type), false)
 ]);
-private PhpExpr createOverrideType(typedMap(Type key, Type v)) = phpNew(phpName(phpName("Parameter\\Map")), [
+private PhpExpr createOverrideType(\map(Type key, Type v)) = phpNew(phpName(phpName("Parameter\\Map")), [
     phpActualParameter(createOverrideType(key), false), phpActualParameter(createOverrideType(v), false)
 ]);
-private PhpExpr createOverrideType(artifactType(str name)) = phpNew(phpName(phpName("Parameter\\Custom")), [
+private PhpExpr createOverrideType(artifact(str name)) = phpNew(phpName(phpName("Parameter\\Custom")), [
     phpActualParameter(phpScalar(phpString(name)), false)
 ]);
-private PhpExpr createOverrideType(repositoryType(str name)) = phpNew(phpName(phpName("Parameter\\Custom")), [
+private PhpExpr createOverrideType(repository(str name)) = phpNew(phpName(phpName("Parameter\\Custom")), [
     phpActualParameter(phpScalar(phpString(name + "Repository")), false)
 ]);

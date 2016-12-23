@@ -64,7 +64,7 @@ test bool shouldConvertToPhpUsesOnDoctrineEntityWithoutOverriding() =
 test bool shouldConvertToDsMapPhpUsesOnMapsAndMapTypes() =
     toPhpUses([], 
         entity("User", [
-            property(typedMap(integer(), string()), "prop", {})
+            property(\map(integer(), string()), "prop", {})
         ]), 
         <anyFramework(), anyORM()>) ==
     [phpUse({
@@ -87,7 +87,7 @@ test bool shouldConvertToDsMapPhpUsesOnMapsAndMapTypes() =
 test bool shouldConvertToDsMapPhpUsesOnListsAndListTypes() =
     toPhpUses([], 
         entity("User", [
-            property(typedList(integer()), "prop", {})
+            property(\list(integer()), "prop", {})
         ]), 
         <anyFramework(), anyORM()>) ==
     [phpUse({

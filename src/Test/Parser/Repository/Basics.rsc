@@ -27,7 +27,7 @@ test bool shouldParseRepositoryWithMethodAndAMap()
           '}";
     
     return parseModule(code) == \module(namespace("Example"), [], repository("User", [
-        method(\public(), typedList(artifactType("User")), "findById", [
+        method(\public(), \list(artifact("User")), "findById", [
             param(integer(), "id")
         ], [\return(
             invoke("findOneBy", [\map((string("id"): variable("id")))])

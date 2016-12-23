@@ -397,10 +397,10 @@ public Type convertType((Type) `bool`) = boolean();
 public Type convertType((Type) `boolean`) = boolean();
 public Type convertType((Type) `void`) = voidValue();
 public Type convertType((Type) `string`) = string();
-public Type convertType((Type) `repository\<<ArtifactName name>\>`) = repositoryType("<name>");
-public Type convertType((Type) `<Type t>[]`) = typedList(convertType(t));
-public Type convertType((Type) `{<Type key>,<Type v>}`) = typedMap(convertType(key), convertType(v));
-public Type convertType((Type) `<ArtifactName name>`) = artifactType("<name>");
+public Type convertType((Type) `repository\<<ArtifactName name>\>`) = repository("<name>");
+public Type convertType((Type) `<Type t>[]`) = \list(convertType(t));
+public Type convertType((Type) `{<Type key>,<Type v>}`) = \map(convertType(key), convertType(v));
+public Type convertType((Type) `<ArtifactName name>`) = artifact("<name>");
 
 
 public Expression convertWhen((When) `when <Expression expr>`) = convertExpression(expr);
