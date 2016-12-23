@@ -17,6 +17,11 @@ test bool shouldCompileScalarInteger() = toCode(phpScalar(phpInteger(323)), 0) =
 test bool shouldCompileScalarString() = toCode(phpScalar(phpString("haha")), 0) == "\"haha\"";
 test bool shouldCompileScalarBooleanTrue() = toCode(phpScalar(phpBoolean(true)), 0) == "true";
 test bool shouldCompileScalarBooleanFalse() = toCode(phpScalar(phpBoolean(false)), 0) == "false";
+test bool shouldCompileScalarEncapsedStringPart() = toCode(phpScalar(phpEncapsedStringPart("blah")), 0) == "blah";
+
+test bool shouldCompileScalarEncapsed() = 
+    toCode(phpScalar(phpEncapsed([phpScalar(phpEncapsedStringPart("blah")), phpVar(phpName(phpName("var")))])), 0) == "blah$var";
+    
 test bool shouldCompileNoExpr() = toCode(phpNoExpr(), 0) == "";
 test bool shouldCompileVarExpr() = toCode(phpVar(phpName(phpName("var"))), 0) == "$var";
 test bool shouldCompileVarVarExpr() = toCode(phpVar(phpExpr(phpVar(phpName(phpName("var"))))), 0) == "$$var";
@@ -29,6 +34,42 @@ test bool shouldCompileEmpty() = toCode(phpEmpty(phpVar(phpName(phpName("var")))
 test bool shouldCompileEval() = toCode(phpEval(phpScalar(phpString("code"))), 0) == "eval(\"code\")";
 test bool shouldCompileExit() = toCode(phpExit(phpNoExpr()), 0) == "exit";
 test bool shouldCompileExitWithParam() = toCode(phpExit(phpSomeExpr(phpVar(phpName(phpName("var"))))), 0) == "exit($var)";
+test bool shouldCompileInclude() = toCode(phpInclude(phpScalar(phpString("test.php")), phpInclude()), 0) == "include \"test.php\"";
+test bool shouldCompileBrackets() = toCode(phpBracket(phpSomeExpr(phpScalar(phpBoolean(true)))), 0) == "(true)";
+
+test bool shouldCompileDestructorList() = 
+    toCode(phpListExpr([phpSomeExpr(phpVar(phpName(phpName("var1")))), phpSomeExpr(phpVar(phpName(phpName("var2"))))]), 0) == "[$var1, $var2]"; 
+
+test bool shouldCompileYieldWithValueOnly() = 
+    toCode(phpYield(phpNoExpr(), phpSomeExpr(phpScalar(phpInteger(1)))), 0) == "yield 1";
+    
+test bool shouldCompileYieldWithKeyAndValue() = 
+    toCode(phpYield(phpSomeExpr(phpScalar(phpString("myKey"))), phpSomeExpr(phpScalar(phpInteger(1)))), 0) == "yield \"myKey\" =\> 1";
+
+test bool shouldCompileYieldWithoutValue() = 
+    toCode(phpYield(phpNoExpr(), phpNoExpr()), 0) == "yield";
+
+test bool shouldCompileStaticPropertyFetch() = 
+    toCode(phpStaticPropertyFetch(phpName(phpName("MyClass")), phpName(phpName("prop"))), 0) == "MyClass::$prop";
+
+test bool shouldCompileTernaryWithIfAndElseIf() = 
+    toCode(phpTernary(phpScalar(phpBoolean(true)), phpSomeExpr(phpScalar(phpInteger(1))), phpScalar(phpInteger(4))), 0) ==
+    "true ? 1 : 4";
+
+test bool shouldCompileTernaryWithElseIfOnly() = 
+    toCode(phpTernary(phpScalar(phpBoolean(true)), phpNoExpr(), phpScalar(phpInteger(4))), 0) ==
+    "true ?: 4";
+
+test bool shouldCompileInstanceOf() = 
+    toCode(phpInstanceOf(phpVar(phpName(phpName("object"))), phpName(phpName("MyClass"))), 0) == "$object instanceof MyClass";
+
+test bool shouldCompileIsset() =
+    toCode(phpIsSet([phpVar(phpName(phpName("var1"))), phpVar(phpName(phpName("var2")))]), 0) == "isset($var1, $var2)";
+
+test bool shouldCompilePrint() = toCode(phpPrint(phpScalar(phpString("Hey"))), 0) == "print \"Hey\"";
+
+test bool shouldCompileShellExec() = 
+    toCode(phpShellExec([phpScalar(phpEncapsedStringPart("hello --")), phpVar(phpName(phpName("command")))]), 0) == "`hello --$command`";
 
 test bool shouldCompilePropertyFetch() = 
     toCode(phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("field"))), 0) == "$this-\>field";

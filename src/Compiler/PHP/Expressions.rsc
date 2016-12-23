@@ -8,6 +8,7 @@ import Compiler::PHP::Statements;
 import Compiler::PHP::Params;
 import Compiler::PHP::NewLine;
 import Compiler::PHP::Indentation;
+import Compiler::PHP::IncludeType;
 import Syntax::Abstract::PHP;
 import List;
 
@@ -25,6 +26,8 @@ public str toCode(phpScalar(phpInteger(int intVal)), int i) = "<intVal>";
 public str toCode(phpScalar(phpString(str strVal)), int i) = "\"<strVal>\"";
 public str toCode(phpScalar(phpBoolean(true)), int i) = "true";
 public str toCode(phpScalar(phpBoolean(false)), int i) = "false";
+public str toCode(phpScalar(phpEncapsed(list[PhpExpr] exprs)), int i) = glue([toCode(expr, i) | expr <- exprs]);
+public str toCode(phpScalar(phpEncapsedStringPart(str strVal)), int i) = strVal;
 public str toCode(phpNoExpr(), int i) = "";
 public str toCode(phpExpr(PhpExpr expr), int i) = toCode(expr, i);
 public str toCode(phpName(phpName(str name)), int i) = name;
@@ -53,6 +56,19 @@ public str toCode(phpEval(PhpExpr expr), int i) = "eval(<toCode(expr, i)>)";
 public str toCode(phpExit(phpNoExpr()), int i) = "exit";
 public str toCode(phpExit(phpSomeExpr(PhpExpr expr)), int i) = "exit(<toCode(expr, i)>)";
 public str toCode(phpPropertyFetch(PhpExpr target, PhpNameOrExpr propertyName), int i) = "<toCode(target, i)>-\><toCode(propertyName, i)>";
+public str toCode(phpInclude(PhpExpr expr, PhpIncludeType includeType), int i) = "<toCode(includeType)> <toCode(expr, i)>";
+public str toCode(phpInstanceOf(PhpExpr expr, PhpNameOrExpr toCompare), int i) = "<toCode(expr, i)> instanceof <toCode(toCompare, i)>";
+public str toCode(phpIsSet(list[PhpExpr] exprs), int i) = "isset(<glue([toCode(expr, i) | expr <- exprs], ", ")>)";
+public str toCode(phpPrint(PhpExpr expr), int i) = "print <toCode(expr, i)>";
+public str toCode(phpShellExec(list[PhpExpr] parts), int i) = "`<glue([toCode(p, i) | p <- parts])>`";
+public str toCode(phpTernary(PhpExpr cond, phpSomeExpr(PhpExpr ifBranch), PhpExpr elseBranch), int i) = "<toCode(cond, i)> ? <toCode(ifBranch, i)> : <toCode(elseBranch, i)>";
+public str toCode(phpTernary(PhpExpr cond, phpNoExpr(), PhpExpr elseBranch), int i) = "<toCode(cond, i)> ?: <toCode(elseBranch, i)>";
+public str toCode(phpStaticPropertyFetch(PhpNameOrExpr className, PhpNameOrExpr propertyName), int i) = "<toCode(className, i)>::$<toCode(propertyName, i)>";
+public str toCode(phpYield(phpNoExpr(), phpSomeExpr(PhpExpr val)), int i) = "yield <toCode(val, i)>";
+public str toCode(phpYield(phpSomeExpr(PhpExpr key), phpSomeExpr(PhpExpr val)), int i) = "yield <toCode(key, i)> =\> <toCode(val, i)>";
+public str toCode(phpYield(phpNoExpr(), phpNoExpr()), int i) = "yield";
+public str toCode(phpListExpr(list[PhpOptionExpr] listExprs), int i) = "[<glue([toCode(e, i) | e <- listExprs], ", ")>]";
+public str toCode(phpBracket(PhpOptionExpr bracketExpr), int i) = "(<toCode(bracketExpr, i)>)";
 
 public str toCode(phpMethodCall(PhpExpr target, PhpNameOrExpr methodName, list[PhpActualParameter] parameters), int i) =
 	"<toCode(target, i)>-\><toCode(methodName, i)>(<glue([toCode(p, i) | p <- parameters], ", ")>)";

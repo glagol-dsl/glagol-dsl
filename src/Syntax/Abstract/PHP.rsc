@@ -56,7 +56,7 @@ public data PhpExpr
     | phpTernary(PhpExpr cond, PhpOptionExpr ifBranch, PhpExpr elseBranch)
     | phpStaticPropertyFetch(PhpNameOrExpr className, PhpNameOrExpr propertyName)
     | phpScalar(PhpScalar scalarVal)
-    | phpVar(PhpNameOrExpr varName)   
+    | phpVar(PhpNameOrExpr varName)
     | phpYield(PhpOptionExpr keyExpr, PhpOptionExpr valueExpr)
     | phpListExpr(list[PhpOptionExpr] listExprs)
     | phpBracket(PhpOptionExpr bracketExpr)
@@ -89,6 +89,7 @@ public data PhpScalar
     | phpString(str strVal)
     | phpBoolean(bool boolVal)
     | phpEncapsed(list[PhpExpr] parts)
+    | phpEncapsedStringPart(str strVal)
     ;
 
 public data PhpStmt 
