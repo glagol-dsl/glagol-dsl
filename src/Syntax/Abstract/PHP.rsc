@@ -103,7 +103,7 @@ public data PhpStmt
     | phpExprstmt(PhpExpr expr)
     | phpFor(list[PhpExpr] inits, list[PhpExpr] conds, list[PhpExpr] exprs, list[PhpStmt] body)
     | phpForeach(PhpExpr arrayExpr, PhpOptionExpr keyvar, bool byRef, PhpExpr asVar, list[PhpStmt] body)
-    | phpFunction(str name, bool byRef, list[PhpParam] params, list[PhpStmt] body)
+    | phpFunction(str name, bool byRef, list[PhpParam] params, list[PhpStmt] body, PhpOptionName returnType)
     | phpGlobal(list[PhpExpr] exprs)
     | phpGoto(str label)
     | phpHaltCompiler(str remainingText)
