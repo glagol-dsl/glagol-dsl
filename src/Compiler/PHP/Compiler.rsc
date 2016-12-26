@@ -5,6 +5,7 @@ import Compiler::PHP::Indentation;
 import Compiler::PHP::NewLine;
 import Compiler::PHP::Uses;
 import Compiler::PHP::Classes;
+import Compiler::PHP::Statements;
 import List;
 import Set;
 

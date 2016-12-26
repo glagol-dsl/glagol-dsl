@@ -9,8 +9,20 @@ import Compiler::PHP::ByRef;
 import Compiler::PHP::Params;
 import Compiler::PHP::Properties;
 import Compiler::PHP::Methods;
+import Compiler::PHP::Modifiers;
 import List;
 
+public str toCode(phpClassDef(class: phpClass(
+		str className, 
+		set[PhpModifier] modifiers, 
+		PhpOptionName extending, 
+		list[PhpName] interfaces,
+		list[PhpClassItem] members)), int i) = nl() +
+	((class@phpAnnotations?) ? (toCode(class@phpAnnotations, i) + nl()) : "") +
+	"<toCode(modifiers)>class <className> <extends(extending)><implements(interfaces)><nl()>{" + 
+		("" | it + toCode(m, i + 1) | m <- members) +
+	"}";
+	
 public str toCode(list[PhpStmt] statements, i) = ("" | it + toCode(stmt, i) + nl() | stmt <- statements);
 public str toCode(phpExprstmt(PhpExpr expr), int i) = "<s(i)><toCode(expr, i)>;";
 public str toCode(phpReturn(phpSomeExpr(PhpExpr expr)), int i) = "<nl()><s(i)>return <toCode(expr, i)>;";
@@ -107,7 +119,14 @@ private str defaultVal(phpNoExpr()) = "";
 
 private str extends(list[PhpName] extending) = "" when size(extending) == 0;
 private str extends(list[PhpName] extending) = " extends <glue([e.name | e <- extending], ", ")>";
+private str extends(phpNoName()) = "";
+private str extends(phpSomeName(phpName(str name))) = "extends <name> ";
 
+private str implements(list[PhpName] interfaces) = "" when size(interfaces) == 0;
+private str implements(list[PhpName] interfaces) = "implements <interfaces[0].name> " when size(interfaces) == 1;
+private default str implements(list[PhpName] interfaces) = 
+	"implements <(glue([name | phpName(str name) <- interfaces], ", "))> ";
+	
 private str toElseIfs(list[PhpElseIf] elseIfs, int i) = glue([toElseIf(e, i) | e <- elseIfs]);
 
 private str toElseIf(phpElseIf(PhpExpr cond, list[PhpStmt] body), int i) = 
