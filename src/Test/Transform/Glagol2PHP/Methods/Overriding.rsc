@@ -37,7 +37,8 @@ test bool shouldAddOverriderWithRulesWhenTransformingOverridedMethods() =
                     phpActualParameter(phpClosure([
                         phpReturn(phpSomeExpr(phpBinaryOperation(phpVar(phpName(phpName("c"))), phpScalar(phpInteger(7)), phpIdentical())))
                     ], [phpParam("c", phpNoExpr(), phpSomeName(phpName("float")), false, false)], [], false, false), false)
-                ])), 
+                ])),
+                phpNewLine(), 
                 phpReturn(phpSomeExpr(phpMethodCall(phpVar(phpName(phpName("overrider"))), phpName(phpName("execute")), [
                   phpActualParameter(phpVar(phpName(phpName("args"))), false)
                 ])))

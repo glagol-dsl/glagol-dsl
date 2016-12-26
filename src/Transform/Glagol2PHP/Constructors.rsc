@@ -37,6 +37,7 @@ public PhpClassItem createConstructor(list[Declaration] declarations, env) =
     phpMethod("__construct", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)],
         [phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))] + 
         [phpExprstmt(createOverrideRule(d)) | d <- declarations] +
+        [phpNewLine()] +
         [phpExprstmt(phpMethodCall(phpVar("overrider"), phpName(phpName("execute")), [
             phpActualParameter(phpVar("args"), false)
         ]))],

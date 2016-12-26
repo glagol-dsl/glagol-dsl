@@ -42,6 +42,7 @@ public PhpClassItem createMethod(list[Declaration] methods, env) =
     phpMethod(methods[0].name, {toPhpModifier(methods[0].modifier)}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], 
         [phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))] + 
         [phpExprstmt(createOverrideRule(m)) | m <- methods] +
+        [phpNewLine()] +
         [phpReturn(phpSomeExpr(phpMethodCall(phpVar(phpName(phpName("overrider"))), phpName(phpName("execute")), [
           phpActualParameter(phpVar(phpName(phpName("args"))), false)
         ])))], toPhpReturnType(methods[0].returnType))[

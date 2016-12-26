@@ -10,6 +10,7 @@ import Compiler::PHP::Params;
 import Compiler::PHP::Properties;
 import Compiler::PHP::Methods;
 import Compiler::PHP::Modifiers;
+import Compiler::PHP::Annotations;
 import List;
 
 public str toCode(phpClassDef(class: phpClass(
@@ -25,8 +26,8 @@ public str toCode(phpClassDef(class: phpClass(
 	
 public str toCode(list[PhpStmt] statements, i) = ("" | it + toCode(stmt, i) + nl() | stmt <- statements);
 public str toCode(phpExprstmt(PhpExpr expr), int i) = "<s(i)><toCode(expr, i)>;";
-public str toCode(phpReturn(phpSomeExpr(PhpExpr expr)), int i) = "<nl()><s(i)>return <toCode(expr, i)>;";
-public str toCode(phpReturn(phpNoExpr()), int i) = "<nl()><s(i)>return;";
+public str toCode(phpReturn(phpSomeExpr(PhpExpr expr)), int i) = "<s(i)>return <toCode(expr, i)>;";
+public str toCode(phpReturn(phpNoExpr()), int i) = "<s(i)>return;";
 public str toCode(phpBreak(phpSomeExpr(PhpExpr expr)), int i) = "<s(i)>break <toCode(expr, i)>;";
 public str toCode(phpBreak(phpNoExpr()), int i) = "<s(i)>break;";
 public str toCode(phpContinue(phpSomeExpr(PhpExpr expr)), int i) = "<s(i)>continue <toCode(expr, i)>;";
@@ -113,6 +114,8 @@ public str toCode(phpWhile(PhpExpr cond, list[PhpStmt] body), int i) =
 public str toCode(phpEmptyStmt(), int i) = "<s(i)>;";
 
 public str toCode(phpBlock(list[PhpStmt] body), int i) = "<s(i)>{<nl()><toCode(body, i + 1)><s(i)>}";
+
+public str toCode(phpNewLine(), int i) = "";
 
 private str defaultVal(phpSomeExpr(PhpExpr expr)) = " = <toCode(expr, 0)>";
 private str defaultVal(phpNoExpr()) = "";

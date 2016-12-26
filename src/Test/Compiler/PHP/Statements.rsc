@@ -4,10 +4,10 @@ import Syntax::Abstract::PHP;
 import Compiler::PHP::Statements;
 
 test bool shouldCompileToReturnStmt() =
-    toCode(phpReturn(phpSomeExpr(phpVar(phpName(phpName("article"))))), 0) == "\nreturn $article;";
+    toCode(phpReturn(phpSomeExpr(phpVar(phpName(phpName("article"))))), 0) == "return $article;";
 
 test bool shouldCompileToReturnEmptyStmt() =
-    toCode(phpReturn(phpNoExpr()), 0) == "\nreturn;";
+    toCode(phpReturn(phpNoExpr()), 0) == "return;";
 
 test bool shouldCompileListOfStatements() =
     toCode([phpExprstmt(phpScalar(phpBoolean(true))), phpExprstmt(phpScalar(phpBoolean(false)))], 0) ==
@@ -95,22 +95,22 @@ test bool shouldCompileForeachIndented() =
 
 test bool shouldCompileFunctionNoParamsNoRefNoReturnType() = 
 	toCode(phpFunction("test", false, [], [phpReturn(phpNoExpr())], phpNoName()), 0) == 
-	"function test()\n{\n\n    return;\n}";
+	"function test()\n{\n    return;\n}";
 
 test bool shouldCompileFunctionWithParamsNoRefNoReturnType() = 
 	toCode(phpFunction("test", false, [
 		phpParam("var1", phpNoExpr(), phpNoName(), false, false),
 		phpParam("var2", phpNoExpr(), phpNoName(), false, false)
 	], [phpReturn(phpNoExpr())], phpNoName()), 0) == 
-	"function test($var1, $var2)\n{\n\n    return;\n}";
+	"function test($var1, $var2)\n{\n    return;\n}";
 
 test bool shouldCompileFunctionNoParamsWithRefNoReturnType() = 
 	toCode(phpFunction("test", true, [], [phpReturn(phpNoExpr())], phpNoName()), 0) == 
-	"function &test()\n{\n\n    return;\n}";
+	"function &test()\n{\n    return;\n}";
 
 test bool shouldCompileFunctionNoParamsNoRefWithReturnType() = 
 	toCode(phpFunction("test", false, [], [phpReturn(phpNoExpr())], phpSomeName(phpName("void"))), 0) == 
-	"function test(): void\n{\n\n    return;\n}";
+	"function test(): void\n{\n    return;\n}";
 
 test bool shouldCompileGlobal() = 
 	toCode(phpGlobal([phpVar(phpName(phpName("var1")))]), 0) == "global $var1;";
@@ -248,3 +248,6 @@ test bool shouldCompileClassWithMembers() =
 		phpProperty("id", phpNoExpr())
 	])[@phpAnnotations={phpAnnotation("var", phpAnnotationVal("integer"))}]])), 0) ==
 	"\nclass Test \n{\n    /**\n     * @var integer\n     */\n    private $id;\n}";
+
+test bool shouldCompileNewLine() = toCode(phpNewLine(), 0) == "";
+

@@ -125,6 +125,7 @@ public data PhpStmt
     | phpWhile(PhpExpr cond, list[PhpStmt] body)
     | phpEmptyStmt()
     | phpBlock(list[PhpStmt] body)
+    | phpNewLine()
     ;
 
 public data PhpDeclaration = phpDeclaration(str key, PhpExpr val);
