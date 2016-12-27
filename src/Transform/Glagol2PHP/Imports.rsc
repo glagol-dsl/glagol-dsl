@@ -23,7 +23,10 @@ private default list[Declaration] extractImports(Declaration artifact, env) = co
 
 private list[Declaration] commonImports(Declaration artifact, env) =
     (hasOverriding(artifact.declarations) ? 
-        [\import("Overrider", namespace("Glagol", namespace("Overriding")), "Overrider")] : []) +
+        [
+        	\import("Overrider", namespace("Glagol", namespace("Overriding")), "Overrider"),
+        	\import("Parameter", namespace("Glagol", namespace("Overriding")), "Parameter")
+        ] : []) +
     (hasMapUsage(artifact) ? 
         [\import("Map", namespace("Ds"), "Map"), \import("MapFactory", namespace("Glagol", namespace("Ds")), "MapFactory")] : []) +
     (hasListUsage(artifact) ? 

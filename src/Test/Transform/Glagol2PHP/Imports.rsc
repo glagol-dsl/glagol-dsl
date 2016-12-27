@@ -17,6 +17,7 @@ test bool shouldConvertToPhpUsesOnDoctrineEntityAndOverriding() =
 	[phpUse({
 		phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM"))),
 		phpUse(phpName("Glagol\\Overriding\\Overrider"), phpNoName()),
+		phpUse(phpName("Glagol\\Overriding\\Parameter"), phpNoName()),
 		phpUse(phpName("Foo\\Bar\\Blah"), phpNoName())
 	})]
 	;
@@ -32,6 +33,7 @@ test bool shouldConvertToPhpUsesOnAnyORMEntityAndOverriding() =
 		<anyFramework(), anyORM()>) ==
 	[phpUse({
 		phpUse(phpName("Glagol\\Overriding\\Overrider"), phpNoName()),
+		phpUse(phpName("Glagol\\Overriding\\Parameter"), phpNoName()),
 		phpUse(phpName("Foo\\Bar\\Blah"), phpNoName())
 	})]
 	;
