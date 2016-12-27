@@ -46,3 +46,19 @@ public list[Declaration] getRelations(list[Declaration] declarations) =
 public bool hasOverriding(list[Declaration] declarations) =
     size(getConstructors(declarations)) > 1 || 
     (false | it ? true : size(ms[m]) > 1 | ms := categorizeMethods(declarations), m <- ms);
+
+public bool hasMapUsage(Declaration artifact) { 
+    top-down visit (artifact) {
+        case \map(_): return true;
+        case \map(_, _): return true;
+    }
+    return false;
+}
+
+public bool hasListUsage(Declaration artifact) { 
+    top-down visit (artifact) {
+        case \list(_): return true;
+        case \list(_): return true;
+    }
+    return false;
+}

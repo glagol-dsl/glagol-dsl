@@ -8,6 +8,7 @@ import Transform::Glagol2PHP::Overriding;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
+import Syntax::Abstract::PHP::Helpers;
 import List;
 
 public PhpClassItem toPhpClassItem(d: constructor(list[Declaration] params, list[Statement] body), env) 
@@ -32,11 +33,16 @@ public list[Declaration] getConditionalConstructors(list[Declaration] declaratio
 public list[Declaration] getNonConditionalConstructors(list[Declaration] declarations)
     = [c | c <- declarations, constructor(_, _) !:= c];
 
-public PhpClassItem createConstructor(list[Declaration] declarations, env)
-    = phpMethod("__construct", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
-        phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))
-    ] + [phpExprstmt(createOverrideRule(d)) | d <- declarations], phpNoName())[
-    	@phpAnnotations=({} | it + toPhpAnnotations(d, env) | d <- declarations)
+public PhpClassItem createConstructor(list[Declaration] declarations, env) = 
+    phpMethod("__construct", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)],
+        [phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))] + 
+        [phpExprstmt(createOverrideRule(d)) | d <- declarations] +
+        [phpNewLine()] +
+        [phpExprstmt(phpMethodCall(phpVar("overrider"), phpName(phpName("execute")), [
+            phpActualParameter(phpVar("args"), false)
+        ]))],
+    phpNoName())[
+    	@phpAnnotations={annotation | d <- declarations, annotation <- toPhpAnnotations(d, env)}
     ]
     when size(declarations) > 1;
 

@@ -22,8 +22,16 @@ private list[Declaration] extractImports(a: repository(_, list[Declaration] ds),
 private default list[Declaration] extractImports(Declaration artifact, env) = commonImports(artifact, env);
 
 private list[Declaration] commonImports(Declaration artifact, env) =
-    hasOverriding(artifact.declarations) ? 
-        [\import("Overrider", namespace("Glagol", namespace("Overriding")), "Overrider")] : [];
+    (hasOverriding(artifact.declarations) ? 
+        [
+        	\import("Overrider", namespace("Glagol", namespace("Overriding")), "Overrider"),
+        	\import("Parameter", namespace("Glagol", namespace("Overriding")), "Parameter")
+        ] : []) +
+    (hasMapUsage(artifact) ? 
+        [\import("Map", namespace("Ds"), "Map"), \import("MapFactory", namespace("Glagol", namespace("Ds")), "MapFactory")] : []) +
+    (hasListUsage(artifact) ? 
+        [\import("Vector", namespace("Ds"), "Vector")] : [])
+    ;
     
 private PhpUse toPhpUse(\import(str artifactName, Declaration namespace, str as)) = 
 	phpUse(phpName(namespaceToString(namespace, "\\") + "\\" + artifactName), phpSomeName(phpName(as)))

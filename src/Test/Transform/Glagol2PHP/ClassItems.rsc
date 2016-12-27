@@ -103,7 +103,11 @@ test bool shouldTransformOverridingConstructorsToPhpClassItems() =
                 phpName(phpName("Parameter\\Integer")),
                 []),
               false)
-          ]))
+          ])),
+      phpNewLine(),
+      phpExprstmt(phpMethodCall(phpVar(phpName(phpName("overrider"))), phpName(phpName("execute")), [
+        phpActualParameter(phpVar(phpName(phpName("args"))), false)
+      ]))
     ],
     phpNoName())];
 
@@ -174,7 +178,11 @@ test bool shouldTransformMethodsWithOverridingToPhpClassItems() =
 		                phpName(phpName("Parameter\\Str")),
 		                []),
 		              false)
-		          ]))
+		          ])),
+      			phpNewLine(),
+	            phpReturn(phpSomeExpr(phpMethodCall(phpVar(phpName(phpName("overrider"))), phpName(phpName("execute")), [
+                  phpActualParameter(phpVar(phpName(phpName("args"))), false)
+                ])))
 		    ],
 		    phpNoName())
 	];
@@ -192,5 +200,8 @@ test bool shouldTransformRelationsToPhpClassItems() =
 	] && toPhpClassItems([
 		relation(\one(), \one(), "User", "owner", {})
 	], <anyFramework(), doctrine()>, entity("", []))[0]@phpAnnotations == 
-	{phpAnnotation("ORM\\OneToOne", phpAnnotationVal(("targetEntity":phpAnnotationVal("User"))))};
+	{
+		phpAnnotation("ORM\\OneToOne", phpAnnotationVal(("targetEntity":phpAnnotationVal("User")))),
+		phpAnnotation("var", phpAnnotationVal("User"))
+	};
 	

@@ -56,7 +56,7 @@ public data PhpExpr
     | phpTernary(PhpExpr cond, PhpOptionExpr ifBranch, PhpExpr elseBranch)
     | phpStaticPropertyFetch(PhpNameOrExpr className, PhpNameOrExpr propertyName)
     | phpScalar(PhpScalar scalarVal)
-    | phpVar(PhpNameOrExpr varName)   
+    | phpVar(PhpNameOrExpr varName)
     | phpYield(PhpOptionExpr keyExpr, PhpOptionExpr valueExpr)
     | phpListExpr(list[PhpOptionExpr] listExprs)
     | phpBracket(PhpOptionExpr bracketExpr)
@@ -89,6 +89,7 @@ public data PhpScalar
     | phpString(str strVal)
     | phpBoolean(bool boolVal)
     | phpEncapsed(list[PhpExpr] parts)
+    | phpEncapsedStringPart(str strVal)
     ;
 
 public data PhpStmt 
@@ -102,7 +103,7 @@ public data PhpStmt
     | phpExprstmt(PhpExpr expr)
     | phpFor(list[PhpExpr] inits, list[PhpExpr] conds, list[PhpExpr] exprs, list[PhpStmt] body)
     | phpForeach(PhpExpr arrayExpr, PhpOptionExpr keyvar, bool byRef, PhpExpr asVar, list[PhpStmt] body)
-    | phpFunction(str name, bool byRef, list[PhpParam] params, list[PhpStmt] body)
+    | phpFunction(str name, bool byRef, list[PhpParam] params, list[PhpStmt] body, PhpOptionName returnType)
     | phpGlobal(list[PhpExpr] exprs)
     | phpGoto(str label)
     | phpHaltCompiler(str remainingText)
@@ -124,6 +125,7 @@ public data PhpStmt
     | phpWhile(PhpExpr cond, list[PhpStmt] body)
     | phpEmptyStmt()
     | phpBlock(list[PhpStmt] body)
+    | phpNewLine()
     ;
 
 public data PhpDeclaration = phpDeclaration(str key, PhpExpr val);
@@ -172,14 +174,14 @@ public data PhpScript = phpScript(list[PhpStmt] body) | phpErrscript(str err);
 
 public data PhpAnnotation 
     = phpAnnotation(str key)
-    | phpAnnotation(str key, PhpAnnotation \map)
+    | phpAnnotation(str key, PhpAnnotation v)
     | phpAnnotationVal(map[str k, PhpAnnotation v])
     | phpAnnotationVal(str string)
     | phpAnnotationVal(int integer)
     | phpAnnotationVal(real float)
     | phpAnnotationVal(bool boolean)
     | phpAnnotationVal(list[PhpAnnotation] items)
-    | phpAnnotationVal(PhpAnnotation \map)
+    | phpAnnotationVal(PhpAnnotation v)
     ;
 
 public anno set[PhpAnnotation] PhpClassDef@phpAnnotations;

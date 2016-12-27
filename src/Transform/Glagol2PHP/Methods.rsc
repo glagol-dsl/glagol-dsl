@@ -38,23 +38,27 @@ public PhpClassItem createMethod(list[Declaration] methods, env)
     = toPhpClassItem(methods[0], env)
     when size(methods) == 1;
 
-public PhpClassItem createMethod(list[Declaration] methods, env)
-    = phpMethod(methods[0].name, {toPhpModifier(methods[0].modifier)}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
-        phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))
-    ] + [phpExprstmt(createOverrideRule(m)) | m <- methods], toPhpReturnType(methods[0].returnType))[
-    	@phpAnnotations=({} | it + toPhpAnnotations(m, env) | m <- methods)
+public PhpClassItem createMethod(list[Declaration] methods, env) = 
+    phpMethod(methods[0].name, {toPhpModifier(methods[0].modifier)}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], 
+        [phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))] + 
+        [phpExprstmt(createOverrideRule(m)) | m <- methods] +
+        [phpNewLine()] +
+        [phpReturn(phpSomeExpr(phpMethodCall(phpVar(phpName(phpName("overrider"))), phpName(phpName("execute")), [
+          phpActualParameter(phpVar(phpName(phpName("args"))), false)
+        ])))], toPhpReturnType(methods[0].returnType))[
+    	@phpAnnotations={annotation | m <- methods, annotation <- toPhpAnnotations(m, env)}
     ]
     when size(methods) > 1;
 
 private PhpOptionName toPhpReturnType(voidValue()) = phpNoName();
 private PhpOptionName toPhpReturnType(integer()) = phpSomeName(phpName("int"));
 private PhpOptionName toPhpReturnType(string()) = phpSomeName(phpName("string"));
-private PhpOptionName toPhpReturnType(boolean()) = phpSomeName(phpName("boolean"));
+private PhpOptionName toPhpReturnType(boolean()) = phpSomeName(phpName("bool"));
 private PhpOptionName toPhpReturnType(float()) = phpSomeName(phpName("float"));
-private PhpOptionName toPhpReturnType(typedList(_)) = phpSomeName(phpName("Vector"));
-private PhpOptionName toPhpReturnType(typedMap(_,_)) = phpSomeName(phpName("Map"));
-private PhpOptionName toPhpReturnType(artifactType(str name)) = phpSomeName(phpName(name));
-private PhpOptionName toPhpReturnType(repositoryType(str name)) = phpSomeName(phpName(name + "Repository"));
+private PhpOptionName toPhpReturnType(\list(_)) = phpSomeName(phpName("Vector"));
+private PhpOptionName toPhpReturnType(\map(_,_)) = phpSomeName(phpName("Map"));
+private PhpOptionName toPhpReturnType(artifact(str name)) = phpSomeName(phpName(name));
+private PhpOptionName toPhpReturnType(repository(str name)) = phpSomeName(phpName(name + "Repository"));
 
 private PhpModifier toPhpModifier(\public()) = phpPublic();
 private PhpModifier toPhpModifier(\private()) = phpPrivate();

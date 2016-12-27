@@ -15,10 +15,10 @@ test bool shouldParseMapDeclaration()
           '}";
     
     return parseModule(code) == \module(namespace("Example"), [], repository("User", [
-        method(\public(), typedList(artifactType("User")), "findById", [
+        method(\public(), \list(artifact("User")), "findById", [
             param(integer(), "id")
         ], [
-            declare(typedMap(string(), integer()), variable("query"), expression(\map((string("id"): variable("id"))))),
+            declare(\map(string(), integer()), variable("query"), expression(\map((string("id"): variable("id"))))),
             \return(invoke("findOneBy", [variable("query")]))
         ])
     ]));

@@ -111,7 +111,6 @@ syntax DefaultValue
     | booleanLiteral : Boolean boolean
     | \list : "[" {DefaultValue ","}* items "]" list
     | getInstance: "get" InstanceType
-    | newInstance: "new" InstanceType 
     | newInstance: "new" InstanceType "(" {Expression ","}* args ")"
     ;
 
@@ -137,10 +136,6 @@ syntax Type
     > artifactType: ArtifactName name
     ;
 
-syntax StringQuoted 
-    = "\"" StringCharacter* string "\""
-    ;
-
 syntax Expression
     = bracket \bracket: "(" Expression expression ")"
     | \list: "[" {Expression ","}* items "]"
@@ -152,7 +147,6 @@ syntax Expression
     | float: DeciFloatNumeral number
     | booleanLiteral: Boolean boolean
     | variable: MemberName varName
-    | newInstance: "new" ArtifactName
     | newInstance: "new" ArtifactName "(" {Expression ","}* args ")"
     | getInstance: "get" Type
     | invoke: (Expression prev ".")? MemberName method "(" {Expression ","}* args ")"

@@ -152,7 +152,7 @@ test bool testNewInstance()
     str code = "namespace Example;
                'entity User {
                '    void newInstance() {
-               '        new DateTime;
+               '        new DateTime();
                '    }
                '}";
     
@@ -228,7 +228,7 @@ test bool testMethodInvokeChainedToAVariable()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "methodInvoke", [], [
-            declare(artifactType("SomeEntity"), variable("eee"), expression(
+            declare(artifact("SomeEntity"), variable("eee"), expression(
                 new("SomeEntity", [])
             )),
             expression(invoke(variable("eee"), "methodInvoke", [])),

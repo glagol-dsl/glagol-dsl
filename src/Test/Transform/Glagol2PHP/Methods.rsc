@@ -19,30 +19,30 @@ test bool shouldTransformMethodWithStringReturnValue() =
 
 test bool shouldTransformMethodWithBooleanReturnValue() =
     toPhpClassItem(method(\public(), boolean(), "test", [], []), <zend(), doctrine()>) == 
-    phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("boolean")));
+    phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("bool")));
 
 test bool shouldTransformMethodWithFloatReturnValue() =
     toPhpClassItem(method(\public(), float(), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("float")));
 
 test bool shouldTransformMethodWithIntegerListReturnValue() =
-    toPhpClassItem(method(\public(), typedList(integer()), "test", [], []), <zend(), doctrine()>) == 
+    toPhpClassItem(method(\public(), \list(integer()), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("Vector")));
 
 test bool shouldTransformMethodWithStringListReturnValue() =
-    toPhpClassItem(method(\public(), typedList(string()), "test", [], []), <zend(), doctrine()>) == 
+    toPhpClassItem(method(\public(), \list(string()), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("Vector")));
 
 test bool shouldTransformMethodWithMapReturnValue() =
-    toPhpClassItem(method(\public(), typedMap(string(), float()), "test", [], []), <zend(), doctrine()>) == 
+    toPhpClassItem(method(\public(), \map(string(), float()), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("Map")));
 
 test bool shouldTransformMethodWithArtifactReturnValue() =
-    toPhpClassItem(method(\public(), artifactType("User"), "test", [], []), <zend(), doctrine()>) == 
+    toPhpClassItem(method(\public(), artifact("User"), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("User")));
 
 test bool shouldTransformMethodWithArtifactReturnValue() =
-    toPhpClassItem(method(\public(), repositoryType("User"), "test", [], []), <zend(), doctrine()>) == 
+    toPhpClassItem(method(\public(), repository("User"), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("UserRepository")));
 
 test bool shouldTransformMethodWithPrivateModifier() =

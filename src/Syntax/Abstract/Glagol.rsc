@@ -83,10 +83,10 @@ data Type
     | string()
     | voidValue()
     | boolean()
-    | typedList(Type \type)
-    | typedMap(Type key, Type v)
-    | artifactType(str name)
-    | repositoryType(str name)
+    | \list(Type \type)
+    | \map(Type key, Type v)
+    | artifact(str name)
+    | repository(str name)
     | selfie()
     ;
 

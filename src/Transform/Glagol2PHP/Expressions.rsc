@@ -22,7 +22,7 @@ public PhpExpr toPhpExpr(\map(map[Expression key, Expression \value] m)) =
         phpActualParameter(toPhpExpr(m[k]), false)]), false) | k <- m
     ]);
 
-public PhpExpr toPhpExpr(get(artifactType(str name)))
+public PhpExpr toPhpExpr(get(artifact(str name)))
     = phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("_<toLowerCaseFirstChar(name)>")));
 
 public PhpExpr toPhpExpr(variable(str name)) = phpVar(phpName(phpName(name)));

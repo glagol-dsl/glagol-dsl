@@ -112,7 +112,8 @@ test bool shouldTransformSimpleAnnotatedWithValueEntityToPhpScriptUsingDoctrine(
                         )),
                         "scale": phpAnnotationVal(12.35)
                     ))),
-                  phpAnnotation("ORM\\Id")
+                  phpAnnotation("ORM\\Id"),
+                  phpAnnotation("var", phpAnnotationVal("integer"))
            };
 }
 test bool shouldTransformEntityWithRelationsToPhpScriptUsingDoctrine() {
@@ -145,7 +146,7 @@ test bool shouldTransformEntityWithRelationsToPhpScriptUsingDoctrine() {
                     "ORM\\OneToOne",
                     phpAnnotationVal((
                         "targetEntity": phpAnnotationVal("Language")
-                    )))
+                    ))), phpAnnotation("var", phpAnnotationVal("Language"))
            } && ast.body[0].body[1].classDef.members[1] == phpProperty(
                {phpPrivate()}, [phpProperty("userLang", phpNoExpr())]
            );

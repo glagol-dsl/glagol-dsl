@@ -13,7 +13,7 @@ test bool testShouldParseEntityWithValues()
                
     list[Declaration] expectedValues = [
         property(integer(), "id", {read()}),
-        property(artifactType("Date"), "addedOn", {read(), \set()})
+        property(artifact("Date"), "addedOn", {read(), \set()})
     ];
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", expectedValues));
