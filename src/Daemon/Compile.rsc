@@ -5,8 +5,14 @@ import Compiler::Compiler;
 import lang::json::IO;
 import lang::json::ast::JSON;
 import IO;
+import String;
 
 private alias Command = tuple[str command, loc path];
+
+public int main(list[str] args) {
+	println("Opening socket...");
+	listenForCompileSignals(toInt(args[0]));
+}
 
 public void listenForCompileSignals(int port) {
     openSocket(port, controller);
@@ -20,7 +26,7 @@ private void controller(str inputStream) {
         Command command = decodeJSON(inputStream);
         dispatch(command);
     } catch e: {
-        socketWriteLn("Invalid JSON");
+        socketWriteLn("Invalid JSON <e>");
     }
 }
 
@@ -32,9 +38,7 @@ private void dispatch(Command command) {
 }
 
 private Command decodeJSON(str inputStream) {
-
-    JSON json = fromJSON(#JSON, inputStream);    
-    loc path = |file:///| + json.properties["path"].s;
+    JSON json = fromJSON(#JSON, inputStream);
     
-    return <json.properties["command"].s, path, isFile(path), json.properties["orm"].s>;
+    return <json.properties["command"].s, |file:///| + json.properties["path"].s>;
 }

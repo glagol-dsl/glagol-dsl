@@ -52,6 +52,9 @@ public str toCode(phpForeach(PhpExpr arrayExpr, PhpOptionExpr keyvar, bool byRef
 public str toCode(phpFunction(str name, bool byRef, list[PhpParam] params, list[PhpStmt] body, PhpOptionName rType), int i) =
 	"<s(i)>function <ref(byRef)><name>(<toCode(params)>)<returnType(rType)><nl()><s(i)>{<nl()><toCode(body, i + 1)><s(i)>}";
 
+public str toCode(phpIf(PhpExpr cond, [phpBlock(list[PhpStmt] body)], list[PhpElseIf] elseIfs, PhpOptionElse elseClause), int i) =
+	toCode(phpIf(cond, body, elseIfs, elseClause), i);
+
 public str toCode(phpIf(PhpExpr cond, list[PhpStmt] body, list[PhpElseIf] elseIfs, PhpOptionElse elseClause), int i) =
 	"<s(i)>if (<toCode(cond, i)>) {<nl()>" +
 	"<toCode(body, i + 1)>" + 
@@ -129,13 +132,17 @@ private str implements(list[PhpName] interfaces) = "" when size(interfaces) == 0
 private str implements(list[PhpName] interfaces) = "implements <interfaces[0].name> " when size(interfaces) == 1;
 private default str implements(list[PhpName] interfaces) = 
 	"implements <(glue([name | phpName(str name) <- interfaces], ", "))> ";
-	
+
 private str toElseIfs(list[PhpElseIf] elseIfs, int i) = glue([toElseIf(e, i) | e <- elseIfs]);
+
+private str toElseIf(phpElseIf(PhpExpr cond, [phpBlock(list[PhpStmt] body)]), int i) =
+	toElseIf(phpElseIf(cond, body), i);
 
 private str toElseIf(phpElseIf(PhpExpr cond, list[PhpStmt] body), int i) = 
 	" elseif (<toCode(cond, i)>) {<nl()><toCode(body, i + 1)><s(i)>}";
 	
 private str toElse(phpNoElse(), int i) = "";
+private str toElse(phpSomeElse(phpElse([phpBlock(list[PhpStmt] body)])), int i) = toElse(phpSomeElse(phpElse(body)), i);
 private str toElse(phpSomeElse(phpElse(list[PhpStmt] body)), int i) = " else {<nl()><toCode(body, i + 1)><s(i)>}";
 
 private str key(phpNoExpr(), _) = "";
