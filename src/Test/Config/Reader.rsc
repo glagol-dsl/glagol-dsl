@@ -5,16 +5,21 @@ import Config::Reader;
 
 test bool testShouldLoadDotGlagolFileFromString()
 {
-    str config = "framework: zend
+    str config = "name: test
+    'description: test
+    'framework: zend
     'orm: doctrine
-    'src_dir: source";
+    'src_dir: source
+    'out_dir: code";
     
-    return loadGlagolConfig(config) == <zend(), doctrine(), |tmp:///|, |tmp:///source|>;
+    return loadGlagolConfig(config) == <"test", "test", zend(), doctrine(), |tmp:///|, |tmp:///source|, |tmp:///code|>;
 }
 
 test bool testShouldLoadDotGlagolFileFromProjectPath()
 {
-    str config = "framework: zend
+    str config = "name: test
+    'description: test
+    'framework: zend
     'orm: doctrine";
     
     loc tempProjectDir = |tmp:///glagol_test_dot_glagol|;
@@ -27,12 +32,14 @@ test bool testShouldLoadDotGlagolFileFromProjectPath()
     remove(tempProjectDir + ".glagol");
     remove(tempProjectDir);
 
-    return projectConfig == <zend(), doctrine(), tempProjectDir, tempProjectDir + "src">;
+    return projectConfig == <"test", "test", zend(), doctrine(), tempProjectDir, tempProjectDir + "src", tempProjectDir + "out">;
 }
 
 test bool testShouldThrowExceptionOnInvalidFramework()
 {
-    str config = "framework: pizda
+    str config = "name: test
+    'description: test
+    'framework: pizda
     'orm: doctrine";
     
     try {
@@ -46,7 +53,9 @@ test bool testShouldThrowExceptionOnInvalidFramework()
 
 test bool testShouldThrowExceptionOnInvalidORM()
 {
-    str config = "framework: zend
+    str config = "name: test
+    'description: test
+    'framework: zend
     'orm: pizda";
     
     try {
