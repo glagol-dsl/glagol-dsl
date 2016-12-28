@@ -149,7 +149,8 @@ syntax Expression
     | variable: MemberName varName
     | newInstance: "new" ArtifactName "(" {Expression ","}* args ")"
     | getInstance: "get" Type
-    | invoke: (Expression prev ".")? MemberName method "(" {Expression ","}* args ")"
+    | invokeLocal: MemberName method "(" {Expression ","}* args ")"
+    | invoke: Expression prev "." MemberName method "(" {Expression ","}* args ")"
     | fieldAccess: Expression prev "." MemberName field
     | this: "this"
     > left ( product: Expression lhs "*" () !>> "*" Expression rhs

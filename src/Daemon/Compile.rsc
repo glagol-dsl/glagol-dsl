@@ -6,6 +6,8 @@ import lang::json::IO;
 import lang::json::ast::JSON;
 import IO;
 import String;
+import Parser::ParseCode;
+import Ambiguity;
 
 private alias Command = tuple[str command, loc path];
 
@@ -25,8 +27,11 @@ private void controller(str inputStream) {
     try {
         Command command = decodeJSON(inputStream);
         dispatch(command);
+    } catch Ambiguity(loc file, _, _): {
+        iprintln(diagnose(parseCode(|file:///| + file.path, true)));
     } catch e: {
-        socketWriteLn("Invalid JSON <e>");
+        iprintln(e);
+        socketWriteLn("Error: <e>");
     }
 }
 
