@@ -2,7 +2,7 @@ module Test::Transform::Glagol2PHP::Constructors::Overriding
 
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
-import Config::Reader;
+import Config::Config;
 import Transform::Glagol2PHP::Entities;
 
 test bool shouldAddOverriderWithRulesWhenTransformingOverridedConstructors() = 

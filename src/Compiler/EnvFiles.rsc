@@ -2,7 +2,7 @@ module Compiler::EnvFiles
 
 import Utils::Glue;
 import Syntax::Abstract::Glagol;
-import Config::Reader;
+import Config::Config;
 
 public map[loc, str] generateEnvFiles(Config config, list[Declaration] ast) = 
 	(config.outPath + "composer.json": generateComposerFile(config, ast));

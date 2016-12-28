@@ -9,7 +9,7 @@ import Transform::Glagol2PHP::Repositories;
 import Transform::Glagol2PHP::Utils;
 import Transform::Glagol2PHP::ValueObjects;
 import Transform::Glagol2PHP::ClassItems;
-import Config::Reader;
+import Config::Config;
 
 public PhpStmt toPhpNamespace(Declaration namespace, list[Declaration] imports, Declaration artifact, env)
     = phpNamespace(

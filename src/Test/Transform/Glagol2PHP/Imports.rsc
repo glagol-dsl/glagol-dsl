@@ -3,7 +3,7 @@ module Test::Transform::Glagol2PHP::Imports
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Transform::Glagol2PHP::Imports;
-import Config::Reader;
+import Config::Config;
 
 test bool shouldConvertToPhpUsesOnDoctrineEntityAndOverriding() =
 	toPhpUses(

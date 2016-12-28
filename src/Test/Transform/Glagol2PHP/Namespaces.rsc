@@ -3,7 +3,7 @@ module Test::Transform::Glagol2PHP::Namespaces
 import Transform::Glagol2PHP::Namespaces;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
-import Config::Reader;
+import Config::Config;
 
 test bool shouldTransformToAPhpNamespace() = 
 	toPhpNamespace(namespace("Test", namespace("Entity", namespace("User"))), 

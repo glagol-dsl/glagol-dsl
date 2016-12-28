@@ -9,7 +9,7 @@ import Transform::Glagol2PHP::Properties;
 import Transform::Glagol2PHP::ClassItems;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
-import Config::Reader;
+import Config::Config;
 
 public PhpStmt toPhpClassDef(u: util(str name, list[Declaration] declarations), env: <Framework f, ORM orm>)
     = phpClassDef(phpClass(name, {}, phpNoName(), [], toPhpClassItems(declarations, <f, orm>, u))[

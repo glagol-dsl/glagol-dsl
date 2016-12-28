@@ -4,7 +4,7 @@ import Daemon::TcpServer;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Parser::ParseAST;
-import Config::Reader;
+import Config::Config;
 import Compiler::PHP::Compiler;
 import Compiler::EnvFiles;
 import Transform::Glagol2PHP::Namespaces;

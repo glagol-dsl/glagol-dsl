@@ -1,76 +1,48 @@
 module Config::Reader
 
+import Config::Config;
 import Exceptions::ConfigExceptions;
-import lang::yaml::Model;
+import lang::json::IO;
+import lang::json::ast::JSON;
+import List;
 import IO;
-import String;
 
-data Framework
-    = zend()
-    | anyFramework()
-    | laravel()
-// TODO    | symfony()
-    ;
-
-data ORM
-    = doctrine()
-    | anyORM()
-// TODO    | eloquent()
-    ;
+private str COMPOSER_FILE = "composer.json";
 
 alias Config = tuple[
-	str name,
-	str description,
-	Framework framework, 
-	ORM orm, 
-	loc projectPath, 
-	loc srcPath, 
-	loc outPath
+	JSON composer,
+	loc projectPath
 ];
 
-public Config loadGlagolConfig(loc projectPath) = loadGlagolConfig(readFile(projectPath + ".glagol"), projectPath);
-public Config loadGlagolConfig(str configSource, loc projectPath) = parseRawYaml(loadYAML(configSource), projectPath);
-public Config loadGlagolConfig(str configSource) = parseRawYaml(loadYAML(configSource), |tmp:///|);
+public Config loadConfig(loc projectPath) = loadConfig(readFile(projectPath + COMPOSER_FILE), projectPath);
+public Config loadConfig(str configSource, loc projectPath) = <fromJSON(#JSON, configSource), projectPath>;
+public Config loadConfig(str configSource) = <fromJSON(#JSON, configSource), |tmp:///|>;
 
-private Config parseRawYaml(mapping(vals), loc projectPath) = <
-		findName(vals), 
-	    findDesc(vals), 
-	    findFramework(vals), 
-	    findOrm(vals), 
-	    projectPath, 
-	    findSrc(vals, projectPath), 
-	    findOutPath(vals, projectPath)
-    >;
+public Framework getFramework(JSON composer) = convertFramework(getProperty(composer, null(), "glagol", "framework"));
+public ORM getORM(JSON composer) = convertORM(getProperty(composer, null(), "glagol", "orm"));
 
-private str findName(map[Node, Node] vals) = toSimpleMap(vals)["name"];
-private str findDesc(map[Node, Node] vals) = toSimpleMap(vals)["description"];
-private Framework findFramework(map[Node, Node] vals) = convertFramework(toSimpleMap(vals)["framework"]);
+public bool hasProperty(object(map[str, JSON] properties), str key...) = properties[key[0]]? && hasProperty(properties[key[0]], headTail(key)[1]) when size(key) > 1;
+public bool hasProperty(object(map[str, JSON] properties), str key...) = properties[key[0]]? when size(key) == 1;
 
-private ORM findOrm(map[Node, Node] vals) = convertORM(toSimpleMap(vals)["orm"]);
+public JSON getProperty(object(map[str, JSON] properties), JSON \default, str key...) = getProperty(properties[key[0]], \default, headTail(key)[1]) when size(key) > 1 && properties[key[0]]?;
+public JSON getProperty(object(map[str, JSON] properties), JSON \default, str key...) = \default when size(key) > 1 && !properties[key[0]]?;
+public JSON getProperty(object(map[str, JSON] properties), JSON \default, str key...) = \default when size(key) == 1 && !properties[key[0]]?;
+public JSON getProperty(object(map[str, JSON] properties), JSON \default, str key...) = properties[key[0]] when size(key) == 1 && properties[key[0]]?;
 
-private loc findSrc(map[Node, Node] vals, loc projectPath) {
-    map[str, str] configMap = toSimpleMap(vals);
-    return (configMap["src_dir"]?) ? projectPath + configMap["src_dir"] : projectPath + "src";
+private Framework convertFramework(string("laravel")) = laravel();
+
+private Framework convertFramework(null()) {
+    throw InvalidFramework("Framework not specified");
 }
 
-private loc findOutPath(map[Node, Node] vals, loc projectPath) {
-    map[str, str] configMap = toSimpleMap(vals);
-    return (configMap["out_dir"]?) ? projectPath + configMap["out_dir"] : projectPath + "out";
+private Framework convertFramework(string(str framework)) {
+    throw InvalidFramework("Invalid framework \"<framework>\"");
 }
 
-private Framework convertFramework("zend") = zend();
-private Framework convertFramework("laravel") = laravel();
-// TODO private Framework convertFramework("symfony") = symfony();
-
-private Framework convertFramework(str invalid) {
-    throw InvalidFramework("Invalid framework \"<invalid>\"");
+private ORM convertORM(string("doctrine")) = doctrine();
+private ORM convertORM(null()) {
+    throw InvalidORM("ORM not specified");
 }
-
-private ORM convertORM("doctrine") = doctrine();
-// TODO private ORM convertORM("eloquent") = eloquent();
-
-private ORM convertORM(str invalid) {
+private ORM convertORM(string(str invalid)) {
     throw InvalidORM("Invalid ORM \"<invalid>\"");
 }
-
-private map[str, str] toSimpleMap(map[Node, Node] nodes) = ("<s.\value>" : "<nodes[s].\value>" | s <- nodes);

@@ -4,7 +4,7 @@ import Transform::Glagol2PHP::Common;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Syntax::Abstract::Glagol::Helpers;
-import Config::Reader;
+import Config::Config;
 
 public list[PhpStmt] toPhpUses(list[Declaration] imports, Declaration artifact, env) =
     [phpUse(
