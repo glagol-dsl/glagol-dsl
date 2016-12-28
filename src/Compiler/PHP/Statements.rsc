@@ -2,9 +2,9 @@ module Compiler::PHP::Statements
 
 import Syntax::Abstract::PHP;
 import Compiler::PHP::Expressions;
-import Compiler::PHP::Indentation;
-import Compiler::PHP::Glue;
-import Compiler::PHP::NewLine;
+import Utils::Indentation;
+import Utils::Glue;
+import Utils::NewLine;
 import Compiler::PHP::ByRef;
 import Compiler::PHP::Params;
 import Compiler::PHP::Properties;

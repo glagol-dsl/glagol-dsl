@@ -1,9 +1,9 @@
 module Compiler::PHP::Annotations
 
 import Syntax::Abstract::PHP;
-import Compiler::PHP::Glue;
-import Compiler::PHP::Indentation;
-import Compiler::PHP::NewLine;
+import Utils::Glue;
+import Utils::Indentation;
+import Utils::NewLine;
 import Set;
 import List;
 

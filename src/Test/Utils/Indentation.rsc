@@ -1,6 +1,6 @@
-module Test::Compiler::PHP::Indentation
+module Test::Utils::Indentation
 
-import Compiler::PHP::Indentation;
+import Utils::Indentation;
 
 test bool zeroIndentation() = s(0) == "";
 test bool firstLevelIndentation() = s(1) == "    ";

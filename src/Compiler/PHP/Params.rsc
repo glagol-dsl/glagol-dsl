@@ -3,7 +3,7 @@ module Compiler::PHP::Params
 import Syntax::Abstract::PHP;
 import Compiler::PHP::Expressions;
 import Compiler::PHP::ByRef;
-import Compiler::PHP::Glue;
+import Utils::Glue;
 
 public str toCode(phpParam(
 		str paramName, 

@@ -1,6 +1,6 @@
-module Test::Compiler::PHP::Glue
+module Test::Utils::Glue
 
-import Compiler::PHP::Glue;
+import Utils::Glue;
 
 test bool shouldGlueOnePiece() = glue(["a"], ",") == "a";
 test bool shouldGlueNoPiece() = glue([], ",") == "";

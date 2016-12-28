@@ -1,6 +1,6 @@
 module Compiler::EnvFiles
 
-import Compiler::PHP::Glue;
+import Utils::Glue;
 import Syntax::Abstract::Glagol;
 import Config::Reader;
 

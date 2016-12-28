@@ -2,12 +2,12 @@ module Compiler::PHP::Expressions
 
 import Compiler::PHP::Operations;
 import Compiler::PHP::ByRef;
-import Compiler::PHP::Glue;
+import Utils::Glue;
 import Compiler::PHP::CastType;
 import Compiler::PHP::Statements;
 import Compiler::PHP::Params;
-import Compiler::PHP::NewLine;
-import Compiler::PHP::Indentation;
+import Utils::NewLine;
+import Utils::Indentation;
 import Compiler::PHP::IncludeType;
 import Syntax::Abstract::PHP;
 import List;

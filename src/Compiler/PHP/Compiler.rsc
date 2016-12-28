@@ -1,8 +1,8 @@
 module Compiler::PHP::Compiler
 
 import Syntax::Abstract::PHP;
-import Compiler::PHP::Indentation;
-import Compiler::PHP::NewLine;
+import Utils::Indentation;
+import Utils::NewLine;
 import Compiler::PHP::Uses;
 import Compiler::PHP::Classes;
 import Compiler::PHP::Statements;
