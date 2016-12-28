@@ -18,8 +18,14 @@ public Config loadConfig(loc projectPath) = loadConfig(readFile(projectPath + CO
 public Config loadConfig(str configSource, loc projectPath) = <fromJSON(#JSON, configSource), projectPath>;
 public Config loadConfig(str configSource) = <fromJSON(#JSON, configSource), |tmp:///|>;
 
+public Framework getFramework(Config config) = getFramework(config.composer);
 public Framework getFramework(JSON composer) = convertFramework(getProperty(composer, null(), "glagol", "framework"));
+
+public ORM getORM(Config config) = getORM(config.composer);
 public ORM getORM(JSON composer) = convertORM(getProperty(composer, null(), "glagol", "orm"));
+
+public loc getCompilePath(Config config) = config.projectPath + getProperty(config.composer, string("out"), "glagol", "paths", "out").s;
+public loc getSourcesPath(Config config) = config.projectPath + getProperty(config.composer, string("src"), "glagol", "paths", "src").s;
 
 public bool hasProperty(object(map[str, JSON] properties), str key...) = properties[key[0]]? && hasProperty(properties[key[0]], headTail(key)[1]) when size(key) > 1;
 public bool hasProperty(object(map[str, JSON] properties), str key...) = properties[key[0]]? when size(key) == 1;

@@ -5,18 +5,19 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Parser::ParseAST;
 import Config::Config;
+import Config::Reader;
 import Compiler::PHP::Compiler;
 import Compiler::EnvFiles;
 import Transform::Glagol2PHP::Namespaces;
 import IO;
 
 public void compile(loc projectPath) {
-	Config config = loadGlagolConfig(projectPath);
+	Config config = loadConfig(projectPath);
     list[loc] sourceFiles = findAllSourceFiles(projectPath);
     
     list[Declaration] glagolParsed = [ast | fileLoc <- sourceFiles, Declaration ast := parseModule(fileLoc)];
         
-    for (l <- glagolParsed, out := toPHPScript(<config.framework, config.orm>, l.\module), str outputFile <- out) {
+    for (l <- glagolParsed, out := toPHPScript(<getFramework(config), getORM(config)>, l.\module), str outputFile <- out) {
     	createSourceFile(outputFile, toCode(out[outputFile]), config);
     	socketWriteLn("Compiled source file <outputFile>");
     }
@@ -30,7 +31,7 @@ public void compile(loc projectPath) {
 }
 
 private void createSourceFile(str outputFile, str code, Config config) {
-	writeFile(config.outPath + "src" + outputFile, code);
+	writeFile(getCompilePath(config) + "src" + outputFile, code);
 }
 
 private list[loc] findAllSourceFiles(loc projectPath) {
