@@ -6,7 +6,7 @@ import IO;
 
 test bool testShouldParseVariableInBrackets()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                'entity User {
                '    void variableInBrackets(int theVariable) {
                '        ((theVariable));
@@ -26,7 +26,7 @@ test bool testShouldParseVariableInBrackets()
 
 test bool testShouldParseList()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                'entity User {
                '    void arrayExpression() {
                '        [\"First thing\", \"Second thing\"];
@@ -48,7 +48,7 @@ test bool testShouldParseList()
 
 test bool testShouldParseExpressionsWithNegativeLiterals()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                'entity User {
                '    void nestedNegative() {
                '        -(-(-(23)));
@@ -64,7 +64,7 @@ test bool testShouldParseExpressionsWithNegativeLiterals()
 
 test bool testShouldParseExpressionsWithPositiveLiterals()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                'entity User {
                '    void nestedNegative() {
                '        +(+(+(23)));
@@ -80,7 +80,7 @@ test bool testShouldParseExpressionsWithPositiveLiterals()
 
 test bool testShouldParseMathExpressions()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                'entity User {
                '    void math() {
                '        3*4*(23+3)-4/2;
@@ -123,7 +123,7 @@ test bool testShouldParseMathExpressions()
 
 test bool shouldParseAllTypesOfLiterals()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                'entity User {
                '    void literals(int var) {
                '        \"simple string literal\";
@@ -149,7 +149,7 @@ test bool shouldParseAllTypesOfLiterals()
 
 test bool testNewInstance()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                'entity User {
                '    void newInstance() {
                '        new DateTime();
@@ -165,7 +165,7 @@ test bool testNewInstance()
 
 test bool testNewInstanceWithArg()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                'entity User {
                '    void newInstance() {
                '        new DateTime(\"now\");
@@ -181,7 +181,7 @@ test bool testNewInstanceWithArg()
 
 test bool testNewInstanceWithArgs()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                'entity User {
                '    void newInstance() {
                '        new DateTime(\"now\", new Money(2300, \"USD\"));
@@ -199,7 +199,7 @@ test bool testNewInstanceWithArgs()
 
 test bool testMethodInvoke()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                'entity User {
                '    void methodInvoke() {
                '        methodInvoke();
@@ -215,7 +215,7 @@ test bool testMethodInvoke()
 
 test bool testMethodInvokeChainedToAVariable()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                'entity User {
                '    void methodInvoke() {
                '        SomeEntity eee = new SomeEntity();
@@ -241,7 +241,7 @@ test bool testMethodInvokeChainedToAVariable()
 
 test bool testMethodInvokeUsingThis()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                'entity User {
                '    void methodInvoke() {
                '        this.field.nested.invoke();
@@ -257,7 +257,7 @@ test bool testMethodInvokeUsingThis()
 
 test bool shouldFailWhenUsingWrongExpressionsForChainedAccess()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                'entity User {
                '    void methodInvoke() {
                '        SomeEntity eee = new SomeEntity();
@@ -273,7 +273,7 @@ test bool shouldFailWhenUsingWrongExpressionsForChainedAccess()
 
 test bool testFieldAccessWithAssign()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                'entity User {
                '    void methodInvoke() {
                '        this.field = \"adsdsasad\";

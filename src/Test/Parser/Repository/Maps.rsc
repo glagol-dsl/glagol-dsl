@@ -6,7 +6,7 @@ import Syntax::Abstract::Glagol;
 test bool shouldParseMapDeclaration()
 {
     str code 
-        = "namespace Example;
+        = "namespace Example
           'repository for User {
           '     User[] findById(int id) {
           '         {string, int} query = {\"id\": id};

@@ -6,7 +6,7 @@ import Syntax::Abstract::Glagol;
 test bool shouldParseEmptyRepository()
 {
     str code 
-        = "namespace Example;
+        = "namespace Example
           '
           'import Glagol::ORM::EntityManager;
           '
@@ -21,7 +21,7 @@ test bool shouldParseEmptyRepository()
 test bool shouldParseRepositoryWithMethodAndAMap()
 {
     str code 
-        = "namespace Example;
+        = "namespace Example
           'repository for User {
           '     User[] findById(int id) = findOneBy({\"id\": id});
           '}";

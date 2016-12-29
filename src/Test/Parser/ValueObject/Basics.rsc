@@ -6,7 +6,7 @@ import Syntax::Abstract::Glagol;
 test bool shouldParseEmptyValueObject()
 {
     str code 
-        = "namespace Testing;
+        = "namespace Testing
         'value DateTime {}
         '";
         
@@ -15,7 +15,7 @@ test bool shouldParseEmptyValueObject()
 
 test bool testShouldParseFlatDocAnnotationForVO()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                '@doc=\"This is a doc\"
                'value DateTime { }";
 

@@ -6,7 +6,7 @@ import Syntax::Abstract::Glagol;
 test bool shouldParseMethodWithoutModifier()
 {
     str code 
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '    int example(int blabla = 5, string[] names = [\"a\", \"b\", \"c\"]) = (23 + 5)*8;
         '}";
@@ -29,7 +29,7 @@ test bool shouldParseMethodWithoutModifier()
 test bool shouldParseMethodWithModifierAndWhenExpression()
 {
     str code 
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '    private int example(int argument) = (23 + 5)*8 when argument \> 5;
         '    @doc(\"This is a doc\")
@@ -60,7 +60,7 @@ test bool shouldParseMethodWithModifierAndWhenExpression()
 test bool shouldParseMethodWithModifierBodyAndWhen()
 {
     str code 
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '  private void processEntry(int limit = 15) {
         '      return 1 + 5;

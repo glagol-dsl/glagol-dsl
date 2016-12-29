@@ -6,7 +6,7 @@ import Syntax::Abstract::Glagol;
 test bool shouldParseConstructWithOneParam()
 {
     str code 
-        = "namespace Example;
+        = "namespace Example
           'entity User {
           '    User(int param) {
           '    }
@@ -21,7 +21,7 @@ test bool shouldParseConstructWithOneParam()
 test bool shouldParseConstructWithOneAnnotatedParam()
 {
     str code 
-        = "namespace Example;
+        = "namespace Example
           'entity User {
           '    User(@anno int param) {
           '    }
@@ -36,7 +36,7 @@ test bool shouldParseConstructWithOneAnnotatedParam()
 test bool shouldParseConstructWithOneAnnotatedParamAndOneSimple()
 {
     str code 
-        = "namespace Example;
+        = "namespace Example
           'entity User {
           '    User(@anno int param, int param2) {
           '    }
@@ -51,7 +51,7 @@ test bool shouldParseConstructWithOneAnnotatedParamAndOneSimple()
 test bool shouldParseAnnotatedConstructWithOneParam()
 {
     str code 
-        = "namespace Example;
+        = "namespace Example
           'entity User {
           '    @doc(\"This is a doc\")
           '    User(int param) {
@@ -67,7 +67,7 @@ test bool shouldParseAnnotatedConstructWithOneParam()
 test bool shouldFailWhenInvalidConstructorNameIsUsed()
 {
     str code 
-        = "namespace Example;
+        = "namespace Example
           'entity User {
           '    UserFail(int param) {
           '    }
@@ -83,7 +83,7 @@ test bool shouldFailWhenInvalidConstructorNameIsUsed()
 test bool shouldParseConstructWithTwoParamsAndDefaultValue()
 {
     str code 
-        = "namespace Example;
+        = "namespace Example
           'entity User {
           '    User(int param, float param2 = 0.55, bool param3 = true) {
           '    }
@@ -102,7 +102,7 @@ test bool shouldParseConstructWithTwoParamsAndDefaultValue()
 test bool shouldParseConstructWithBody()
 {
     str code 
-        = "namespace Example;
+        = "namespace Example
           'entity User {
           '    User(int param, float param2 = 0.55, bool param3 = true) {
           '        param + param2;
@@ -126,7 +126,7 @@ test bool shouldParseConstructWithBody()
 test bool shouldParseConstructWithoutParams()
 {
     str code 
-        = "namespace Example;
+        = "namespace Example
           'entity User {
           '    User() {
           '    }
@@ -141,7 +141,7 @@ test bool shouldParseConstructWithoutParams()
 test bool shouldParseConstructWithoutBody()
 {
     str code 
-        = "namespace Example;
+        = "namespace Example
           'entity User {
           '    User();
           '}
@@ -155,7 +155,7 @@ test bool shouldParseConstructWithoutBody()
 test bool shouldParseConstructWithoutBodyWithParams()
 {
     str code 
-        = "namespace Example;
+        = "namespace Example
           'entity User {
           '    User(int param, float param2 = 0.55, bool param3 = true);
           '}
@@ -173,7 +173,7 @@ test bool shouldParseConstructWithoutBodyWithParams()
 test bool shouldParseConstructWithWhen()
 {
     str code 
-        = "namespace Example;
+        = "namespace Example
           'entity User {
           '    User(int param) {
           '        

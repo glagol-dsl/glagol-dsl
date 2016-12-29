@@ -11,7 +11,7 @@ import Exceptions::ParserExceptions;
 
 
 
-public Declaration buildAST((Module) `namespace <Namespace n>;<Import* imports><Artifact artifact>`) 
+public Declaration buildAST((Module) `namespace <Namespace n><Import* imports><Artifact artifact>`)
     = \module(convertModuleNamespace(n), [convertImport(\import) | \import <- imports], convertArtifact(artifact));
 
 
