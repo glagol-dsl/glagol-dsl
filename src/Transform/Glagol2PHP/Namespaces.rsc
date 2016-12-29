@@ -2,6 +2,7 @@ module Transform::Glagol2PHP::Namespaces
 
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
+import Syntax::Abstract::PHP::Helpers;
 import Transform::Glagol2PHP::Imports;
 import Transform::Glagol2PHP::Common;
 import Transform::Glagol2PHP::Entities;
@@ -20,4 +21,4 @@ public PhpStmt toPhpNamespace(Declaration namespace, list[Declaration] imports, 
 public map[str, PhpScript] toPHPScript(
 	env: <Framework f, orm: doctrine()>, 
 	d: \module(Declaration namespace, imports, artifact))
-    = (makeFilename(namespace, artifact): phpScript([toPhpNamespace(namespace, imports, artifact, env)]));
+    = (makeFilename(namespace, artifact): phpScript([phpDeclareStrict(), toPhpNamespace(namespace, imports, artifact, env)]));

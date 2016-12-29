@@ -33,6 +33,7 @@ test bool shouldTransformSimpleEntityToPhpScriptUsingDoctrine()
         property(integer(), "id", {})
     ])))
     == ("User/Entity/Customer.php": phpScript([
+    	phpDeclare([phpDeclaration("strict_types", phpScalar(phpInteger(1)))], []),
         phpNamespace(phpSomeName(phpName("User\\Entity")), [
             phpUse({
                 phpUse(phpName("Currency\\Value\\Money"), phpNoName()),
@@ -55,6 +56,7 @@ test bool shouldTransformSimpleAnnotatedEntityToPhpScriptUsingDoctrine()
         property(integer(), "id", {})
     ])[@annotations=[annotation("table", [])]]))
     == ("User/Entity/Customer.php": phpScript([
+    	phpDeclare([phpDeclaration("strict_types", phpScalar(phpInteger(1)))], []),
         phpNamespace(phpSomeName(phpName("User\\Entity")), [
             phpUse({
                 phpUse(phpName("Currency\\Value\\Money"), phpNoName()),
@@ -93,13 +95,13 @@ test bool shouldTransformSimpleAnnotatedWithValueEntityToPhpScriptUsingDoctrine(
     
     PhpScript ast = asts["User/Entity/Customer.php"];
     
-    return ast.body[0].body[1].classDef@phpAnnotations == {
+    return ast.body[1].body[1].classDef@phpAnnotations == {
               phpAnnotation("ORM\\Entity"),
               phpAnnotation(
                 "ORM\\Table",
                 phpAnnotationVal(("name":phpAnnotationVal("customers"))))
             } &&
-           ast.body[0].body[1].classDef.members[0]@phpAnnotations == {
+           ast.body[1].body[1].classDef.members[0]@phpAnnotations == {
                   phpAnnotation(
                     "ORM\\Column",
                     phpAnnotationVal((
@@ -141,13 +143,13 @@ test bool shouldTransformEntityWithRelationsToPhpScriptUsingDoctrine() {
     
     PhpScript ast = asts["User/Entity/Customer.php"];
     
-    return ast.body[0].body[1].classDef.members[1]@phpAnnotations == {
+    return ast.body[1].body[1].classDef.members[1]@phpAnnotations == {
                   phpAnnotation(
                     "ORM\\OneToOne",
                     phpAnnotationVal((
                         "targetEntity": phpAnnotationVal("Language")
                     ))), phpAnnotation("var", phpAnnotationVal("Language"))
-           } && ast.body[0].body[1].classDef.members[1] == phpProperty(
+           } && ast.body[1].body[1].classDef.members[1] == phpProperty(
                {phpPrivate()}, [phpProperty("userLang", phpNoExpr())]
            );
 }

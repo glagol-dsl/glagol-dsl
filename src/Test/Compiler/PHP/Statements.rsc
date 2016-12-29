@@ -42,11 +42,11 @@ test bool shouldCompileConstantsDefinitionAndIndentation() =
 
 test bool shouldCompileDeclarationStrictTypes() =
     toCode(phpDeclare([phpDeclaration("strict_types", phpScalar(phpInteger(1)))], []), 0) ==
-    "declare(strict_types=1);";
+    "declare(strict_types=1);\n";
     
 test bool shouldCompileDeclarationStrictTypesAndTicks() =
     toCode(phpDeclare([phpDeclaration("strict_types", phpScalar(phpInteger(1))), phpDeclaration("ticks", phpScalar(phpInteger(2)))], []), 0) ==
-    "declare(strict_types=1, ticks=2);";
+    "declare(strict_types=1, ticks=2);\n";
     
 test bool shouldCompileDeclarationStrictTypesWithBody() =
     toCode(phpDeclare([phpDeclaration("strict_types", phpScalar(phpInteger(1)))], [

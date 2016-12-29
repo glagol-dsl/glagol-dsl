@@ -64,7 +64,7 @@ public str toCode(phpDo(PhpExpr cond, list[PhpStmt] body), int i) =
 	"<s(i)>do {<nl()><toCode(body, i + 1)><s(i)>} while (<toCode(cond, i)>);";
 
 public str toCode(phpDeclare(list[PhpDeclaration] decls, list[PhpStmt] body), int i) = 
-	"<s(i)>declare(<glue([toCode(d, i) | d <- decls], ", ")>);" when size(body) == 0;
+	"<s(i)>declare(<glue([toCode(d, i) | d <- decls], ", ")>);<nl()>" when size(body) == 0;
 
 public str toCode(phpDeclare(list[PhpDeclaration] decls, list[PhpStmt] body), int i) = 
 	"<s(i)>declare(<glue([toCode(d, i) | d <- decls], ", ")>) {<nl()><toCode(body, i + 1)><s(i)>}" when size(body) > 0;
