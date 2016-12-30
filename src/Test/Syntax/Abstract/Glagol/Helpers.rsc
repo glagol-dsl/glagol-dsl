@@ -94,3 +94,6 @@ test bool testHasMapUsageShouldReturnTrueWhenContainsAList() =
             expression(\list([]))
         ])
     ]));
+
+test bool testIsImportedReturnsTrue() = isImported("User", [\import("Customer", namespace("Test"), "Customer"), \import("Usr", namespace("Test"), "User")]);
+test bool testIsImportedReturnsFalse() = !isImported("User", [\import("Customer", namespace("Test"), "Customer"), \import("User", namespace("Test"), "Userr")]);

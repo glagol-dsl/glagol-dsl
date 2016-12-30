@@ -7,6 +7,7 @@ test bool shouldParseMapDeclaration()
 {
     str code 
         = "namespace Example
+          'import Example::User;
           'repository for User {
           '     User[] findById(int id) {
           '         {string, int} query = {\"id\": id};
@@ -14,7 +15,9 @@ test bool shouldParseMapDeclaration()
           '     }
           '}";
     
-    return parseModule(code) == \module(namespace("Example"), [], repository("User", [
+    return parseModule(code) == \module(namespace("Example"), [
+    		\import("User", namespace("Example"), "User")
+    	], repository("User", [
         method(\public(), \list(artifact("User")), "findById", [
             param(integer(), "id")
         ], [

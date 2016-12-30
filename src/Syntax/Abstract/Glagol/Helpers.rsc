@@ -62,3 +62,6 @@ public bool hasListUsage(Declaration artifact) {
     }
     return false;
 }
+
+public bool isImported(str \alias, list[Declaration] imports) = 
+	(false | it ? true : as == \alias | \import(str artifactName, Declaration namespace, str as) <- imports);

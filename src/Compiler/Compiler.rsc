@@ -17,7 +17,7 @@ public void compile(loc projectPath) {
     
     list[Declaration] glagolParsed = [ast | fileLoc <- sourceFiles, Declaration ast := parseModule(fileLoc)];
         
-    for (l <- glagolParsed, out := toPHPScript(<getFramework(config), getORM(config)>, l.\module), str outputFile <- out) {
+    for (l <- glagolParsed, out := toPHPScript(<getFramework(config), getORM(config)>, l.\module, glagolParsed), str outputFile <- out) {
     	createSourceFile(outputFile, toCode(out[outputFile]), config);
     	socketWriteLn("Compiled source file <outputFile>");
     }

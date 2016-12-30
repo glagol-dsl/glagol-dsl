@@ -13,6 +13,7 @@ private void buildConverters() {
         = "@doc=\"This is automatically generated file. Do not edit\"
         'module Parser::Converter
         'import Syntax::Abstract::Glagol;
+        'import Syntax::Abstract::Glagol::Helpers;
         'import Syntax::Concrete::Grammar;
         'import Parser::ParseCode;
         'import ParseTree;
