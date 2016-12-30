@@ -11,3 +11,5 @@ src/Tests.rsc
 glagol-dsl.iml
 glagol.iml
 /bin/
+composer.lock
+/vendor/

@@ -15,7 +15,7 @@ private set[str] namespaces(list[Declaration] ast) =
 	{f.\module.namespace.name | f <- ast};
 	
 private str generateComposerFile(Config config, list[Declaration] ast) = 
-    toJSON(removeGlagolProps(setAutoloading(setDependencies(config.composer), config, ast)), compact=false);
+    toJSON(removeGlagolProps(setAutoloading(setDependencies(config.composer), config, ast)));
 
 private JSON removeGlagolProps(object(map[str, JSON] properties)) = object(delete(properties, "glagol"));
 
