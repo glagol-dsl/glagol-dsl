@@ -14,7 +14,17 @@ alias Config = tuple[
 	loc projectPath
 ];
 
-public Config loadConfig(loc projectPath) = loadConfig(readFile(projectPath + COMPOSER_FILE), projectPath);
+public Config loadConfig(loc projectPath) {
+
+	loc configPath = projectPath + COMPOSER_FILE;
+
+	if (!exists(configPath)) {
+		throw ConfigMissing("Configuration file not found: <configPath.path>");
+	}
+
+	return loadConfig(readFile(configPath), projectPath);
+}
+
 public Config loadConfig(str configSource, loc projectPath) = <fromJSON(#JSON, configSource), projectPath>;
 public Config loadConfig(str configSource) = <fromJSON(#JSON, configSource), |tmp:///|>;
 

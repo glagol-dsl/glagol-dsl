@@ -1,6 +1,7 @@
 module Compiler::Compiler
 
 import Daemon::TcpServer;
+import Daemon::Response;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Parser::ParseAST;
@@ -19,14 +20,14 @@ public void compile(loc projectPath) {
         
     for (l <- glagolParsed, out := toPHPScript(<getFramework(config), getORM(config)>, l.\module, glagolParsed), str outputFile <- out) {
     	createSourceFile(outputFile, toCode(out[outputFile]), config);
-    	socketWriteLn("Compiled source file <outputFile>");
+    	respondWith(info("Compiled source file <outputFile>"));
     }
     
     map[loc, str] envFiles = generateEnvFiles(config, glagolParsed);
     
     for (f <- envFiles) {
     	writeFile(f, envFiles[f]);
-    	socketWriteLn("Created env file <f.path>");
+    	respondWith(info("Created env file <f.path>"));
     }
 }
 

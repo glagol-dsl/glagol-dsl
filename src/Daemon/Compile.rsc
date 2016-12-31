@@ -1,6 +1,7 @@
 module Daemon::Compile
 
 import Daemon::TcpServer;
+import Daemon::Response;
 import Compiler::Compiler;
 import lang::json::IO;
 import lang::json::ast::JSON;
@@ -28,11 +29,18 @@ private void controller(str inputStream) {
         Command command = decodeJSON(inputStream);
         dispatch(command);
     } catch Ambiguity(loc file, _, _): {
-        iprintln(diagnose(parseCode(|file:///| + file.path, true)));
+        respondWith(diagnose(parseCode(|file:///| + file.path, true)));
+    } catch ParseError(loc location): {
+    	respondWith(error(
+    		"Parse error at <location.path> starting in line <location.begin.line>, column <location.begin.column> " +
+    		"and ends on line <location.end.line>, column <location.end.column>."
+		));
+	} catch ConfigMissing(str msg): {
+		respondWith(error(msg));
     } catch e: {
-        iprintln(e);
-        socketWriteLn("Error: <e>");
+    	respondWith(error("Error: <e>"));
     }
+    respondWith(end());
 }
 
 private void dispatch(Command command) {
