@@ -5,7 +5,6 @@ import lang::json::IO;
 import lang::json::ast::JSON;
 import Message;
 
-// TODO use Message
 data Response
 	= info(str message)
 	| error(str message)
@@ -20,15 +19,15 @@ public void respondWith(list[Message] messages, int listenerId) {
 }
 
 public void respondWith(info(str msg, loc at), int listenerId) {
-	respondWith(info("<msg> at <at>"), listenerId);
+	respondWith(info("<msg> in <at.file> on line <at.begin.line>, column <at.begin.end>"), listenerId);
 }
 
 public void respondWith(error(str msg, loc at), int listenerId) {
-	respondWith(error("<msg> at <at>"), listenerId);
+	respondWith(error("<msg> in <at.file> on line <at.begin.line>, column <at.begin.end>"), listenerId);
 }
 
 public void respondWith(warning(str msg, loc at), int listenerId) {
-	respondWith(warning("<msg> at <at>"), listenerId);
+	respondWith(warning("<msg> in <at.file> on line <at.begin.line>, column <at.begin.end>"), listenerId);
 }
 
 public void respondWith(info(str message), int listenerId) {

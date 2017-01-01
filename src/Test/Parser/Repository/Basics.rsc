@@ -14,7 +14,7 @@ test bool shouldThrowExceptionWhenEntityNotImported()
           '}";
     
     try parseModule(code);
-    catch EntityNotImported("Repository cannot attach to entity \'User\': entity not imported"): return true;
+    catch EntityNotImported("Repository cannot attach to entity \'User\': entity not imported", _): return true;
     
     return false;
 }

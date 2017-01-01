@@ -7,7 +7,7 @@ import lang::json::ast::JSON;
 import List;
 import IO;
 
-private str COMPOSER_FILE = "composer.json";
+public str COMPOSER_FILE = "composer.json";
 
 alias Config = tuple[
 	JSON composer,

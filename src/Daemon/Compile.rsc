@@ -8,14 +8,22 @@ import IO;
 import String;
 import Parser::ParseCode;
 import Ambiguity;
+import Message;
 import Daemon::Socket::Sockets;
+import Exceptions::ParserExceptions;
+import Exceptions::ConfigExceptions;
+import Exceptions::TransformExceptions;
 
 private alias Command = tuple[str command, loc path];
 
 public int main(list[str] args) {
+
 	println("Opening socket...");
+	
 	int socketId = createServerSocket(toInt(args[0]));
+	
 	listenForCompileSignals(socketId);
+	
     closeServerSocket(socketId);
     
     return 0;
@@ -42,11 +50,15 @@ private void controller(str inputStream, int listenerId) {
         respondWith(diagnose(parseCode(|file:///| + file.path, true)), listenerId);
     } catch ParseError(loc location): {
     	respondWith(error(
-    		"Parse error at <location.path> starting in line <location.begin.line>, column <location.begin.column> " +
+    		"Parse error at <location.path> starting on line <location.begin.line>, column <location.begin.column> " +
     		"and ends on line <location.end.line>, column <location.end.column>."
 		), listenerId);
-	} catch ConfigMissing(str msg): {
-		respondWith(error(msg), listenerId);
+	} catch ConfigException e: {
+		respondWith(error(e.msg), listenerId);
+	} catch ParserException e: {
+		respondWith(error(e.msg, e.at), listenerId);
+    } catch TransformException e: {
+		respondWith(error(e.msg, e.at), listenerId);
     } catch e: {
     	respondWith(error("Error: <e>"), listenerId);
     }

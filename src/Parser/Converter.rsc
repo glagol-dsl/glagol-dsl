@@ -12,13 +12,13 @@ import Exceptions::ParserExceptions;
 
 
 
-public Declaration buildAST((Module) `namespace <Namespace n><Import* imports><Artifact artifact>`) {
+public Declaration buildAST(a: (Module) `namespace <Namespace n><Import* imports><Artifact artifact>`) {
 	list[Declaration] convertedImports = [convertImport(\import) | \import <- imports];
-    return \module(convertModuleNamespace(n), convertedImports, convertArtifact(artifact, convertedImports));
+    return \module(convertModuleNamespace(n), convertedImports, convertArtifact(artifact, convertedImports))[@src=a@\loc];
 }
 
 
-public Expression convertParameterDefaultVal((AssignDefaultValue) `=<DefaultValue defaultValue>`, Type onType) {
+public Expression convertParameterDefaultVal(a: (AssignDefaultValue) `=<DefaultValue defaultValue>`, Type onType) {
 
     Expression defaultValue = convertExpression(defaultValue);
     
@@ -26,233 +26,238 @@ public Expression convertParameterDefaultVal((AssignDefaultValue) `=<DefaultValu
         defaultValue = get(onType);
     }
 
-    return defaultValue;
+    return defaultValue[@src=a@\loc];
 }
     
 
 
 @todo="Optimize syntax to use less converters, generalize annotations"
-public Declaration convertArtifact((Artifact) `entity <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports)
-    = entity("<name>", [convertDeclaration(d, "<name>", "entity") | d <- declarations]);
+public Declaration convertArtifact(a: (Artifact) `entity <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports)
+    = entity("<name>", [convertDeclaration(d, "<name>", "entity") | d <- declarations])[@src=a@\loc];
 
-public Declaration convertArtifact((Artifact) `<Annotation* annotations> entity <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) 
+public Declaration convertArtifact(a: (Artifact) `<Annotation* annotations> entity <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) 
     = entity("<name>", [convertDeclaration(d, "<name>", "entity") | d <- declarations])[
-    	@annotations = convertAnnotations(annotations)
-    ];
+    	@annotations=convertAnnotations(annotations)
+    ][@src=a@\loc];
 
-public Declaration convertArtifact((Artifact) `repository for <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) {
+public Declaration convertArtifact(a: (Artifact) `repository for <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) {
 	if (!isImported("<name>", imports)) {
-		throw EntityNotImported("Repository cannot attach to entity \'<name>\': entity not imported");
+		throw EntityNotImported("Repository cannot attach to entity \'<name>\': entity not imported", a@\loc);
 	}
 	
-    return repository("<name>", [convertDeclaration(d, "<name>", "repository") | d <- declarations]);
+    return repository("<name>", [convertDeclaration(d, "<name>", "repository") | d <- declarations])[@src=a@\loc];
 }
 
-public Declaration convertArtifact((Artifact) `<Annotation* annotations> repository for <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports)
-    = repository("<name>", [convertDeclaration(d, "<name>", "repository") | d <- declarations])[
+public Declaration convertArtifact(a: (Artifact) `<Annotation* annotations> repository for <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) {
+	if (!isImported("<name>", imports)) {
+		throw EntityNotImported("Repository cannot attach to entity \'<name>\': entity not imported", a@\loc);
+	}
+	
+	return repository("<name>", [convertDeclaration(d, "<name>", "repository") | d <- declarations])[
     	@annotations = convertAnnotations(annotations)
-    ];
+    ][@src=a@\loc];
+}
 
-public Declaration convertArtifact((Artifact) `value <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports)
-    = valueObject("<name>", [convertDeclaration(d, "<name>", "value") | d <- declarations]);
+public Declaration convertArtifact(a: (Artifact) `value <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports)
+    = valueObject("<name>", [convertDeclaration(d, "<name>", "value") | d <- declarations])[@src=a@\loc];
     
-public Declaration convertArtifact((Artifact) `<Annotation* annotations> value <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) 
+public Declaration convertArtifact(a: (Artifact) `<Annotation* annotations> value <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) 
     = valueObject("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[
     	@annotations = convertAnnotations(annotations)
-    ];
+    ][@src=a@\loc];
     
-public Declaration convertArtifact((Artifact) `util <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports)
-    = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations]);
+public Declaration convertArtifact(a: (Artifact) `util <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports)
+    = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[@src=a@\loc];
     
-public Declaration convertArtifact((Artifact) `<Annotation* annotations> util <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) 
+public Declaration convertArtifact(a: (Artifact) `<Annotation* annotations> util <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) 
     = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[
     	@annotations = convertAnnotations(annotations)
-    ];
+    ][@src=a@\loc];
     
-public Declaration convertArtifact((Artifact) `service <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports)
-    = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations]);
+public Declaration convertArtifact(a: (Artifact) `service <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports)
+    = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[@src=a@\loc];
     
-public Declaration convertArtifact((Artifact) `<Annotation* annotations> service <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) 
+public Declaration convertArtifact(a: (Artifact) `<Annotation* annotations> service <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) 
     = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[
     	@annotations = convertAnnotations(annotations)
-    ];
+    ][@src=a@\loc];
     
 
 
-public AssignOperator convertAssignOperator((AssignOperator) `/=`) = divisionAssign();
-public AssignOperator convertAssignOperator((AssignOperator) `*=`) = productAssign();
-public AssignOperator convertAssignOperator((AssignOperator) `-=`) = subtractionAssign();
-public AssignOperator convertAssignOperator((AssignOperator) `=`) = defaultAssign();
-public AssignOperator convertAssignOperator((AssignOperator) `+=`) = additionAssign();
+public AssignOperator convertAssignOperator(a: (AssignOperator) `/=`) = divisionAssign()[@src=a@\loc];
+public AssignOperator convertAssignOperator(a: (AssignOperator) `*=`) = productAssign()[@src=a@\loc];
+public AssignOperator convertAssignOperator(a: (AssignOperator) `-=`) = subtractionAssign()[@src=a@\loc];
+public AssignOperator convertAssignOperator(a: (AssignOperator) `=`) = defaultAssign()[@src=a@\loc];
+public AssignOperator convertAssignOperator(a: (AssignOperator) `+=`) = additionAssign()[@src=a@\loc];
 
 
 public Declaration convertMethod(
-    (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`) 
-    = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body]);
+    a: (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`) 
+    = method(\public()[@src=a@\loc], convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body])[@src=a@\loc];
 
 public Declaration convertMethod(
-    (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`) 
-    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body]);
+    a: (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`) 
+    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body])[@src=a@\loc];
 
 public Declaration convertMethod(
-    (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> } <When when>;`) 
-    = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], convertWhen(when));
+    a: (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> } <When when>;`) 
+    = method(\public()[@src=a@\loc], convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], convertWhen(when))[@src=a@\loc];
     
 public Declaration convertMethod(
-    (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> } <When when>;`) 
-    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], convertWhen(when));
+    a: (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> } <When when>;`) 
+    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], convertWhen(when))[@src=a@\loc];
     
 public Declaration convertMethod(
-    (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr>;`) 
-    = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))]);
+    a: (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr>;`) 
+    = method(\public()[@src=a@\loc], convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))[@src=expr@\loc]])[@src=a@\loc];
 
 public Declaration convertMethod(
-    (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr>;`) 
-    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))]);
+    a: (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr>;`) 
+    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))[@src=expr@\loc]])[@src=a@\loc];
 
 public Declaration convertMethod(
-    (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr><When when>;`) 
-    = method(\public(), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))], convertWhen(when));
+    a: (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr><When when>;`) 
+    = method(\public()[@src=a@\loc], convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))[@src=expr@\loc]], convertWhen(when))[@src=a@\loc];
 
 public Declaration convertMethod(
-    (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr><When when>;`) 
-    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))], convertWhen(when));
+    a: (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr><When when>;`) 
+    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))[@src=expr@\loc]], convertWhen(when))[@src=a@\loc];
     
-private Modifier convertModifier((Modifier) `public`) = \public();
-private Modifier convertModifier((Modifier) `private`) = \private();
+private Modifier convertModifier(a: (Modifier) `public`) = \public()[@src=a@\loc];
+private Modifier convertModifier(a: (Modifier) `private`) = \private()[@src=a@\loc];
 
 public Declaration convertDeclaration((Declaration) `<Method method>`, _, _) = convertMethod(method);
-public Declaration convertDeclaration((Declaration) `<Annotation+ annotations><Method method>`, _, _) 
+public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Method method>`, _, _) 
     = convertMethod(method)[
     	@annotations = convertAnnotations(annotations)
-    ];
+    ][@src=a@\loc];
 
 
 
-public Expression convertExpression((Expression) `(<Expression expr>)`) = \bracket(convertExpression(expr));
+public Expression convertExpression(a: (Expression) `(<Expression expr>)`) = \bracket(convertExpression(expr))[@src=a@\loc];
 
-public Expression convertExpression((Expression) `<Expression lhs> * <Expression rhs>`) 
-    = product(convertExpression(lhs), convertExpression(rhs));
+public Expression convertExpression(a: (Expression) `<Expression lhs> * <Expression rhs>`) 
+    = product(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<Expression lhs> / <Expression rhs>`) 
-    = division(convertExpression(lhs), convertExpression(rhs));
+public Expression convertExpression(a: (Expression) `<Expression lhs> / <Expression rhs>`) 
+    = division(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<Expression lhs> + <Expression rhs>`) 
-    = addition(convertExpression(lhs), convertExpression(rhs));
+public Expression convertExpression(a: (Expression) `<Expression lhs> + <Expression rhs>`) 
+    = addition(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<Expression lhs> - <Expression rhs>`) 
-    = subtraction(convertExpression(lhs), convertExpression(rhs));
+public Expression convertExpression(a: (Expression) `<Expression lhs> - <Expression rhs>`) 
+    = subtraction(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<Expression lhs> \>= <Expression rhs>`) 
-    = greaterThanOrEq(convertExpression(lhs), convertExpression(rhs));
+public Expression convertExpression(a: (Expression) `<Expression lhs> \>= <Expression rhs>`) 
+    = greaterThanOrEq(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<Expression lhs> \<= <Expression rhs>`) 
-    = lessThanOrEq(convertExpression(lhs), convertExpression(rhs));
+public Expression convertExpression(a: (Expression) `<Expression lhs> \<= <Expression rhs>`) 
+    = lessThanOrEq(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<Expression lhs> \< <Expression rhs>`) 
-    = lessThan(convertExpression(lhs), convertExpression(rhs));
+public Expression convertExpression(a: (Expression) `<Expression lhs> \< <Expression rhs>`) 
+    = lessThan(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<Expression lhs> \> <Expression rhs>`) 
-    = greaterThan(convertExpression(lhs), convertExpression(rhs));
+public Expression convertExpression(a: (Expression) `<Expression lhs> \> <Expression rhs>`) 
+    = greaterThan(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<Expression lhs> == <Expression rhs>`) 
-    = equals(convertExpression(lhs), convertExpression(rhs));
+public Expression convertExpression(a: (Expression) `<Expression lhs> == <Expression rhs>`) 
+    = equals(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<Expression lhs> != <Expression rhs>`) 
-    = nonEquals(convertExpression(lhs), convertExpression(rhs));
+public Expression convertExpression(a: (Expression) `<Expression lhs> != <Expression rhs>`) 
+    = nonEquals(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<Expression lhs> && <Expression rhs>`) 
-    = and(convertExpression(lhs), convertExpression(rhs));
+public Expression convertExpression(a: (Expression) `<Expression lhs> && <Expression rhs>`) 
+    = and(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<Expression lhs> || <Expression rhs>`) 
-    = or(convertExpression(lhs), convertExpression(rhs));
+public Expression convertExpression(a: (Expression) `<Expression lhs> || <Expression rhs>`) 
+    = or(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<Expression lhs> % <Expression rhs>`) 
-    = remainder(convertExpression(lhs), convertExpression(rhs));
+public Expression convertExpression(a: (Expression) `<Expression lhs> % <Expression rhs>`) 
+    = remainder(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<Expression condition>?<Expression thenExp>:<Expression elseExp>`) 
-    = ifThenElse(convertExpression(condition), convertExpression(thenExp), convertExpression(elseExp));
+public Expression convertExpression(a: (Expression) `<Expression condition>?<Expression thenExp>:<Expression elseExp>`) 
+    = ifThenElse(convertExpression(condition), convertExpression(thenExp), convertExpression(elseExp))[@src=a@\loc];
 
-public Expression convertExpression((Expression) `<StringQuoted s>`)
-    = string(convertStringQuoted(s));
+public Expression convertExpression(a: (Expression) `<StringQuoted s>`)
+    = string(convertStringQuoted(s))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<DecimalIntegerLiteral number>`)
-    = integer(toInt("<number>"));
+public Expression convertExpression(a: (Expression) `<DecimalIntegerLiteral number>`)
+    = integer(toInt("<number>"))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<DeciFloatNumeral number>`)
-    = float(toReal("<number>"));
+public Expression convertExpression(a: (Expression) `<DeciFloatNumeral number>`)
+    = float(toReal("<number>"))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<Boolean b>`)
-    = boolean(convertBoolean(b));
+public Expression convertExpression(a: (Expression) `<Boolean b>`)
+    = boolean(convertBoolean(b))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `[<{Expression ","}* items>]`)
-    = \list([convertExpression(i) | i <- items]);
+public Expression convertExpression(a: (Expression) `[<{Expression ","}* items>]`)
+    = \list([convertExpression(i) | i <- items])[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<MemberName varName>`)
-    = variable("<varName>");
+public Expression convertExpression(a: (Expression) `<MemberName varName>`)
+    = variable("<varName>")[@src=a@\loc];
     
-public Expression convertExpression((Expression) `-<Expression expr>`) 
-    = negative(convertExpression(expr));
+public Expression convertExpression(a: (Expression) `-<Expression expr>`) 
+    = negative(convertExpression(expr))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `+<Expression expr>`) 
-    = positive(convertExpression(expr));
+public Expression convertExpression(a: (Expression) `+<Expression expr>`) 
+    = positive(convertExpression(expr))[@src=a@\loc];
 
-public Expression convertExpression((Expression) `this`) = this();
+public Expression convertExpression(a: (Expression) `this`) = this()[@src=a@\loc];
 
-public Expression convertExpression((DefaultValue) `<StringQuoted s>`)
-    = string(convertStringQuoted(s));
+public Expression convertExpression(a: (DefaultValue) `<StringQuoted s>`)
+    = string(convertStringQuoted(s))[@src=a@\loc];
     
-public Expression convertExpression((DefaultValue) `<DecimalIntegerLiteral number>`)
-    = integer(toInt("<number>"));
+public Expression convertExpression(a: (DefaultValue) `<DecimalIntegerLiteral number>`)
+    = integer(toInt("<number>"))[@src=a@\loc];
     
-public Expression convertExpression((DefaultValue) `<DeciFloatNumeral number>`)
-    = float(toReal("<number>"));
+public Expression convertExpression(a: (DefaultValue) `<DeciFloatNumeral number>`)
+    = float(toReal("<number>"))[@src=a@\loc];
     
-public Expression convertExpression((DefaultValue) `<Boolean b>`)
-    = boolean(convertBoolean(b));
+public Expression convertExpression(a: (DefaultValue) `<Boolean b>`)
+    = boolean(convertBoolean(b))[@src=a@\loc];
     
-public Expression convertExpression((DefaultValue) `[<{DefaultValue ","}* items>]`)
-    = \list([convertExpression(i) | i <- items]);
+public Expression convertExpression(a: (DefaultValue) `[<{DefaultValue ","}* items>]`)
+    = \list([convertExpression(i) | i <- items])[@src=a@\loc];
     
-public Expression convertExpression((DefaultValue) `get <InstanceType t>`)
-    = get(convertInstanceType(t));
+public Expression convertExpression(a: (DefaultValue) `get <InstanceType t>`)
+    = get(convertInstanceType(t))[@src=a@\loc];
     
-public Expression convertExpression((DefaultValue) `new <ArtifactName name>(<{Expression ","}* args>)`) 
-    = new("<name>", [convertExpression(arg) | arg <- args]);
+public Expression convertExpression(a: (DefaultValue) `new <ArtifactName name>(<{Expression ","}* args>)`) 
+    = new("<name>", [convertExpression(arg) | arg <- args])[@src=a@\loc];
     
-public Type convertInstanceType((InstanceType) `<Type t>`) = convertType(t);
-public Type convertInstanceType((InstanceType) `selfie`) = selfie();
+public Type convertInstanceType(a: (InstanceType) `<Type t>`) = convertType(t)[@src=a@\loc];
+public Type convertInstanceType(a: (InstanceType) `selfie`) = selfie()[@src=a@\loc];
     
-public Expression convertExpression((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) 
-    = new("<name>", [convertExpression(arg) | arg <- args]);
+public Expression convertExpression(a: (Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) 
+    = new("<name>", [convertExpression(arg) | arg <- args])[@src=a@\loc];
     
-public Expression convertExpression((Expression) `get <Type t>`)
-    = get(convertType(t));
+public Expression convertExpression(a: (Expression) `get <Type t>`)
+    = get(convertType(t))[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<MemberName method>(<{Expression ","}* args>)`) 
-    = invoke("<method>", [convertExpression(arg) | arg <- args]);
+public Expression convertExpression(a: (Expression) `<MemberName method>(<{Expression ","}* args>)`) 
+    = invoke("<method>", [convertExpression(arg) | arg <- args])[@src=a@\loc];
     
-public Expression convertExpression((Expression) `<Expression prev>.<MemberName method>(<{Expression ","}* args>)`) {
+public Expression convertExpression(a: (Expression) `<Expression prev>.<MemberName method>(<{Expression ","}* args>)`) {
     
     if (!isValidForAccessChain(prev)) {
-        throw IllegalObjectOperator("Invalid expression followed by object operator");
+        throw IllegalObjectOperator("Invalid expression followed by object operator", a@\loc);
     }
     
-    return invoke(convertExpression(prev), "<method>", [convertExpression(arg) | arg <- args]);
+    return invoke(convertExpression(prev), "<method>", [convertExpression(arg) | arg <- args])[@src=a@\loc];
 }
 
-public Expression convertExpression((Expression) `<Expression prev>.<MemberName field>`) {
+public Expression convertExpression(a: (Expression) `<Expression prev>.<MemberName field>`) {
 
     if (!isValidForAccessChain(prev)) {
-        throw IllegalObjectOperator("Invalid expression followed by object operator");
+        throw IllegalObjectOperator("Invalid expression followed by object operator", a@\loc);
     }
 
-    return fieldAccess(convertExpression(prev), "<field>");
+    return fieldAccess(convertExpression(prev), "<field>")[@src=a@\loc];
 }
 
-public Expression convertExpression((Expression) `{<{MapPair ","}* pairs>}`) = \map(
+public Expression convertExpression(a: (Expression) `{<{MapPair ","}* pairs>}`) = \map(
     ( key: v | p <- pairs, <Expression key, Expression v> := convertMapPair(p) )
-);
+)[@src=a@\loc];
 
 private tuple[Expression key, Expression \value] convertMapPair((MapPair) `<Expression key>:<Expression v>`)
     = <convertExpression(key), convertExpression(v)>;
@@ -272,212 +277,214 @@ public bool convertBoolean((Boolean) `true`) = true;
 public bool convertBoolean((Boolean) `false`) = false;
 
 
-public Declaration convertProperty((Property) `<Type prop><MemberName name>;`) 
-    = property(convertType(prop), "<name>", {});
+public Declaration convertProperty(a: (Property) `<Type prop><MemberName name>;`) 
+    = property(convertType(prop), "<name>", {})[@src=a@\loc];
 
-public Declaration convertProperty((Property) `<Type prop><MemberName name><AssignDefaultValue defVal>;`) 
-    = property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop)));
+public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AssignDefaultValue defVal>;`) 
+    = property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop)))[@src=a@\loc];
     
-public Declaration convertProperty((Property) `<Type prop><MemberName name><AccessProperties accessProperties>;`) 
-    = property(convertType(prop), "<name>", convertAccessProperties(accessProperties));
+public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AccessProperties accessProperties>;`) 
+    = property(convertType(prop), "<name>", convertAccessProperties(accessProperties))[@src=a@\loc];
     
-public Declaration convertProperty((Property) `<Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`) 
-    = property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop)));
+public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`) 
+    = property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop)))[@src=a@\loc];
     
-public Declaration convertDeclaration((Declaration) `<Annotation+ annotations><Property prop>`, _, _) 
+public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Property prop>`, _, _) 
     = convertProperty(prop)[
     	@annotations = convertAnnotations(annotations)
-    ];
+    ][@src=a@\loc];
     
-public Declaration convertDeclaration((Declaration) `<Property prop>`, _, _) = convertProperty(prop);
+public Declaration convertDeclaration(a: (Declaration) `<Property prop>`, _, _) = convertProperty(prop);
 
 
-public Declaration convertModuleNamespace((Namespace) `<Name name>`) = namespace("<name>");
-public Declaration convertModuleNamespace((Namespace) `<Name name>::<Namespace n>`) 
-    = namespace("<name>", convertModuleNamespace(n));
+public Declaration convertModuleNamespace(a: (Namespace) `<Name name>`) = namespace("<name>")[@src=a@\loc];
+public Declaration convertModuleNamespace(a: (Namespace) `<Name name>::<Namespace n>`) 
+    = namespace("<name>", convertModuleNamespace(n))[@src=a@\loc];
 
 
-public Statement convertStmt((Statement) `<Expression expr>;`) = expression(convertExpression(expr));
-public Statement convertStmt((Statement) `;`) = emptyStmt();
-public Statement convertStmt((Statement) `{<Statement* stmts>}`) = block([convertStmt(stmt) | stmt <- stmts]);
+public Statement convertStmt(a: (Statement) `<Expression expr>;`) = expression(convertExpression(expr))[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `;`) = emptyStmt()[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `{<Statement* stmts>}`) = block([convertStmt(stmt) | stmt <- stmts])[@src=a@\loc];
 
-public Statement convertStmt((Statement) `if ( <Expression condition> ) <Statement then>`) 
-    = ifThen(convertExpression(condition), convertStmt(then));
+public Statement convertStmt(a: (Statement) `if ( <Expression condition> ) <Statement then>`) 
+    = ifThen(convertExpression(condition), convertStmt(then))[@src=a@\loc];
 
-public Statement convertStmt((Statement) `if ( <Expression condition> ) <Statement then> else <Statement e>`) 
-    = ifThenElse(convertExpression(condition), convertStmt(then), convertStmt(e));
+public Statement convertStmt(a: (Statement) `if ( <Expression condition> ) <Statement then> else <Statement e>`) 
+    = ifThenElse(convertExpression(condition), convertStmt(then), convertStmt(e))[@src=a@\loc];
 
-public Statement convertStmt((Statement) `<Assignable assignable><AssignOperator operator><Statement val>`) 
-    = assign(convertAssignable(assignable), convertAssignOperator(operator), convertStmt(val));
+public Statement convertStmt(a: (Statement) `<Assignable assignable><AssignOperator operator><Statement val>`) 
+    = assign(convertAssignable(assignable), convertAssignOperator(operator), convertStmt(val))[@src=a@\loc];
 
-public Statement convertStmt((Statement) `return;`) = \return(emptyExpr());
-public Statement convertStmt((Statement) `return <Expression expr>;`) = \return(convertExpression(expr));
+public Statement convertStmt(a: (Statement) `return;`) = \return(emptyExpr()[@src=a@\loc])[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `return <Expression expr>;`) = \return(convertExpression(expr))[@src=a@\loc];
 
-public Statement convertStmt((Statement) `break ;`) = \break();
-public Statement convertStmt((Statement) `break<Integer level>;`) = \break(toInt("<level>"));
+public Statement convertStmt(a: (Statement) `break ;`) = \break()[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `break<Integer level>;`) = \break(toInt("<level>"))[@src=a@\loc];
 
-public Statement convertStmt((Statement) `continue ;`) = \continue();
-public Statement convertStmt((Statement) `continue<Integer level>;`) = \continue(toInt("<level>"));
+public Statement convertStmt(a: (Statement) `continue ;`) = \continue()[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `continue<Integer level>;`) = \continue(toInt("<level>"))[@src=a@\loc];
 
-public Statement convertStmt((Statement) `<Type t> <MemberName varName>;`) = declare(convertType(t), variable("<varName>"));
-public Statement convertStmt((Statement) `<Type t> <MemberName varName>=<Statement defValue>`) 
-    = declare(convertType(t), variable("<varName>"), convertStmt(defValue));
+public Statement convertStmt(a: (Statement) `<Type t> <MemberName varName>;`) = 
+	declare(convertType(t), variable("<varName>")[@src=varName@\loc])[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `<Type t> <MemberName varName>=<Statement defValue>`) = 
+	declare(convertType(t), variable("<varName>")[@src=varName@\loc], convertStmt(defValue))[@src=a@\loc];
 
-public Statement convertStmt((Statement) `for (<Expression l>as<MemberName var>)<Statement body>`)
-    = foreach(convertExpression(l), variable("<var>"), convertStmt(body));
+public Statement convertStmt(a: (Statement) `for (<Expression l>as<MemberName var>)<Statement body>`)
+    = foreach(convertExpression(l), variable("<var>")[@src=var@\loc], convertStmt(body))[@src=a@\loc];
     
-public Statement convertStmt((Statement) `for (<Expression l>as<MemberName var>, <{Expression ","}+ conds>)<Statement body>`)
-    = foreach(convertExpression(l), variable("<var>"), convertStmt(body), [convertExpression(cond) | cond <- conds]);
+public Statement convertStmt(a: (Statement) `for (<Expression l>as<MemberName var>, <{Expression ","}+ conds>)<Statement body>`)
+    = foreach(convertExpression(l), variable("<var>")[@src=var@\loc], convertStmt(body), [convertExpression(cond) | cond <- conds])[@src=a@\loc];
 
 
 public list[Annotation] convertAnnotations(annotations) = [convertAnnotation(a) | a <- annotations];
 
-public Annotation convertAnnotation((Annotation) `@<Identifier id>`) = annotation("<id>", []);
+public Annotation convertAnnotation(a: (Annotation) `@<Identifier id>`) = annotation("<id>", [])[@src=a@\loc];
 
-public Annotation convertAnnotation((Annotation) `@<Identifier id><AnnotationArgs args>`)
-    = annotation("<id>", convertAnnotationArgs(args));
+public Annotation convertAnnotation(a: (Annotation) `@<Identifier id><AnnotationArgs args>`)
+    = annotation("<id>", convertAnnotationArgs(args))[@src=a@\loc];
 
-public Annotation convertAnnotation((Annotation) `@<Identifier id>=<AnnotationArg arg>`)
-    = annotation("<id>", [convertAnnotationArg(arg)]);
+public Annotation convertAnnotation(a: (Annotation) `@<Identifier id>=<AnnotationArg arg>`)
+    = annotation("<id>", [convertAnnotationArg(arg)])[@src=a@\loc];
 
-private list[Annotation] convertAnnotationArgs((AnnotationArgs) `(<{AnnotationArg ","}+ args>)`) 
+private list[Annotation] convertAnnotationArgs(a: (AnnotationArgs) `(<{AnnotationArg ","}+ args>)`) 
     = [convertAnnotationArg(arg) | arg <- args];
 
-private Annotation convertAnnotationArg((AnnotationArg) `<StringQuoted stringVal>`) 
-    = annotationVal(convertStringQuoted(stringVal));
+private Annotation convertAnnotationArg(a: (AnnotationArg) `<StringQuoted stringVal>`) 
+    = annotationVal(convertStringQuoted(stringVal))[@src=a@\loc];
     
-private Annotation convertAnnotationArg((AnnotationArg) `<Boolean boolean>`) 
-    = annotationVal(convertBoolean(boolean));
+private Annotation convertAnnotationArg(a: (AnnotationArg) `<Boolean boolean>`) 
+    = annotationVal(convertBoolean(boolean))[@src=a@\loc];
     
-private Annotation convertAnnotationArg((AnnotationArg) `<DecimalIntegerLiteral number>`) 
-    = annotationVal(toInt("<number>"));
+private Annotation convertAnnotationArg(a: (AnnotationArg) `<DecimalIntegerLiteral number>`) 
+    = annotationVal(toInt("<number>"))[@src=a@\loc];
 
-private Annotation convertAnnotationArg((AnnotationArg) `<DeciFloatNumeral number>`) 
-    = annotationVal(toReal("<number>"));
+private Annotation convertAnnotationArg(a: (AnnotationArg) `<DeciFloatNumeral number>`) 
+    = annotationVal(toReal("<number>"))[@src=a@\loc];
 
-private Annotation convertAnnotationArg((AnnotationArg) `[<{AnnotationArg ","}+ listVal>]`)
-    = annotationVal([convertAnnotationArg(arg) | arg <- listVal]);
+private Annotation convertAnnotationArg(a: (AnnotationArg) `[<{AnnotationArg ","}+ listVal>]`)
+    = annotationVal([convertAnnotationArg(arg) | arg <- listVal])[@src=a@\loc];
 
-private Annotation convertAnnotationArg((AnnotationArg) `{<{AnnotationPair ","}+ mapVal>}`)
-    = annotationMap(( key:\value | p <- mapVal, <str key, Annotation \value> := convertAnnotationPair(p) ));
+private Annotation convertAnnotationArg(a: (AnnotationArg) `{<{AnnotationPair ","}+ mapVal>}`)
+    = annotationMap(( key:\value | p <- mapVal, <str key, Annotation \value> := convertAnnotationPair(p) ))[@src=a@\loc];
 
 private Annotation convertAnnotationValue((AnnotationValue) `<AnnotationArg val>`) = convertAnnotationArg(val);
-private Annotation convertAnnotationValue((AnnotationValue) `primary`) = annotationValPrimary();
-private Annotation convertAnnotationValue((AnnotationValue) `<Type t>`) = annotationVal(convertType(t));
+private Annotation convertAnnotationValue(a: (AnnotationValue) `primary`) = annotationValPrimary()[@src=a@\loc];
+private Annotation convertAnnotationValue(a: (AnnotationValue) `<Type t>`) = annotationVal(convertType(t))[@src=a@\loc];
 
 private tuple[str key, Annotation \value] convertAnnotationPair((AnnotationPair) `<AnnotationKey key> : <AnnotationValue v>`) 
     = <"<key>", convertAnnotationValue(v)>;
 
 
-public RelationDir convertRelationDir((RelationDir) `one`) = \one();
-public RelationDir convertRelationDir((RelationDir) `many`) = many();
+public RelationDir convertRelationDir(a: (RelationDir) `one`) = \one()[@src=a@\loc];
+public RelationDir convertRelationDir(a: (RelationDir) `many`) = many()[@src=a@\loc];
 
 
-public Declaration convertDeclaration((Declaration) `<Annotation+ annotations><Relation relation>`, _, _) 
+public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Relation relation>`, _, _) 
     = convertRelation(relation)[
     	@annotations = convertAnnotations(annotations)
-    ];
+    ][@src=a@\loc];
 
-public Declaration convertDeclaration((Declaration) `<Relation relation>`, _, _) = convertRelation(relation);
+public Declaration convertDeclaration(a: (Declaration) `<Relation relation>`, _, _) = convertRelation(relation);
 
-public Declaration convertRelation((Relation) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as><AccessProperties accessProperties>;`) 
-    = relation(convertRelationDir(l), convertRelationDir(r), "<entity>", "<as>", convertAccessProperties(accessProperties));
+public Declaration convertRelation(a: (Relation) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as><AccessProperties accessProperties>;`) 
+    = relation(convertRelationDir(l), convertRelationDir(r), "<entity>", "<as>", convertAccessProperties(accessProperties))[@src=a@\loc];
 
-public Declaration convertRelation((Relation) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as>;`) 
-    = relation(convertRelationDir(l), convertRelationDir(r), "<entity>", "<as>", {});
+public Declaration convertRelation(a: (Relation) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as>;`) 
+    = relation(convertRelationDir(l), convertRelationDir(r), "<entity>", "<as>", {})[@src=a@\loc];
 
 
 public set[AccessProperty] convertAccessProperties((AccessProperties) `with { <{AccessProperty ","}* props> }`)
     = {convertAccessProperty(p) | p <- props};
 
-public AccessProperty convertAccessProperty((AccessProperty) `get`) = read();
-public AccessProperty convertAccessProperty((AccessProperty) `set`) = \set();
-public AccessProperty convertAccessProperty((AccessProperty) `add`) = add();
-public AccessProperty convertAccessProperty((AccessProperty) `clear`) = clear();
-public AccessProperty convertAccessProperty((AccessProperty) `reset`) = clear();
+public AccessProperty convertAccessProperty(a: (AccessProperty) `get`) = read()[@src=a@\loc];
+public AccessProperty convertAccessProperty(a: (AccessProperty) `set`) = \set()[@src=a@\loc];
+public AccessProperty convertAccessProperty(a: (AccessProperty) `add`) = add()[@src=a@\loc];
+public AccessProperty convertAccessProperty(a: (AccessProperty) `clear`) = clear()[@src=a@\loc];
+public AccessProperty convertAccessProperty(a: (AccessProperty) `reset`) = clear()[@src=a@\loc];
 
 
 public str convertStringQuoted(string) = substring("<string>", 1, size("<string>") - 1);
 
 
-public Type convertType((Type) `int`) = integer();
-public Type convertType((Type) `float`) = float();
-public Type convertType((Type) `bool`) = boolean();
-public Type convertType((Type) `boolean`) = boolean();
-public Type convertType((Type) `void`) = voidValue();
-public Type convertType((Type) `string`) = string();
-public Type convertType((Type) `repository\<<ArtifactName name>\>`) = repository("<name>");
-public Type convertType((Type) `<Type t>[]`) = \list(convertType(t));
-public Type convertType((Type) `{<Type key>,<Type v>}`) = \map(convertType(key), convertType(v));
-public Type convertType((Type) `<ArtifactName name>`) = artifact("<name>");
+public Type convertType(a: (Type) `int`) = integer()[@src=a@\loc];
+public Type convertType(a: (Type) `float`) = float()[@src=a@\loc];
+public Type convertType(a: (Type) `bool`) = boolean()[@src=a@\loc];
+public Type convertType(a: (Type) `boolean`) = boolean()[@src=a@\loc];
+public Type convertType(a: (Type) `void`) = voidValue()[@src=a@\loc];
+public Type convertType(a: (Type) `string`) = string()[@src=a@\loc];
+public Type convertType(a: (Type) `repository\<<ArtifactName name>\>`) = repository("<name>")[@src=a@\loc];
+public Type convertType(a: (Type) `<Type t>[]`) = \list(convertType(t))[@src=a@\loc];
+public Type convertType(a: (Type) `{<Type key>,<Type v>}`) = \map(convertType(key), convertType(v))[@src=a@\loc];
+public Type convertType(a: (Type) `<ArtifactName name>`) = artifact("<name>")[@src=a@\loc];
 
 
 public Expression convertWhen((When) `when <Expression expr>`) = convertExpression(expr);
 
 
-public Declaration convertImport((Import) `import <Namespace n>::<ArtifactName artifact><ImportAlias as>;`)
-    = \import("<artifact>", convertModuleNamespace(n), convertImportAlias(as));
+public Declaration convertImport(a: (Import) `import <Namespace n>::<ArtifactName artifact><ImportAlias as>;`)
+    = \import("<artifact>", convertModuleNamespace(n), convertImportAlias(as))[@src=a@\loc];
     
-public Declaration convertImport((Import) `import <Namespace n>::<ArtifactName artifact>;`)
-    = \import("<artifact>", convertModuleNamespace(n), "<artifact>");
+public Declaration convertImport(a: (Import) `import <Namespace n>::<ArtifactName artifact>;`)
+    = \import("<artifact>", convertModuleNamespace(n), "<artifact>")[@src=a@\loc];
 
 private str convertImportAlias((ImportAlias) `as <ArtifactName as>`) = "<as>";
 
 
 public Declaration convertConstructor(
-    (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`, 
+    a: (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`, 
     str artifactName) 
 {
     if (artifactName != "<name>") {
-        throw IllegalConstructorName("\'<name>\' is invalid constructor name");
+        throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
     } 
     
-    return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body]);
+    return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body])[@src=a@\loc];
 }
     
 public Declaration convertConstructor(
-    (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }<When when>;`, 
+    a: (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }<When when>;`, 
     str artifactName)
 {
     if (artifactName != "<name>") {
-        throw IllegalConstructorName("\'<name>\' is invalid constructor name");
+        throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
     }
     
-    return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], convertWhen(when));
+    return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], convertWhen(when))[@src=a@\loc];
 }
 
 public Declaration convertConstructor(
-    (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>);`, 
+    a: (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>);`, 
     str artifactName) 
 {
     if (artifactName != "<name>") {
-        throw IllegalConstructorName("\'<name>\' is invalid constructor name");
+        throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
     }
     
-    return constructor([convertParameter(p) | p <- parameters], []);
+    return constructor([convertParameter(p) | p <- parameters], [])[@src=a@\loc];
 }
 
 public Declaration convertDeclaration((Declaration) `<Constructor construct>`, str artifactName, _) = convertConstructor(construct, artifactName);
-public Declaration convertDeclaration((Declaration) `<Annotation+ annotations><Constructor construct>`, str artifactName, _) 
+public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Constructor construct>`, str artifactName, _) 
     = convertConstructor(construct, artifactName)[
     	@annotations = convertAnnotations(annotations)
-    ];
+    ][@src=a@\loc];
 
 
 public Declaration convertParameter((AbstractParameter) `<Parameter p>`) = convertParameter(p);
-public Declaration convertParameter((AbstractParameter) `<Annotation+ annotations><Parameter p>`) 
+public Declaration convertParameter(a: (AbstractParameter) `<Annotation+ annotations><Parameter p>`) 
     = convertParameter(p)[
     	@annotations = convertAnnotations(annotations)
-    ];
+    ][@src=a@\loc];
 
-public Declaration convertParameter((Parameter) `<Type paramType> <MemberName name>`) = param(convertType(paramType), "<name>");
+public Declaration convertParameter(a: (Parameter) `<Type paramType> <MemberName name>`) = 
+	param(convertType(paramType), "<name>")[@src=a@\loc];
 
-public Declaration convertParameter((Parameter) `<Type paramType> <MemberName name> <AssignDefaultValue defaultValue>`) 
-    = param(convertType(paramType), "<name>", convertParameterDefaultVal(defaultValue, convertType(paramType)));
+public Declaration convertParameter(a: (Parameter) `<Type paramType> <MemberName name> <AssignDefaultValue defaultValue>`) 
+    = param(convertType(paramType), "<name>", convertParameterDefaultVal(defaultValue, convertType(paramType)))[@src=a@\loc];
 
 
-public Expression convertAssignable((Assignable) `<MemberName name>`) = variable("<name>");
-public Expression convertAssignable((Assignable) `<Assignable variable>[<Expression key>]`)
-    = arrayAccess(convertAssignable(variable), convertExpression(key));
-public Expression convertAssignable((Assignable) `<Expression prev>.<MemberName field>`) 
-    = fieldAccess(convertExpression(prev), "<field>");
+public Expression convertAssignable(a: (Assignable) `<MemberName name>`) = variable("<name>")[@src=a@\loc];
+public Expression convertAssignable(a: (Assignable) `<Assignable variable>[<Expression key>]`)
+    = arrayAccess(convertAssignable(variable), convertExpression(key))[@src=a@\loc];
+public Expression convertAssignable(a: (Assignable) `<Expression prev>.<MemberName field>`) 
+    = fieldAccess(convertExpression(prev), "<field>")[@src=a@\loc];

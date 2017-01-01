@@ -9,7 +9,7 @@ import lang::json::ast::JSON;
 import Map;
 
 public map[loc, str] generateEnvFiles(Config config, list[Declaration] ast) = 
-	(getCompilePath(config) + "composer.json": generateComposerFile(config, ast));
+	(getCompilePath(config) + COMPOSER_FILE: generateComposerFile(config, ast));
 
 private set[str] namespaces(list[Declaration] ast) = 
 	{f.\module.namespace.name | f <- ast};

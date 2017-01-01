@@ -8,34 +8,35 @@ import Parser::Converter::AssignOperator;
 import Parser::Converter::Type;
 import String;
 
-public Statement convertStmt((Statement) `<Expression expr>;`) = expression(convertExpression(expr));
-public Statement convertStmt((Statement) `;`) = emptyStmt();
-public Statement convertStmt((Statement) `{<Statement* stmts>}`) = block([convertStmt(stmt) | stmt <- stmts]);
+public Statement convertStmt(a: (Statement) `<Expression expr>;`) = expression(convertExpression(expr))[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `;`) = emptyStmt()[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `{<Statement* stmts>}`) = block([convertStmt(stmt) | stmt <- stmts])[@src=a@\loc];
 
-public Statement convertStmt((Statement) `if ( <Expression condition> ) <Statement then>`) 
-    = ifThen(convertExpression(condition), convertStmt(then));
+public Statement convertStmt(a: (Statement) `if ( <Expression condition> ) <Statement then>`) 
+    = ifThen(convertExpression(condition), convertStmt(then))[@src=a@\loc];
 
-public Statement convertStmt((Statement) `if ( <Expression condition> ) <Statement then> else <Statement e>`) 
-    = ifThenElse(convertExpression(condition), convertStmt(then), convertStmt(e));
+public Statement convertStmt(a: (Statement) `if ( <Expression condition> ) <Statement then> else <Statement e>`) 
+    = ifThenElse(convertExpression(condition), convertStmt(then), convertStmt(e))[@src=a@\loc];
 
-public Statement convertStmt((Statement) `<Assignable assignable><AssignOperator operator><Statement val>`) 
-    = assign(convertAssignable(assignable), convertAssignOperator(operator), convertStmt(val));
+public Statement convertStmt(a: (Statement) `<Assignable assignable><AssignOperator operator><Statement val>`) 
+    = assign(convertAssignable(assignable), convertAssignOperator(operator), convertStmt(val))[@src=a@\loc];
 
-public Statement convertStmt((Statement) `return;`) = \return(emptyExpr());
-public Statement convertStmt((Statement) `return <Expression expr>;`) = \return(convertExpression(expr));
+public Statement convertStmt(a: (Statement) `return;`) = \return(emptyExpr()[@src=a@\loc])[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `return <Expression expr>;`) = \return(convertExpression(expr))[@src=a@\loc];
 
-public Statement convertStmt((Statement) `break ;`) = \break();
-public Statement convertStmt((Statement) `break<Integer level>;`) = \break(toInt("<level>"));
+public Statement convertStmt(a: (Statement) `break ;`) = \break()[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `break<Integer level>;`) = \break(toInt("<level>"))[@src=a@\loc];
 
-public Statement convertStmt((Statement) `continue ;`) = \continue();
-public Statement convertStmt((Statement) `continue<Integer level>;`) = \continue(toInt("<level>"));
+public Statement convertStmt(a: (Statement) `continue ;`) = \continue()[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `continue<Integer level>;`) = \continue(toInt("<level>"))[@src=a@\loc];
 
-public Statement convertStmt((Statement) `<Type t> <MemberName varName>;`) = declare(convertType(t), variable("<varName>"));
-public Statement convertStmt((Statement) `<Type t> <MemberName varName>=<Statement defValue>`) 
-    = declare(convertType(t), variable("<varName>"), convertStmt(defValue));
+public Statement convertStmt(a: (Statement) `<Type t> <MemberName varName>;`) = 
+	declare(convertType(t), variable("<varName>")[@src=varName@\loc])[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `<Type t> <MemberName varName>=<Statement defValue>`) = 
+	declare(convertType(t), variable("<varName>")[@src=varName@\loc], convertStmt(defValue))[@src=a@\loc];
 
-public Statement convertStmt((Statement) `for (<Expression l>as<MemberName var>)<Statement body>`)
-    = foreach(convertExpression(l), variable("<var>"), convertStmt(body));
+public Statement convertStmt(a: (Statement) `for (<Expression l>as<MemberName var>)<Statement body>`)
+    = foreach(convertExpression(l), variable("<var>")[@src=var@\loc], convertStmt(body))[@src=a@\loc];
     
-public Statement convertStmt((Statement) `for (<Expression l>as<MemberName var>, <{Expression ","}+ conds>)<Statement body>`)
-    = foreach(convertExpression(l), variable("<var>"), convertStmt(body), [convertExpression(cond) | cond <- conds]);
+public Statement convertStmt(a: (Statement) `for (<Expression l>as<MemberName var>, <{Expression ","}+ conds>)<Statement body>`)
+    = foreach(convertExpression(l), variable("<var>")[@src=var@\loc], convertStmt(body), [convertExpression(cond) | cond <- conds])[@src=a@\loc];

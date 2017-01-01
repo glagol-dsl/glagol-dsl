@@ -75,7 +75,7 @@ test bool shouldFailWhenInvalidConstructorNameIsUsed()
           '";
     
     try parseModule(code);
-    catch IllegalConstructorName(_): return true;
+    catch IllegalConstructorName(_, _): return true;
     
     return false;
 }

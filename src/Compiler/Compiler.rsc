@@ -17,17 +17,13 @@ private str COMPILE_LOG = ".glagol_compile_log";
 public void compile(loc projectPath, int listenerId) {
 	Config config = loadConfig(projectPath);
 	
-	loc logFile = getCompilePath(config) + COMPILE_LOG;
-	
-	cleanUpOld(logFile, listenerId);
-	
-    list[loc] sourceFiles = findAllSourceFiles(projectPath);
+    list[Declaration] ast = parseMultiple(findAllSourceFiles(projectPath));
     
-    list[Declaration] glagolParsed = [ast | fileLoc <- sourceFiles, Declaration ast := parseModule(fileLoc)];
-        
+	cleanUpOld(config, listenerId);
+    
     list[loc] compiledFiles = [];
     
-    for (l <- glagolParsed, out := toPHPScript(<getFramework(config), getORM(config)>, l.\module, glagolParsed), str outputFile <- out) {
+    for (l <- ast, out := toPHPScript(<getFramework(config), getORM(config)>, l.\module, ast), str outputFile <- out) {
     	compiledFiles += createSourceFile(outputFile, toCode(out[outputFile]), config);
     	respondWith(info("Compiled source file <outputFile>"), listenerId);
     }
@@ -37,26 +33,30 @@ public void compile(loc projectPath, int listenerId) {
     for (f <- envFiles) {
     	writeFile(f, envFiles[f]);
     	compiledFiles += f;
-    	respondWith(info("Created env file <f.path>"), listenerId);
+    	respondWith(info("Created source file <f.path>"), listenerId);
     }
     
-    createCompileLogFile(logFile, compiledFiles);
-	respondWith(info("Compile log put in <logFile.path>"), listenerId);
+    createCompileLogFile(config, compiledFiles, listenerId);
 }
 
-private void cleanUpOld(loc logFile, int listenerId) {
+private void cleanUpOld(Config config, int listenerId) {
+
+	loc logFile = getCompilePath(config) + COMPILE_LOG;
+
 	if (!exists(logFile)) {
 		return;
 	}
 	
-	for (loc file <- readBinaryValueFile(#list[loc], logFile)) {
+	for (loc file <- readBinaryValueFile(#list[loc], logFile), exists(file)) {
 		remove(file);
 		respondWith(warning("Removed existing compiled file <file.path>"), listenerId);
 	}
 }
 
-private loc createCompileLogFile(loc logFile, list[loc] compiledFiles) {
+private loc createCompileLogFile(Config config, list[loc] compiledFiles, int listenerId) {
+	loc logFile = getCompilePath(config) + COMPILE_LOG;
 	writeBinaryValueFile(logFile, compiledFiles);
+	respondWith(info("Compile log put in <logFile.path>"), listenerId);
 	return logFile;
 }
 

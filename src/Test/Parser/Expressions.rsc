@@ -266,7 +266,7 @@ test bool shouldFailWhenUsingWrongExpressionsForChainedAccess()
                '}";
                
     try parseModule(code);
-    catch IllegalObjectOperator(str msg): return true;
+    catch IllegalObjectOperator(str msg, loc at): return true;
     
     return false;
 }
