@@ -67,7 +67,7 @@ test bool canUseRepositoryAssocArtifactInExpression()
     str code
         = "namespace Test
           'service UserCreator {
-          '    UserCreator() {
+          '    public void blah() {
           '        get repository\<User\>;
           '        get repository\<User\>.findOneById(1);
           '    }
@@ -75,7 +75,7 @@ test bool canUseRepositoryAssocArtifactInExpression()
     
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
-            constructor([], [
+            method(\public(), voidValue(), "blah", [], [
                 expression(get(repository("User"))),
                 expression(invoke(get(repository("User")), "findOneById", [integer(1)]))
             ])

@@ -12,9 +12,9 @@ import Exceptions::ParserExceptions;
 
 
 
-public Declaration buildAST(a: (Module) `namespace <Namespace n><Import* imports><Artifact artifact>`) {
+public Declaration buildAST(a: (Module) `namespace <Namespace n><Import* imports><AnnotatedArtifact annotatedArtifact>`) {
 	list[Declaration] convertedImports = [convertImport(\import) | \import <- imports];
-    return \module(convertModuleNamespace(n), convertedImports, convertArtifact(artifact, convertedImports))[@src=a@\loc];
+    return \module(convertModuleNamespace(n), convertedImports, convertAnnotatedArtifact(annotatedArtifact, convertedImports))[@src=a@\loc];
 }
 
 
@@ -31,14 +31,16 @@ public Expression convertParameterDefaultVal(a: (AssignDefaultValue) `=<DefaultV
     
 
 
-@todo="Optimize syntax to use less converters, generalize annotations"
+public Declaration convertAnnotatedArtifact(a: (AnnotatedArtifact) `<Artifact artifact>`, list[Declaration] imports) 
+    = convertArtifact(artifact, imports);
+    
+public Declaration convertAnnotatedArtifact(a: (AnnotatedArtifact) `<Annotation* annotations><Artifact artifact>`, list[Declaration] imports) 
+    = convertArtifact(artifact, imports)[
+    	@annotations = convertAnnotations(annotations)
+    ];
+
 public Declaration convertArtifact(a: (Artifact) `entity <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports)
     = entity("<name>", [convertDeclaration(d, "<name>", "entity") | d <- declarations])[@src=a@\loc];
-
-public Declaration convertArtifact(a: (Artifact) `<Annotation* annotations> entity <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) 
-    = entity("<name>", [convertDeclaration(d, "<name>", "entity") | d <- declarations])[
-    	@annotations=convertAnnotations(annotations)
-    ][@src=a@\loc];
 
 public Declaration convertArtifact(a: (Artifact) `repository for <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) {
 	if (!isImported("<name>", imports)) {
@@ -48,40 +50,14 @@ public Declaration convertArtifact(a: (Artifact) `repository for <ArtifactName n
     return repository("<name>", [convertDeclaration(d, "<name>", "repository") | d <- declarations])[@src=a@\loc];
 }
 
-public Declaration convertArtifact(a: (Artifact) `<Annotation* annotations> repository for <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) {
-	if (!isImported("<name>", imports)) {
-		throw EntityNotImported("Repository cannot attach to entity \'<name>\': entity not imported", a@\loc);
-	}
-	
-	return repository("<name>", [convertDeclaration(d, "<name>", "repository") | d <- declarations])[
-    	@annotations = convertAnnotations(annotations)
-    ][@src=a@\loc];
-}
-
 public Declaration convertArtifact(a: (Artifact) `value <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports)
     = valueObject("<name>", [convertDeclaration(d, "<name>", "value") | d <- declarations])[@src=a@\loc];
-    
-public Declaration convertArtifact(a: (Artifact) `<Annotation* annotations> value <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) 
-    = valueObject("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[
-    	@annotations = convertAnnotations(annotations)
-    ][@src=a@\loc];
     
 public Declaration convertArtifact(a: (Artifact) `util <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports)
     = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[@src=a@\loc];
     
-public Declaration convertArtifact(a: (Artifact) `<Annotation* annotations> util <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) 
-    = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[
-    	@annotations = convertAnnotations(annotations)
-    ][@src=a@\loc];
-    
 public Declaration convertArtifact(a: (Artifact) `service <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports)
     = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[@src=a@\loc];
-    
-public Declaration convertArtifact(a: (Artifact) `<Annotation* annotations> service <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) 
-    = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[
-    	@annotations = convertAnnotations(annotations)
-    ][@src=a@\loc];
-    
 
 
 public AssignOperator convertAssignOperator(a: (AssignOperator) `/=`) = divisionAssign()[@src=a@\loc];
@@ -432,7 +408,17 @@ private str convertImportAlias((ImportAlias) `as <ArtifactName as>`) = "<as>";
 
 public Declaration convertConstructor(
     a: (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`, 
-    str artifactName) 
+    str artifactName,
+    t: /repository|util/)
+{
+	t = t == "util" ? "util/service" : t;
+    throw ConstructorNotAllowed("Constructor not allowed for <t> artifacts", a@\loc);
+}
+
+public Declaration convertConstructor(
+    a: (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`, 
+    str artifactName,
+    _) 
 {
     if (artifactName != "<name>") {
         throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
@@ -443,7 +429,8 @@ public Declaration convertConstructor(
     
 public Declaration convertConstructor(
     a: (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }<When when>;`, 
-    str artifactName)
+    str artifactName,
+    _)
 {
     if (artifactName != "<name>") {
         throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
@@ -454,7 +441,8 @@ public Declaration convertConstructor(
 
 public Declaration convertConstructor(
     a: (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>);`, 
-    str artifactName) 
+    str artifactName,
+    _) 
 {
     if (artifactName != "<name>") {
         throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
@@ -463,9 +451,10 @@ public Declaration convertConstructor(
     return constructor([convertParameter(p) | p <- parameters], [])[@src=a@\loc];
 }
 
-public Declaration convertDeclaration((Declaration) `<Constructor construct>`, str artifactName, _) = convertConstructor(construct, artifactName);
-public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Constructor construct>`, str artifactName, _) 
-    = convertConstructor(construct, artifactName)[
+public Declaration convertDeclaration((Declaration) `<Constructor construct>`, str artifactName, str artifactType) = 
+	convertConstructor(construct, artifactName, artifactType);
+public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Constructor construct>`, str artifactName, str artifactType) 
+    = convertConstructor(construct, artifactName, artifactType)[
     	@annotations = convertAnnotations(annotations)
     ][@src=a@\loc];
 

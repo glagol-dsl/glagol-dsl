@@ -2,6 +2,7 @@ module Test::Parser::Repository::Basics
 
 import Parser::ParseAST;
 import Syntax::Abstract::Glagol;
+import IO;
 
 test bool shouldThrowExceptionWhenEntityNotImported()
 {
@@ -34,6 +35,23 @@ test bool shouldParseEmptyRepository()
         \import("EntityManager", namespace("Glagol", namespace("ORM")), "EntityManager"),
         \import("User", namespace("Example"), "User")
     ], repository("User", []));
+}
+
+test bool shouldNotAllowRepositoryConstructor()
+{
+    str code 
+        = "namespace Example
+          '
+          'import Example::User;
+          '
+          'repository for User {
+          '    User() {}
+          '}";
+    
+    try parseModule(code);
+    catch ConstructorNotAllowed("Constructor not allowed for repository artifacts", loc at): return true;
+    
+    return false;
 }
 
 test bool shouldParseRepositoryWithMethodAndAMap()

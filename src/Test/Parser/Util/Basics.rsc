@@ -47,3 +47,31 @@ test bool testShouldParseFlatDocAnnotationForUtil()
     	parseModule(code) == \module(namespace("Example"), [], expectedEntity) &&
     	parseModule(code).artifact@annotations == [annotation("doc", [annotationVal("This is a doc")])];
 }
+
+test bool shouldNotAllowUtilConstructor()
+{
+    str code = "namespace Example
+               '@doc=\"This is a doc\"
+               'util UserCreator {
+               '    UserCreator() {}
+               '}";
+    
+    try parseModule(code);
+    catch ConstructorNotAllowed("Constructor not allowed for util/service artifacts", loc at): return true;
+    
+    return false;
+}
+
+test bool shouldNotAllowServiceConstructor()
+{
+    str code = "namespace Example
+               '@doc=\"This is a doc\"
+               'service UserCreator {
+               '    UserCreator() {}
+               '}";
+    
+    try parseModule(code);
+    catch ConstructorNotAllowed("Constructor not allowed for util/service artifacts", loc at): return true;
+    
+    return false;
+}

@@ -11,7 +11,17 @@ import Exceptions::ParserExceptions;
 
 public Declaration convertConstructor(
     a: (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`, 
-    str artifactName) 
+    str artifactName,
+    t: /repository|util/)
+{
+	t = t == "util" ? "util/service" : t;
+    throw ConstructorNotAllowed("Constructor not allowed for <t> artifacts", a@\loc);
+}
+
+public Declaration convertConstructor(
+    a: (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`, 
+    str artifactName,
+    _) 
 {
     if (artifactName != "<name>") {
         throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
@@ -22,7 +32,8 @@ public Declaration convertConstructor(
     
 public Declaration convertConstructor(
     a: (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }<When when>;`, 
-    str artifactName)
+    str artifactName,
+    _)
 {
     if (artifactName != "<name>") {
         throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
@@ -33,7 +44,8 @@ public Declaration convertConstructor(
 
 public Declaration convertConstructor(
     a: (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>);`, 
-    str artifactName) 
+    str artifactName,
+    _) 
 {
     if (artifactName != "<name>") {
         throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
@@ -42,8 +54,9 @@ public Declaration convertConstructor(
     return constructor([convertParameter(p) | p <- parameters], [])[@src=a@\loc];
 }
 
-public Declaration convertDeclaration((Declaration) `<Constructor construct>`, str artifactName, _) = convertConstructor(construct, artifactName);
-public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Constructor construct>`, str artifactName, _) 
-    = convertConstructor(construct, artifactName)[
+public Declaration convertDeclaration((Declaration) `<Constructor construct>`, str artifactName, str artifactType) = 
+	convertConstructor(construct, artifactName, artifactType);
+public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Constructor construct>`, str artifactName, str artifactType) 
+    = convertConstructor(construct, artifactName, artifactType)[
     	@annotations = convertAnnotations(annotations)
     ][@src=a@\loc];

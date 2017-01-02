@@ -5,7 +5,7 @@ extend Syntax::Concrete::Grammar::Layout;
 extend Syntax::Concrete::Grammar::Lexical;
 
 start syntax Module
-   = \module: ^"namespace" Namespace namespace Import* imports Artifact? artifact LAYOUTLIST l1
+   = \module: ^"namespace" Namespace namespace Import* imports AnnotatedArtifact? artifact LAYOUTLIST l1
    ;
 
 syntax Namespace 
@@ -21,11 +21,15 @@ syntax ImportAlias
     = "as" ArtifactName alias
     ;
 
+syntax AnnotatedArtifact
+	= Annotation* annotations Artifact artifact
+	;
+
 syntax Artifact
-    = Annotation* annotations "entity" ArtifactName name "{" Declaration* declarations "}"
-    | Annotation* annotations "repository" "for" ArtifactName name "{" Declaration* declarations "}"
-    | Annotation* annotations "value" ArtifactName name "{" Declaration* declarations "}"
-    | Annotation* annotations ("util" | "service") ArtifactName name "{" Declaration* declarations "}"
+    = "entity" ArtifactName name "{" Declaration* declarations "}"
+    | "repository" "for" ArtifactName name "{" Declaration* declarations "}"
+    | "value" ArtifactName name "{" Declaration* declarations "}"
+    | ("util" | "service") ArtifactName name "{" Declaration* declarations "}"
     ;
 
 syntax Annotation
