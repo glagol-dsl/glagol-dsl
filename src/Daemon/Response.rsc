@@ -19,15 +19,19 @@ public void respondWith(list[Message] messages, int listenerId) {
 }
 
 public void respondWith(info(str msg, loc at), int listenerId) {
-	respondWith(info("<msg> in <at.file> on line <at.begin.line>, column <at.begin.end>"), listenerId);
+	respondWith(info("<msg> in <at.path> on line <at.begin.line>, column <at.begin.column>"), listenerId);
 }
 
 public void respondWith(error(str msg, loc at), int listenerId) {
-	respondWith(error("<msg> in <at.file> on line <at.begin.line>, column <at.begin.end>"), listenerId);
+	if (at.begin?) {
+		respondWith(error("<msg> in <at.path> on line <at.begin.line>, column <at.begin.column>"), listenerId);
+	} else {
+		respondWith(error("<msg> in <at.path>"), listenerId);
+	}
 }
 
 public void respondWith(warning(str msg, loc at), int listenerId) {
-	respondWith(warning("<msg> in <at.file> on line <at.begin.line>, column <at.begin.end>"), listenerId);
+	respondWith(warning("<msg> in <at.path> on line <at.begin.line>, column <at.begin.end>"), listenerId);
 }
 
 public void respondWith(info(str message), int listenerId) {

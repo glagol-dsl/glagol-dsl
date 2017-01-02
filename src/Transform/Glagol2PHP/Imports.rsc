@@ -52,7 +52,7 @@ private list[Declaration] findRepositoryDependencies(\module(Declaration ns, lis
 		case r: repository(str name): {
 			if (!isImported(name, imports)) {
 				// TODO specify location
-				throw ArtifactNotImported("Entity by the name of \'<name>\' is not imported", |tmp:///|);
+				throw ArtifactNotImported("Entity by the name of \'<name>\' is not imported", (r@src?) ? r@src : |tmp:///|);
 			}
 			
 			bool repositoryFound = false;
@@ -69,7 +69,7 @@ private list[Declaration] findRepositoryDependencies(\module(Declaration ns, lis
 			}
 			
 			if (!repositoryFound) {
-				throw ArtifactNotDefined("Repository for \'<toString(importEntity)>\' not defined", |tmp:///|);
+				throw ArtifactNotDefined("Repository for \'<toString(importEntity)>\' not defined", (r@src?) ? r@src : |tmp:///|);
 			}
 		}
 	}

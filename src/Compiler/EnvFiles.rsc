@@ -21,7 +21,7 @@ private JSON removeGlagolProps(object(map[str, JSON] properties)) = object(delet
 
 private JSON setDependencies(object(map[str, JSON] properties)) = object(merge(properties, (
     "require": object((
-        "laravel/framework": string("5.3.*"),
+        "laravel/framework": string("^5.3"),
         "doctrine/orm": string("~2.5"),
         "php": string("^7.0"),
         "bulgaria-php/glagol-php-overriding": string("dev-master"),

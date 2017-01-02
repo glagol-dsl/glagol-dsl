@@ -28,7 +28,7 @@ public void compile(loc projectPath, int listenerId) {
     	respondWith(info("Compiled source file <outputFile>"), listenerId);
     }
     
-    map[loc, str] envFiles = generateEnvFiles(config, glagolParsed);
+    map[loc, str] envFiles = generateEnvFiles(config, ast);
     
     for (f <- envFiles) {
     	writeFile(f, envFiles[f]);
