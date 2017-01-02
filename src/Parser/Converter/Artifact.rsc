@@ -46,5 +46,5 @@ public Declaration convertArtifact(a: (Artifact) `<ControllerType controllerType
 	controller(
 		convertControllerType(controllerType), 
 		route([convertRoute(r) | r <- routes]), 
-		[convertDeclaration(d, "<name>", "controller") | d <- declarations]
+		[convertDeclaration(d, "", "controller") | d <- declarations]
 	)[@src=a@\loc];

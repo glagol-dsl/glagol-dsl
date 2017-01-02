@@ -69,7 +69,7 @@ public Declaration convertArtifact(a: (Artifact) `<ControllerType controllerType
 	controller(
 		convertControllerType(controllerType), 
 		route([convertRoute(r) | r <- routes]), 
-		[convertDeclaration(d, "<name>", "controller") | d <- declarations]
+		[convertDeclaration(d, "", "controller") | d <- declarations]
 	)[@src=a@\loc];
 
 
@@ -286,6 +286,25 @@ public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations
 public Declaration convertDeclaration(a: (Declaration) `<Property prop>`, _, _) = convertProperty(prop);
 
 
+public Declaration convertDeclaration(d: (Declaration) `<Action action>`, _, a: /^(?!controller).*$/) {
+	throw ActionNotAllowed("Action declarations not allowed in artifact type \'<a>\'", d@\loc);
+}
+
+public Declaration convertDeclaration((Declaration) `<Action action>`, _, _) = convertAction(action);
+
+public Declaration convertAction(a: (Action) `<MemberName name>{<Statement* body>}`) = 
+	action("<name>", [], [convertStmt(stmt) | stmt <- body]);
+
+public Declaration convertAction(a: (Action) `<MemberName name>=<Expression expr>;`) = 
+	action("<name>", [], [expression(convertExpression(expr))]);
+
+public Declaration convertAction(a: (Action) `<MemberName name><AbstractParameters params>{<Statement* body>}`) = 
+	action("<name>", convertParameters(params), [convertStmt(stmt) | stmt <- body]);
+
+public Declaration convertAction(a: (Action) `<MemberName name><AbstractParameters params>=<Expression expr>;`) = 
+	action("<name>", convertParameters(params), [\return(convertExpression(expr))]);
+
+
 public Declaration convertModuleNamespace(a: (Namespace) `<Name name>`) = namespace("<name>")[@src=a@\loc];
 public Declaration convertModuleNamespace(a: (Namespace) `<Name name>::<Namespace n>`) 
     = namespace("<name>", convertModuleNamespace(n))[@src=a@\loc];
@@ -471,6 +490,9 @@ public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations
     	@annotations = convertAnnotations(annotations)
     ][@src=a@\loc];
 
+
+public list[Declaration] convertParameters((AbstractParameters) `(<{AbstractParameter ","}* parameters>)`) = 
+	[convertParameter(p) | p <- parameters];
 
 public Declaration convertParameter((AbstractParameter) `<Parameter p>`) = convertParameter(p);
 public Declaration convertParameter(a: (AbstractParameter) `<Annotation+ annotations><Parameter p>`) 

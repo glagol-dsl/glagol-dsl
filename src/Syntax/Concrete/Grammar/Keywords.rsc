@@ -1,7 +1,7 @@
 module Syntax::Concrete::Grammar::Keywords
 
 keyword GlagolPreserved
-    = "module"
+    = "namespace"
     | "import"
     | "from"
     | "as"
@@ -10,7 +10,7 @@ keyword GlagolPreserved
     | "service"
     | "value"
     | "repository"
-    | "collection"
+    | "controller"
     | "int"
     | "bool"
     | "boolean"
@@ -20,12 +20,13 @@ keyword GlagolPreserved
     | "false"
     | "when"
     | "void"
-    | "constructor"
-    | "throws"
+    | "throw"
     | "if"
     | "return"
     | "break"
     | "continue"
     | "new"
+    | "get"
     | "this"
+    | "init"
     ;

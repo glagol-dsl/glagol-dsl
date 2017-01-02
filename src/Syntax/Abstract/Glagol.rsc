@@ -15,6 +15,7 @@ data Declaration
     | property(Type \valueType, str name, set[AccessProperty] valueProperties, Expression defaultValue)
     | util(str name, list[Declaration] declarations)
     | controller(ControllerType controllerType, Route route, list[Declaration] declarations)
+    | action(str name, list[Declaration] params, list[Statement] body)
     | relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties)
     | constructor(list[Declaration] params, list[Statement] body)
     | constructor(list[Declaration] params, list[Statement] body, Expression when)

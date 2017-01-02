@@ -68,6 +68,7 @@ syntax AnnotationValue
     | Type type 
     ;
 
+// TODO generelize annotations by introducing AnnotatedDeclaration
 syntax Declaration
     = Property property
     | Annotation+ annotations Property property
@@ -77,6 +78,8 @@ syntax Declaration
     | Annotation+ annotations Relation relation
     | Method method
     | Annotation+ annotations Method method
+    | Action action
+    | Annotation+ annotations Action action
     ;
 
 syntax Relation
@@ -95,6 +98,11 @@ syntax Method
     | Modifier? modifier Type returnType MemberName name "(" {AbstractParameter ","}* parameters ")" "=" Expression expr When? when ";"
     ;
 
+syntax Action
+    = MemberName name AbstractParameters? "{" Statement* body "}"
+    | MemberName name AbstractParameters? "=" Expression expr ";"
+    ;
+    
 syntax Modifier
     = "private"
     | "public"
@@ -103,6 +111,10 @@ syntax Modifier
 syntax When
     = "when" Expression expr
     ;
+
+syntax AbstractParameters
+	= "(" {AbstractParameter ","}* parameters ")"
+	;
 
 syntax AbstractParameter
     = Parameter parameter
