@@ -30,7 +30,15 @@ syntax Artifact
     | "repository" "for" ArtifactName name "{" Declaration* declarations "}"
     | "value" ArtifactName name "{" Declaration* declarations "}"
     | ("util" | "service") ArtifactName name "{" Declaration* declarations "}"
+    | ControllerType controllerType "controller" Route routes "{" Declaration* declarations "}"
     ;
+
+lexical Route = {RoutePart "/"}* routes;
+
+syntax RoutePart
+	= Identifier part
+	| RoutePlaceholder placeholder
+	;
 
 syntax Annotation
     = "@" Identifier id AnnotationArgs? args

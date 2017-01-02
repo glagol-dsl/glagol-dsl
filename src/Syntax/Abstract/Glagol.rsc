@@ -14,6 +14,7 @@ data Declaration
     | property(Type \valueType, str name, set[AccessProperty] valueProperties)
     | property(Type \valueType, str name, set[AccessProperty] valueProperties, Expression defaultValue)
     | util(str name, list[Declaration] declarations)
+    | controller(ControllerType controllerType, Route route, list[Declaration] declarations)
     | relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties)
     | constructor(list[Declaration] params, list[Statement] body)
     | constructor(list[Declaration] params, list[Statement] body, Expression when)
@@ -22,6 +23,14 @@ data Declaration
     | param(Type paramType, str name)
     | param(Type paramType, str name, Expression defaultValue)
     ;
+
+data ControllerType = jsonApi();
+
+data Route
+	= route(list[Route] routeParts)
+	| routePart(str name)
+	| routeVar(str name)
+	;
 
 data RelationDir
     = \one()
@@ -131,6 +140,8 @@ data AssignOperator
 public anno list[Annotation] node@annotations;
 public anno list[Annotation] Declaration@annotations;
 
+public anno loc ControllerType@src;
+public anno loc Route@src;
 public anno loc AssignOperator@src;
 public anno loc Statement@src; 
 public anno loc AccessProperty@src; 
