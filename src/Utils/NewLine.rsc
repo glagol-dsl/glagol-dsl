@@ -1,4 +1,4 @@
-module Compiler::PHP::NewLine
+module Utils::NewLine
 
 public str nl() = "\n";
 public str nl(1) = "\n";

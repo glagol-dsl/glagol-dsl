@@ -2,58 +2,73 @@ module Test::Config::Reader
 
 import IO;
 import Config::Reader;
+import Config::Config;
+import lang::json::ast::JSON;
 
-test bool testShouldLoadDotGlagolFileFromString()
+test bool testShouldComposerConfigFromString()
 {
-    str config = "framework: zend
-    'orm: doctrine
-    'src_dir: source";
+    str config = "{\"name\": \"test/project\"}";
     
-    return loadGlagolConfig(config) == <zend(), doctrine(), |tmp:///|, |tmp:///source|>;
+    return loadConfig(config) == <object(("name": string("test/project"))), |tmp:///|>;
 }
 
-test bool testShouldLoadDotGlagolFileFromProjectPath()
+test bool testShouldLoadComposerFileFromProjectPath()
 {
-    str config = "framework: zend
-    'orm: doctrine";
+    str config = "{\"name\": \"test/project\"}";
     
-    loc tempProjectDir = |tmp:///glagol_test_dot_glagol|;
+    loc tempProjectDir = |tmp:///glagol_test|;
     
     mkDirectory(tempProjectDir);
-    writeFile(tempProjectDir + ".glagol", config);
+    writeFile(tempProjectDir + "composer.json", config);
     
-    Config projectConfig = loadGlagolConfig(tempProjectDir);
+    Config projectConfig = loadConfig(tempProjectDir);
     
-    remove(tempProjectDir + ".glagol");
+    remove(tempProjectDir + "composer.json");
     remove(tempProjectDir);
 
-    return projectConfig == <zend(), doctrine(), tempProjectDir, tempProjectDir + "src">;
+    return projectConfig == <object(("name": string("test/project"))), tempProjectDir>;
 }
 
-test bool testShouldThrowExceptionOnInvalidFramework()
-{
-    str config = "framework: pizda
-    'orm: doctrine";
+test bool testHasPropertyNestedReturnsTrue() = hasProperty(object(("glagol": object(("framework": string("zend"))))), "glagol", "framework");
+test bool testHasPropertyNestedReturnsFalse() = !hasProperty(object(("glagol": object(("framework": string("zend"))))), "glagol", "IAMNOTDEFINED");
+
+test bool testGetPropertyNestedReturnsValue() = getProperty(object(("glagol": object(("framework": string("zend"))))), null(), "glagol", "framework") == string("zend");
+test bool testGetPropertyNestedReturnsValue2() = getProperty(object(("glagol": object(("framework": string("zend"))))), null(), "glagol") == object(("framework": string("zend")));
+test bool testGetPropertyNestedReturnsDefaultValue() = getProperty(object(("glagol": object(("framework": string("zend"))))), null(), "glagol", "orm") == null();
+
+test bool testGetFrameworkShouldReturnLaravel() = getFramework(object(("glagol": object(("framework": string("laravel")))))) == laravel();
+
+test bool testGetFrameworkShouldThrowExceptionOnInvalidFramework() {
+    try
+        getFramework(object(("glagol": object(("framework": string("zend"))))));
+    catch InvalidFramework("Invalid framework \"zend\""): return true;
     
-    try {
-        loadGlagolConfig(config);
-    } catch InvalidFramework(str msg): {
-        return msg == "Invalid framework \"pizda\"";
-    }
-        
-    return false;   
+    return false;
 }
 
-test bool testShouldThrowExceptionOnInvalidORM()
-{
-    str config = "framework: zend
-    'orm: pizda";
+test bool testGetFrameworkShouldThrowExceptionOnUnspecifiedFramework() {
+    try
+        getFramework(object(("glagol": object(()))));
+    catch InvalidFramework("Framework not specified"): return true;
     
-    try {
-        loadGlagolConfig(config);
-    } catch InvalidORM(str msg): {
-        return msg == "Invalid ORM \"pizda\"";
-    }
-        
-    return false;   
+    return false;
 }
+
+test bool testGetORMShouldReturnDoctrine() = getORM(object(("glagol": object(("orm": string("doctrine")))))) == doctrine();
+
+test bool testGetORMShouldThrowExceptionOnInvalidORM() {
+    try
+        getORM(object(("glagol": object(("orm": string("propel"))))));
+    catch InvalidORM("Invalid ORM \"propel\""): return true;
+    
+    return false;
+}
+
+test bool testGetORMShouldThrowExceptionOnUnspecifiedORM() {
+    try
+        getORM(object(("glagol": object(()))));
+    catch InvalidORM("ORM not specified"): return true;
+    
+    return false;
+}
+

@@ -5,7 +5,7 @@ import Syntax::Abstract::Glagol;
 
 test bool testShouldParseTableNameAnnotationForEntity()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                '@table(\"users\")
                'entity User { }";
 
@@ -16,7 +16,7 @@ test bool testShouldParseTableNameAnnotationForEntity()
 
 test bool testShouldParseIndexesAnnotationForEntity()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                '@index(\"my_index\", [\"name\", \"email\"])
                '@index(\"second_index\", [\"quantity\", \"total\"])
                'entity User { }";
@@ -33,7 +33,7 @@ test bool testShouldParseIndexesAnnotationForEntity()
 
 test bool testShouldParseCompositeAnnotationForEntity()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                '@index(\"my_index\", [\"name\", \"email\"])
                '@index(\"second_index\", [\"quantity\", \"total\"])
                '@table(\"my_users_table\")
@@ -52,7 +52,7 @@ test bool testShouldParseCompositeAnnotationForEntity()
 
 test bool testShouldParseFlatDocAnnotationForEntity()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                '@doc=\"This is a doc\"
                'entity User { }";
 

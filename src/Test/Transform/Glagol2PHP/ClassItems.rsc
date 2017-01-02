@@ -7,7 +7,7 @@ import Transform::Glagol2PHP::Entities;
 import Transform::Glagol2PHP::Utils;
 import Transform::Glagol2PHP::Constructors;
 import Transform::Glagol2PHP::Methods;
-import Config::Reader;
+import Config::Config;
 
 test bool shouldAddPhpAnnotationsToPhpClassDef() = 
 	toPhpClassDef(entity("Bla", [])[@annotations=[annotation("doc", [annotationVal("a doc")])]], 

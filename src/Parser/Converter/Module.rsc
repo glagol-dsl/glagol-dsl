@@ -4,5 +4,7 @@ import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 import Parser::Converter::ModuleNamespace;
 
-public Declaration buildAST((Module) `namespace <Namespace n>;<Import* imports><Artifact artifact>`) 
-    = \module(convertModuleNamespace(n), [convertImport(\import) | \import <- imports], convertArtifact(artifact));
+public Declaration buildAST(a: (Module) `namespace <Namespace n><Import* imports><AnnotatedArtifact annotatedArtifact>`) {
+	list[Declaration] convertedImports = [convertImport(\import) | \import <- imports];
+    return \module(convertModuleNamespace(n), convertedImports, convertAnnotatedArtifact(annotatedArtifact, convertedImports))[@src=a@\loc];
+}

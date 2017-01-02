@@ -8,6 +8,9 @@ public bool isProperty(property(_, _, _)) = true;
 public bool isProperty(property(_, _, _, _)) = true;
 public default bool isProperty(_) = false;
 
+public bool isPropertyWithDefaultValue(property(_, _, _, _)) = true;
+public default bool isPropertyWithDefaultValue(_) = false;
+
 public bool isMethod(method(_, _, _, _, _)) = true;
 public bool isMethod(method(_, _, _, _, _, _)) = true;
 public bool isMethod(_) = false;
@@ -62,3 +65,11 @@ public bool hasListUsage(Declaration artifact) {
     }
     return false;
 }
+
+public bool isImported(str \alias, list[Declaration] imports) = 
+	(false | it ? true : as == \alias | \import(str artifactName, Declaration namespace, str as) <- imports);
+
+public list[Declaration] getDIProperties(list[Declaration] declarations) =
+	[p | p: property(_, _, _, get(_)) <- declarations];
+
+public bool hasDependencies(list[Declaration] declarations) = (false | true | property(_, _, _, get(_)) <- declarations);

@@ -3,8 +3,8 @@ module Compiler::PHP::Properties
 import Syntax::Abstract::PHP;
 import Compiler::PHP::Annotations;
 import Compiler::PHP::Modifiers;
-import Compiler::PHP::NewLine;
-import Compiler::PHP::Indentation;
+import Utils::NewLine;
+import Utils::Indentation;
 import Compiler::PHP::Expressions;
 import List;
 

@@ -10,40 +10,53 @@ import Parser::Converter::Type;
 import Exceptions::ParserExceptions;
 
 public Declaration convertConstructor(
-    (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`, 
-    str artifactName) 
+    a: (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`, 
+    str artifactName,
+    t: /repository|util/)
+{
+	t = t == "util" ? "util/service" : t;
+    throw ConstructorNotAllowed("Constructor not allowed for <t> artifacts", a@\loc);
+}
+
+public Declaration convertConstructor(
+    a: (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`, 
+    str artifactName,
+    _) 
 {
     if (artifactName != "<name>") {
-        throw IllegalConstructorName("\'<name>\' is invalid constructor name");
+        throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
     } 
     
-    return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body]);
+    return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body])[@src=a@\loc];
 }
     
 public Declaration convertConstructor(
-    (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }<When when>;`, 
-    str artifactName)
+    a: (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }<When when>;`, 
+    str artifactName,
+    _)
 {
     if (artifactName != "<name>") {
-        throw IllegalConstructorName("\'<name>\' is invalid constructor name");
+        throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
     }
     
-    return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], convertWhen(when));
+    return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], convertWhen(when))[@src=a@\loc];
 }
 
 public Declaration convertConstructor(
-    (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>);`, 
-    str artifactName) 
+    a: (Constructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>);`, 
+    str artifactName,
+    _) 
 {
     if (artifactName != "<name>") {
-        throw IllegalConstructorName("\'<name>\' is invalid constructor name");
+        throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
     }
     
-    return constructor([convertParameter(p) | p <- parameters], []);
+    return constructor([convertParameter(p) | p <- parameters], [])[@src=a@\loc];
 }
 
-public Declaration convertDeclaration((Declaration) `<Constructor construct>`, str artifactName, _) = convertConstructor(construct, artifactName);
-public Declaration convertDeclaration((Declaration) `<Annotation+ annotations><Constructor construct>`, str artifactName, _) 
-    = convertConstructor(construct, artifactName)[
+public Declaration convertDeclaration((Declaration) `<Constructor construct>`, str artifactName, str artifactType) = 
+	convertConstructor(construct, artifactName, artifactType);
+public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Constructor construct>`, str artifactName, str artifactType) 
+    = convertConstructor(construct, artifactName, artifactType)[
     	@annotations = convertAnnotations(annotations)
-    ];
+    ][@src=a@\loc];

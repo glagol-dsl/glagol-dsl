@@ -3,11 +3,11 @@ module Test::Transform::Glagol2PHP::Namespaces
 import Transform::Glagol2PHP::Namespaces;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
-import Config::Reader;
+import Config::Config;
 
 test bool shouldTransformToAPhpNamespace() = 
-	toPhpNamespace(namespace("Test", namespace("Entity", namespace("User"))), 
-		[], entity("User", []), <anyFramework(), doctrine()>) == 
+	toPhpNamespace(\module(namespace("Test", namespace("Entity", namespace("User"))), 
+		[], entity("User", [])), [], <anyFramework(), doctrine()>) == 
 	phpNamespace(
 	  phpSomeName(phpName("Test\\Entity\\User")),
 	  [
@@ -20,8 +20,8 @@ test bool shouldTransformToAPhpNamespace() =
 	        phpNoName(),
 	        [],
 	        []))
-	  ]) && toPhpNamespace(namespace("Test", namespace("Entity", namespace("User"))), 
-		[], entity("User", []), <anyFramework(), doctrine()>).body[1].classDef@phpAnnotations == 
+	  ]) && toPhpNamespace(\module(namespace("Test", namespace("Entity", namespace("User"))), 
+		[], entity("User", [])), [], <anyFramework(), doctrine()>).body[1].classDef@phpAnnotations == 
 		{phpAnnotation("ORM\\Entity")};
 
 		
@@ -31,8 +31,9 @@ test bool shouldTransformSimpleEntityToPhpScriptUsingDoctrine()
         \import("Currency", namespace("Currency", namespace("Value")), "CurrencyVB")
     ], entity("Customer", [
         property(integer(), "id", {})
-    ])))
+    ])), [])
     == ("User/Entity/Customer.php": phpScript([
+    	phpDeclare([phpDeclaration("strict_types", phpScalar(phpInteger(1)))], []),
         phpNamespace(phpSomeName(phpName("User\\Entity")), [
             phpUse({
                 phpUse(phpName("Currency\\Value\\Money"), phpNoName()),
@@ -53,8 +54,9 @@ test bool shouldTransformSimpleAnnotatedEntityToPhpScriptUsingDoctrine()
         \import("Currency", namespace("Currency", namespace("Value")), "CurrencyVB")
     ], entity("Customer", [
         property(integer(), "id", {})
-    ])[@annotations=[annotation("table", [])]]))
+    ])[@annotations=[annotation("table", [])]]), [])
     == ("User/Entity/Customer.php": phpScript([
+    	phpDeclare([phpDeclaration("strict_types", phpScalar(phpInteger(1)))], []),
         phpNamespace(phpSomeName(phpName("User\\Entity")), [
             phpUse({
                 phpUse(phpName("Currency\\Value\\Money"), phpNoName()),
@@ -89,17 +91,17 @@ test bool shouldTransformSimpleAnnotatedWithValueEntityToPhpScriptUsingDoctrine(
                 ))
             ])
         ]]
-    ])[@annotations=[annotation("table", [annotationVal("customers")])]]));
+    ])[@annotations=[annotation("table", [annotationVal("customers")])]]), []);
     
     PhpScript ast = asts["User/Entity/Customer.php"];
     
-    return ast.body[0].body[1].classDef@phpAnnotations == {
+    return ast.body[1].body[1].classDef@phpAnnotations == {
               phpAnnotation("ORM\\Entity"),
               phpAnnotation(
                 "ORM\\Table",
                 phpAnnotationVal(("name":phpAnnotationVal("customers"))))
             } &&
-           ast.body[0].body[1].classDef.members[0]@phpAnnotations == {
+           ast.body[1].body[1].classDef.members[0]@phpAnnotations == {
                   phpAnnotation(
                     "ORM\\Column",
                     phpAnnotationVal((
@@ -137,17 +139,17 @@ test bool shouldTransformEntityWithRelationsToPhpScriptUsingDoctrine() {
             ])
         ]],
         relation(\one(), \one(), "Language", "userLang", {})
-    ])[@annotations=[annotation("table", [annotationVal("customers")])]]));
+    ])[@annotations=[annotation("table", [annotationVal("customers")])]]), []);
     
     PhpScript ast = asts["User/Entity/Customer.php"];
     
-    return ast.body[0].body[1].classDef.members[1]@phpAnnotations == {
+    return ast.body[1].body[1].classDef.members[1]@phpAnnotations == {
                   phpAnnotation(
                     "ORM\\OneToOne",
                     phpAnnotationVal((
                         "targetEntity": phpAnnotationVal("Language")
                     ))), phpAnnotation("var", phpAnnotationVal("Language"))
-           } && ast.body[0].body[1].classDef.members[1] == phpProperty(
+           } && ast.body[1].body[1].classDef.members[1] == phpProperty(
                {phpPrivate()}, [phpProperty("userLang", phpNoExpr())]
            );
 }

@@ -6,7 +6,7 @@ import Transform::Glagol2PHP::Properties;
 import Transform::Glagol2PHP::Expressions;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
-import Config::Reader;
+import Config::Config;
 import List;
 import IO;
 

@@ -3,7 +3,7 @@ module Transform::Glagol2PHP::Annotations
 import Transform::Glagol2PHP::Doctrine::Annotations;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
-import Config::Reader;
+import Config::Config;
 import List;
 
 public PhpAnnotation toPhpAnnotation(annotation(str annotationName, list[Annotation] arguments), env, context)

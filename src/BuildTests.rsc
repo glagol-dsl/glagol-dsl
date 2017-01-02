@@ -49,25 +49,34 @@ public void main(list[str] args)
                         'private int testsPassed = 0;
                         '
                         'private void runTest(bool () t, loc location) {
-                        '   try {
-                        '       if (t()) print(\".\");
-                        '       else {
-                        '           errorMessages += \"Test \<t\> failed in \<location.path\>\";
-                        '           print(\"F\");
-                        '       }
-                        '       testsPassed += 1;
-                        '       if (testsPassed % 30 == 0) println(\" \<toInt((toReal(testsPassed)/<toReal("<size(functions)>")>)*100)\>%\");
-                        '   } catch e: {
-                        '       throw \"Test \<t\> threw an exception (located in \<location.path\>) with text \\\'\<e\>\\\'\";
-                        '       return;
+                        '	bool isSuccessful;
+                        '
+                        '   try isSuccessful = t();
+                        '   catch e: {
+                        '       errorMessages +=  \"Test \<t\> threw an exception (located in \<location.path\>) with text \\\'\<e\>\\\'\";
+                        '       isSuccessful = false;
                         '   }
+                        '   
+                        '   if (isSuccessful) {
+                        '		print(\".\");
+                        '	} else {
+                        '       errorMessages += \"Test \<t\> failed in \<location.path\>\";
+                        '       print(\"F\");
+                        '   }
+                        '
+                        '   testsPassed += 1;
+                        '
+                        '   if (testsPassed % 30 == 0) println(\" \<toInt((toReal(testsPassed)/<toReal("<size(functions)>")>)*100)\>%\");
                         '} 
                         '
                         'public int main(list[str] args) {
                         '
                         '   map[bool () fn, loc file] tests = (<substring(fnMap, 0, size(fnMap) - 1)>);
                         '
-                        '   for (t \<- tests) runTest(t, tests[t]);
+                        '   for (t \<- tests) {
+                        '		try runTest(t, tests[t]);
+                        '		catch e: errorMessages += e;
+                        '	}
                         '
                         '   println(\" 100%\");
                         '

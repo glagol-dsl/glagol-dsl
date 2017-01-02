@@ -9,7 +9,7 @@ import Transform::Glagol2PHP::Properties;
 import Transform::Glagol2PHP::ClassItems;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
-import Config::Reader;
+import Config::Config;
 
 @doc="Convert entity to a PHP class"
 public PhpStmt toPhpClassDef(e: entity(str name, list[Declaration] declarations), env: <Framework f, doctrine()>)

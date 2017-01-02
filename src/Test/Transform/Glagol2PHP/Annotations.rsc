@@ -2,7 +2,7 @@ module Test::Transform::Glagol2PHP::Annotations
 
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
-import Config::Reader;
+import Config::Config;
 import Transform::Glagol2PHP::Annotations;
 
 test bool shouldTransformToTablePhpAnnotation() =

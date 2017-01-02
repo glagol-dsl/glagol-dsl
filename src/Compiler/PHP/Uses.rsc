@@ -1,6 +1,6 @@
 module Compiler::PHP::Uses
 
-import Compiler::PHP::NewLine;
+import Utils::NewLine;
 import Syntax::Abstract::PHP;
 
 public str toCode(phpUse(set[PhpUse] uses), _) = ("" | it + toCode(use) | use <- uses);

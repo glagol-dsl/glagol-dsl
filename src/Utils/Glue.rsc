@@ -1,4 +1,4 @@
-module Compiler::PHP::Glue
+module Utils::Glue
 
 import List;
 

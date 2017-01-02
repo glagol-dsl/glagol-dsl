@@ -1,10 +1,10 @@
 module Compiler::PHP::Methods
 
 import Compiler::PHP::Annotations;
-import Compiler::PHP::Indentation;
-import Compiler::PHP::NewLine;
+import Utils::Indentation;
+import Utils::NewLine;
 import Compiler::PHP::Modifiers;
-import Compiler::PHP::Glue;
+import Utils::Glue;
 import Compiler::PHP::Params;
 import Compiler::PHP::Statements;
 import Syntax::Abstract::PHP;

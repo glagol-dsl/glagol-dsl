@@ -3,7 +3,7 @@ module Test::Transform::Glagol2PHP::Properties
 import Transform::Glagol2PHP::Properties;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
-import Config::Reader;
+import Config::Config;
 
 test bool propertyShouldTransformToPhpPropertyHavingNoDefaultValueWhenGetIsUsed() =
     toPhpClassItem(property(artifact("SomeUtil"), "someUtil", {}, get(selfie())), <zend(), doctrine()>, entity("", [])) ==

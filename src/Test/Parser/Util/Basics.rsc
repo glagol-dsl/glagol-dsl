@@ -6,7 +6,7 @@ import Parser::ParseAST;
 test bool shouldParseEmptyUtil()
 {
     str code 
-        = "namespace Test;
+        = "namespace Test
           'util UserCreator {}";
           
     return parseModule(code) == \module(namespace("Test"), [], util("UserCreator", []));
@@ -15,7 +15,7 @@ test bool shouldParseEmptyUtil()
 test bool shouldParseUtilUsingTheServiceKeyword()
 {
     str code 
-        = "namespace Test;
+        = "namespace Test
           'service UserCreator {}";
           
     return parseModule(code) == \module(namespace("Test"), [], util("UserCreator", []));
@@ -23,7 +23,7 @@ test bool shouldParseUtilUsingTheServiceKeyword()
 
 test bool testShouldParseFlatDocAnnotationForUtil()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                '@doc=\"This is a doc\"
                'util UserCreator { }";
 
@@ -37,7 +37,7 @@ test bool testShouldParseFlatDocAnnotationForUtil()
 
 test bool testShouldParseFlatDocAnnotationForUtil()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                '@doc=\"This is a doc\"
                'util UserCreator { }";
 
@@ -46,4 +46,32 @@ test bool testShouldParseFlatDocAnnotationForUtil()
     return 
     	parseModule(code) == \module(namespace("Example"), [], expectedEntity) &&
     	parseModule(code).artifact@annotations == [annotation("doc", [annotationVal("This is a doc")])];
+}
+
+test bool shouldNotAllowUtilConstructor()
+{
+    str code = "namespace Example
+               '@doc=\"This is a doc\"
+               'util UserCreator {
+               '    UserCreator() {}
+               '}";
+    
+    try parseModule(code);
+    catch ConstructorNotAllowed("Constructor not allowed for util/service artifacts", loc at): return true;
+    
+    return false;
+}
+
+test bool shouldNotAllowServiceConstructor()
+{
+    str code = "namespace Example
+               '@doc=\"This is a doc\"
+               'service UserCreator {
+               '    UserCreator() {}
+               '}";
+    
+    try parseModule(code);
+    catch ConstructorNotAllowed("Constructor not allowed for util/service artifacts", loc at): return true;
+    
+    return false;
 }

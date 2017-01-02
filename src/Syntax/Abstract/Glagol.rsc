@@ -130,3 +130,13 @@ data AssignOperator
     
 public anno list[Annotation] node@annotations;
 public anno list[Annotation] Declaration@annotations;
+
+public anno loc AssignOperator@src;
+public anno loc Statement@src; 
+public anno loc AccessProperty@src; 
+public anno loc Modifier@src; 
+public anno loc Type@src; 
+public anno loc Expression@src; 
+public anno loc Annotation@src; 
+public anno loc RelationDir@src; 
+public anno loc Declaration@src;

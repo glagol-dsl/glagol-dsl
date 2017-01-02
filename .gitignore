@@ -9,4 +9,7 @@ build.properties
 src/Tests.rsc
 *.orig
 glagol-dsl.iml
+glagol.iml
 /bin/
+composer.lock
+/vendor/

@@ -3,7 +3,7 @@ module Transform::Glagol2PHP::Doctrine::Annotations
 import Transform::Glagol2PHP::Annotations;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
-import Config::Reader;
+import Config::Config;
 import List;
 
 public PhpAnnotation toPhpAnnotation("table", list[Annotation] arguments, env: <Framework f, orm: doctrine()>, e: entity(_, _))

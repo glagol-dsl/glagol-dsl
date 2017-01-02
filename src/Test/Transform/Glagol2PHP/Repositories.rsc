@@ -4,7 +4,7 @@ import Transform::Glagol2PHP::ClassItems;
 import Transform::Glagol2PHP::Repositories;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
-import Config::Reader;
+import Config::Config;
 
 test bool shouldTransformToRepositoryPhpClassDefStmt() = 
 	toPhpClassDef(repository("User", [

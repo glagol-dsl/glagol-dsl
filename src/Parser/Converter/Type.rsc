@@ -3,13 +3,13 @@ module Parser::Converter::Type
 import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 
-public Type convertType((Type) `int`) = integer();
-public Type convertType((Type) `float`) = float();
-public Type convertType((Type) `bool`) = boolean();
-public Type convertType((Type) `boolean`) = boolean();
-public Type convertType((Type) `void`) = voidValue();
-public Type convertType((Type) `string`) = string();
-public Type convertType((Type) `repository\<<ArtifactName name>\>`) = repository("<name>");
-public Type convertType((Type) `<Type t>[]`) = \list(convertType(t));
-public Type convertType((Type) `{<Type key>,<Type v>}`) = \map(convertType(key), convertType(v));
-public Type convertType((Type) `<ArtifactName name>`) = artifact("<name>");
+public Type convertType(a: (Type) `int`) = integer()[@src=a@\loc];
+public Type convertType(a: (Type) `float`) = float()[@src=a@\loc];
+public Type convertType(a: (Type) `bool`) = boolean()[@src=a@\loc];
+public Type convertType(a: (Type) `boolean`) = boolean()[@src=a@\loc];
+public Type convertType(a: (Type) `void`) = voidValue()[@src=a@\loc];
+public Type convertType(a: (Type) `string`) = string()[@src=a@\loc];
+public Type convertType(a: (Type) `repository\<<ArtifactName name>\>`) = repository("<name>")[@src=a@\loc];
+public Type convertType(a: (Type) `<Type t>[]`) = \list(convertType(t))[@src=a@\loc];
+public Type convertType(a: (Type) `{<Type key>,<Type v>}`) = \map(convertType(key), convertType(v))[@src=a@\loc];
+public Type convertType(a: (Type) `<ArtifactName name>`) = artifact("<name>")[@src=a@\loc];

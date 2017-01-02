@@ -1,6 +1,6 @@
-module Test::Compiler::PHP::NewLine
+module Test::Utils::NewLine
 
-import Compiler::PHP::NewLine;
+import Utils::NewLine;
 
 test bool shouldProcudeNewLine() = nl() == "\n";
 test bool shouldProcudeTwoNewLines() = nl(2) == "\n\n";

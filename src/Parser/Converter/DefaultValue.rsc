@@ -4,7 +4,7 @@ import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 import Parser::Converter::Expression;
 
-public Expression convertParameterDefaultVal((AssignDefaultValue) `=<DefaultValue defaultValue>`, Type onType) {
+public Expression convertParameterDefaultVal(a: (AssignDefaultValue) `=<DefaultValue defaultValue>`, Type onType) {
 
     Expression defaultValue = convertExpression(defaultValue);
     
@@ -12,6 +12,6 @@ public Expression convertParameterDefaultVal((AssignDefaultValue) `=<DefaultValu
         defaultValue = get(onType);
     }
 
-    return defaultValue;
+    return defaultValue[@src=a@\loc];
 }
     

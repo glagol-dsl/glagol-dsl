@@ -48,3 +48,14 @@ public PhpClassItem createConstructor(list[Declaration] declarations, env) =
 
 public PhpClassItem createConstructor(list[Declaration] declarations, env) = 
 	toPhpClassItem(declarations[0], env) when size(declarations) == 1;
+
+public PhpClassItem createDIConstructor(list[Declaration] declarations, env) = 
+	phpMethod("__construct", {phpPublic()}, false, 
+		[toPhpParam(param(valueType, name)) | p: property(Type valueType, str name, _, get(_)) <- declarations],
+		[
+			phpExprstmt(phpAssign(phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName(name))), phpVar(phpName(phpName(name))))) | 
+			property(Type valueType, str name, _, get(_)) <- declarations
+		],
+    phpNoName())[
+    	@phpAnnotations={annotation | d: property(_, _, _, get(_)) <- declarations, annotation <- toPhpAnnotations(d, env)}
+    ];

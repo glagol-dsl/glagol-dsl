@@ -2,6 +2,7 @@ module Transform::Glagol2PHP::Namespaces
 
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
+import Syntax::Abstract::PHP::Helpers;
 import Transform::Glagol2PHP::Imports;
 import Transform::Glagol2PHP::Common;
 import Transform::Glagol2PHP::Entities;
@@ -9,15 +10,16 @@ import Transform::Glagol2PHP::Repositories;
 import Transform::Glagol2PHP::Utils;
 import Transform::Glagol2PHP::ValueObjects;
 import Transform::Glagol2PHP::ClassItems;
-import Config::Reader;
+import Config::Config;
 
-public PhpStmt toPhpNamespace(Declaration namespace, list[Declaration] imports, Declaration artifact, env)
+public PhpStmt toPhpNamespace(m: \module(Declaration namespace, list[Declaration] imports, Declaration artifact), list[Declaration] ast, env)
     = phpNamespace(
         phpSomeName(phpName(namespaceToString(namespace, "\\"))),
-        toPhpUses(imports, artifact, env) + [toPhpClassDef(artifact, env)]
+        toPhpUses(m, ast, env) + [toPhpClassDef(artifact, env)]
     );
 
 public map[str, PhpScript] toPHPScript(
 	env: <Framework f, orm: doctrine()>, 
-	d: \module(Declaration namespace, imports, artifact))
-    = (makeFilename(namespace, artifact): phpScript([toPhpNamespace(namespace, imports, artifact, env)]));
+	m: \module(Declaration namespace, list[Declaration] imports, Declaration artifact),
+	list[Declaration] ast)
+    = (makeFilename(namespace, artifact): phpScript([phpDeclareStrict(), toPhpNamespace(m, ast, env)]));

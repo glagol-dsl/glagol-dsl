@@ -3,7 +3,7 @@ module Test::Transform::Glagol2PHP::Doctrine::Relations
 import Transform::Glagol2PHP::Doctrine::Relations;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
-import Config::Reader;
+import Config::Config;
 
 test bool oneToOneRelationShouldTransformToPhpProperty() =
     toPhpClassItem(relation(\one(), \one(), "User", "owner", {}), <zend(), doctrine()>) ==

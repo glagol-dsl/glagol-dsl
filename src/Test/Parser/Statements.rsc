@@ -5,7 +5,7 @@ import Syntax::Abstract::Glagol;
 
 test bool testDeclarationsWithPrimitiveTypes() {
     str code
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '   User() {
         '       float myVariable = 5.4;
@@ -27,7 +27,7 @@ test bool testDeclarationsWithPrimitiveTypes() {
 
 test bool testDeclarationsWithoutDefaultValue() {
     str code
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '   User() {
         '       float myVariable;
@@ -48,7 +48,7 @@ test bool testDeclarationsWithoutDefaultValue() {
 
 test bool testDeclarationsWithCustomTypes() {
     str code
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '   User() {
         '       DateTime myDate;
@@ -64,7 +64,7 @@ test bool testDeclarationsWithCustomTypes() {
 
 test bool testDeclarationsWithNestedAssignment() {
     str code
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '   User(int a) {
         '       int myNumber = a = 5;
@@ -80,7 +80,7 @@ test bool testDeclarationsWithNestedAssignment() {
 
 test bool testIfStatement() {
     str code
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '   User(int a) {
         '       if (a == 5) return 5;
@@ -96,7 +96,7 @@ test bool testIfStatement() {
 
 test bool testIfStatementWithBlock() {
     str code
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '   User(int a) {
         '       if (a == 5) {return 5;}
@@ -112,7 +112,7 @@ test bool testIfStatementWithBlock() {
 
 test bool testIfElseStatement() {
     str code
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '   User(int a) {
         '       if (a == 5) return 5;
@@ -129,7 +129,7 @@ test bool testIfElseStatement() {
 
 test bool testIfElseIfStatement() {
     str code
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '   User(int a) {
         '       if (a == 5) return 5;
@@ -148,7 +148,7 @@ test bool testIfElseIfStatement() {
 
 test bool testIfElseIfEndingWithElseStatement() {
     str code
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '   User(int a) {
         '       if (a == 5) return 5;
@@ -168,7 +168,7 @@ test bool testIfElseIfEndingWithElseStatement() {
 
 test bool testForeachStatementWithEmptyStmt() {
     str code
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '   User(int[] a) {
         '       for (a as b);
@@ -184,7 +184,7 @@ test bool testForeachStatementWithEmptyStmt() {
 
 test bool testForeachStatementWithEmptyStmtAndDirectList() {
     str code
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '   User() {
         '       for ([1, 2, 3, 4, 5] as b);
@@ -201,7 +201,7 @@ test bool testForeachStatementWithEmptyStmtAndDirectList() {
 
 test bool testForeachStatementWithIncrementStmtAndDirectList() {
     str code
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '   User() {
         '       int i;
@@ -220,7 +220,7 @@ test bool testForeachStatementWithIncrementStmtAndDirectList() {
 
 test bool testForeachStatementWithBreak() {
     str code
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '   User(int[] a) {
         '       for (a as b) {
@@ -240,7 +240,7 @@ test bool testForeachStatementWithBreak() {
 
 test bool testForeachStatementWithLevelledBreak() {
     str code
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '   User(int[] a) {
         '       for (a as b) 
@@ -263,7 +263,7 @@ test bool testForeachStatementWithLevelledBreak() {
 
 test bool testForeachStatementWithCondition() {
     str code
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '   User(DateTime[] a, DateTime now) {
         '       for (a as b, a \< now);
@@ -279,7 +279,7 @@ test bool testForeachStatementWithCondition() {
 
 test bool testForeachStatementWithContinue() {
     str code
-        = "namespace Example;
+        = "namespace Example
         'entity User {
         '   User(DateTime[] a, DateTime now) {
         '       for (a as b)

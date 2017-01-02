@@ -1,4 +1,4 @@
-module Compiler::PHP::Indentation
+module Utils::Indentation
 
 import String;
 

@@ -6,7 +6,7 @@ import Syntax::Abstract::Glagol;
 test bool entityDeclaration() 
 {
     str code 
-        = "namespace Testing;
+        = "namespace Testing
         'entity User {}
         '";
         
@@ -15,7 +15,7 @@ test bool entityDeclaration()
 
 test bool testShouldParseEmptyEntityWithModuleImports()
 {
-    str code = "namespace Example;
+    str code = "namespace Example
                'import Auth::User as UserEntity;
                'import I18n::Money;
                'import I18n::Language;
