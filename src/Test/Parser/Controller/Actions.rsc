@@ -12,7 +12,8 @@ test bool parseControllerWithIndexActionWithoutParams()
         '}
         '";
         
-    return parseModule(code) == \module(namespace("Testing"), [], controller(jsonApi(), route([routePart("profile")]), [
+    return parseModule(code, |tmp:///UnknownController.g|).\module == 
+    \module(namespace("Testing"), [], controller("UnknownController", jsonApi(), route([routePart("profile")]), [
     	action("index", [], [])
     ]));
 }
@@ -27,7 +28,8 @@ test bool parseControllerWithIndexActionWithParams()
         '}
         '";
         
-    return parseModule(code) == \module(namespace("Testing"), [], controller(jsonApi(), route([routePart("profile")]), [
+    return parseModule(code, |tmp:///UnknownController.g|).\module == 
+    \module(namespace("Testing"), [], controller("UnknownController", jsonApi(), route([routePart("profile")]), [
     	action("index", [param(integer(), "id")], [])
     ]));
 }
@@ -44,7 +46,8 @@ test bool parseControllerWithIndexActionWithParamsAndStmts()
         '}
         '";
         
-    return parseModule(code) == \module(namespace("Testing"), [], controller(jsonApi(), route([routePart("profile")]), [
+    return parseModule(code, |tmp:///UnknownController.g|).\module == 
+    \module(namespace("Testing"), [], controller("UnknownController", jsonApi(), route([routePart("profile")]), [
     	action("index", [param(integer(), "id")], [
     		\return(new("User", [variable("id")]))
     	])
@@ -62,7 +65,8 @@ test bool parseControllerWithIndexActionWithParamsAndStmtsUsingFunctionalStyle()
         '}
         '";
         
-    return parseModule(code) == \module(namespace("Testing"), [], controller(jsonApi(), route([routePart("profile")]), [
+    return parseModule(code, |tmp:///UnknownController.g|).\module == 
+    \module(namespace("Testing"), [], controller("UnknownController", jsonApi(), route([routePart("profile")]), [
     	action("index", [param(integer(), "id")], [
     		\return(new("User", [variable("id")]))
     	])

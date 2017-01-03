@@ -6,6 +6,7 @@ import Syntax::Abstract::PHP;
 import Transform::Glagol2PHP::Utils;
 import Transform::Glagol2PHP::Entities;
 import Transform::Glagol2PHP::Constructors;
+import Transform::Glagol2PHP::Actions;
 import Transform::Glagol2PHP::Methods;
 import Transform::Glagol2PHP::Common;
 import Transform::Glagol2PHP::Statements;
@@ -19,4 +20,6 @@ public list[PhpClassItem] toPhpClassItems(list[Declaration] declarations, env, c
 	[toPhpClassItem(r, env) | r <- getRelations(declarations)] + 
 	(hasDependencies(declarations) ? [createDIConstructor(getDIProperties(declarations), env)] : []) +
 	(hasConstructors(declarations) ? [createConstructor(getConstructors(declarations), env)] : []) +
-	[createMethod(m, env) | m <- range(categorizeMethods(declarations))];
+	[createMethod(m, env) | m <- range(categorizeMethods(declarations))] +
+	[toPhpClassItem(a, env) | a <- getActions(declarations)]
+	;

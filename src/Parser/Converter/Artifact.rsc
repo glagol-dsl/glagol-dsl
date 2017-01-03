@@ -42,8 +42,19 @@ public Route convertRoute(r: (RoutePart) `<Identifier part>`) = routePart("<part
 public Route convertRoute(r: (RoutePart) `<RoutePlaceholder placeholder>`) = 
 	routeVar(substring("<placeholder>", 1, size("<placeholder>")))[@src=r@\loc];
 
+public str createControllerName(loc file) {
+	str name = substring(file.file, 0, size(file.file) - size(file.extension) - 1);
+	
+	if (/^[A-Z][a-zA-Z]+?Controller$/ !:= name) {
+		throw IllegalControllerName("Controller file name <name> does not follow the pattern `^[A-Z][a-zA-Z]+?Controller$`", file);
+	}
+	
+	return name;
+}
+
 public Declaration convertArtifact(a: (Artifact) `<ControllerType controllerType>controller<{RoutePart "/"}* routes>{<Declaration* declarations>}`, list[Declaration] imports) = 
 	controller(
+		createControllerName(a@\loc),
 		convertControllerType(controllerType), 
 		route([convertRoute(r) | r <- routes]), 
 		[convertDeclaration(d, "", "controller") | d <- declarations]

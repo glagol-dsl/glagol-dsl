@@ -10,7 +10,8 @@ test bool controllerDeclaration()
         'json-api controller profile {}
         '";
         
-    return parseModule(code) == \module(namespace("Testing"), [], controller(jsonApi(), route([routePart("profile")]), []));
+    return parseModule(code, |tmp:///UnknownController.g|).\module == 
+    	\module(namespace("Testing"), [], controller("UnknownController", jsonApi(), route([routePart("profile")]), []));
 }
 
 test bool controllerDeclarationWithRouteVars() 
@@ -20,7 +21,8 @@ test bool controllerDeclarationWithRouteVars()
         'json-api controller profile/:blahblah {}
         '";
         
-    return parseModule(code) == \module(namespace("Testing"), [], controller(jsonApi(), route([routePart("profile"), routeVar("blahblah")]), []));
+    return parseModule(code, |tmp:///UnknownController.g|).\module == 
+    	\module(namespace("Testing"), [], controller("UnknownController", jsonApi(), route([routePart("profile"), routeVar("blahblah")]), []));
 }
 
 test bool controllerDeclarationShouldFailWhenRouteHasWhitespaces() 
@@ -30,7 +32,7 @@ test bool controllerDeclarationShouldFailWhenRouteHasWhitespaces()
         'json-api controller profile /:blahblah {}
         '";
         
-    try parseModule(code);
+    try parseModule(code, |tmp:///UnknownController.g|);
     catch e: return true;
     
     return false;
@@ -43,7 +45,7 @@ test bool controllerDeclarationShouldFailWhenRouteHasWhitespaces2()
         'json-api controller profile/: blahblah {}
         '";
         
-    try parseModule(code);
+    try parseModule(code, |tmp:///UnknownController.g|);
     catch e: return true;
     
     return false;

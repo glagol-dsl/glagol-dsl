@@ -73,3 +73,5 @@ public list[Declaration] getDIProperties(list[Declaration] declarations) =
 	[p | p: property(_, _, _, get(_)) <- declarations];
 
 public bool hasDependencies(list[Declaration] declarations) = (false | true | property(_, _, _, get(_)) <- declarations);
+
+public list[Declaration] getActions(list[Declaration] declarations) = [d | d: action(_, _, _) <- declarations];

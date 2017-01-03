@@ -48,7 +48,7 @@ private void controller(str inputStream, int listenerId) {
         dispatch(command, listenerId);
     } catch Ambiguity(loc file, _, _): {
         respondWith(diagnose(parseCode(|file:///| + file.path, true)), listenerId);
-    } catch ParseError(loc location): {
+    } catch e: ParseError(loc location): {
     	respondWith(error(
     		"Parse error at <location.path> starting on line <location.begin.line>, column <location.begin.column> " +
     		"and ends on line <location.end.line>, column <location.end.column>."

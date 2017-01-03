@@ -65,8 +65,19 @@ public Route convertRoute(r: (RoutePart) `<Identifier part>`) = routePart("<part
 public Route convertRoute(r: (RoutePart) `<RoutePlaceholder placeholder>`) = 
 	routeVar(substring("<placeholder>", 1, size("<placeholder>")))[@src=r@\loc];
 
+public str createControllerName(loc file) {
+	str name = substring(file.file, 0, size(file.file) - size(file.extension) - 1);
+	
+	if (/^[A-Z][a-zA-Z]+?Controller$/ !:= name) {
+		throw IllegalControllerName("Controller file name <name> does not follow the pattern `^[A-Z][a-zA-Z]+?Controller$`", file);
+	}
+	
+	return name;
+}
+
 public Declaration convertArtifact(a: (Artifact) `<ControllerType controllerType>controller<{RoutePart "/"}* routes>{<Declaration* declarations>}`, list[Declaration] imports) = 
 	controller(
+		createControllerName(a@\loc),
 		convertControllerType(controllerType), 
 		route([convertRoute(r) | r <- routes]), 
 		[convertDeclaration(d, "", "controller") | d <- declarations]
@@ -387,17 +398,22 @@ public RelationDir convertRelationDir(a: (RelationDir) `one`) = \one()[@src=a@\l
 public RelationDir convertRelationDir(a: (RelationDir) `many`) = many()[@src=a@\loc];
 
 
-public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Relation relation>`, _, _) 
-    = convertRelation(relation)[
+// TODO enable only on entities
+public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Relation relation>`, _, str artifactType) 
+    = convertRelation(relation, artifactType)[
     	@annotations = convertAnnotations(annotations)
     ][@src=a@\loc];
 
-public Declaration convertDeclaration(a: (Declaration) `<Relation relation>`, _, _) = convertRelation(relation);
+public Declaration convertDeclaration(a: (Declaration) `<Relation relation>`, _, str artifactType) = convertRelation(relation, artifactType);
 
-public Declaration convertRelation(a: (Relation) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as><AccessProperties accessProperties>;`) 
+public Declaration convertRelation(a: _, at: /^(?!entity).*$/) {
+	throw RelationNotAllowed("Relations only allowed on entities", a@\loc);
+}
+
+public Declaration convertRelation(a: (Relation) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as><AccessProperties accessProperties>;`, _) 
     = relation(convertRelationDir(l), convertRelationDir(r), "<entity>", "<as>", convertAccessProperties(accessProperties))[@src=a@\loc];
 
-public Declaration convertRelation(a: (Relation) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as>;`) 
+public Declaration convertRelation(a: (Relation) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as>;`, _) 
     = relation(convertRelationDir(l), convertRelationDir(r), "<entity>", "<as>", {})[@src=a@\loc];
 
 
