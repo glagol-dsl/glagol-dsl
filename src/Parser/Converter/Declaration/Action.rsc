@@ -16,7 +16,7 @@ public Declaration convertAction(a: (Action) `<MemberName name>{<Statement* body
 	action("<name>", [], [convertStmt(stmt) | stmt <- body]);
 
 public Declaration convertAction(a: (Action) `<MemberName name>=<Expression expr>;`) = 
-	action("<name>", [], [expression(convertExpression(expr))]);
+	action("<name>", [], [\return(convertExpression(expr))]);
 
 public Declaration convertAction(a: (Action) `<MemberName name><AbstractParameters params>{<Statement* body>}`) = 
 	action("<name>", convertParameters(params), [convertStmt(stmt) | stmt <- body]);
