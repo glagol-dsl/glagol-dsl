@@ -29,10 +29,16 @@ public int main(list[str] args) {
     return 0;
 }
 
+private str getInput(listenerId) {
+    str input = trim(readFrom(listenerId));
+    
+    return input == "" ? getInput(listenerId) : input;
+}
+
 public void listenForCompileSignals(int socketId) {
 	int listenerId = createListener(socketId);
     
-    controller(readFrom(listenerId), listenerId);
+    controller(getInput(listenerId), listenerId);
     
     closeListener(listenerId);
     

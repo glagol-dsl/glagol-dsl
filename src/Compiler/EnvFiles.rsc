@@ -39,7 +39,7 @@ private JSON setAutoloading(object(map[str, JSON] properties), Config config, li
 
 private map[&K, &T] merge(map[&K, &T] a, map[&K, &T] b) {
     for (k <- b) {
-        if (a[k]? && object(_) := a[k]) {
+        if (a[k]? && object(_) := a[k] && object(_) := b[k]) {
             a[k] = object(merge(a[k].properties, b[k].properties));
         } else {
             a[k] = b[k];
