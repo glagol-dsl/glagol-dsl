@@ -8,5 +8,5 @@ import Config::Reader;
 
 public map[loc, str] generateEnvFiles(Config config, list[Declaration] ast) = 
 	(getCompilePath(config) + COMPOSER_FILE: generateComposerFile(config, ast)) +
-	generateFrameworkFiles(getFramework(config), config)
+	generateFrameworkFiles(getFramework(config), config, ast)
 	;

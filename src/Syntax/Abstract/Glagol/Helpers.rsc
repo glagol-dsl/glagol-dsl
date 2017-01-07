@@ -75,3 +75,6 @@ public list[Declaration] getDIProperties(list[Declaration] declarations) =
 public bool hasDependencies(list[Declaration] declarations) = (false | true | property(_, _, _, get(_)) <- declarations);
 
 public list[Declaration] getActions(list[Declaration] declarations) = [d | d: action(_, _, _) <- declarations];
+
+public list[Declaration] getControllerModules(list[Declaration] ast) = 
+    [m | file(_, m: \module(_, _, controller(_, _, _, _))) <- ast];

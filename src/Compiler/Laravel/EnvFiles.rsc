@@ -6,20 +6,34 @@ import Compiler::PHP::Compiler;
 import Compiler::Laravel::Bootstrap::App;
 import Compiler::Laravel::Bootstrap::Autoload;
 import Compiler::Laravel::Public::Index;
+import Compiler::Laravel::Public::Htaccess;
+import Compiler::Laravel::Public::WebConfig;
+import Compiler::Laravel::Config::App;
+import Compiler::Laravel::Config::Compile;
+import Compiler::Laravel::Config::Cache;
+import Compiler::Laravel::Config::View;
+import Compiler::Laravel::Routes::Api;
+import Compiler::Laravel::Routes::Console;
+import Compiler::Laravel::Server;
+import Compiler::Laravel::Artisan;
+import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Syntax::Abstract::PHP::Helpers;
 import IO;
 
-public map[loc, str] generateFrameworkFiles(laravel(), Config config) = (
+public map[loc, str] generateFrameworkFiles(laravel(), Config config, list[Declaration] ast) = (
 	getCompilePath(config) + "bootstrap/app.php": createAppFile(),
-	getCompilePath(config) + "bootstrap/autoload.php": createAutoloadFile(),
+    getCompilePath(config) + "bootstrap/autoload.php": createAutoloadFile(),
+    getCompilePath(config) + "bootstrap/cache/.gitignore": "",
 	getCompilePath(config) + "public/index.php": createIndexFile(),
-	getCompilePath(config) + "public/.htaccess": loadPreset("public/.htaccess"),
-	getCompilePath(config) + "public/web.config": loadPreset("public/web.config"),
-	getCompilePath(config) + "app/Exceptions/Handler.php": loadPreset("app/Exceptions/Handler.php"),
-	getCompilePath(config) + "app/Http/Kernel.php": loadPreset("app/Http/Kernel.php"),
-	getCompilePath(config) + "app/Console/Kernel.php": loadPreset("app/Console/Kernel.php"),
-	getCompilePath(config) + "app/Http/Controllers/Controller.php": loadPreset("app/Http/Controllers/Controller.php"),
-	getCompilePath(config) + "app/Providers/RouteServiceProvider.php": loadPreset("app/Providers/RouteServiceProvider.php")
+	getCompilePath(config) + "public/.htaccess": createHtaccess(),
+    getCompilePath(config) + "public/web.config": createWebConfig(),
+    getCompilePath(config) + "artisan": createArtisan(),
+    getCompilePath(config) + "config/app.php": createAppConfig(),
+    getCompilePath(config) + "config/cache.php": createCacheConfig(),
+    getCompilePath(config) + "config/compile.php": createCompileConfig(),
+    getCompilePath(config) + "config/view.php": createViewConfig(),
+    getCompilePath(config) + "routes/api.php": createRoutesApi(ast),
+    getCompilePath(config) + "routes/console.php": createRoutesConsole(),
+    getCompilePath(config) + "server.php": createServerFile()
 );
-

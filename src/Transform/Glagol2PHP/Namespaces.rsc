@@ -22,5 +22,5 @@ public PhpStmt toPhpNamespace(m: \module(Declaration namespace, list[Declaration
 public map[str, PhpScript] toPHPScript(
 	env: <Framework f, orm: doctrine()>, 
 	m: \module(Declaration namespace, list[Declaration] imports, Declaration artifact),
-	list[Declaration] ast)
-    = (makeFilename(namespace, artifact): phpScript([phpDeclareStrict(), toPhpNamespace(m, ast, env)]));
+	list[Declaration] ast) = 
+	(makeFilename(namespace, artifact): phpScript([phpDeclareStrict(), toPhpNamespace(m, ast, env)]));

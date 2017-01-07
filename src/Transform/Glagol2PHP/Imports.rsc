@@ -20,11 +20,23 @@ private list[Declaration] extractImports(
 	    commonImports(m, ast, env);
     
 private list[Declaration] extractImports(
-	m: \module(Declaration ns, list[Declaration] imports, a: repository(_, list[Declaration] ds)), 
-	list[Declaration] ast, 
-	env: <f, doctrine()>) =
-	    [\import("EntityRepository", namespace("Doctrine", namespace("ORM")), "EntityRepository")] +
-	    commonImports(m, ast, env);
+    m: \module(Declaration ns, list[Declaration] imports, a: repository(_, list[Declaration] ds)), 
+    list[Declaration] ast, 
+    env: <f, doctrine()>) =
+        [\import("EntityRepository", namespace("Doctrine", namespace("ORM")), "EntityRepository")] +
+        commonImports(m, ast, env);
+    
+private list[Declaration] extractImports(
+    m: \module(Declaration ns, list[Declaration] imports, a: controller(_, _, _, list[Declaration] declarations)), 
+    list[Declaration] ast, 
+    env: <laravel(), orm>) =
+        [\import("Controller", 
+            namespace("Glagol", 
+                namespace("Bridge", 
+                    namespace("Laravel", 
+                        namespace("Http", 
+                            namespace("Controllers"))))), "AbstractController")] +
+        commonImports(m, ast, env);
 
 private default list[Declaration] extractImports(Declaration \module, list[Declaration] ast, env) = commonImports(\module, ast, env);
 
