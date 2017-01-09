@@ -9,7 +9,9 @@ public data Conf
     | env(str name, str \default)
     | env(str name, bool \defaultBool)
     | storagePath(str path)
+    | basePath(str path)
     | \null()
+    | boolean(bool bval)
     | string(str val)
     | integer(int ival)
     | class(str className)
@@ -38,8 +40,13 @@ public PhpExpr toPhpConf(storagePath(str path)) = phpCall("storage_path", [
     phpActualParameter(phpScalar(phpString(path)), false)
 ]);
 
+public PhpExpr toPhpConf(basePath(str path)) = phpCall("base_path", [
+    phpActualParameter(phpScalar(phpString(path)), false)
+]);
+
 public PhpExpr toPhpConf(string(str val)) = phpScalar(phpString(val));
 public PhpExpr toPhpConf(integer(int val)) = phpScalar(phpInteger(val));
+public PhpExpr toPhpConf(boolean(bool bval)) = phpScalar(phpBoolean(bval));
 public PhpExpr toPhpConf(\null()) = phpScalar(phpNull());
 public PhpExpr toPhpConf(class(str className)) = phpFetchClassConst(phpName(phpName(className)), "class");
 public PhpExpr toPhpConf(array(list[Conf] l)) = phpArray([phpArrayElement(phpNoExpr(), toPhpConf(v), false) | v <- l]);

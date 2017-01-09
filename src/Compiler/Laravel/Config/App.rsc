@@ -1,10 +1,13 @@
 module Compiler::Laravel::Config::App
 
 import Syntax::Abstract::PHP;
+import Syntax::Abstract::Glagol;
 import Compiler::Laravel::Config::Abstract;
 import Compiler::PHP::Compiler;
+import Config::Config;
+import Config::Reader;
 
-public str createAppConfig() = 
+public str createAppConfig(Config config, list[Declaration] ast) = 
     toCode(phpScript([phpReturn(phpSomeExpr(toPhpConf(array((
         "name": env("APP_NAME", "Glagol DSL project"),
         "env": env("APP_ENV", "production"),
@@ -41,7 +44,7 @@ public str createAppConfig() =
             class("Illuminate\\Validation\\ValidationServiceProvider"),
             class("Illuminate\\View\\ViewServiceProvider"),
             class("Glagol\\Bridge\\Laravel\\Providers\\RouteServiceProvider")
-        ]),
+        ] + getORMProviders(getORM(config), ast)),
         "aliases": array((
             "App": class("Illuminate\\Support\\Facades\\App"),
             "Artisan": class("Illuminate\\Support\\Facades\\Artisan"),
@@ -77,3 +80,7 @@ public str createAppConfig() =
             "View": class("Illuminate\\Support\\Facades\\View")
         ))
     )))))]));
+
+private list[Conf] getORMProviders(doctrine(), list[Declaration] ast) = [
+    class("LaravelDoctrine\\ORM\\DoctrineServiceProvider")
+] + [class("App\\Provider\\<name>RepositoryProvider") | file(_, \module(_, _, repository(str name, _))) <- ast];
