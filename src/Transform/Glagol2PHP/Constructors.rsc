@@ -39,7 +39,7 @@ public PhpClassItem createConstructor(list[Declaration] declarations, env) =
         [phpExprstmt(createOverrideRule(d)) | d <- declarations] +
         [phpNewLine()] +
         [phpExprstmt(phpMethodCall(phpVar("overrider"), phpName(phpName("execute")), [
-            phpActualParameter(phpVar("args"), false)
+            phpActualParameter(phpVar("args"), false, true)
         ]))],
     phpNoName())[
     	@phpAnnotations={annotation | d <- declarations, annotation <- toPhpAnnotations(d, env)}

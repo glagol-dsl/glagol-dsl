@@ -75,11 +75,13 @@ public str createControllerName(loc file) {
 	return name;
 }
 
-public Declaration convertArtifact(a: (Artifact) `<ControllerType controllerType>controller<{RoutePart "/"}* routes>{<Declaration* declarations>}`, list[Declaration] imports) = 
+public Route convertRoute((Route) `/<{RoutePart "/"}* routes>`) = route([convertRoute(r) | r <- routes]);
+
+public Declaration convertArtifact(a: (Artifact) `<ControllerType controllerType>controller<Route r>{<Declaration* declarations>}`, list[Declaration] imports) = 
 	controller(
 		createControllerName(a@\loc),
 		convertControllerType(controllerType), 
-		route([convertRoute(r) | r <- routes]), 
+		convertRoute(r), 
 		[convertDeclaration(d, "", "controller") | d <- declarations]
 	)[@src=a@\loc];
 

@@ -48,6 +48,12 @@ public str toCode(phpUnaryOperation(PhpExpr operand, phpPostDec()), int i) = "<t
 public str toCode(phpUnaryOperation(PhpExpr operand, phpUnaryPlus()), int i) = "+<toCode(operand, i)>";
 public str toCode(phpUnaryOperation(PhpExpr operand, phpUnaryMinus()), int i) = "-<toCode(operand, i)>";
 public str toCode(phpActualParameter(PhpExpr expr, bool byRef), int i) = "<ref(byRef)><toCode(expr, i)>";
+
+public str toCode(phpActualParameter(PhpExpr expr, bool byRef, bool isVariadic), int i) = 
+    "<ref(byRef)>" + 
+    "<isVariadic ? "..." : "">" + 
+    "<toCode(expr, i)>";
+    
 public str toCode(phpClone(PhpExpr expr), int i) = "clone <toCode(expr, i)>";
 public str toCode(phpFetchConst(phpName(str name)), int i) = "<name>";
 public str toCode(phpEmpty(PhpExpr expr), int i) = "empty(<toCode(expr, i)>)";

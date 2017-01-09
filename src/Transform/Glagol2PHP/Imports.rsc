@@ -50,7 +50,11 @@ private list[Declaration] commonImports(
 	        	\import("Parameter", namespace("Glagol", namespace("Overriding")), "Parameter")
 	        ] : []) +
 	    (hasMapUsage(artifact) ? 
-	        [\import("Map", namespace("Ds"), "Map"), \import("MapFactory", namespace("Glagol", namespace("Ds")), "MapFactory")] : []) +
+	        [
+                \import("Map", namespace("Ds"), "Map"), 
+                \import("Pair", namespace("Ds"), "Pair"), 
+    	        \import("MapFactory", namespace("Glagol", namespace("Ds")), "MapFactory")
+	        ] : []) +
 	    (hasListUsage(artifact) ? 
 	        [\import("Vector", namespace("Ds"), "Vector")] : []) +
 	    [i | i <- findRepositoryDependencies(m, ast)]

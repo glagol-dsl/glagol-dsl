@@ -33,7 +33,7 @@ syntax Artifact
     | ControllerType controllerType "controller" Route routes "{" Declaration* declarations "}"
     ;
 
-lexical Route = {RoutePart "/"}* routes;
+lexical Route = "/" {RoutePart "/"}* routes;
 
 syntax RoutePart
 	= Identifier part

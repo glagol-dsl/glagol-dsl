@@ -7,7 +7,7 @@ test bool controllerDeclaration()
 {
     str code 
         = "namespace Testing
-        'json-api controller profile {}
+        'json-api controller /profile {}
         '";
         
     return parseModule(code, |tmp:///UnknownController.g|).\module == 
@@ -18,7 +18,7 @@ test bool controllerDeclarationWithRouteVars()
 {
     str code 
         = "namespace Testing
-        'json-api controller profile/:blahblah {}
+        'json-api controller /profile/:blahblah {}
         '";
         
     return parseModule(code, |tmp:///UnknownController.g|).\module == 
@@ -29,7 +29,7 @@ test bool controllerDeclarationShouldFailWhenRouteHasWhitespaces()
 {
     str code 
         = "namespace Testing
-        'json-api controller profile /:blahblah {}
+        'json-api controller /profile /:blahblah {}
         '";
         
     try parseModule(code, |tmp:///UnknownController.g|);
@@ -42,7 +42,7 @@ test bool controllerDeclarationShouldFailWhenRouteHasWhitespaces2()
 {
     str code 
         = "namespace Testing
-        'json-api controller profile/: blahblah {}
+        'json-api controller /profile/: blahblah {}
         '";
         
     try parseModule(code, |tmp:///UnknownController.g|);

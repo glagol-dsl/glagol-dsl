@@ -40,7 +40,7 @@ test bool shouldAddOverriderWithRulesWhenTransformingOverridedMethods() =
                 ])),
                 phpNewLine(), 
                 phpReturn(phpSomeExpr(phpMethodCall(phpVar(phpName(phpName("overrider"))), phpName(phpName("execute")), [
-                  phpActualParameter(phpVar(phpName(phpName("args"))), false)
+                  phpActualParameter(phpVar(phpName(phpName("args"))), false, true)
                 ])))
             ], phpNoName())
         ]

@@ -7,7 +7,7 @@ test bool parseControllerWithIndexActionWithoutParams()
 {
     str code 
         = "namespace Testing
-        'json-api controller profile {
+        'json-api controller /profile {
         '    index {}
         '}
         '";
@@ -18,12 +18,11 @@ test bool parseControllerWithIndexActionWithoutParams()
     ]));
 }
 
-
 test bool parseControllerWithIndexActionWithParams() 
 {
     str code 
         = "namespace Testing
-        'json-api controller profile {
+        'json-api controller /profile {
         '    index (int id) {}
         '}
         '";
@@ -39,7 +38,7 @@ test bool parseControllerWithIndexActionWithParamsAndStmts()
 {
     str code 
         = "namespace Testing
-        'json-api controller profile {
+        'json-api controller /profile {
         '    index (int id) {
         '        return new User(id);
         '    }
@@ -60,7 +59,7 @@ test bool parseControllerWithIndexActionWithParamsAndStmtsUsingFunctionalStyle()
 {
     str code 
         = "namespace Testing
-        'json-api controller profile {
+        'json-api controller /profile {
         '    index (int id) = new User(id);
         '}
         '";
