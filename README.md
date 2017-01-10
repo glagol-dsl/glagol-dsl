@@ -43,6 +43,18 @@ You need to specify the following properties in your `composer.json`:
 ```
 Notice the `glagol` group of properties. At the current moment, only Laravel Framework and Doctrine ORM are supported.
 
+The `config/database.json` file persist of the following structure:
+```
+{
+  "connection": "mysql",
+  "host": "127.0.0.1",
+  "port": "3306",
+  "database": "glagol",
+  "username": "root",
+  "password": ""
+}
+```
+
 ### Hello world
 Create a `src/MyProject/Controller/IndexController.g` with the following source code:
 ```
