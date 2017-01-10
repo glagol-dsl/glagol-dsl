@@ -11,5 +11,6 @@
             "email": "joan.grigorov@gmail.com"
         }
     ],
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "bin": ["support/bin/glagol-server"]
 }
