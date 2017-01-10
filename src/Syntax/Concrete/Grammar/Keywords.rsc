@@ -29,4 +29,6 @@ keyword GlagolPreserved
     | "get"
     | "this"
     | "init"
+    | "rest"
+    | "json-api"
     ;

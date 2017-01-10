@@ -37,6 +37,7 @@ public Declaration convertArtifact(a: (Artifact) `service <ArtifactName name> {<
 	util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[@src=a@\loc];
 
 public ControllerType convertControllerType(c: (ControllerType) `json-api`) = jsonApi()[@src=c@\loc];
+public ControllerType convertControllerType(c: (ControllerType) `rest`) = jsonApi()[@src=c@\loc];
 
 public Route convertRoute(r: (RoutePart) `<Identifier part>`) = routePart("<part>")[@src=r@\loc];
 public Route convertRoute(r: (RoutePart) `<RoutePlaceholder placeholder>`) = 

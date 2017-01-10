@@ -84,4 +84,4 @@ lexical DeciFloatNumeral
     | [0-9] !<< "." [0-9]+ !>> [0-9] DeciFloatExponentPart?
     ;
 
-lexical ControllerType = "json-api";
+lexical ControllerType = "json-api" | "rest";
