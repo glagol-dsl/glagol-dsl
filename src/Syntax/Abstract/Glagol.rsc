@@ -120,6 +120,8 @@ data Statement
     | assign(Expression assignable, AssignOperator operator, Statement \value)
     | emptyStmt()
     | \return(Expression expr)
+    | persist(Expression expr)
+    | flush(Expression expr)
     | declare(Type varType, Expression varName)
     | declare(Type varType, Expression varName, Statement defaultValue)
     | foreach(Expression \list, Expression varName, Statement body)

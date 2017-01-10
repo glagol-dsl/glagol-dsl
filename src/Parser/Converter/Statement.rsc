@@ -24,6 +24,11 @@ public Statement convertStmt(a: (Statement) `<Assignable assignable><AssignOpera
 public Statement convertStmt(a: (Statement) `return;`) = \return(emptyExpr()[@src=a@\loc])[@src=a@\loc];
 public Statement convertStmt(a: (Statement) `return <Expression expr>;`) = \return(convertExpression(expr))[@src=a@\loc];
 
+public Statement convertStmt(a: (Statement) `persist <Expression expr>;`) = persist(convertExpression(expr))[@src=a@\loc];
+
+public Statement convertStmt(a: (Statement) `flush;`) = flush(emptyExpr()[@src=a@\loc])[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `flush <Expression expr>;`) = flush(convertExpression(expr))[@src=a@\loc];
+
 public Statement convertStmt(a: (Statement) `break ;`) = \break()[@src=a@\loc];
 public Statement convertStmt(a: (Statement) `break<Integer level>;`) = \break(toInt("<level>"))[@src=a@\loc];
 

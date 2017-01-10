@@ -211,6 +211,8 @@ syntax Statement
     | foreach: "for" "(" Expression list "as" MemberName var (","  {Expression ","}+ conditions)? ")" Statement body
     > non-assoc  (
             \return: "return" Expression? expr ";"
+        |   \persist: "persist" Expression expr ";"
+        |   \flush: "flush" Expression? expr ";"
         |   \break: "break" Integer? level ";"
         |   \continue: "continue" Integer? level ";"
         |   declare: Type type MemberName varName "=" Statement defaultValue !emptyStmt!block!ifThen!ifThenElse!return!declare

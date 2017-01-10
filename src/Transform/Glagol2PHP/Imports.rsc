@@ -36,6 +36,9 @@ private list[Declaration] extractImports(
                     namespace("Laravel", 
                         namespace("Http", 
                             namespace("Controllers"))))), "AbstractController")] +
+        [\import("EntityExtractor", namespace("Glagol", namespace("Ds")), "EntityExtractor")] +
+        [\import("CollectionExtractor", namespace("Glagol", namespace("Ds")), "CollectionExtractor")] +
+        [\import("EntityInflator", namespace("Glagol", namespace("Ds")), "EntityInflator")] +
         commonImports(m, ast, env);
 
 private default list[Declaration] extractImports(Declaration \module, list[Declaration] ast, env) = commonImports(\module, ast, env);

@@ -78,3 +78,6 @@ public list[Declaration] getActions(list[Declaration] declarations) = [d | d: ac
 
 public list[Declaration] getControllerModules(list[Declaration] ast) = 
     [m | file(_, m: \module(_, _, controller(_, _, _, _))) <- ast];
+
+public bool hasAnnotation(Declaration n, str name) = 
+    (n@annotations?) ? (false | true | annotation(name, _) <- n@annotations) : false;

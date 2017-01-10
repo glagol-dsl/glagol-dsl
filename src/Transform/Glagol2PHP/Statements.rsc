@@ -6,6 +6,7 @@ import Transform::Glagol2PHP::Properties;
 import Transform::Glagol2PHP::Expressions;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
+import Syntax::Abstract::PHP::Helpers;
 import Config::Config;
 import List;
 import IO;
@@ -40,6 +41,22 @@ public PhpStmt toPhpStmt(assign(Expression assignable, additionAssign(), express
     
 public PhpStmt toPhpStmt(\return(emptyExpr())) = phpReturn(phpNoExpr());
 public PhpStmt toPhpStmt(\return(Expression expr)) = phpReturn(phpSomeExpr(toPhpExpr(expr)));
+
+public PhpStmt toPhpStmt(persist(Expression expr)) = phpExprstmt(phpMethodCall(phpPropertyFetch(
+    phpVar("this"), phpName(phpName("_em"))
+), phpName(phpName("persist")), [
+    phpActualParameter(toPhpExpr(expr), false)
+]));
+
+public PhpStmt toPhpStmt(flush(Expression expr)) = phpExprstmt(phpMethodCall(phpPropertyFetch(
+    phpVar("this"), phpName(phpName("_em"))
+), phpName(phpName("flush")), [
+    phpActualParameter(toPhpExpr(expr), false)
+]));
+
+public PhpStmt toPhpStmt(flush(emptyExpr())) = phpExprstmt(phpMethodCall(phpPropertyFetch(
+    phpVar("this"), phpName(phpName("_em"))
+), phpName(phpName("flush")), []));
 
 public PhpStmt toPhpStmt(declare(Type t, Expression var)) 
     = phpExprstmt(phpAssign(toPhpExpr(var), phpScalar(phpNull())));

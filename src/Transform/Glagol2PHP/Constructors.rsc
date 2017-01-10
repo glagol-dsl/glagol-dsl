@@ -57,5 +57,5 @@ public PhpClassItem createDIConstructor(list[Declaration] declarations, env) =
 			property(Type valueType, str name, _, get(_)) <- declarations
 		],
     phpNoName())[
-    	@phpAnnotations={annotation | d: property(_, _, _, get(_)) <- declarations, annotation <- toPhpAnnotations(d, env)}
+    	@phpAnnotations={a | d: property(_, _, _, get(_)) <- declarations, a: annotation("doc", _) <- toPhpAnnotations(d, env)}
     ];
