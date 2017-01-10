@@ -39,7 +39,7 @@ public PhpClassItem createConstructor(list[Declaration] declarations, env) =
         [phpExprstmt(createOverrideRule(d)) | d <- declarations] +
         [phpNewLine()] +
         [phpExprstmt(phpMethodCall(phpVar("overrider"), phpName(phpName("execute")), [
-            phpActualParameter(phpVar("args"), false)
+            phpActualParameter(phpVar("args"), false, true)
         ]))],
     phpNoName())[
     	@phpAnnotations={annotation | d <- declarations, annotation <- toPhpAnnotations(d, env)}
@@ -57,5 +57,5 @@ public PhpClassItem createDIConstructor(list[Declaration] declarations, env) =
 			property(Type valueType, str name, _, get(_)) <- declarations
 		],
     phpNoName())[
-    	@phpAnnotations={annotation | d: property(_, _, _, get(_)) <- declarations, annotation <- toPhpAnnotations(d, env)}
+    	@phpAnnotations={a | d: property(_, _, _, get(_)) <- declarations, a: annotation("doc", _) <- toPhpAnnotations(d, env)}
     ];

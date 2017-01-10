@@ -71,6 +71,7 @@ test bool shouldConvertToDsMapPhpUsesOnMapsAndMapTypes() =
         <anyFramework(), anyORM()>) ==
     [phpUse({
         phpUse(phpName("Ds\\Map"), phpNoName()),
+        phpUse(phpName("Ds\\Pair"), phpNoName()),
         phpUse(phpName("Glagol\\Ds\\MapFactory"), phpNoName())
     })] && 
     toPhpUses(\module(namespace("Example"), [], 
@@ -82,6 +83,7 @@ test bool shouldConvertToDsMapPhpUsesOnMapsAndMapTypes() =
         <anyFramework(), anyORM()>) ==
     [phpUse({
         phpUse(phpName("Ds\\Map"), phpNoName()),
+        phpUse(phpName("Ds\\Pair"), phpNoName()),
         phpUse(phpName("Glagol\\Ds\\MapFactory"), phpNoName())
     })]
     ;

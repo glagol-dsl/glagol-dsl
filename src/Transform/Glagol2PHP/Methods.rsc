@@ -44,7 +44,7 @@ public PhpClassItem createMethod(list[Declaration] methods, env) =
         [phpExprstmt(createOverrideRule(m)) | m <- methods] +
         [phpNewLine()] +
         [phpReturn(phpSomeExpr(phpMethodCall(phpVar(phpName(phpName("overrider"))), phpName(phpName("execute")), [
-          phpActualParameter(phpVar(phpName(phpName("args"))), false)
+          phpActualParameter(phpVar(phpName(phpName("args"))), false, true)
         ])))], toPhpReturnType(methods[0].returnType))[
     	@phpAnnotations={annotation | m <- methods, annotation <- toPhpAnnotations(m, env)}
     ]

@@ -5,6 +5,7 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Config::Config;
 import List;
+import Map;
 
 public PhpAnnotation toPhpAnnotation(annotation(str annotationName, list[Annotation] arguments), env, context)
     = phpAnnotation(toPhpAnnotationKey(annotationName, env, context)) when size(arguments) == 0;
@@ -36,11 +37,23 @@ public PhpAnnotation toPhpAnnotation(annotationVal(val), _, _) = phpAnnotationVa
 
 public default str toPhpAnnotationKey(str annotation, _, _) = annotation;
 
-public set[PhpAnnotation] toPhpAnnotations(list[Annotation] annotations, env, context) =
-	{toPhpAnnotation(a, env, context) | a <- annotations};
+public set[PhpAnnotation] toPhpAnnotations(list[Annotation] annotations, env, context) {
+    
+    map[str, Annotation] fAnnos = ();
+    
+    for (an: annotation(str name, list[Annotation] args) <- annotations) {
+        if (fAnnos[name]?) {
+            fAnnos[name].arguments += args;
+        } else {
+            fAnnos[name] = an;
+        }
+    }
+    
+    return {toPhpAnnotation(a, env, context) | a <- range(fAnnos)};
+}
 	
 public set[PhpAnnotation] toPhpAnnotations(Declaration d, env) =
-	(d@annotations?) ? toPhpAnnotations(d@annotations, env, d) : {};
+	((d@annotations?) ? toPhpAnnotations(d@annotations, env, d) : {});
 	
 public set[PhpAnnotation] toPhpAnnotations(Declaration d, env, context) =
-	(d@annotations?) ? toPhpAnnotations(d@annotations, env, context) : {};
+	((d@annotations?) ? toPhpAnnotations(d@annotations, env, context) : {});

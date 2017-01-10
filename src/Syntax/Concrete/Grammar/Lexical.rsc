@@ -3,15 +3,18 @@ module Syntax::Concrete::Grammar::Lexical
 extend Syntax::Concrete::Grammar::Keywords;
 
 lexical ArtifactName
-    =  ([A-Z] !<< [A-Z] [0-9 A-Z a-z]* !>> [0-9 A-Z a-z]) \ GlagolPreserved
+    =  ([A-Z] !<< [A-Z] [0-9A-Za-z]* !>> [0-9A-Za-z]) \ GlagolPreserved
     ;
 
 lexical MemberName
-    =  ([a-z] !<< [a-z] [0-9 A-Z a-z]* !>> [0-9 A-Z a-z]) \ GlagolPreserved
+    =  ([a-z] !<< [a-z] [0-9A-Za-z]* !>> [0-9A-Za-z]) \ GlagolPreserved
     ;
 
 lexical Identifier
     =  ([a-zA-Z][a-zA-Z0-9_]* !>> [a-zA-Z0-9_]) \ GlagolPreserved;
+    
+lexical RoutePlaceholder
+    =  (":" [a-zA-Z][a-zA-Z0-9_]* !>> [a-zA-Z0-9_]) \ GlagolPreserved;
 
 lexical AlphaIdentifier
     =  ([A-Z a-z] !<< [A-Z a-z] [0-9 A-Z a-z]* !>> [0-9 A-Z a-z]) \ GlagolPreserved
@@ -80,3 +83,5 @@ lexical DeciFloatNumeral
     | [0-9] !<< [0-9]+ "." [0-9]* !>> [0-9] DeciFloatExponentPart?
     | [0-9] !<< "." [0-9]+ !>> [0-9] DeciFloatExponentPart?
     ;
+
+lexical ControllerType = "json-api" | "rest";

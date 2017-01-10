@@ -40,7 +40,7 @@ test bool shouldAddOverriderWithRulesWhenTransformingOverridedConstructors() =
                 ])),
                 phpNewLine(),
                 phpExprstmt(phpMethodCall(phpVar(phpName(phpName("overrider"))), phpName(phpName("execute")), [
-                  phpActualParameter(phpVar(phpName(phpName("args"))), false)
+                  phpActualParameter(phpVar(phpName(phpName("args"))), false, true)
                 ]))
             ], phpNoName())
         ]
@@ -84,7 +84,7 @@ test bool shouldAddOverriderWithWhenRulesWhenTransformingOverridedConstructors()
                 ])),
                 phpNewLine(),
                 phpExprstmt(phpMethodCall(phpVar(phpName(phpName("overrider"))), phpName(phpName("execute")), [
-                  phpActualParameter(phpVar(phpName(phpName("args"))), false)
+                  phpActualParameter(phpVar(phpName(phpName("args"))), false, true)
                 ]))
             ], phpNoName())
         ]

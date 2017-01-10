@@ -20,11 +20,26 @@ private list[Declaration] extractImports(
 	    commonImports(m, ast, env);
     
 private list[Declaration] extractImports(
-	m: \module(Declaration ns, list[Declaration] imports, a: repository(_, list[Declaration] ds)), 
-	list[Declaration] ast, 
-	env: <f, doctrine()>) =
-	    [\import("EntityRepository", namespace("Doctrine", namespace("ORM")), "EntityRepository")] +
-	    commonImports(m, ast, env);
+    m: \module(Declaration ns, list[Declaration] imports, a: repository(_, list[Declaration] ds)), 
+    list[Declaration] ast, 
+    env: <f, doctrine()>) =
+        [\import("EntityRepository", namespace("Doctrine", namespace("ORM")), "EntityRepository")] +
+        commonImports(m, ast, env);
+    
+private list[Declaration] extractImports(
+    m: \module(Declaration ns, list[Declaration] imports, a: controller(_, _, _, list[Declaration] declarations)), 
+    list[Declaration] ast, 
+    env: <laravel(), orm>) =
+        [\import("Controller", 
+            namespace("Glagol", 
+                namespace("Bridge", 
+                    namespace("Laravel", 
+                        namespace("Http", 
+                            namespace("Controllers"))))), "AbstractController")] +
+        [\import("EntityExtractor", namespace("Glagol", namespace("Ds")), "EntityExtractor")] +
+        [\import("CollectionExtractor", namespace("Glagol", namespace("Ds")), "CollectionExtractor")] +
+        [\import("EntityInflator", namespace("Glagol", namespace("Ds")), "EntityInflator")] +
+        commonImports(m, ast, env);
 
 private default list[Declaration] extractImports(Declaration \module, list[Declaration] ast, env) = commonImports(\module, ast, env);
 
@@ -38,7 +53,11 @@ private list[Declaration] commonImports(
 	        	\import("Parameter", namespace("Glagol", namespace("Overriding")), "Parameter")
 	        ] : []) +
 	    (hasMapUsage(artifact) ? 
-	        [\import("Map", namespace("Ds"), "Map"), \import("MapFactory", namespace("Glagol", namespace("Ds")), "MapFactory")] : []) +
+	        [
+                \import("Map", namespace("Ds"), "Map"), 
+                \import("Pair", namespace("Ds"), "Pair"), 
+    	        \import("MapFactory", namespace("Glagol", namespace("Ds")), "MapFactory")
+	        ] : []) +
 	    (hasListUsage(artifact) ? 
 	        [\import("Vector", namespace("Ds"), "Vector")] : []) +
 	    [i | i <- findRepositoryDependencies(m, ast)]

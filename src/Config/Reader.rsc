@@ -28,6 +28,17 @@ public Config loadConfig(loc projectPath) {
 public Config loadConfig(str configSource, loc projectPath) = <fromJSON(#JSON, configSource), projectPath>;
 public Config loadConfig(str configSource) = <fromJSON(#JSON, configSource), |tmp:///|>;
 
+public map[str, str] getConfig(loc file) = 
+    exists(file) ? flatToMap(fromJSON(#JSON, readFile(file))) : ();
+
+private map[str, str] flatToMap(object(map[str, JSON] properties)) =
+    (p: toFlatVal(properties[p]) | p <- properties);
+
+private str toFlatVal(string(a)) = "<a>";
+private str toFlatVal(number(a)) = "<a>";
+private str toFlatVal(boolean(a)) = "<a>";
+private default str toFlatVal(_) = "";
+
 public Framework getFramework(Config config) = getFramework(config.composer);
 public Framework getFramework(JSON composer) = convertFramework(getProperty(composer, null(), "glagol", "framework"));
 
@@ -36,6 +47,7 @@ public ORM getORM(JSON composer) = convertORM(getProperty(composer, null(), "gla
 
 public loc getCompilePath(Config config) = config.projectPath + getProperty(config.composer, string("out"), "glagol", "paths", "out").s;
 public loc getSourcesPath(Config config) = config.projectPath + getProperty(config.composer, string("src"), "glagol", "paths", "src").s;
+public loc getConfigPath(Config config) = config.projectPath + getProperty(config.composer, string("config"), "glagol", "paths", "config").s;
 
 public bool hasProperty(object(map[str, JSON] properties), str key...) = properties[key[0]]? && hasProperty(properties[key[0]], headTail(key)[1]) when size(key) > 1;
 public bool hasProperty(object(map[str, JSON] properties), str key...) = properties[key[0]]? when size(key) == 1;

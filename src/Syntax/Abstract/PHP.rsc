@@ -9,7 +9,9 @@ public data PhpOptionName = phpSomeName(PhpName name) | phpNoName();
 
 public data PhpOptionElse = phpSomeElse(PhpElse e) | phpNoElse();
 
-public data PhpActualParameter = phpActualParameter(PhpExpr expr, bool byRef);
+public data PhpActualParameter 
+    = phpActualParameter(PhpExpr expr, bool byRef)
+    | phpActualParameter(PhpExpr expr, bool byRef, bool isVariadic);
 
 public data PhpConst = phpConst(str name, PhpExpr constValue);
 

@@ -31,16 +31,16 @@ public Expression convertParameterDefaultVal(a: (AssignDefaultValue) `=<DefaultV
     
 
 
-public Declaration convertAnnotatedArtifact(a: (AnnotatedArtifact) `<Artifact artifact>`, list[Declaration] imports) 
-    = convertArtifact(artifact, imports);
+public Declaration convertAnnotatedArtifact(a: (AnnotatedArtifact) `<Artifact artifact>`, list[Declaration] imports) = 
+	convertArtifact(artifact, imports);
     
-public Declaration convertAnnotatedArtifact(a: (AnnotatedArtifact) `<Annotation* annotations><Artifact artifact>`, list[Declaration] imports) 
-    = convertArtifact(artifact, imports)[
+public Declaration convertAnnotatedArtifact(a: (AnnotatedArtifact) `<Annotation* annotations><Artifact artifact>`, list[Declaration] imports) = 
+	convertArtifact(artifact, imports)[
     	@annotations = convertAnnotations(annotations)
     ];
 
-public Declaration convertArtifact(a: (Artifact) `entity <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports)
-    = entity("<name>", [convertDeclaration(d, "<name>", "entity") | d <- declarations])[@src=a@\loc];
+public Declaration convertArtifact(a: (Artifact) `entity <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) = 
+	entity("<name>", [convertDeclaration(d, "<name>", "entity") | d <- declarations])[@src=a@\loc];
 
 public Declaration convertArtifact(a: (Artifact) `repository for <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) {
 	if (!isImported("<name>", imports)) {
@@ -50,14 +50,41 @@ public Declaration convertArtifact(a: (Artifact) `repository for <ArtifactName n
     return repository("<name>", [convertDeclaration(d, "<name>", "repository") | d <- declarations])[@src=a@\loc];
 }
 
-public Declaration convertArtifact(a: (Artifact) `value <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports)
-    = valueObject("<name>", [convertDeclaration(d, "<name>", "value") | d <- declarations])[@src=a@\loc];
+public Declaration convertArtifact(a: (Artifact) `value <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) = 
+	valueObject("<name>", [convertDeclaration(d, "<name>", "value") | d <- declarations])[@src=a@\loc];
     
-public Declaration convertArtifact(a: (Artifact) `util <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports)
-    = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[@src=a@\loc];
+public Declaration convertArtifact(a: (Artifact) `util <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) = 
+	util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[@src=a@\loc];
     
-public Declaration convertArtifact(a: (Artifact) `service <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports)
-    = util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[@src=a@\loc];
+public Declaration convertArtifact(a: (Artifact) `service <ArtifactName name> {<Declaration* declarations>}`, list[Declaration] imports) = 
+	util("<name>", [convertDeclaration(d, "<name>", "util") | d <- declarations])[@src=a@\loc];
+
+public ControllerType convertControllerType(c: (ControllerType) `json-api`) = jsonApi()[@src=c@\loc];
+public ControllerType convertControllerType(c: (ControllerType) `rest`) = jsonApi()[@src=c@\loc];
+
+public Route convertRoute(r: (RoutePart) `<Identifier part>`) = routePart("<part>")[@src=r@\loc];
+public Route convertRoute(r: (RoutePart) `<RoutePlaceholder placeholder>`) = 
+	routeVar(substring("<placeholder>", 1, size("<placeholder>")))[@src=r@\loc];
+
+public str createControllerName(loc file) {
+	str name = substring(file.file, 0, size(file.file) - size(file.extension) - 1);
+	
+	if (/^[A-Z][a-zA-Z]+?Controller$/ !:= name) {
+		throw IllegalControllerName("Controller file name <name> does not follow the pattern `^[A-Z][a-zA-Z]+?Controller$`", file);
+	}
+	
+	return name;
+}
+
+public Route convertRoute((Route) `/<{RoutePart "/"}* routes>`) = route([convertRoute(r) | r <- routes]);
+
+public Declaration convertArtifact(a: (Artifact) `<ControllerType controllerType>controller<Route r>{<Declaration* declarations>}`, list[Declaration] imports) = 
+	controller(
+		createControllerName(a@\loc),
+		convertControllerType(controllerType), 
+		convertRoute(r), 
+		[convertDeclaration(d, "", "controller") | d <- declarations]
+	)[@src=a@\loc];
 
 
 public AssignOperator convertAssignOperator(a: (AssignOperator) `/=`) = divisionAssign()[@src=a@\loc];
@@ -254,23 +281,60 @@ public bool convertBoolean((Boolean) `false`) = false;
 
 
 public Declaration convertProperty(a: (Property) `<Type prop><MemberName name>;`) 
-    = property(convertType(prop), "<name>", {})[@src=a@\loc];
+    = property(convertType(prop), "<name>", {})[@src=a@\loc][
+        @annotations=[annotation("column", [annotationMap(("type": convertPropertyType(convertType(prop))))])]
+    ];
 
 public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AssignDefaultValue defVal>;`) 
-    = property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop)))[@src=a@\loc];
-    
+    = property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop)))[@src=a@\loc][
+        @annotations=[annotation("column", [annotationMap(("type": convertPropertyType(convertType(prop))))])]
+    ];
+
 public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AccessProperties accessProperties>;`) 
-    = property(convertType(prop), "<name>", convertAccessProperties(accessProperties))[@src=a@\loc];
-    
+    = property(convertType(prop), "<name>", convertAccessProperties(accessProperties))[@src=a@\loc][
+        @annotations=[annotation("column", [annotationMap(("type": convertPropertyType(convertType(prop))))])]
+    ];
+
 public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`) 
-    = property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop)))[@src=a@\loc];
-    
-public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Property prop>`, _, _) 
-    = convertProperty(prop)[
-    	@annotations = convertAnnotations(annotations)
+    = property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop)))[@src=a@\loc][
+        @annotations=[annotation("column", [annotationMap(("type": convertPropertyType(convertType(prop))))])]
+    ];
+
+public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Property prop>`, _, _) {
+
+    Declaration property = convertProperty(prop);
+
+    return property[
+    	@annotations = (property@annotations? ? property@annotations : []) + convertAnnotations(annotations)
     ][@src=a@\loc];
+}
+    
+public Annotation convertPropertyType(integer()) = annotationVal("integer");
+public Annotation convertPropertyType(string()) = annotationVal("string");
+public Annotation convertPropertyType(boolean()) = annotationVal("boolean");
+public Annotation convertPropertyType(float()) = annotationVal("float");
+public default Annotation convertPropertyType(_) = annotationVal("");
     
 public Declaration convertDeclaration(a: (Declaration) `<Property prop>`, _, _) = convertProperty(prop);
+
+
+public Declaration convertDeclaration(d: (Declaration) `<Action action>`, _, a: /^(?!controller).*$/) {
+	throw ActionNotAllowed("Action declarations not allowed in artifact type \'<a>\'", d@\loc);
+}
+
+public Declaration convertDeclaration((Declaration) `<Action action>`, _, _) = convertAction(action);
+
+public Declaration convertAction(a: (Action) `<MemberName name>{<Statement* body>}`) = 
+	action("<name>", [], [convertStmt(stmt) | stmt <- body]);
+
+public Declaration convertAction(a: (Action) `<MemberName name>=<Expression expr>;`) = 
+	action("<name>", [], [\return(convertExpression(expr))]);
+
+public Declaration convertAction(a: (Action) `<MemberName name><AbstractParameters params>{<Statement* body>}`) = 
+	action("<name>", convertParameters(params), [convertStmt(stmt) | stmt <- body]);
+
+public Declaration convertAction(a: (Action) `<MemberName name><AbstractParameters params>=<Expression expr>;`) = 
+	action("<name>", convertParameters(params), [\return(convertExpression(expr))]);
 
 
 public Declaration convertModuleNamespace(a: (Namespace) `<Name name>`) = namespace("<name>")[@src=a@\loc];
@@ -293,6 +357,11 @@ public Statement convertStmt(a: (Statement) `<Assignable assignable><AssignOpera
 
 public Statement convertStmt(a: (Statement) `return;`) = \return(emptyExpr()[@src=a@\loc])[@src=a@\loc];
 public Statement convertStmt(a: (Statement) `return <Expression expr>;`) = \return(convertExpression(expr))[@src=a@\loc];
+
+public Statement convertStmt(a: (Statement) `persist <Expression expr>;`) = persist(convertExpression(expr))[@src=a@\loc];
+
+public Statement convertStmt(a: (Statement) `flush;`) = flush(emptyExpr()[@src=a@\loc])[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `flush <Expression expr>;`) = flush(convertExpression(expr))[@src=a@\loc];
 
 public Statement convertStmt(a: (Statement) `break ;`) = \break()[@src=a@\loc];
 public Statement convertStmt(a: (Statement) `break<Integer level>;`) = \break(toInt("<level>"))[@src=a@\loc];
@@ -355,17 +424,22 @@ public RelationDir convertRelationDir(a: (RelationDir) `one`) = \one()[@src=a@\l
 public RelationDir convertRelationDir(a: (RelationDir) `many`) = many()[@src=a@\loc];
 
 
-public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Relation relation>`, _, _) 
-    = convertRelation(relation)[
+// TODO enable only on entities
+public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Relation relation>`, _, str artifactType) 
+    = convertRelation(relation, artifactType)[
     	@annotations = convertAnnotations(annotations)
     ][@src=a@\loc];
 
-public Declaration convertDeclaration(a: (Declaration) `<Relation relation>`, _, _) = convertRelation(relation);
+public Declaration convertDeclaration(a: (Declaration) `<Relation relation>`, _, str artifactType) = convertRelation(relation, artifactType);
 
-public Declaration convertRelation(a: (Relation) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as><AccessProperties accessProperties>;`) 
+public Declaration convertRelation(a: _, at: /^(?!entity).*$/) {
+	throw RelationNotAllowed("Relations only allowed on entities", a@\loc);
+}
+
+public Declaration convertRelation(a: (Relation) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as><AccessProperties accessProperties>;`, _) 
     = relation(convertRelationDir(l), convertRelationDir(r), "<entity>", "<as>", convertAccessProperties(accessProperties))[@src=a@\loc];
 
-public Declaration convertRelation(a: (Relation) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as>;`) 
+public Declaration convertRelation(a: (Relation) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as>;`, _) 
     = relation(convertRelationDir(l), convertRelationDir(r), "<entity>", "<as>", {})[@src=a@\loc];
 
 
@@ -458,6 +532,9 @@ public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations
     	@annotations = convertAnnotations(annotations)
     ][@src=a@\loc];
 
+
+public list[Declaration] convertParameters((AbstractParameters) `(<{AbstractParameter ","}* parameters>)`) = 
+	[convertParameter(p) | p <- parameters];
 
 public Declaration convertParameter((AbstractParameter) `<Parameter p>`) = convertParameter(p);
 public Declaration convertParameter(a: (AbstractParameter) `<Annotation+ annotations><Parameter p>`) 

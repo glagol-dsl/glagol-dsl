@@ -7,6 +7,9 @@ import Parser::Converter::Expression;
 import Parser::Converter::DefaultValue;
 import Parser::Converter::Annotation;
 
+public list[Declaration] convertParameters((AbstractParameters) `(<{AbstractParameter ","}* parameters>)`) = 
+	[convertParameter(p) | p <- parameters];
+
 public Declaration convertParameter((AbstractParameter) `<Parameter p>`) = convertParameter(p);
 public Declaration convertParameter(a: (AbstractParameter) `<Annotation+ annotations><Parameter p>`) 
     = convertParameter(p)[

@@ -125,3 +125,10 @@ test bool testHasDependencies() =
             expression(\map(()))
         ])
     ]);
+
+test bool testGetActions() = 
+	getActions([
+        property(repository("Customer"), "prop", {}),
+        action("index", [], [])
+	]) == [action("index", [], [])];
+    

@@ -32,7 +32,7 @@ public str toCode(phpNoExpr(), int i) = "";
 public str toCode(phpExpr(PhpExpr expr), int i) = toCode(expr, i);
 public str toCode(phpName(phpName(str name)), int i) = name;
 public str toCode(phpSomeExpr(PhpExpr expr), int i) = toCode(expr, i);
-public str toCode(phpArray(list[PhpArrayElement] items), int l) = "[<glue([toCode(i, l) | i <- items], ", ")>]";
+public str toCode(phpArray(list[PhpArrayElement] items), int l) = "[<nl()><s(l+1)><glue([toCode(item, l + 1) | item <- items], ", <nl()><s(l+1)>")><nl()><s(l)>]";
 public str toCode(phpVar(phpName(phpName(str name))), int i) = "$<name>";
 public str toCode(phpVar(phpExpr(PhpExpr expr)), int i) = "$<toCode(expr, i)>";
 public str toCode(phpFetchArrayDim(PhpExpr var, phpNoExpr()), int i) = "<toCode(var, i)>[]";
@@ -48,6 +48,12 @@ public str toCode(phpUnaryOperation(PhpExpr operand, phpPostDec()), int i) = "<t
 public str toCode(phpUnaryOperation(PhpExpr operand, phpUnaryPlus()), int i) = "+<toCode(operand, i)>";
 public str toCode(phpUnaryOperation(PhpExpr operand, phpUnaryMinus()), int i) = "-<toCode(operand, i)>";
 public str toCode(phpActualParameter(PhpExpr expr, bool byRef), int i) = "<ref(byRef)><toCode(expr, i)>";
+
+public str toCode(phpActualParameter(PhpExpr expr, bool byRef, bool isVariadic), int i) = 
+    "<ref(byRef)>" + 
+    "<isVariadic ? "..." : "">" + 
+    "<toCode(expr, i)>";
+    
 public str toCode(phpClone(PhpExpr expr), int i) = "clone <toCode(expr, i)>";
 public str toCode(phpFetchConst(phpName(str name)), int i) = "<name>";
 public str toCode(phpEmpty(PhpExpr expr), int i) = "empty(<toCode(expr, i)>)";

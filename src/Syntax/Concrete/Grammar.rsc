@@ -30,7 +30,15 @@ syntax Artifact
     | "repository" "for" ArtifactName name "{" Declaration* declarations "}"
     | "value" ArtifactName name "{" Declaration* declarations "}"
     | ("util" | "service") ArtifactName name "{" Declaration* declarations "}"
+    | ControllerType controllerType "controller" Route routes "{" Declaration* declarations "}"
     ;
+
+lexical Route = "/" {RoutePart "/"}* routes;
+
+syntax RoutePart
+	= Identifier part
+	| RoutePlaceholder placeholder
+	;
 
 syntax Annotation
     = "@" Identifier id AnnotationArgs? args
@@ -60,6 +68,7 @@ syntax AnnotationValue
     | Type type 
     ;
 
+// TODO generelize annotations by introducing AnnotatedDeclaration
 syntax Declaration
     = Property property
     | Annotation+ annotations Property property
@@ -69,6 +78,8 @@ syntax Declaration
     | Annotation+ annotations Relation relation
     | Method method
     | Annotation+ annotations Method method
+    | Action action
+    | Annotation+ annotations Action action
     ;
 
 syntax Relation
@@ -87,6 +98,11 @@ syntax Method
     | Modifier? modifier Type returnType MemberName name "(" {AbstractParameter ","}* parameters ")" "=" Expression expr When? when ";"
     ;
 
+syntax Action
+    = MemberName name AbstractParameters? "{" Statement* body "}"
+    | MemberName name AbstractParameters? "=" Expression expr ";"
+    ;
+    
 syntax Modifier
     = "private"
     | "public"
@@ -95,6 +111,10 @@ syntax Modifier
 syntax When
     = "when" Expression expr
     ;
+
+syntax AbstractParameters
+	= "(" {AbstractParameter ","}* parameters ")"
+	;
 
 syntax AbstractParameter
     = Parameter parameter
@@ -191,6 +211,8 @@ syntax Statement
     | foreach: "for" "(" Expression list "as" MemberName var (","  {Expression ","}+ conditions)? ")" Statement body
     > non-assoc  (
             \return: "return" Expression? expr ";"
+        |   \persist: "persist" Expression expr ";"
+        |   \flush: "flush" Expression? expr ";"
         |   \break: "break" Integer? level ";"
         |   \continue: "continue" Integer? level ";"
         |   declare: Type type MemberName varName "=" Statement defaultValue !emptyStmt!block!ifThen!ifThenElse!return!declare
