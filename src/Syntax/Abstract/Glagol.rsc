@@ -38,19 +38,6 @@ data RelationDir
     | many()
     ;
 
-data Annotation
-    = annotation(str annotationName, list[Annotation] arguments)
-    | annotationMap(map[str key, Annotation \value] \map)
-    | annotationVal(Annotation \value)
-    | annotationVal(list[Annotation] listValue)
-    | annotationVal(str strValue)
-    | annotationVal(bool boolValue)
-    | annotationVal(int intValue)
-    | annotationVal(real floatValue)
-    | annotationVal(Type \typeValue)
-    | annotationValPrimary()
-    ;
-
 data Expression
     = integer(int intValue)
     | float(real floatValue)
@@ -121,6 +108,7 @@ data Statement
     | emptyStmt()
     | \return(Expression expr)
     | persist(Expression expr)
+    | remove(Expression expr)
     | flush(Expression expr)
     | declare(Type varType, Expression varName)
     | declare(Type varType, Expression varName, Statement defaultValue)
@@ -138,6 +126,19 @@ data AssignOperator
     | productAssign()
     | subtractionAssign()
     | additionAssign()
+    ;
+
+data Annotation
+    = annotation(str annotationName, list[Annotation] arguments)
+    | annotationMap(map[str key, Annotation \value] \map)
+    | annotationVal(Annotation \value)
+    | annotationVal(list[Annotation] listValue)
+    | annotationVal(str strValue)
+    | annotationVal(bool boolValue)
+    | annotationVal(int intValue)
+    | annotationVal(real floatValue)
+    | annotationVal(Type \typeValue)
+    | annotationValPrimary()
     ;
     
 public anno list[Annotation] node@annotations;

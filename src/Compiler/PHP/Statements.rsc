@@ -9,6 +9,7 @@ import Compiler::PHP::ByRef;
 import Compiler::PHP::Params;
 import Compiler::PHP::Properties;
 import Compiler::PHP::Methods;
+import Compiler::PHP::Traits;
 import Compiler::PHP::Modifiers;
 import Compiler::PHP::Annotations;
 import List;

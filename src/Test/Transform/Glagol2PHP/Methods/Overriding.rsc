@@ -12,7 +12,8 @@ test bool shouldAddOverriderWithRulesWhenTransformingOverridedMethods() =
         method(\public(), voidValue(), "test", [param(float(), "c")], [], equals(variable("c"), integer(7)))
     ]), <zend(), doctrine()>) == 
     phpClassDef(phpClass(
-        "User", {}, phpNoName(), [], [
+        "User", {}, phpNoName(), [phpName("\\JsonSerializable")], [
+            phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], []),
             phpMethod("test", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
                 phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), []))),
                 phpExprstmt(phpMethodCall(

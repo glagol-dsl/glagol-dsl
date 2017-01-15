@@ -162,14 +162,14 @@ test bool shouldCompileFetchArrayDimEmptyIndex() =
 
 test bool shouldCompileArrayWithOneElement() = 
 	toCode(phpArray([phpArrayElement(phpSomeExpr(phpScalar(phpString("key"))), phpScalar(phpString("a value")), false)]), 0) ==
-	"[\"key\" =\> \"a value\"]";
+	"[\n    \"key\" =\> \"a value\"\n]";
 	
 test bool shouldCompileArrayWithTwoElements() = 
 	toCode(phpArray([
 		phpArrayElement(phpSomeExpr(phpScalar(phpString("key"))), phpScalar(phpString("a value")), false),
 		phpArrayElement(phpSomeExpr(phpScalar(phpString("key2"))), phpScalar(phpString("a value2")), false)
 	]), 0) ==
-	"[\"key\" =\> \"a value\", \"key2\" =\> \"a value2\"]";
+	"[\n    \"key\" =\> \"a value\", \n    \"key2\" =\> \"a value2\"\n]";
 	
 test bool shouldCompileArrayElements() = 
 	toCode(phpArrayElement(phpSomeExpr(phpScalar(phpString("key"))), phpScalar(phpInteger(2)), true), 0) ==

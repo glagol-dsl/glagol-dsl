@@ -12,7 +12,8 @@ test bool shouldAddOverriderWithRulesWhenTransformingOverridedConstructors() =
         constructor([param(float(), "c")], [], equals(variable("c"), integer(7)))
     ]), <zend(), doctrine()>) == 
     phpClassDef(phpClass(
-        "User", {}, phpNoName(), [], [
+        "User", {}, phpNoName(), [phpName("\\JsonSerializable")], [
+            phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], []),
             phpMethod("__construct", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
                 phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), []))),
                 phpExprstmt(phpMethodCall(
@@ -53,7 +54,8 @@ test bool shouldAddOverriderWithWhenRulesWhenTransformingOverridedConstructors()
         constructor([param(integer(), "c")], [], greaterThan(variable("c"), integer(13)))
     ]), <zend(), doctrine()>) == 
     phpClassDef(phpClass(
-        "User", {}, phpNoName(), [], [
+        "User", {}, phpNoName(), [phpName("\\JsonSerializable")], [
+            phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], []),
             phpMethod("__construct", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
                 phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), []))),
                 phpExprstmt(phpMethodCall(phpMethodCall(

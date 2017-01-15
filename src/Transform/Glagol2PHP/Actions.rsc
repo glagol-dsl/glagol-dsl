@@ -17,7 +17,7 @@ public PhpClassItem toPhpClassItem(a: action(str name, list[Declaration] params,
         false, 
         toActionParams(params, name), 
         createInitializers(params, name) +
-        [fixReturn(toPhpStmt(stmt), name) | stmt <- body], 
+        [toPhpStmt(stmt) | stmt <- body], 
         phpNoName()
     )[
     	@phpAnnotations=toPhpAnnotations(a, env)
@@ -39,20 +39,6 @@ private list[PhpParam] toActionParams(list[Declaration] params, _) {
  
 private list[PhpParam] toActionParams(list[Declaration] params, _) = [toPhpParam(p) | p <- params]; 
 
-private PhpStmt fixReturn(phpReturn(phpSomeExpr(PhpExpr expr)), "index") = phpReturn(phpSomeExpr(
-    phpStaticCall(phpName(phpName("CollectionExtractor")), phpName(phpName("extract")), [
-        phpActualParameter(expr, false)
-    ])
-));
-
-private PhpStmt fixReturn(phpReturn(phpSomeExpr(PhpExpr expr)), /show|store|update|create|edit/) = phpReturn(phpSomeExpr(
-    phpStaticCall(phpName(phpName("EntityExtractor")), phpName(phpName("extract")), [
-        phpActualParameter(expr, false)
-    ])
-));
-
-private PhpStmt fixReturn(PhpStmt stmt, _) = stmt;
-
 private list[PhpStmt] createInitializers(list[Declaration] params, _) {
 
     list[PhpStmt] stmts = [];
@@ -73,8 +59,7 @@ private list[PhpStmt] createInitializers(list[Declaration] params, _) {
     for (p <- params, hasAnnotation(p, "autofill")) {
         if (hasAutofind) 
             stmts += phpExprstmt(
-                phpStaticCall(phpName(phpName("EntityInflator")), phpName(phpName("inflate")), [
-                    phpActualParameter(phpVar(p.name), false),
+                phpMethodCall(phpVar(p.name), phpName(phpName("_hydrate")), [
                     phpActualParameter(phpMethodCall(phpPropertyFetch(
                         phpStaticCall(phpName(phpName("\\Request")), phpName(phpName("getFacadeRoot")), []), 
                         phpName(phpName("request"))
@@ -90,8 +75,7 @@ private list[PhpStmt] createInitializers(list[Declaration] params, _) {
                     "newInstanceWithoutConstructor"
                 )), []))),
                 phpExprstmt(
-                    phpStaticCall(phpName(phpName("EntityInflator")), phpName(phpName("inflate")), [
-                        phpActualParameter(phpVar(p.name), false),
+                    phpMethodCall(phpVar(p.name), phpName(phpName("_hydrate")), [
                         phpActualParameter(phpMethodCall(phpPropertyFetch(
                             phpStaticCall(phpName(phpName("\\Request")), phpName(phpName("getFacadeRoot")), []), 
                             phpName(phpName("request"))

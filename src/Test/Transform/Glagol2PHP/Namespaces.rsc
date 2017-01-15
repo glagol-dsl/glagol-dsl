@@ -11,15 +11,22 @@ test bool shouldTransformToAPhpNamespace() =
 	phpNamespace(
 	  phpSomeName(phpName("Test\\Entity\\User")),
 	  [
-	    phpUse({phpUse(
-	          phpName("Doctrine\\ORM\\Mapping"),
-	          phpSomeName(phpName("ORM")))}),
+	    phpUse({
+            phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM"))),
+            phpUse(phpName("Glagol\\Bridge\\Laravel\\Entity\\JsonSerializeTrait"), phpNoName()),
+            phpUse(phpName("Glagol\\Helper\\Entity\\HydrateTrait"), phpNoName())
+        }),
 	    phpClassDef(phpClass(
 	        "User",
 	        {},
 	        phpNoName(),
-	        [],
-	        []))
+	        [phpName("\\JsonSerializable")],
+	        [phpTraitUse(
+                [
+                  phpName("JsonSerializeTrait"),
+                  phpName("HydrateTrait")
+                ],
+                [])]))
 	  ]) && toPhpNamespace(\module(namespace("Test", namespace("Entity", namespace("User"))), 
 		[], entity("User", [])), [], <anyFramework(), doctrine()>).body[1].classDef@phpAnnotations == 
 		{phpAnnotation("ORM\\Entity")};
@@ -38,10 +45,13 @@ test bool shouldTransformSimpleEntityToPhpScriptUsingDoctrine()
             phpUse({
                 phpUse(phpName("Currency\\Value\\Money"), phpNoName()),
                 phpUse(phpName("Currency\\Value\\Currency"), phpSomeName(phpName("CurrencyVB"))),
-                phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM")))
+                phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM"))),
+                phpUse(phpName("Glagol\\Bridge\\Laravel\\Entity\\JsonSerializeTrait"), phpNoName()),
+                phpUse(phpName("Glagol\\Helper\\Entity\\HydrateTrait"), phpNoName())
             }),
             phpClassDef(phpClass(
-                "Customer", {}, phpNoName(), [], [
+                "Customer", {}, phpNoName(), [phpName("\\JsonSerializable")], [
+                    phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], []),
                     phpProperty({phpPrivate()}, [phpProperty("id", phpNoExpr())])
                 ]
             ))
@@ -61,10 +71,13 @@ test bool shouldTransformSimpleAnnotatedEntityToPhpScriptUsingDoctrine()
             phpUse({
                 phpUse(phpName("Currency\\Value\\Money"), phpNoName()),
                 phpUse(phpName("Currency\\Value\\Currency"), phpSomeName(phpName("CurrencyVB"))),
-                phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM")))
+                phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM"))),
+                phpUse(phpName("Glagol\\Bridge\\Laravel\\Entity\\JsonSerializeTrait"), phpNoName()),
+                phpUse(phpName("Glagol\\Helper\\Entity\\HydrateTrait"), phpNoName())
             }),
             phpClassDef(phpClass(
-                "Customer", {}, phpNoName(), [], [
+                "Customer", {}, phpNoName(), [phpName("\\JsonSerializable")], [
+                    phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], []),
                     phpProperty({phpPrivate()}, [phpProperty("id", phpNoExpr())])
                 ]
             ))
@@ -101,7 +114,7 @@ test bool shouldTransformSimpleAnnotatedWithValueEntityToPhpScriptUsingDoctrine(
                 "ORM\\Table",
                 phpAnnotationVal(("name":phpAnnotationVal("customers"))))
             } &&
-           ast.body[1].body[1].classDef.members[0]@phpAnnotations == {
+           ast.body[1].body[1].classDef.members[1]@phpAnnotations == {
                   phpAnnotation(
                     "ORM\\Column",
                     phpAnnotationVal((
@@ -143,13 +156,13 @@ test bool shouldTransformEntityWithRelationsToPhpScriptUsingDoctrine() {
     
     PhpScript ast = asts["User/Entity/Customer.php"];
     
-    return ast.body[1].body[1].classDef.members[1]@phpAnnotations == {
+    return ast.body[1].body[1].classDef.members[2]@phpAnnotations == {
                   phpAnnotation(
                     "ORM\\OneToOne",
                     phpAnnotationVal((
                         "targetEntity": phpAnnotationVal("Language")
                     ))), phpAnnotation("var", phpAnnotationVal("Language"))
-           } && ast.body[1].body[1].classDef.members[1] == phpProperty(
+           } && ast.body[1].body[1].classDef.members[2] == phpProperty(
                {phpPrivate()}, [phpProperty("userLang", phpNoExpr())]
            );
 }

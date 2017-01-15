@@ -48,6 +48,12 @@ public PhpStmt toPhpStmt(persist(Expression expr)) = phpExprstmt(phpMethodCall(p
     phpActualParameter(toPhpExpr(expr), false)
 ]));
 
+public PhpStmt toPhpStmt(remove(Expression expr)) = phpExprstmt(phpMethodCall(phpPropertyFetch(
+    phpVar("this"), phpName(phpName("_em"))
+), phpName(phpName("remove")), [
+    phpActualParameter(toPhpExpr(expr), false)
+]));
+
 public PhpStmt toPhpStmt(flush(Expression expr)) = phpExprstmt(phpMethodCall(phpPropertyFetch(
     phpVar("this"), phpName(phpName("_em"))
 ), phpName(phpName("flush")), [

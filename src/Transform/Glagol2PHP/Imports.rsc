@@ -17,6 +17,15 @@ private list[Declaration] extractImports(
 	list[Declaration] ast, 
 	env: <f, doctrine()>) =
 	    [\import("Mapping", namespace("Doctrine", namespace("ORM")), "ORM")] +
+        [\import("JsonSerializeTrait", 
+            namespace("Glagol", 
+                namespace("Bridge", 
+                    namespace("Laravel", 
+                        namespace("Entity")))), "JsonSerializeTrait")] +
+        [\import("HydrateTrait", 
+            namespace("Glagol", 
+                namespace("Helper", 
+                    namespace("Entity"))), "HydrateTrait")] +
 	    commonImports(m, ast, env);
     
 private list[Declaration] extractImports(
@@ -36,9 +45,6 @@ private list[Declaration] extractImports(
                     namespace("Laravel", 
                         namespace("Http", 
                             namespace("Controllers"))))), "AbstractController")] +
-        [\import("EntityExtractor", namespace("Glagol", namespace("Ds")), "EntityExtractor")] +
-        [\import("CollectionExtractor", namespace("Glagol", namespace("Ds")), "CollectionExtractor")] +
-        [\import("EntityInflator", namespace("Glagol", namespace("Ds")), "EntityInflator")] +
         commonImports(m, ast, env);
 
 private default list[Declaration] extractImports(Declaration \module, list[Declaration] ast, env) = commonImports(\module, ast, env);

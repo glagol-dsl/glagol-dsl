@@ -24,7 +24,7 @@ test bool testShouldParseEntityWithValuesAndAnnotations()
 {
     str code = "namespace Example
                'entity User {
-               '    @field({
+               '    @column({
                '        key: primary,
                '        sequence: true,
                '        type: int,
@@ -32,16 +32,36 @@ test bool testShouldParseEntityWithValuesAndAnnotations()
                '        column: \"id\"
                '    })
                '    int id with {get};
+               '
+               '    @column({
+               '        key: primary,
+               '        sequence: true,
+               '        size: 11,
+               '        column: \"id\"
+               '    })
+               '    string id with {get};
                '}";
 
     return 
-    	parseModule(code) == \module(namespace("Example"), [], entity("User", [property(integer(), "id", {read()})])) &&
+    	parseModule(code) == \module(namespace("Example"), [], entity("User", [
+    	   property(integer(), "id", {read()}), property(string(), "id", {read()})])) &&
     	parseModule(code).artifact.declarations[0]@annotations == [
-            annotation("field", [
+            annotation("column", [
                 annotationMap((
                     "key": annotationValPrimary(), 
                     "sequence": annotationVal(true), 
                     "type": annotationVal(integer()), 
+                    "size": annotationVal(11), 
+                    "column": annotationVal("id")
+                ))
+            ])
+        ] &&
+        parseModule(code).artifact.declarations[1]@annotations == [
+            annotation("column", [
+                annotationMap((
+                    "key": annotationValPrimary(), 
+                    "sequence": annotationVal(true), 
+                    "type": annotationVal(string()), 
                     "size": annotationVal(11), 
                     "column": annotationVal("id")
                 ))

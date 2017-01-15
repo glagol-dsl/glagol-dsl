@@ -213,6 +213,7 @@ syntax Statement
             \return: "return" Expression? expr ";"
         |   \persist: "persist" Expression expr ";"
         |   \flush: "flush" Expression? expr ";"
+        |   \flush: "remove" Expression expr ";"
         |   \break: "break" Integer? level ";"
         |   \continue: "continue" Integer? level ";"
         |   declare: Type type MemberName varName "=" Statement defaultValue !emptyStmt!block!ifThen!ifThenElse!return!declare
