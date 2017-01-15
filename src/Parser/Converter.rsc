@@ -281,25 +281,35 @@ public bool convertBoolean((Boolean) `false`) = false;
 
 
 public Declaration convertProperty(a: (Property) `<Type prop><MemberName name>;`)  = 
-    property(convertType(prop), "<name>", {})[@src=a@\loc];
+    property(convertType(prop), "<name>", {})[@src=a@\loc][
+        @annotations=buildPropDefaultAnnotations(convertType(prop))
+    ];
 
 public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AssignDefaultValue defVal>;`) = 
-    property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop)))[@src=a@\loc];
+    property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop)))[@src=a@\loc][
+        @annotations=buildPropDefaultAnnotations(convertType(prop))
+    ];
 
 public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AccessProperties accessProperties>;`) = 
-    property(convertType(prop), "<name>", convertAccessProperties(accessProperties))[@src=a@\loc];
+    property(convertType(prop), "<name>", convertAccessProperties(accessProperties))[@src=a@\loc][
+        @annotations=buildPropDefaultAnnotations(convertType(prop))
+    ];
 
 public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`) = 
-    property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop)))[@src=a@\loc];
+    property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop)))[@src=a@\loc][
+        @annotations=buildPropDefaultAnnotations(convertType(prop))
+    ];
+
+public list[Annotation] buildPropDefaultAnnotations(Type t) = 
+    [annotation("column", [annotationMap(("type": annotationVal(t)))])]
+    when t in [integer(), string(), boolean(), float()];
+    
+public default list[Annotation] buildPropDefaultAnnotations(Type t) = [];
 
 public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Property prop>`, _, _) {
     Declaration property = convertProperty(prop);
 
-    list[Annotation] pAnnotations = [];
-
-    if (property.valueType in [integer(), string(), boolean(), float()]) {
-        pAnnotations += [annotation("column", [annotationMap(("type": annotationVal(property.valueType)))])];
-    }
+    list[Annotation] pAnnotations = property@annotations? ? property@annotations : [];
 
     for (an <- convertAnnotations(annotations)) {
         if (annotation(f: /column|field/, [*Annotation L, annotationMap(m), *Annotation R]) := an) {
