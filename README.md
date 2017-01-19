@@ -8,8 +8,8 @@ A domain-specific language that utilizes Domain-Driven Design
 Glagol runs as a service. Therefore you need to install two composer global packages:
 
 ```
-composer global require bulgaria-php/glagol-dsl:dev-master
-composer global require bulgaria-php/glagol-dsl-client:dev-master
+composer global require bulgaria-php/glagol-dsl
+composer global require bulgaria-php/glagol-dsl-client
 ```
 
 > If you have trouble installing them, change your "minimum-stability" to "dev" in `~/.composer/composer.json`.
@@ -68,9 +68,10 @@ rest controller / {
 ## Compile and test
 Just run `glagol compile` in your project root directory.
 
-You can now navigate to the `compiled` folder and run the php test server using artisan:
+You can now navigate to the `compiled` folder, install composer dependencies and run the php test server using artisan:
 ```
 cd compiled
+composer install
 php artisan serve
 ```
 
