@@ -42,7 +42,7 @@ int main([str command, *value R]) {
 private void createNext(set[loc] testFiles, set[loc] srcFiles, loc baseLoc) {
     for (f <- sort(toStrList(srcFiles, baseLoc) - [srcFile | f <- toStrList(testFiles, baseLoc), /Test\/<srcFile:.+?\.rsc>/ := f])) {
         writeFile(baseLoc + "Test" + f, 
-            "module Test::<toModule(f)>;" +
+            "module Test::<toModule(f)>" +
             "\n\n" +
             "import <toModule(f)>;\n\n");
         println("Created empty test <toModule("Test/" + f)>");
