@@ -6,3 +6,4 @@ script:
   - cd support
   - ./bin/build 
   - ./bin/run_tests
+  - ./bin/coverage report
