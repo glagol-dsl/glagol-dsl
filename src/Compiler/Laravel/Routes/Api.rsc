@@ -9,7 +9,7 @@ import Utils::Glue;
 
 public str createRoutesApi(list[Declaration] ast) =
     toCode(phpScript([phpExprstmt(toResourceRoute(ns, c)) | \module(ns, _, c) <- getControllerModules(ast)]));
-
+    
 private PhpExpr toResourceRoute(Declaration ns, controller(str name, ControllerType controllerType, Route route, list[Declaration] declarations)) =
     phpStaticCall(phpName(phpName("Route")), phpName(phpName("resource")), [
         phpActualParameter(phpScalar(phpString(toString(route))), false),
