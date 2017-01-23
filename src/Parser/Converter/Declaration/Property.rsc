@@ -39,7 +39,8 @@ public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations
     list[Annotation] pAnnotations = property@annotations? ? property@annotations : [];
 
     for (an <- convertAnnotations(annotations)) {
-        if (annotation(f: /column|field/, [*Annotation L, annotationMap(m), *Annotation R]) := an) {
+        if (annotation(f: /column|field/, [*Annotation L, annotationMap(m), *Annotation R]) := an, 
+            pAnnotations[0]? && pAnnotations[0].arguments? && pAnnotations[0].arguments[0]?) {
             pAnnotations[0].arguments[0].\map += m;
         } else {
             pAnnotations += an;

@@ -54,15 +54,15 @@ public PhpStmt toPhpStmt(remove(Expression expr)) = phpExprstmt(phpMethodCall(ph
     phpActualParameter(toPhpExpr(expr), false)
 ]));
 
+public PhpStmt toPhpStmt(flush(emptyExpr())) = phpExprstmt(phpMethodCall(phpPropertyFetch(
+    phpVar("this"), phpName(phpName("_em"))
+), phpName(phpName("flush")), []));
+
 public PhpStmt toPhpStmt(flush(Expression expr)) = phpExprstmt(phpMethodCall(phpPropertyFetch(
     phpVar("this"), phpName(phpName("_em"))
 ), phpName(phpName("flush")), [
     phpActualParameter(toPhpExpr(expr), false)
 ]));
-
-public PhpStmt toPhpStmt(flush(emptyExpr())) = phpExprstmt(phpMethodCall(phpPropertyFetch(
-    phpVar("this"), phpName(phpName("_em"))
-), phpName(phpName("flush")), []));
 
 public PhpStmt toPhpStmt(declare(Type t, Expression var)) 
     = phpExprstmt(phpAssign(toPhpExpr(var), phpScalar(phpNull())));

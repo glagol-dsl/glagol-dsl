@@ -295,3 +295,61 @@ test bool testForeachStatementWithContinue() {
         ])
     ]));
 }
+
+test bool testPersistStatementOnRepository() {
+    str code
+        = "namespace Example
+        'import Example::User;
+        'repository for User {
+        '   public void blah() {
+        '       persist a;
+        '   }
+        '}";
+
+    return parseModule(code) == \module(namespace("Example"), [\import("User", namespace("Example"), "User")], 
+        repository("User", [
+            method(\public(), voidValue(), "blah", [], [
+                persist(variable("a"))
+            ])
+    ]));
+}
+
+test bool testFlushStatementOnRepository() {
+    str code
+        = "namespace Example
+        'import Example::User;
+        'repository for User {
+        '   public void blah() {
+        '       persist a;
+        '       flush a;
+        '       flush;
+        '   }
+        '}";
+
+    return parseModule(code) == \module(namespace("Example"), [\import("User", namespace("Example"), "User")], 
+        repository("User", [
+            method(\public(), voidValue(), "blah", [], [
+                persist(variable("a")),
+                flush(variable("a")),
+                flush(emptyExpr())
+            ])
+    ]));
+}
+
+test bool testRemoveStatementOnRepository() {
+    str code
+        = "namespace Example
+        'import Example::User;
+        'repository for User {
+        '   public void blah() {
+        '       remove a;
+        '   }
+        '}";
+
+    return parseModule(code) == \module(namespace("Example"), [\import("User", namespace("Example"), "User")], 
+        repository("User", [
+            method(\public(), voidValue(), "blah", [], [
+                remove(variable("a"))
+            ])
+    ]));
+}

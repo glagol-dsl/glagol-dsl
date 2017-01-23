@@ -31,7 +31,7 @@ public void respondWith(error(str msg, loc at), int listenerId) {
 }
 
 public void respondWith(warning(str msg, loc at), int listenerId) {
-	respondWith(warning("<msg> in <at.path> on line <at.begin.line>, column <at.begin.end>"), listenerId);
+	respondWith(warning("<msg> in <at.path> on line <at.begin.line>, column <at.begin.column>"), listenerId);
 }
 
 public void respondWith(info(str message), int listenerId) {

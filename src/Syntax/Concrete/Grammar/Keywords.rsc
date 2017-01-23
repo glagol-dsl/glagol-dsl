@@ -31,4 +31,6 @@ keyword GlagolPreserved
     | "init"
     | "rest"
     | "json-api"
+    | "persist"
+    | "flush"
     ;
