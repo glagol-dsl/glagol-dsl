@@ -1,4 +1,4 @@
-module Test::Compiler::Compiler;
+module Test::Compiler::Compiler
 
 import Compiler::Compiler;
 

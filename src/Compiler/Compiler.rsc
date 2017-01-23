@@ -17,7 +17,9 @@ private str COMPILE_LOG = ".glagol_compile_log";
 public void compile(loc projectPath, int listenerId) {
 	Config config = loadConfig(projectPath);
 	
-    list[Declaration] ast = parseMultiple(findAllSourceFiles(projectPath));
+    list[Declaration] ast = parseMultiple(
+        findAllSourceFiles(getSourcesPath(config)) + findAllSourceFiles(getVendorPath(config))
+    );
     
 	cleanUpOld(config, listenerId);
     

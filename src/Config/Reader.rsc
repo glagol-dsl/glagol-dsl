@@ -47,6 +47,7 @@ public ORM getORM(JSON composer) = convertORM(getProperty(composer, null(), "gla
 
 public loc getCompilePath(Config config) = config.projectPath + getProperty(config.composer, string("out"), "glagol", "paths", "out").s;
 public loc getSourcesPath(Config config) = config.projectPath + getProperty(config.composer, string("src"), "glagol", "paths", "src").s;
+public loc getVendorPath(Config config) = config.projectPath + getProperty(config.composer, string("vendor"), "config", "vendor-dir").s;
 public loc getConfigPath(Config config) = config.projectPath + getProperty(config.composer, string("config"), "glagol", "paths", "config").s;
 
 public bool hasProperty(object(map[str, JSON] properties), str key...) = properties[key[0]]? && hasProperty(properties[key[0]], headTail(key)[1]) when size(key) > 1;

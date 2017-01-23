@@ -11,10 +11,12 @@ public JSON setAutoloading(object(map[str, JSON] properties), Config config, lis
     "autoload": object((
         "psr-4": object((
             "<n>\\": string("<getSourcesPath(config).file>/<n>/") |  n <- namespaces(ast)
-        ) + ("App\\": string("app/")))
+        ) + frameworkSpecificAutoload(getFramework(config)))
     ))
 )));
 
+private map[str, JSON] frameworkSpecificAutoload(laravel()) = ("App\\": string("app/"));
+private default map[str, JSON] frameworkSpecificAutoload(_) = ();
 
 private set[str] namespaces(list[Declaration] ast) = 
 	{f.\module.namespace.name | f <- ast};
