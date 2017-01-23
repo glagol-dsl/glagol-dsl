@@ -1,7 +1,7 @@
 module Test::Compiler::Composer::Autoloading
 
-import Syntax::Abstract::Glagol;
 import Compiler::Composer::Autoloading;
+import Syntax::Abstract::Glagol;
 import lang::json::ast::JSON;
 import Config::Config;
 
