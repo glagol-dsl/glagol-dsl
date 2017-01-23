@@ -4,8 +4,10 @@ import Syntax::Abstract::PHP;
 import Compiler::Laravel::Config::Abstract;
 import Compiler::PHP::Compiler;
 
-public str createCacheConfig() = 
-    toCode(phpScript([phpReturn(phpSomeExpr(toPhpConf(array((
+public str createCacheConfig() = toCode(createCacheConfigAST());
+
+public PhpScript createCacheConfigAST() =
+    phpScript([phpReturn(phpSomeExpr(toPhpConf(array((
         "default": env("CACHE_DRIVER", "file"),
         "stores": array((
             "apc": array((
@@ -49,4 +51,4 @@ public str createCacheConfig() =
                 "connection": string("default")
             ))
         ))
-    )))))]));
+    )))))]);

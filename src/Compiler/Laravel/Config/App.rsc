@@ -8,7 +8,10 @@ import Config::Config;
 import Config::Reader;
 
 public str createAppConfig(Config config, list[Declaration] ast) = 
-    toCode(phpScript([phpReturn(phpSomeExpr(toPhpConf(array((
+    toCode(createAppConfigAST(config, ast));
+
+private PhpScript createAppConfigAST(Config config, list[Declaration] ast) =
+    phpScript([phpReturn(phpSomeExpr(toPhpConf(array((
         "name": env("APP_NAME", "Glagol DSL project"),
         "env": env("APP_ENV", "production"),
         "debug": env("APP_DEBUG", true),
@@ -79,7 +82,7 @@ public str createAppConfig(Config config, list[Declaration] ast) =
             "Validator": class("Illuminate\\Support\\Facades\\Validator"),
             "View": class("Illuminate\\Support\\Facades\\View")
         ))
-    )))))]));
+    )))))]);
 
 private list[Conf] getORMProviders(doctrine(), list[Declaration] ast) = [
     class("LaravelDoctrine\\ORM\\DoctrineServiceProvider")
