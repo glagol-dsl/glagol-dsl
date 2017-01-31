@@ -8,8 +8,9 @@ import Syntax::Abstract::Glagol::Helpers;
 import String;
 
 public TypeEnv checkFile(Config config, f:file(loc src, m:\module(ns, list[Declaration] imports, Declaration artifact)), TypeEnv env) = 
-    checkImports(m, 
-        checkLocVsModule(getSourcesPath(config), f, env[location = src]));
+    checkArtifact(artifact,
+    	checkImports(m, 
+        	checkLocVsModule(getSourcesPath(config), f, env[location = src])));
 
 public TypeEnv checkLocVsModule(loc sources, file(loc src, m:\module(ns, imports, Declaration artifact)), TypeEnv env) =
     env[errors = env.errors + <
