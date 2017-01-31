@@ -132,3 +132,12 @@ test bool testGetActions() =
         action("index", [], [])
 	]) == [action("index", [], [])];
     
+test bool testHasAnnotation() =
+    hasAnnotation(entity("User", [])[@annotations=[
+        annotation("field", [])
+    ]], "field");
+    
+test bool testHasAnnotationFalse() =
+    !hasAnnotation(entity("User", [])[@annotations=[
+        annotation("column", [])
+    ]], "field");

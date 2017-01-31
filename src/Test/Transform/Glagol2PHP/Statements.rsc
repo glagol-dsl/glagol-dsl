@@ -122,7 +122,32 @@ test bool shouldTransformToForeachWithConditions3() =
         ]
     );
     
+test bool shouldTransformToEntityManagerPersist() =
+    toPhpStmt(persist(variable("entity"))) == phpExprstmt(phpMethodCall(phpPropertyFetch(
+        phpVar(phpName(phpName("this"))), phpName(phpName("_em"))
+    ), phpName(phpName("persist")), [
+        phpActualParameter(phpVar(phpName(phpName("entity"))), false)
+    ]));
     
+test bool shouldTransformToEntityManagerRemove() =
+    toPhpStmt(remove(variable("entity"))) == phpExprstmt(phpMethodCall(phpPropertyFetch(
+        phpVar(phpName(phpName("this"))), phpName(phpName("_em"))
+    ), phpName(phpName("remove")), [
+        phpActualParameter(phpVar(phpName(phpName("entity"))), false)
+    ]));
+    
+test bool shouldTransformToEntityManagerFlushWithoutArgs() =
+    toPhpStmt(flush(emptyExpr())) == phpExprstmt(phpMethodCall(phpPropertyFetch(
+        phpVar(phpName(phpName("this"))), phpName(phpName("_em"))
+    ), phpName(phpName("flush")), []));
+    
+test bool shouldTransformToEntityManagerFlushWithArgument() =
+    toPhpStmt(flush(variable("entity"))) == phpExprstmt(phpMethodCall(phpPropertyFetch(
+        phpVar(phpName(phpName("this"))), phpName(phpName("_em"))
+    ), phpName(phpName("flush")), [
+        phpActualParameter(phpVar(phpName(phpName("entity"))), false)
+    ]));
+
 test bool shouldTransformToContinue() =
     toPhpStmt(\continue()) == phpContinue(phpNoExpr());
     

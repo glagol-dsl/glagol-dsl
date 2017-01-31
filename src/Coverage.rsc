@@ -58,8 +58,6 @@ private void report(set[loc] testFiles, set[loc] srcFiles, loc baseLoc) {
     for (f <- sort(toStrList(srcFiles, baseLoc) - [srcFile | f <- toStrList(testFiles, baseLoc), /Test\/<srcFile:.+?\.rsc>/ := f])) {
         println(toModule(f));
     }
-    
-    println("Coverage ratio in total: ~<precision((toReal(size(testFiles))/toReal(size(srcFiles)))*100.0, 4)>%");
 }
 
 private real getCoverageRation(list[loc] testFiles, list[loc] srcFiles) = 
