@@ -2,27 +2,29 @@ module Syntax::Abstract::Glagol
 
 import List;
 
+alias GlagolID = str;
+
 data Declaration 
     = file(loc file, Declaration \module)
     | \module(Declaration namespace, list[Declaration] imports, Declaration artifact)
-    | namespace(str name)
-    | namespace(str name, Declaration subNamespace)
-    | \import(str artifactName, Declaration namespace, str as)
-    | entity(str name, list[Declaration] declarations)
-    | repository(str name, list[Declaration] declarations)
-    | valueObject(str name, list[Declaration] declarations)
-    | property(Type \valueType, str name, set[AccessProperty] valueProperties)
-    | property(Type \valueType, str name, set[AccessProperty] valueProperties, Expression defaultValue)
-    | util(str name, list[Declaration] declarations)
-    | controller(str name, ControllerType controllerType, Route route, list[Declaration] declarations)
-    | action(str name, list[Declaration] params, list[Statement] body)
-    | relation(RelationDir l, RelationDir r, str name, str as, set[AccessProperty] valueProperties)
+    | namespace(GlagolID name)
+    | namespace(GlagolID name, Declaration subNamespace)
+    | \import(GlagolID artifactName, Declaration namespace, GlagolID as)
+    | entity(GlagolID name, list[Declaration] declarations)
+    | repository(GlagolID name, list[Declaration] declarations)
+    | valueObject(GlagolID name, list[Declaration] declarations)
+    | property(Type \valueType, GlagolID name, set[AccessProperty] valueProperties)
+    | property(Type \valueType, GlagolID name, set[AccessProperty] valueProperties, Expression defaultValue)
+    | util(GlagolID name, list[Declaration] declarations)
+    | controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations)
+    | action(GlagolID name, list[Declaration] params, list[Statement] body)
+    | relation(RelationDir l, RelationDir r, GlagolID name, GlagolID as, set[AccessProperty] valueProperties)
     | constructor(list[Declaration] params, list[Statement] body)
     | constructor(list[Declaration] params, list[Statement] body, Expression when)
-    | method(Modifier modifier, Type returnType, str name, list[Declaration] params, list[Statement] body)
-    | method(Modifier modifier, Type returnType, str name, list[Declaration] params, list[Statement] body, Expression when)
-    | param(Type paramType, str name)
-    | param(Type paramType, str name, Expression defaultValue)
+    | method(Modifier modifier, Type returnType, GlagolID name, list[Declaration] params, list[Statement] body)
+    | method(Modifier modifier, Type returnType, GlagolID name, list[Declaration] params, list[Statement] body, Expression when)
+    | param(Type paramType, GlagolID name)
+    | param(Type paramType, GlagolID name, Expression defaultValue)
     ;
 
 data ControllerType = jsonApi();

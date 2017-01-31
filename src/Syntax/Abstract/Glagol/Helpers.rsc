@@ -81,3 +81,7 @@ public list[Declaration] getControllerModules(list[Declaration] ast) =
 
 public bool hasAnnotation(Declaration n, str name) = 
     (n@annotations?) ? (false | true | annotation(name, _) <- n@annotations) : false;
+    
+public str namespaceToString(namespace(str name), _) = name;
+public str namespaceToString(namespace(str name, Declaration subNamespace), str delimiter) = 
+    name + delimiter + namespaceToString(subNamespace, delimiter);

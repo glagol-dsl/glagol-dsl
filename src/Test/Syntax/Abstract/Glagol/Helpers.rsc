@@ -141,3 +141,10 @@ test bool testHasAnnotationFalse() =
     !hasAnnotation(entity("User", [])[@annotations=[
         annotation("column", [])
     ]], "field");
+
+test bool shouldMakeStringFromNamespaceChainUsingDelimiter() 
+    = "Some::Example::Namespace" == namespaceToString(namespace("Some", namespace("Example", namespace("Namespace"))), "::");
+
+test bool shouldMakeStringFromNamespaceChainUsingAltDelimiter() 
+    = "Another\\Example\\Namespace" == namespaceToString(namespace("Another", namespace("Example", namespace("Namespace"))), "\\");
+    

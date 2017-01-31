@@ -1,15 +1,12 @@
 module Transform::Glagol2PHP::Common
 
 import Syntax::Abstract::Glagol;
+import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
 
 private str EXT = "php";
 // TODO Check behaviour under windows
 private str DS = "/";
-
-public str namespaceToString(namespace(str name), _) = name;
-public str namespaceToString(namespace(str name, Declaration subNamespace), str delimiter) = 
-	name + delimiter + namespaceToString(subNamespace, delimiter);
 
 public str makeFilename(Declaration namespace, entity(str name, _)) = 
 	namespaceToDir(namespace) + name + ".<EXT>";

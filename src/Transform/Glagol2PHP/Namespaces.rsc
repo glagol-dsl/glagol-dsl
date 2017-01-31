@@ -1,6 +1,7 @@
 module Transform::Glagol2PHP::Namespaces
 
 import Syntax::Abstract::Glagol;
+import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
 import Syntax::Abstract::PHP::Helpers;
 import Transform::Glagol2PHP::Imports;

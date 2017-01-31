@@ -20,9 +20,9 @@ import Compiler::Laravel::Routes::Console;
 import Compiler::Laravel::Server;
 import Compiler::Laravel::Artisan;
 import Syntax::Abstract::Glagol;
+import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
 import Syntax::Abstract::PHP::Helpers;
-import Transform::Glagol2PHP::Common;
 import IO;
 
 public map[loc, str] generateFrameworkFiles(laravel(), Config config, list[Declaration] ast) = (

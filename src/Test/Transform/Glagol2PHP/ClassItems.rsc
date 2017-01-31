@@ -119,8 +119,8 @@ test bool shouldTransformMethodsToPhpClassItems() =
 	], <anyFramework(), anyORM()>, entity("", [])) == 
 	[
 		phpMethod("a", {phpPrivate()}, false, [], [], phpNoName()),
-		phpMethod("b", {phpPrivate()}, false, [], [], phpNoName()),
-		phpMethod("c", {phpPrivate()}, false, [], [], phpNoName())
+		phpMethod("c", {phpPrivate()}, false, [], [], phpNoName()),
+		phpMethod("b", {phpPrivate()}, false, [], [], phpNoName())
 	];
 
 test bool shouldTransformMethodsWithOverridingToPhpClassItems() = 
