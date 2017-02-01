@@ -21,3 +21,11 @@ public bool isImported(\import(GlagolID name, Declaration namespace, GlagolID as
 
 public bool isInAST(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
     (false | true | file(_, \module(Declaration ns, _, artifact)) <- env.ast, artifact.name == name && ns == namespace);
+
+public Declaration getArtifactFromAST(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) {
+    for (file(_, \module(Declaration ns, _, artifact)) <- env.ast, artifact.name == name && ns == namespace) {
+        return artifact;
+    }
+    // TODO make a better exception
+    throw "Cannot happen";
+}
