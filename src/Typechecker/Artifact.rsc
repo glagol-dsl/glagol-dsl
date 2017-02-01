@@ -3,6 +3,7 @@ module Typechecker::Artifact
 import Syntax::Abstract::Glagol;
 import Typechecker::Env;
 import Typechecker::Declarations;
+import Typechecker::Route;
 import String;
 
 public TypeEnv checkArtifact(e:entity(GlagolID name, list[Declaration] declarations), TypeEnv env) =
@@ -18,7 +19,7 @@ public TypeEnv checkArtifact(r:repository(GlagolID name, list[Declaration] decla
     checkDeclarations(declarations, r, checkRepositoryEntity(r, env));
 
 public TypeEnv checkArtifact(c:controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations), TypeEnv env) =
-    checkDeclarations(declarations, c, checkControllerFileName(c, env));
+    checkDeclarations(declarations, c, checkRoute(route, checkControllerFileName(c, env)));
 
 private TypeEnv checkControllerFileName(c:controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations), TypeEnv env) = 
     env[errors = env.errors + <env.location, "Controller does not follow the convetion \<Identifier\>Controller.g in <c@src.path>">]
