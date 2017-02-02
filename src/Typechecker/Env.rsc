@@ -4,8 +4,8 @@ import Syntax::Abstract::Glagol;
 import Map;
 
 data Definition
-    = declaration(Declaration d)
-    | statement(Statement stmt)
+    = field(Declaration d)
+    | localVar(Statement stmt)
     ;
 
 alias TypeEnv = tuple[
