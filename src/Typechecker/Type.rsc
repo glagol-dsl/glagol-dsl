@@ -27,7 +27,7 @@ public TypeEnv checkType(a:artifact(str name), Declaration d, TypeEnv env) =
 public TypeEnv checkType(a:artifact(str name), Declaration d, TypeEnv env) = env when name in env.imported;
 
 public TypeEnv checkType(r:repository(str name), Declaration d, TypeEnv env) = 
-    env[errors = env.errors + <r@src, "\"<name>\" not imported, but used as for repository in <r@src.path> on line <r@src.begin.line>">]
+    env[errors = env.errors + <r@src, "\"<name>\" not imported, but used for a repository in <r@src.path> on line <r@src.begin.line>">]
     when name notin env.imported;
     
 public TypeEnv checkType(r:repository(str name), Declaration d, TypeEnv env) = 
