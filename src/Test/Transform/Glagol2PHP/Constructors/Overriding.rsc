@@ -7,9 +7,9 @@ import Transform::Glagol2PHP::Entities;
 
 test bool shouldAddOverriderWithRulesWhenTransformingOverridedConstructors() = 
     toPhpClassDef(entity("User", [
-        constructor([param(integer(), "a")], []),
-        constructor([param(string(), "b")], []),
-        constructor([param(float(), "c")], [], equals(variable("c"), integer(7)))
+        constructor([param(integer(), "a", emptyExpr())], []),
+        constructor([param(string(), "b", emptyExpr())], []),
+        constructor([param(float(), "c", emptyExpr())], [], equals(variable("c"), integer(7)))
     ]), <zend(), doctrine()>) == 
     phpClassDef(phpClass(
         "User", {}, phpNoName(), [phpName("\\JsonSerializable")], [
@@ -49,9 +49,9 @@ test bool shouldAddOverriderWithRulesWhenTransformingOverridedConstructors() =
 
 test bool shouldAddOverriderWithWhenRulesWhenTransformingOverridedConstructors() = 
     toPhpClassDef(entity("User", [
-        constructor([param(integer(), "a")], [], equals(variable("a"), integer(7))),
-        constructor([param(integer(), "b")], []),
-        constructor([param(integer(), "c")], [], greaterThan(variable("c"), integer(13)))
+        constructor([param(integer(), "a", emptyExpr())], [], equals(variable("a"), integer(7))),
+        constructor([param(integer(), "b", emptyExpr())], []),
+        constructor([param(integer(), "c", emptyExpr())], [], greaterThan(variable("c"), integer(13)))
     ]), <zend(), doctrine()>) == 
     phpClassDef(phpClass(
         "User", {}, phpNoName(), [phpName("\\JsonSerializable")], [

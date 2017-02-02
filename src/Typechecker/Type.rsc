@@ -11,9 +11,6 @@ public TypeEnv checkType(boolean(), Declaration d, TypeEnv env) = env;
 public TypeEnv checkType(voidValue(), p:property(_, _, _, _), TypeEnv env) = 
     env[errors = env.errors + <p@src, "Void type cannot be used on property in <p@src.path> on line <p@src.begin.line>">];
 
-public TypeEnv checkType(voidValue(), p:param(Type paramType, GlagolID name), TypeEnv env) = 
-    env[errors = env.errors + <p@src, "Void type cannot be used on param \"<name>\" in <p@src.path> on line <p@src.begin.line>">];
-
 public TypeEnv checkType(voidValue(), p:param(Type paramType, GlagolID name, _), TypeEnv env) = 
     env[errors = env.errors + <p@src, "Void type cannot be used on param \"<name>\" in <p@src.path> on line <p@src.begin.line>">];
 

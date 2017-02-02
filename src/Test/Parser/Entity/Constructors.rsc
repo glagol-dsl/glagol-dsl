@@ -14,7 +14,7 @@ test bool shouldParseConstructWithOneParam()
           '";
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(integer(), "param")], [])
+        constructor([param(integer(), "param", emptyExpr())], [])
     ]));
 }
 
@@ -29,7 +29,7 @@ test bool shouldParseConstructWithOneAnnotatedParam()
           '";
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(integer(), "param")], [])
+        constructor([param(integer(), "param", emptyExpr())], [])
     ])) && parseModule(code).artifact.declarations[0].params[0]@annotations==[annotation("anno", [])];
 }
 
@@ -44,7 +44,7 @@ test bool shouldParseConstructWithOneAnnotatedParamAndOneSimple()
           '";
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(integer(), "param"), param(integer(), "param2")], [])
+        constructor([param(integer(), "param", emptyExpr()), param(integer(), "param2", emptyExpr())], [])
     ])) && parseModule(code).artifact.declarations[0].params[0]@annotations==[annotation("anno", [])];
 }
 
@@ -60,7 +60,7 @@ test bool shouldParseAnnotatedConstructWithOneParam()
           '";
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(integer(), "param")], [])
+        constructor([param(integer(), "param", emptyExpr())], [])
     ])) && parseModule(code).artifact.declarations[0]@annotations==[annotation("doc", [annotationVal("This is a doc")])];
 }
 
@@ -92,7 +92,7 @@ test bool shouldParseConstructWithTwoParamsAndDefaultValue()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([
-            param(integer(), "param"),
+            param(integer(), "param", emptyExpr()),
             param(float(), "param2", float(0.55)),
             param(boolean(), "param3", boolean(true))
         ], [])
@@ -113,7 +113,7 @@ test bool shouldParseConstructWithBody()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([
-            param(integer(), "param"),
+            param(integer(), "param", emptyExpr()),
             param(float(), "param2", float(0.55)),
             param(boolean(), "param3", boolean(true))
         ], [
@@ -163,7 +163,7 @@ test bool shouldParseConstructWithoutBodyWithParams()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([
-            param(integer(), "param"),
+            param(integer(), "param", emptyExpr()),
             param(float(), "param2", float(0.55)),
             param(boolean(), "param3", boolean(true))
         ], [])
@@ -182,7 +182,7 @@ test bool shouldParseConstructWithWhen()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([
-                param(integer(), "param")
+                param(integer(), "param", emptyExpr())
             ], [], and(
                 greaterThan(variable("param"), integer(3)),
                 lessThanOrEq(variable("param"), integer(11))

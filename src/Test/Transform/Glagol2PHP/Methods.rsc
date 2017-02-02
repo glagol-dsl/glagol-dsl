@@ -55,7 +55,7 @@ test bool shouldTransformMethodWithPrivateModifier() =
 
 // TODO add tests using when expressions
 test bool shouldTransformMethodUsingWhenExpression() = 
-    toPhpClassItem(method(\private(), voidValue(), "test", [param(integer(), "a")], [], equals(variable("a"), integer(7))), <zend(), doctrine()>) == 
+    toPhpClassItem(method(\private(), voidValue(), "test", [param(integer(), "a", emptyExpr())], [], equals(variable("a"), integer(7))), <zend(), doctrine()>) == 
     phpMethod("test", {phpPrivate()}, false, [
         phpParam("a", phpNoExpr(), phpSomeName(phpName("int")), false, false)
     ], [

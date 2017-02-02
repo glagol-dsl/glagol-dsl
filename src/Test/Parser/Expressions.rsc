@@ -16,7 +16,7 @@ test bool testShouldParseVariableInBrackets()
                '}"; 
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        method(\public(), voidValue(), "variableInBrackets", [param(integer(), "theVariable")], [
+        method(\public(), voidValue(), "variableInBrackets", [param(integer(), "theVariable", emptyExpr())], [
             expression(\bracket(\bracket(variable("theVariable")))),
             expression(addition(\bracket(variable("theVariable")), integer(1))),
             expression(variable("anotherVar"))
@@ -136,7 +136,7 @@ test bool shouldParseAllTypesOfLiterals()
                '}";
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        method(\public(), voidValue(), "literals", [param(integer(), "var")], [
+        method(\public(), voidValue(), "literals", [param(integer(), "var", emptyExpr())], [
             expression(string("simple string literal")),
             expression(integer(123)),
             expression(float(1.23)),

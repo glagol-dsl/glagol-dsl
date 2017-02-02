@@ -72,7 +72,7 @@ test bool testDeclarationsWithNestedAssignment() {
         '}";
         
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(integer(), "a")], [
+        constructor([param(integer(), "a", emptyExpr())], [
             declare(integer(), variable("myNumber"), assign(variable("a"), defaultAssign(), expression(integer(5))))
         ])
     ]));
@@ -88,7 +88,7 @@ test bool testIfStatement() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(integer(), "a")], [
+        constructor([param(integer(), "a", emptyExpr())], [
             ifThen(equals(variable("a"), integer(5)), \return(integer(5)))
         ])
     ]));
@@ -104,7 +104,7 @@ test bool testIfStatementWithBlock() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(integer(), "a")], [
+        constructor([param(integer(), "a", emptyExpr())], [
             ifThen(equals(variable("a"), integer(5)), block([\return(integer(5))]))
         ])
     ]));
@@ -121,7 +121,7 @@ test bool testIfElseStatement() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(integer(), "a")], [
+        constructor([param(integer(), "a", emptyExpr())], [
             ifThenElse(equals(variable("a"), integer(5)), \return(integer(5)), \return(integer(6)))
         ])
     ]));
@@ -138,7 +138,7 @@ test bool testIfElseIfStatement() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(integer(), "a")], [
+        constructor([param(integer(), "a", emptyExpr())], [
             ifThenElse(equals(variable("a"), integer(5)), \return(integer(5)), 
                 ifThen(equals(variable("a"), integer(6)), \return(integer(6)))    
             )
@@ -158,7 +158,7 @@ test bool testIfElseIfEndingWithElseStatement() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(integer(), "a")], [
+        constructor([param(integer(), "a", emptyExpr())], [
             ifThenElse(equals(variable("a"), integer(5)), \return(integer(5)), 
                 ifThenElse(equals(variable("a"), integer(6)), \return(integer(6)), \return(integer(0)))
             )
@@ -176,7 +176,7 @@ test bool testForeachStatementWithEmptyStmt() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(\list(integer()), "a")], [
+        constructor([param(\list(integer()), "a", emptyExpr())], [
             foreach(variable("a"), variable("b"), emptyStmt())
         ])
     ]));
@@ -230,7 +230,7 @@ test bool testForeachStatementWithBreak() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(\list(integer()), "a")], [
+        constructor([param(\list(integer()), "a", emptyExpr())], [
             foreach(variable("a"), variable("b"), block([
                 ifThen(greaterThan(variable("a"), integer(2)), \break())
             ]))
@@ -251,7 +251,7 @@ test bool testForeachStatementWithLevelledBreak() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(\list(integer()), "a")], [
+        constructor([param(\list(integer()), "a", emptyExpr())], [
             foreach(variable("a"), variable("b"), 
                 foreach(variable("c"), variable("d"), 
                     ifThen(greaterThan(variable("c"), integer(2)), \break(2))
@@ -271,7 +271,7 @@ test bool testForeachStatementWithCondition() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(\list(artifact("DateTime")), "a"), param(artifact("DateTime"), "now")], [
+        constructor([param(\list(artifact("DateTime")), "a", emptyExpr()), param(artifact("DateTime"), "now", emptyExpr())], [
             foreach(variable("a"), variable("b"), emptyStmt(), [lessThan(variable("a"), variable("now"))])
         ])
     ]));
@@ -288,7 +288,7 @@ test bool testForeachStatementWithContinue() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(\list(artifact("DateTime")), "a"), param(artifact("DateTime"), "now")], [
+        constructor([param(\list(artifact("DateTime")), "a", emptyExpr()), param(artifact("DateTime"), "now", emptyExpr())], [
             foreach(variable("a"), variable("b"), ifThen(
                 lessThan(variable("a"), variable("now")), \continue()
             ))

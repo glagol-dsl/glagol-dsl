@@ -36,11 +36,11 @@ test bool testGetConstructors() =
 
 test bool testCategorizeMethods() = 
     categorizeMethods([
-        method(\public(), voidValue(), "test", [param(integer(), "a")], []), 
-        method(\public(), voidValue(), "test", [param(string(), "b")], [])
+        method(\public(), voidValue(), "test", [param(integer(), "a", emptyExpr())], []), 
+        method(\public(), voidValue(), "test", [param(string(), "b", emptyExpr())], [])
     ]) == ("test": [
-        method(\public(), voidValue(), "test", [param(integer(), "a")], []), 
-        method(\public(), voidValue(), "test", [param(string(), "b")], [])
+        method(\public(), voidValue(), "test", [param(integer(), "a", emptyExpr())], []), 
+        method(\public(), voidValue(), "test", [param(string(), "b", emptyExpr())], [])
     ]);
 
 test bool testGetRelations() = 
@@ -50,22 +50,22 @@ test bool testGetRelations() =
     	property(integer(), "test", {}, emptyExpr())]
 	) ==
         [relation(\one(), \one(), "Language", "lang2", {}), relation(\one(), \one(), "Language", "lang1", {})] &&
-    getRelations([property(integer(), "test", {}, emptyExpr()), method(\public(), voidValue(), "test", [param(integer(), "a")], [])]) == [];
+    getRelations([property(integer(), "test", {}, emptyExpr()), method(\public(), voidValue(), "test", [param(integer(), "a", emptyExpr())], [])]) == [];
 
 test bool testHasOverriding() = 
     hasOverriding([
-        method(\public(), voidValue(), "test", [param(integer(), "a")], []), 
-        constructor([param(string(), "b")], []), 
-        method(\public(), voidValue(), "test", [param(string(), "b")], [])
+        method(\public(), voidValue(), "test", [param(integer(), "a", emptyExpr())], []), 
+        constructor([param(string(), "b", emptyExpr())], []), 
+        method(\public(), voidValue(), "test", [param(string(), "b", emptyExpr())], [])
     ]) && 
     hasOverriding([
-        constructor([param(integer(), "a")], []), 
-        constructor([param(string(), "b")], []), 
-        method(\public(), voidValue(), "test", [param(string(), "b")], [])
+        constructor([param(integer(), "a", emptyExpr())], []), 
+        constructor([param(string(), "b", emptyExpr())], []), 
+        method(\public(), voidValue(), "test", [param(string(), "b", emptyExpr())], [])
     ]) && 
     !hasOverriding([
-        constructor([param(integer(), "a")], []),
-        method(\public(), voidValue(), "test", [param(string(), "b")], [])
+        constructor([param(integer(), "a", emptyExpr())], []),
+        method(\public(), voidValue(), "test", [param(string(), "b", emptyExpr())], [])
     ]);
 
 test bool testHasMapUsageShouldReturnFalseOnEmptyEntity() = 

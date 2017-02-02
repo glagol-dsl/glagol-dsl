@@ -40,13 +40,13 @@ test bool shouldParseMethodWithModifierAndWhenExpression()
       \module(namespace("Example"), [],
         entity("User", [
             method(\private(), integer(), "example", [
-                    param(integer(), "argument")
+                    param(integer(), "argument", emptyExpr())
                 ], [
                     \return(product(\bracket(addition(integer(23), integer(5))), integer(8)))
                 ], greaterThan(variable("argument"), integer(5))
             ),
             method(\private(), integer(), "example", [
-                    param(integer(), "argument")
+                    param(integer(), "argument", emptyExpr())
                 ], [
                     \return(product(\bracket(addition(integer(23), integer(5))), integer(8)))
                 ], greaterThan(variable("argument"), integer(5))

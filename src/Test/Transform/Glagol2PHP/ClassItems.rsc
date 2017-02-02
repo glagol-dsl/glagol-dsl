@@ -39,8 +39,8 @@ test bool shouldTransformConstructorsToPhpClassItems() =
 
 test bool shouldTransformOverridingConstructorsToPhpClassItems() = 
 	toPhpClassItems([
-		constructor([param(string(), "a")], []),
-		constructor([param(integer(), "b")], [])
+		constructor([param(string(), "a", emptyExpr())], []),
+		constructor([param(integer(), "b", emptyExpr())], [])
 	], <anyFramework(), anyORM()>, entity("", [])) == 
 	[phpMethod(
     "__construct",
@@ -126,7 +126,7 @@ test bool shouldTransformMethodsToPhpClassItems() =
 test bool shouldTransformMethodsWithOverridingToPhpClassItems() = 
 	toPhpClassItems([
 		method(\private(), voidValue(), "a", [], []),
-		method(\private(), voidValue(), "a", [param(string(), "blah")], [])
+		method(\private(), voidValue(), "a", [param(string(), "blah", emptyExpr())], [])
 	], <anyFramework(), anyORM()>, util("", [])) == 
 	[
 		phpMethod(

@@ -51,7 +51,7 @@ public PhpClassItem createConstructor(list[Declaration] declarations, env) =
 
 public PhpClassItem createDIConstructor(list[Declaration] declarations, env) = 
 	phpMethod("__construct", {phpPublic()}, false, 
-		[toPhpParam(param(valueType, name)) | p: property(Type valueType, str name, _, get(_)) <- declarations],
+		[toPhpParam(param(valueType, name, emptyExpr())) | p: property(Type valueType, str name, _, get(_)) <- declarations],
 		[
 			phpExprstmt(phpAssign(phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName(name))), phpVar(phpName(phpName(name))))) | 
 			property(Type valueType, str name, _, get(_)) <- declarations

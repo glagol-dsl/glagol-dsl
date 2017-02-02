@@ -9,7 +9,7 @@ test bool shouldTransformEmptyConstructorToEmptyPhpConstructor() =
     toPhpClassItem(constructor([], []), <zend(), doctrine()>) == phpMethod("__construct", {phpPublic()}, false, [], [], phpNoName());
 
 test bool shouldTransformConstructorToPhpConstructorWithOneParamAndNoDefaultValue() =
-    toPhpClassItem(constructor([param(integer(), "param1")], []), <zend(), doctrine()>) == phpMethod("__construct", {phpPublic()}, false, [
+    toPhpClassItem(constructor([param(integer(), "param1", emptyExpr())], []), <zend(), doctrine()>) == phpMethod("__construct", {phpPublic()}, false, [
         phpParam("param1", phpNoExpr(), phpSomeName(phpName("int")), false, false)
     ], [], phpNoName());
 
@@ -19,7 +19,7 @@ test bool shouldTransformConstructorToPhpConstructorWithOneParamWithDefaultValue
     ], [], phpNoName());
 
 test bool shouldTransformConstructorToPhpConstructorWithOneParamWithWhen() =
-    toPhpClassItem(constructor([param(integer(), "a")], [], equals(variable("a"), integer(7))), <zend(), doctrine()>) == 
+    toPhpClassItem(constructor([param(integer(), "a", emptyExpr())], [], equals(variable("a"), integer(7))), <zend(), doctrine()>) == 
     phpMethod("__construct", {phpPublic()}, false, [
         phpParam("a", phpNoExpr(), phpSomeName(phpName("int")), false, false)
     ], [

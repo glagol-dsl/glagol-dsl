@@ -19,7 +19,7 @@ test bool shouldParseMapDeclaration()
     		\import("User", namespace("Example"), "User")
     	], repository("User", [
         method(\public(), \list(artifact("User")), "findById", [
-            param(integer(), "id")
+            param(integer(), "id", emptyExpr())
         ], [
             declare(\map(string(), integer()), variable("query"), expression(\map((string("id"): variable("id"))))),
             \return(invoke("findOneBy", [variable("query")]))
