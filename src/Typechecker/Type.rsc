@@ -33,3 +33,8 @@ public TypeEnv checkType(r:repository(str name), Declaration d, TypeEnv env) =
 public TypeEnv checkType(r:repository(str name), Declaration d, TypeEnv env) = 
     env[errors = env.errors + <r@src, "\"<name>\" is not an entity in <r@src.path> on line <r@src.begin.line>">]
     when name in env.imported && isInAST(env.imported[name], env) && entity(name, _) !:= getArtifactFromAST(env.imported[name], env);
+
+public TypeEnv checkType(s:selfie(), property(_, _, _, get(selfie())), TypeEnv env) = env;
+	
+public TypeEnv checkType(s:selfie(), Declaration d, TypeEnv env) = 
+    env[errors = env.errors + <d@src, "Cannot use selfie as type in <d@src.path> on line <d@src.begin.line>">];

@@ -70,5 +70,16 @@ test bool shlouldGiveErrorWhenUsingRepositoryWithNotImportedEntity() =
 		<|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "\"Date\" is not an entity in /User.g on line 10">
 	]>;
 
+test bool shouldNotGiveErrorsWhenUsingSelfieForGettingPropertyInstance() = 
+	checkType(selfie(), property(repository("User"), "users", {}, get(selfie())), <|tmp:///User.g|, (), (), [], []>) == <|tmp:///User.g|, (), (), [], []>;
 
+test bool shouldGiveErrorsWhenUsingSelfieForSomethingElseThanGettingPropertyInstance() = 
+	checkType(selfie(), property(repository("User"), "users", {}, emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], <|tmp:///User.g|, (), (), [], []>) == <|tmp:///User.g|, (), (), [], [
+		<|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "Cannot use selfie as type in /User.g on line 10">
+	]>;
+	
+test bool shouldGiveErrorsWhenUsingSelfieForSomethingElseThanGettingPropertyInstance2() = 
+	checkType(selfie(), param(repository("User"), "users", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], <|tmp:///User.g|, (), (), [], []>) == <|tmp:///User.g|, (), (), [], [
+		<|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "Cannot use selfie as type in /User.g on line 10">
+	]>;
 
