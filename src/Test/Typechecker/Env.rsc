@@ -26,3 +26,20 @@ test bool shouldReturnFalseWhenArtifactHasDifferentNSInAST() =
     !isInAST(\import("User", namespace("Testing"), "User"), <|tmp:///|, (), (), [
         file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", [])))
     ], []>);
+
+test bool shouldGiveErrorWhenAddingAlreadyDefinedPropertyToDefinitions() = 
+    addDefinition(property(integer(), "id", {}, emptyExpr())[@src=|tmp:///User.g|(0, 0, <25, 25>, <30, 30>)], <|tmp:///User.g|, (
+            "id": field(property(integer(), "id", {}, emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)])
+    ), (), [], []>) == 
+    <|tmp:///User.g|, (
+        "id": field(property(integer(), "id", {}, emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)])
+    ), (), [], [
+        <|tmp:///User.g|(0, 0, <25, 25>, <30, 30>), 
+            "Cannot redefine \"id\". Property with the same name already defined in /User.g on line 20.">
+    ]>;
+
+test bool shouldNotGiveErrorWhenAddingNonDefinedPropertyToDefinitions() = 
+    addDefinition(property(integer(), "id", {}, emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], <|tmp:///User.g|, (), (), [], []>) == 
+    <|tmp:///User.g|, (
+        "id": field(property(integer(), "id", {}, emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)])
+    ), (), [], []>;
