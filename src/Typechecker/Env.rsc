@@ -16,6 +16,14 @@ alias TypeEnv = tuple[
     list[tuple[loc src, str message]] errors
 ];
 
+public TypeEnv addDefinition(p:property(_, GlagolID name, _, _), TypeEnv env) = 
+    env[errors = env.errors + <
+        p@src, "Cannot redefine \"<name>\". Property with the same name already defined in <p@src.path> on line <env.definitions[name].d@src.begin.line>."
+    >] when name in env.definitions;
+
+public TypeEnv addDefinition(p:property(_, GlagolID name, _, _), TypeEnv env) = 
+    env[definitions = env.definitions + (name: field(p))] when name notin env.definitions;
+
 public bool isImported(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
     (false | true | i <- range(env.imported), i.artifactName == name && i.namespace == namespace);
 
