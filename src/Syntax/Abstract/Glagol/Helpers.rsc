@@ -4,12 +4,10 @@ import Syntax::Abstract::Glagol;
 import List;
 import IO;
 
-public bool isProperty(property(_, _, _)) = true;
 public bool isProperty(property(_, _, _, _)) = true;
 public default bool isProperty(_) = false;
 
-public bool isPropertyWithDefaultValue(property(_, _, _, _)) = true;
-public default bool isPropertyWithDefaultValue(_) = false;
+public bool isPropertyWithDefaultValue(property(_, _, _, d)) = emptyExpr() !:= d;
 
 public bool isMethod(method(_, _, _, _, _)) = true;
 public bool isMethod(method(_, _, _, _, _, _)) = true;

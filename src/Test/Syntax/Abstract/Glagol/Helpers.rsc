@@ -5,34 +5,34 @@ import Syntax::Abstract::Glagol::Helpers;
 
 test bool testIsProperty() = 
     isProperty(property(integer(), "test", {}, integer(4))) &&
-    isProperty(property(integer(), "test", {})) &&
+    isProperty(property(integer(), "test", {}, emptyExpr())) &&
     !isProperty(integer());
 
 test bool testIsMethod() = 
     isMethod(method(\public(), voidValue(), "test", [], [], boolean(true))) &&
     isMethod(method(\public(), voidValue(), "test", [], [])) &&
-    !isMethod(property(integer(), "test", {}));
+    !isMethod(property(integer(), "test", {}, emptyExpr()));
 
 test bool testIsRelation() = 
     isRelation(relation(\one(), \one(), "Language", "lang", {})) && 
-    !isRelation(property(integer(), "test", {}));
+    !isRelation(property(integer(), "test", {}, emptyExpr()));
 
 test bool testIsConstructor() = 
     isConstructor(constructor([], [])) && 
     isConstructor(constructor([], [], boolean(true))) && 
-    !isConstructor(property(integer(), "test", {}));
+    !isConstructor(property(integer(), "test", {}, emptyExpr()));
 
 test bool testIsEntity() =
     isEntity(entity("User", [])) &&
     !isEntity(util("UserCreator", []));
 
 test bool testHasConstructors() = 
-    hasConstructors([property(integer(), "test", {}), property(integer(), "test2", {}), constructor([], [])]) && 
-    !hasConstructors([property(integer(), "test", {}), property(integer(), "test2", {})]);
+    hasConstructors([property(integer(), "test", {}, emptyExpr()), property(integer(), "test2", {}, emptyExpr()), constructor([], [])]) && 
+    !hasConstructors([property(integer(), "test", {}, emptyExpr()), property(integer(), "test2", {}, emptyExpr())]);
 
 test bool testGetConstructors() =
-    getConstructors([property(integer(), "test", {}), property(integer(), "test2", {}), constructor([], [])]) == [constructor([], [])] &&
-    getConstructors([property(integer(), "test", {}), property(integer(), "test2", {})]) == [];
+    getConstructors([property(integer(), "test", {}, emptyExpr()), property(integer(), "test2", {}, emptyExpr()), constructor([], [])]) == [constructor([], [])] &&
+    getConstructors([property(integer(), "test", {}, emptyExpr()), property(integer(), "test2", {}, emptyExpr())]) == [];
 
 test bool testCategorizeMethods() = 
     categorizeMethods([
@@ -47,10 +47,10 @@ test bool testGetRelations() =
     getRelations([
     	relation(\one(), \one(), "Language", "lang2", {}), 
     	relation(\one(), \one(), "Language", "lang1", {}), 
-    	property(integer(), "test", {})]
+    	property(integer(), "test", {}, emptyExpr())]
 	) ==
         [relation(\one(), \one(), "Language", "lang2", {}), relation(\one(), \one(), "Language", "lang1", {})] &&
-    getRelations([property(integer(), "test", {}), method(\public(), voidValue(), "test", [param(integer(), "a")], [])]) == [];
+    getRelations([property(integer(), "test", {}, emptyExpr()), method(\public(), voidValue(), "test", [param(integer(), "a")], [])]) == [];
 
 test bool testHasOverriding() = 
     hasOverriding([
@@ -73,7 +73,7 @@ test bool testHasMapUsageShouldReturnFalseOnEmptyEntity() =
 
 test bool testHasMapUsageShouldReturnTrueOnPropertyOfMapType() = 
     hasMapUsage(entity("User", [
-        property(\map(integer(), string()), "prop", {})
+        property(\map(integer(), string()), "prop", {}, emptyExpr())
     ]));
 
 test bool testHasMapUsageShouldReturnTrueWhenContainsAMap() = 
@@ -85,7 +85,7 @@ test bool testHasMapUsageShouldReturnTrueWhenContainsAMap() =
 
 test bool testHasMapUsageShouldReturnTrueOnPropertyOfListType() = 
     hasListUsage(entity("User", [
-        property(\list(integer()), "prop", {})
+        property(\list(integer()), "prop", {}, emptyExpr())
     ]));
 
 test bool testHasMapUsageShouldReturnTrueWhenContainsAList() = 
@@ -100,14 +100,14 @@ test bool testIsImportedReturnsFalse() = !isImported("User", [\import("Customer"
 
 test bool shouldCollectOnlyDIProperties() = getDIProperties([
         property(repository("User"), "prop", {}, get(repository("User"))),
-        property(repository("Customer"), "prop", {}),
+        property(repository("Customer"), "prop", {}, emptyExpr()),
         constructor([], [
             expression(\map(()))
         ])
     ]) == [property(repository("User"), "prop", {}, get(repository("User")))];
     
 test bool shouldCollectOnlyDIProperties2() = getDIProperties([
-        property(repository("Customer"), "prop", {}),
+        property(repository("Customer"), "prop", {}, emptyExpr()),
         constructor([], [
             expression(\map(()))
         ])
@@ -115,7 +115,7 @@ test bool shouldCollectOnlyDIProperties2() = getDIProperties([
     
 test bool testHasDependencies() = 
 	!hasDependencies([
-        property(repository("Customer"), "prop", {}),
+        property(repository("Customer"), "prop", {}, emptyExpr()),
         constructor([], [
             expression(\map(()))
         ])
@@ -128,7 +128,7 @@ test bool testHasDependencies() =
 
 test bool testGetActions() = 
 	getActions([
-        property(repository("Customer"), "prop", {}),
+        property(repository("Customer"), "prop", {}, emptyExpr()),
         action("index", [], [])
 	]) == [action("index", [], [])];
     

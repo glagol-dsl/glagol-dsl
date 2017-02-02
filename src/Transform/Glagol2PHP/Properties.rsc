@@ -15,7 +15,7 @@ private str toString(\map(Type key, Type v)) = "Map";
 private str toString(artifact(str name)) = name;
 private str toString(repository(str name)) = "<name>Repository";
 
-public PhpClassItem toPhpClassItem(d: property(Type valueType, str name, _), env, context)
+public PhpClassItem toPhpClassItem(d: property(Type valueType, str name, _, emptyExpr()), env, context)
     = phpProperty({phpPrivate()}, [phpProperty(name, phpNoExpr())])[
     	@phpAnnotations=toPhpAnnotations(d, env, context) + {
     		phpAnnotation("var", phpAnnotationVal(toString(valueType)))

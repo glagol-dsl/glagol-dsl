@@ -70,7 +70,7 @@ test bool shouldConvertToPhpUsesOnDoctrineEntityWithoutOverriding() =
 test bool shouldConvertToDsMapPhpUsesOnMapsAndMapTypes() =
     toPhpUses(\module(namespace("Example"), [], 
         entity("User", [
-            property(\map(integer(), string()), "prop", {})
+            property(\map(integer(), string()), "prop", {}, emptyExpr())
         ])), [], 
         <anyFramework(), anyORM()>) ==
     [phpUse({
@@ -95,7 +95,7 @@ test bool shouldConvertToDsMapPhpUsesOnMapsAndMapTypes() =
 test bool shouldConvertToDsMapPhpUsesOnListsAndListTypes() =
     toPhpUses(\module(namespace("Example"), [], 
         entity("User", [
-            property(\list(integer()), "prop", {})
+            property(\list(integer()), "prop", {}, emptyExpr())
         ])), [], 
         <anyFramework(), anyORM()>) ==
     [phpUse({
@@ -118,7 +118,7 @@ test bool shouldIncludeRepositoryWhenUsed() =
     		\import("User", namespace("Example", namespace("Entity")), "User")
     	], 
         util("UserCreator", [
-            property(repository("User"), "users", {})
+            property(repository("User"), "users", {}, emptyExpr())
         ])), [
         	file(|tmp:///repo.g|, \module(namespace("Example", namespace("Repository")), [
 		        \import("User", namespace("Example", namespace("Entity")), "User")
@@ -138,7 +138,7 @@ test bool shouldIncludeRepositoryWhenUsedWithAliases() =
     		\import("User", namespace("Example", namespace("Entity")), "UserHa")
     	], 
         util("UserCreator", [
-            property(repository("UserHa"), "users", {})
+            property(repository("UserHa"), "users", {}, emptyExpr())
         ])), [
         	file(|tmp:///repo.g|, \module(namespace("Example", namespace("Repository")), [
 		        \import("User", namespace("Example", namespace("Entity")), "UserBla")
@@ -159,7 +159,7 @@ test bool shouldThrowExceptionWhenUsingRepositoryWithMissingDefinition()
     		\import("User", namespace("Example", namespace("Entity")), "User")
     	], 
         util("UserCreator", [
-            property(repository("User"), "users", {})
+            property(repository("User"), "users", {}, emptyExpr())
         ])), [
         	file(|tmp:///entity.g|, \module(namespace("Example", namespace("Entity")), [
 		    ], entity("User", [])))
@@ -176,8 +176,8 @@ test bool shouldIncludeRepositoriesWhenUsed() =
     		\import("Customer", namespace("Example", namespace("Entity")), "Customer")
     	], 
         util("UserCreator", [
-            property(repository("User"), "users", {}),
-            property(repository("Customer"), "customers", {})
+            property(repository("User"), "users", {}, emptyExpr()),
+            property(repository("Customer"), "customers", {}, emptyExpr())
         ])), [
         	file(|tmp:///repo.g|, \module(namespace("Example", namespace("Repository")), [
 		        \import("User", namespace("Example", namespace("Entity")), "User")
@@ -206,8 +206,8 @@ test bool shouldThrowExceptionWhenUsingRepositoriesWithMissingDefinition()
     		\import("Customer", namespace("Example", namespace("Entity")), "Customer")
     	], 
         util("UserCreator", [
-            property(repository("User"), "users", {}),
-            property(repository("Customer"), "customers", {})
+            property(repository("User"), "users", {}, emptyExpr()),
+            property(repository("Customer"), "customers", {}, emptyExpr())
         ])), [
         	file(|tmp:///repo.g|, \module(namespace("Example", namespace("Repository")), [
 		        \import("User", namespace("Example", namespace("Entity")), "User")

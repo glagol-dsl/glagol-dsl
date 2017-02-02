@@ -19,10 +19,10 @@ test bool shouldAddAnnotationsToPhpClassItems() =
 
 test bool shouldTransformPropertiesToPhpClassItems() = 
 	toPhpClassItems([
-		property(voidValue(), "prop1", {}),
-		property(voidValue(), "prop2", {}),
-		property(voidValue(), "prop3", {}),
-		property(voidValue(), "prop4", {})[@annotations=[]]
+		property(voidValue(), "prop1", {}, emptyExpr()),
+		property(voidValue(), "prop2", {}, emptyExpr()),
+		property(voidValue(), "prop3", {}, emptyExpr()),
+		property(voidValue(), "prop4", {}, emptyExpr())[@annotations=[]]
 	], <anyFramework(), anyORM()>, entity("", [])) == 
 	[
 		phpProperty({phpPrivate()}, [phpProperty("prop1", phpNoExpr())]),

@@ -13,7 +13,6 @@ data Declaration
     | entity(GlagolID name, list[Declaration] declarations)
     | repository(GlagolID name, list[Declaration] declarations)
     | valueObject(GlagolID name, list[Declaration] declarations)
-    | property(Type \valueType, GlagolID name, set[AccessProperty] valueProperties)
     | property(Type \valueType, GlagolID name, set[AccessProperty] valueProperties, Expression defaultValue)
     | util(GlagolID name, list[Declaration] declarations)
     | controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations)

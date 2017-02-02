@@ -281,7 +281,7 @@ public bool convertBoolean((Boolean) `false`) = false;
 
 
 public Declaration convertProperty(a: (Property) `<Type prop><MemberName name>;`)  = 
-    property(convertType(prop), "<name>", {})[@src=a@\loc][
+    property(convertType(prop), "<name>", {}, emptyExpr())[@src=a@\loc][
         @annotations=buildPropDefaultAnnotations(convertType(prop))
     ];
 
@@ -291,7 +291,7 @@ public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><A
     ];
 
 public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AccessProperties accessProperties>;`) = 
-    property(convertType(prop), "<name>", convertAccessProperties(accessProperties))[@src=a@\loc][
+    property(convertType(prop), "<name>", convertAccessProperties(accessProperties), emptyExpr())[@src=a@\loc][
         @annotations=buildPropDefaultAnnotations(convertType(prop))
     ];
 

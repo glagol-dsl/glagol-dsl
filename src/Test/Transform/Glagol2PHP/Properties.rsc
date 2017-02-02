@@ -10,7 +10,7 @@ test bool propertyShouldTransformToPhpPropertyHavingNoDefaultValueWhenGetIsUsed(
     phpProperty({phpPrivate()}, [phpProperty("someUtil", phpNoExpr())]);
 
 test bool propertyShouldTransformToPhpPropertyWithoutDefaultValue() =
-    toPhpClassItem(property(artifact("SomeUtil"), "someUtil", {}), <zend(), doctrine()>, entity("", [])) ==
+    toPhpClassItem(property(artifact("SomeUtil"), "someUtil", {}, emptyExpr()), <zend(), doctrine()>, entity("", [])) ==
     phpProperty({phpPrivate()}, [phpProperty("someUtil", phpNoExpr())]);
 
 test bool propertyShouldTransformToPhpPropertyWithDefaultValue() =

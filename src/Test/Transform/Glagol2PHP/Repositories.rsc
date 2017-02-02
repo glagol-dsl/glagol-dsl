@@ -8,7 +8,7 @@ import Config::Config;
 
 test bool shouldTransformToRepositoryPhpClassDefStmt() = 
 	toPhpClassDef(repository("User", [
-		property(string(), "a property", {})
+		property(string(), "a property", {}, emptyExpr())
 	]), <anyFramework(), doctrine()>) ==
 	phpClassDef(phpClass("UserRepository", {}, phpSomeName(phpName("EntityRepository")), [], [
 		phpProperty(
