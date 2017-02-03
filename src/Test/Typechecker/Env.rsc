@@ -38,6 +38,10 @@ test bool shouldGiveErrorWhenAddingAlreadyDefinedPropertyToDefinitions() =
             "Cannot redefine \"id\". Property with the same name already defined in /User.g on line 20.">
     ]>;
 
+test bool shouldAddErrorToEnv() = addError(|tmp:///User.g|, "this is an error message", <|tmp:///User.g|, (), (), [], []>) == <|tmp:///User.g|, (), (), [], [
+    <|tmp:///User.g|, "this is an error message">
+]>;
+
 test bool shouldNotGiveErrorWhenAddingNonDefinedPropertyToDefinitions() = 
     addDefinition(property(integer(), "id", {}, emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], <|tmp:///User.g|, (), (), [], []>) == 
     <|tmp:///User.g|, (

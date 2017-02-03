@@ -36,7 +36,7 @@ test bool shlouldGiveErrorWhenUsingNotImportedArtifact() =
 	checkType(artifact("Date")[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], 
 		param(artifact("Date"), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], <|tmp:///User.g|, (), (), [], []>) == 
 	<|tmp:///User.g|, (), (), [], [
-		<|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "\"Date\" not imported, but used as type in /User.g on line 10">
+		<|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "\"Date\" not imported, but used in /User.g on line 10">
 	]>;
 
 test bool shlouldNotGiveErrorWhenUsingImportedArtifact() =
@@ -74,12 +74,12 @@ test bool shouldNotGiveErrorsWhenUsingSelfieForGettingPropertyInstance() =
 	checkType(selfie(), property(repository("User"), "users", {}, get(selfie())), <|tmp:///User.g|, (), (), [], []>) == <|tmp:///User.g|, (), (), [], []>;
 
 test bool shouldGiveErrorsWhenUsingSelfieForSomethingElseThanGettingPropertyInstance() = 
-	checkType(selfie(), property(repository("User"), "users", {}, emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], <|tmp:///User.g|, (), (), [], []>) == <|tmp:///User.g|, (), (), [], [
+	checkType(selfie()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], property(repository("User"), "users", {}, emptyExpr()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)])[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], <|tmp:///User.g|, (), (), [], []>) == <|tmp:///User.g|, (), (), [], [
 		<|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "Cannot use selfie as type in /User.g on line 10">
 	]>;
 	
 test bool shouldGiveErrorsWhenUsingSelfieForSomethingElseThanGettingPropertyInstance2() = 
-	checkType(selfie(), param(repository("User"), "users", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], <|tmp:///User.g|, (), (), [], []>) == <|tmp:///User.g|, (), (), [], [
+	checkType(selfie()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], param(repository("User")[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], "users", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], <|tmp:///User.g|, (), (), [], []>) == <|tmp:///User.g|, (), (), [], [
 		<|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "Cannot use selfie as type in /User.g on line 10">
 	]>;
 

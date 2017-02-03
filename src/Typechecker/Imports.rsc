@@ -12,11 +12,11 @@ public TypeEnv checkImports(list[Declaration] imports, TypeEnv env) {
     
     if (<next: \import(GlagolID name, Declaration namespace, GlagolID as), list[Declaration] left> := pop(imports)) {
         if (isImported(next, env)) {
-            env = env[errors = env.errors + <env.location, "\"<name>\" has already been imported">];
+            env = addError(env.location, "\"<name>\" has already been imported", env);
         } else if (isInAST(next, env)) {
             env.imported[as] = next;
         } else {
-            env = env[errors = env.errors + <env.location, "<namespaceToString(namespace, "::")>::<name> is not defined">];
+            env = addError(env.location, "<namespaceToString(namespace, "::")>::<name> is not defined", env);
         }
         
         return checkImports(left, env);

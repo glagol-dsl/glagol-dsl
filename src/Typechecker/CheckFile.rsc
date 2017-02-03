@@ -13,11 +13,8 @@ public TypeEnv checkFile(Config config, f:file(loc src, m:\module(ns, list[Decla
         	checkLocVsModule(getSourcesPath(config), f, env[location = src])));
 
 public TypeEnv checkLocVsModule(loc sources, file(loc src, m:\module(ns, imports, Declaration artifact)), TypeEnv env) =
-    env[errors = env.errors + <
-        src, 
-        "Wrong file name, does not follow namespace declaration and/or artifact name. " + 
-        "Expected <constructFileFromModule(sources, m).uri>, got <src.uri>."
-    >]
+    addError(src, "Wrong file name, does not follow namespace declaration and/or artifact name. " + 
+        "Expected <constructFileFromModule(sources, m).uri>, got <src.uri>.", env)
     when src != constructFileFromModule(sources, m);
     
 public TypeEnv checkLocVsModule(loc sources, file(loc src, m:\module(ns, imports, Declaration artifact)), TypeEnv env) =

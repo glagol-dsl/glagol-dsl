@@ -17,12 +17,14 @@ alias TypeEnv = tuple[
 ];
 
 public TypeEnv addDefinition(p:property(_, GlagolID name, _, _), TypeEnv env) = 
-    env[errors = env.errors + <
-        p@src, "Cannot redefine \"<name>\". Property with the same name already defined in <p@src.path> on line <env.definitions[name].d@src.begin.line>."
-    >] when name in env.definitions;
+    addError(p@src, "Cannot redefine \"<name>\". Property with the same name already defined in <p@src.path> on line <env.definitions[name].d@src.begin.line>.", env) when name in env.definitions;
 
 public TypeEnv addDefinition(p:property(_, GlagolID name, _, _), TypeEnv env) = 
     env[definitions = env.definitions + (name: field(p))] when name notin env.definitions;
+
+public TypeEnv addError(loc src, str message, TypeEnv env) = env[errors = env.errors + <src, message>];
+
+public TypeEnv addErrors(list[tuple[loc, str]] errors, TypeEnv env) = (env | addError(src, message, it) | <loc src, str message> <- errors);
 
 public bool isImported(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
     (false | true | i <- range(env.imported), i.artifactName == name && i.namespace == namespace);
@@ -37,3 +39,6 @@ public Declaration getArtifactFromAST(i:\import(GlagolID name, Declaration names
     // TODO make a better exception
     throw "Cannot happen";
 }
+
+public bool isEntity(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
+    entity(_, _) !:= getArtifactFromAST(i, env);

@@ -4,6 +4,7 @@ import Syntax::Abstract::Glagol;
 import Typechecker::Env;
 import Typechecker::Declarations;
 import Typechecker::Route;
+import Typechecker::Errors;
 import String;
 
 public TypeEnv checkArtifact(e:entity(GlagolID name, list[Declaration] declarations), TypeEnv env) =
@@ -22,27 +23,25 @@ public TypeEnv checkArtifact(c:controller(GlagolID name, ControllerType controll
     checkDeclarations(declarations, c, checkRoute(route, checkControllerFileName(c, env)));
 
 private TypeEnv checkControllerFileName(c:controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations), TypeEnv env) = 
-    env[errors = env.errors + <env.location, "Controller does not follow the convetion \<Identifier\>Controller.g in <c@src.path>">]
+    addError(env.location, "Controller does not follow the convetion \<Identifier\>Controller.g in <c@src.path>", env)
     when /^[A-Z][A-Za-z]+?Controller$/ !:= replaceLast(c@src.file, ".<c@src.extension>", "");
     
 private TypeEnv checkControllerFileName(c:controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations), TypeEnv env) = 
     env when /^[A-Z][A-Za-z]+?Controller$/ := replaceLast(c@src.file, ".<c@src.extension>", "");
 
 private TypeEnv checkRedefine(Declaration decl, TypeEnv env) = 
-	env[errors = env.errors + <decl@src, 
-		"Cannot redefine \"<decl.name>\" in <decl@src.path> on line <decl@src.begin.line> " +
-		"previously imported on line <env.imported[decl.name]@src.begin.line>">]
+	addError(decl@src, "Cannot redefine \"<decl.name>\" in <decl@src.path> on line <decl@src.begin.line> " +
+        "previously imported on line <env.imported[decl.name]@src.begin.line>", env)
 	when decl.name in env.imported;
 
 private TypeEnv checkRedefine(Declaration decl, TypeEnv env) = env when decl.name notin env.imported;
 
 private TypeEnv checkRepositoryEntity(r:repository(GlagolID name, list[Declaration] declarations), TypeEnv env) =
-    env[errors = env.errors + <r@src, "Entity \"<name>\" not imported in <r@src.path>">]
-    when name notin env.imported;
+    addError(r@src, notImported(r), env) when name notin env.imported;
 
 private TypeEnv checkRepositoryEntity(r:repository(GlagolID name, list[Declaration] declarations), TypeEnv env) =
-    env[errors = env.errors + <r@src, "\"<name>\" is not an entity imported in <r@src.path> on line <env.imported[name]@src.begin.line>">]
-    when name in env.imported && isInAST(env.imported[name], env) && entity(_, _) !:= getArtifactFromAST(env.imported[name], env);
+    addError(r@src, "\"<name>\" is not an entity imported in <r@src.path> on line <env.imported[name]@src.begin.line>", env)
+    when name in env.imported && isEntity(env.imported[name], env);
 
 private TypeEnv checkRepositoryEntity(r:repository(GlagolID name, list[Declaration] declarations), TypeEnv env) =
-    env when name in env.imported && isInAST(env.imported[name], env) && entity(_, _) := getArtifactFromAST(env.imported[name], env);
+    env when name in env.imported && isInAST(env.imported[name], env) && !isEntity(env.imported[name], env);
