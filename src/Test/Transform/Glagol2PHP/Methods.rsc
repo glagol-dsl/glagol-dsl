@@ -41,7 +41,7 @@ test bool shouldTransformMethodWithArtifactReturnValue() =
     toPhpClassItem(method(\public(), artifact("User"), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("User")));
 
-test bool shouldTransformMethodWithArtifactReturnValue() =
+test bool shouldTransformMethodWithRepositoryReturnValue() =
     toPhpClassItem(method(\public(), repository("User"), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("UserRepository")));
 
@@ -49,9 +49,9 @@ test bool shouldTransformMethodWithPrivateModifier() =
     toPhpClassItem(method(\private(), voidValue(), "test", [], []), <zend(), doctrine()>) == 
     phpMethod("test", {phpPrivate()}, false, [], [], phpNoName());
 
-test bool shouldTransformMethodWithPrivateModifier() =
-    toPhpClassItem(method(\private(), voidValue(), "test", [], []), <zend(), doctrine()>) == 
-    phpMethod("test", {phpPrivate()}, false, [], [], phpNoName());
+test bool shouldTransformMethodWithPublicModifier() =
+    toPhpClassItem(method(\public(), voidValue(), "test", [], []), <zend(), doctrine()>) == 
+    phpMethod("test", {phpPublic()}, false, [], [], phpNoName());
 
 // TODO add tests using when expressions
 test bool shouldTransformMethodUsingWhenExpression() = 

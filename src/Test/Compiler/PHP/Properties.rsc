@@ -20,7 +20,7 @@ test bool shoudCompilePropertyWithDocAndIDAnootationsAndNoDefaultValue() =
 	}], 0) ==
 	"\n/**\n * This is a doc\n *\n * @ORM\\Id\n */\nprivate $test;\n";
 
-test bool shoudCompilePropertyWithDocAndIDAnootationsAndNoDefaultValue() = 
+test bool shoudCompilePropertyWithDocAndVarTypeAnootationsAndNoDefaultValue() = 
 	toCode(phpProperty({phpPrivate()}, [phpProperty("test", phpNoExpr())])[@phpAnnotations={
 		phpAnnotation("doc", phpAnnotationVal("This is a doc")),
 		phpAnnotation("var", phpAnnotationVal("integer"))

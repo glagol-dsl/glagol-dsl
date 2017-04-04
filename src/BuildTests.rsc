@@ -3,6 +3,7 @@ module BuildTests
 import IO;
 import Map;
 import String;
+import List;
 
 private set[loc] collectTestFiles(loc location)
 {
@@ -31,6 +32,12 @@ public void main(list[str] args)
 
     list[str] modules = [moduleName | file <- testFiles, line := readFileLines(file)[0], /module <moduleName:[a-zA-Z0-9:]+?>$/i := line];
     map[str function, loc location] functions = (function : file | file <- testFiles, line <- readFileLines(file), /test bool <function:.+?>\(\)/i := line);
+    
+    map[str f, int occurs] \all = distribution([function | file <- testFiles, line <- readFileLines(file), /test bool <function:.+?>\(\)/i := line]);
+    
+    for (str f <- \all, \all[f] > 1) {
+    	println("<f> is duplicated");
+    }
     
     str fnMap = ("" | it + "<f>:|<functions[f].uri>|," | f <- functions );
 

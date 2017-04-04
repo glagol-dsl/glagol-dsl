@@ -20,10 +20,6 @@ test bool shouldTransformDocToPhpAnnotationWithDiffEnv() =
     toPhpAnnotation(annotation("doc", [annotationVal("This is a doc")]), <anyFramework(), anyORM()>, entity("", [])) ==
     phpAnnotation("doc", phpAnnotationVal("This is a doc"));
 
-test bool shouldTransformToTablePhpAnnotation() =
-    toPhpAnnotation(annotation("table", [annotationVal("adsdsa")]), <zend(), doctrine()>, entity("", [])) ==
-    phpAnnotation("ORM\\Table", phpAnnotationVal(("name":phpAnnotationVal("adsdsa"))));
-
 test bool shouldTransformToFieldPhpAnnotation() =
     toPhpAnnotation(annotation("field", [annotationMap((
                     "name": annotationVal("customer_id"),

@@ -28,11 +28,11 @@ test bool shouldCompileContinueStatementWithoutLevel() =
 test bool shouldCompileContinueStatementWithLevel() = 
     toCode(phpContinue(phpSomeExpr(phpScalar(phpInteger(1)))), 0) == "continue 1;";
 
-test bool shouldCompileConstantsDefinition() = 
+test bool shouldCompileTwoConstantsDefinition() = 
     toCode(phpConst([phpConst("BLAH", phpScalar(phpFloat(2.3))), phpConst("BLAH2", phpScalar(phpFloat(4.23)))]), 0) ==
     "const BLAH = 2.3,\n      BLAH2 = 4.23;";
     
-test bool shouldCompileConstantsDefinition() = 
+test bool shouldCompileOneConstantsDefinition() = 
     toCode(phpConst([phpConst("BLAH", phpScalar(phpFloat(2.3)))]), 0) ==
     "const BLAH = 2.3;";
 
@@ -231,7 +231,7 @@ test bool shouldCompileClassWithModifiers() =
 	toCode(phpClassDef(phpClass("Test", {phpAbstract()}, phpNoName(), [], [])), 0) ==
 	"\nabstract class Test \n{}";
 	
-test bool shouldCompileClassWithModifiers() =
+test bool shouldCompileClassExtend() =
 	toCode(phpClassDef(phpClass("Luke", {}, phpSomeName(phpName("DarthVader")), [], [])), 0) ==
 	"\nclass Luke extends DarthVader \n{}";
 	

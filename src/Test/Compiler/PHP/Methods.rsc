@@ -16,7 +16,7 @@ test bool shouldCompileSimpleMethodWithArguments() =
 		phpParam("param1", phpNoExpr(), phpSomeName(phpName("int")), false, false)], [], phpNoName()), 0) ==
 	"\npublic function __construct(int $param1)\n{\n}\n";
 
-test bool shouldCompileSimpleMethodWithArguments() = 
+test bool shouldCompileSimpleMethodWithoutArgumentsAndSimpleExprStmt() = 
 	toCode(phpMethod("__construct", {phpPublic()}, false, [], [
 		phpExprstmt(phpScalar(phpBoolean(true)))
 	], phpNoName()), 0) ==

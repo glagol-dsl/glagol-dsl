@@ -47,3 +47,34 @@ test bool shouldNotGiveErrorWhenAddingNonDefinedPropertyToDefinitions() =
     <|tmp:///User.g|, (
         "id": field(property(integer(), "id", {}, emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)])
     ), (), [], []>;
+	
+test bool shouldAddMultipleErrorsToEnv() = 
+	addErrors([
+		<|tmp:///User.g|, "an error 1">,
+		<|tmp:///User.g|, "an error 2">
+	], <|tmp:///User.g|, (), (), [], []>) ==
+	<|tmp:///User.g|, (), (), [], [
+		<|tmp:///User.g|, "an error 1">,
+		<|tmp:///User.g|, "an error 2">
+	]>;
+
+test bool shouldFindArtifact() =
+	findArtifact(\import("User", namespace("Test"), "User"), <|tmp:///|, (), (), [
+        file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", [])))
+    ], []>) == [entity("User", [])];
+
+test bool shouldNotFindArtifact() =
+	findArtifact(\import("UserBa", namespace("Test"), "User"), <|tmp:///|, (), (), [
+        file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", [])))
+    ], []>) == [];
+
+test bool shouldReturnTrueWhenArtifactIsEntity() =
+	isEntity(\import("User", namespace("Test"), "User"), <|tmp:///|, (), (), [
+        file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", [])))
+    ], []>);
+
+test bool shouldReturnFalseWhenArtifactIsNotEntity() =
+	!isEntity(\import("User", namespace("Test"), "User"), <|tmp:///|, (), (), [
+        file(|tmp:///Test/User.g|, \module(namespace("Test"), [], util("User", [])))
+    ], []>);
+	

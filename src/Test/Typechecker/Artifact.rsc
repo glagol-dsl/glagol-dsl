@@ -88,7 +88,7 @@ test bool shouldGiveErrorsWhenRepositoryPointsToImportedNonEntity() =
     ), [
         file(|tmp:///Test/User.g|, \module(namespace("Test"), [], util("User", [])))
     ], [
-        <|tmp:///Test/UserRepository.g|(0, 0, <20, 20>, <30, 30>), "\"User\" is not an entity imported in /Test/UserRepository.g on line 10">
+        <|tmp:///Test/UserRepository.g|(0, 0, <20, 20>, <30, 30>), "\"User\" is not an entity in /Test/UserRepository.g on line 20">
     ]>;
 
 test bool shouldGiveErrorWhenControllerDoesNotFollowNamingConvention() = 

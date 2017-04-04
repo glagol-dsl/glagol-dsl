@@ -2,7 +2,7 @@ module Test::Compiler::Laravel::Bootstrap::Autoload
 
 import Compiler::Laravel::Bootstrap::Autoload;
 
-test bool shouldCreateAppFileContents() =
+test bool shouldCreateLaravelAppFileContents() =
 	createAutoloadFile() == 
 	"\<?php\n" + 
 	"define(\"LARAVEL_START\", microtime(true));\n" + 

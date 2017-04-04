@@ -55,7 +55,7 @@ test bool shlouldGiveErrorWhenUsingRepositoryWithNotImportedEntity() =
 		<|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "\"Date\" not imported, but used for a repository in /User.g on line 10">
 	]>;
 	
-test bool shlouldGiveErrorWhenUsingRepositoryWithNotImportedEntity() =
+test bool shlouldGiveErrorWhenUsingRepositoryWithImportedArtifactButIsNotEntity() =
 	checkType(repository("Date")[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], 
 		param(repository("Date"), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], <|tmp:///User.g|, (), (
 			"Date": \import("Date", namespace("Test"), "Date")

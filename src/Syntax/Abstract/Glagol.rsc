@@ -45,7 +45,7 @@ data Expression
     | boolean(bool boolValue)
     | \list(list[Expression] values)
     | arrayAccess(Expression variable, Expression arrayIndexKey)
-    | \map(map[Expression key, Expression \value])
+    | \map(map[Expression key, Expression \value] items)
     | variable(str name)
     | \bracket(Expression expr)
     | product(Expression lhs, Expression rhs)

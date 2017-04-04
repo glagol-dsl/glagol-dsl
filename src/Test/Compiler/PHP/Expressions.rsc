@@ -30,7 +30,6 @@ test bool shouldCompileClone() = toCode(phpClone(phpVar(phpName(phpName("var")))
 test bool shouldCompileFetchConst() = toCode(phpFetchConst(phpName("BLAH")), 0) == "BLAH";
 test bool shouldCompileEmpty() = toCode(phpEmpty(phpVar(phpName(phpName("var")))), 0) == "empty($var)";
 test bool shouldCompileSuppress() = toCode(phpSuppress(phpEmpty(phpVar(phpName(phpName("var"))))), 0) == "@empty($var)";
-test bool shouldCompileEmpty() = toCode(phpEmpty(phpVar(phpName(phpName("var")))), 0) == "empty($var)";
 test bool shouldCompileEval() = toCode(phpEval(phpScalar(phpString("code"))), 0) == "eval(\"code\")";
 test bool shouldCompileExit() = toCode(phpExit(phpNoExpr()), 0) == "exit";
 test bool shouldCompileExitWithParam() = toCode(phpExit(phpSomeExpr(phpVar(phpName(phpName("var"))))), 0) == "exit($var)";
@@ -142,16 +141,16 @@ test bool shouldCompileRefAssign() =
 test bool shouldCompileAssignToWOp() = 
 	toCode(phpAssignWOp(phpVar(phpName(phpName("var"))), phpScalar(phpInteger(739)), phpPlus()), 0) == "$var += 739";
 
-test bool shouldCompileAssignToWOp() = 
+test bool shouldCompileAssignToWOpMinus() = 
 	toCode(phpAssignWOp(phpVar(phpName(phpName("var"))), phpScalar(phpInteger(739)), phpMinus()), 0) == "$var -= 739";
 
 test bool shouldCompileAssignTo() = 
 	toCode(phpAssign(phpVar(phpName(phpName("var"))), phpScalar(phpInteger(239))), 0) == "$var = 239";
 
-test bool shouldCompileFetchClassConst() = 
+test bool shouldCompileFetchClassConstStatically() = 
 	toCode(phpFetchClassConst(phpName(phpName("User")), "MY_CONST"), 0) == "User::MY_CONST";
 
-test bool shouldCompileFetchClassConst() = 
+test bool shouldCompileFetchClassConstFromVariable() = 
 	toCode(phpFetchClassConst(phpExpr(phpVar(phpName(phpName("var")))), "MY_CONST"), 0) == "$var::MY_CONST";
 
 test bool shouldCompileFetchArrayDim() = 

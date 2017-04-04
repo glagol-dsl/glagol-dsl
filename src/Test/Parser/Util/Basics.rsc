@@ -34,20 +34,6 @@ test bool testShouldParseFlatDocAnnotationForUtil()
     	parseModule(code).artifact@annotations == [annotation("doc", [annotationVal("This is a doc")])];
 }
 
-
-test bool testShouldParseFlatDocAnnotationForUtil()
-{
-    str code = "namespace Example
-               '@doc=\"This is a doc\"
-               'util UserCreator { }";
-
-    Declaration expectedEntity = util("UserCreator", []);
-
-    return 
-    	parseModule(code) == \module(namespace("Example"), [], expectedEntity) &&
-    	parseModule(code).artifact@annotations == [annotation("doc", [annotationVal("This is a doc")])];
-}
-
 test bool shouldNotAllowUtilConstructor()
 {
     str code = "namespace Example

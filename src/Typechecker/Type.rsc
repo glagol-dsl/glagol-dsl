@@ -30,8 +30,11 @@ public TypeEnv checkType(r:repository(str name), Declaration d, TypeEnv env) =
     addError(r@src, notImported(r), env) when name notin env.imported;
     
 public TypeEnv checkType(r:repository(str name), Declaration d, TypeEnv env) = 
-    addError(r@src, "\"<name>\" is not an entity in <r@src.path> on line <r@src.begin.line>", env)
-    when name in env.imported && isInAST(env.imported[name], env) && entity(name, _) !:= getArtifactFromAST(env.imported[name], env);
+    addError(r@src, notEntity(r), env)
+    when name in env.imported && !isEntity(env.imported[name], env);
+    
+public TypeEnv checkType(r:repository(str name), Declaration d, TypeEnv env) = 
+    env when name in env.imported && isEntity(env.imported[name], env);
 
 public TypeEnv checkType(s:selfie(), property(_, _, _, get(selfie())), TypeEnv env) = env;
 	
