@@ -25,7 +25,7 @@ public PhpExpr toPhpExpr(\map(map[Expression key, Expression \value] m)) =
 public PhpExpr toPhpExpr(get(artifact(str name)))
     = phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("_<toLowerCaseFirstChar(name)>")));
 
-public PhpExpr toPhpExpr(variable(str name)) = phpVar(phpName(phpName(name)));
+public PhpExpr toPhpExpr(variable(GlagolID name)) = phpVar(phpName(phpName(name)));
 
 public PhpExpr toPhpExpr(ifThenElse(Expression condition, Expression ifThen, Expression \else)) 
     = phpTernary(toPhpExpr(condition), phpSomeExpr(toPhpExpr(ifThen)), toPhpExpr(\else));

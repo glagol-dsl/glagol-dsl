@@ -5,6 +5,7 @@ import Map;
 
 data Definition
     = field(Declaration d)
+    | param(Declaration d)
     | localVar(Statement stmt)
     ;
 
@@ -17,10 +18,23 @@ alias TypeEnv = tuple[
 ];
 
 public TypeEnv addDefinition(p:property(_, GlagolID name, _, _), TypeEnv env) = 
-    addError(p@src, "Cannot redefine \"<name>\". Property with the same name already defined in <p@src.path> on line <env.definitions[name].d@src.begin.line>.", env) when name in env.definitions;
+    addError(p@src, "Cannot redefine \"<name>\". Already defined in <p@src.path> on line <env.definitions[name].d@src.begin.line>.", env) 
+    when name in env.definitions;
 
 public TypeEnv addDefinition(p:property(_, GlagolID name, _, _), TypeEnv env) = 
-    env[definitions = env.definitions + (name: field(p))] when name notin env.definitions;
+    env[definitions = env.definitions + (name: field(p))] 
+    when name notin env.definitions;
+
+public TypeEnv addDefinition(p:param(Type paramType, GlagolID name, Expression defaultValue), TypeEnv env) =
+    env[definitions = env.definitions + (name: param(p))];
+
+public TypeEnv addDefinition(d:declare(Type varType, variable(GlagolID name), Statement defaultValue), TypeEnv env) = 
+    env[definitions = env.definitions + (name: localVar(d))]
+    when name notin env.definitions || (name in env.definitions && field(_) := env.definitions[name]);
+
+public TypeEnv addDefinition(d:declare(Type varType, variable(GlagolID name), Statement defaultValue), TypeEnv env) = 
+    addError(d@src, "Cannot decleare \"<name>\". Already decleared in <d@src.path> on line <env.definitions[name].d@src.begin.line>.", env) 
+    when name in env.definitions && field(_) !:= env.definitions[name];
 
 public TypeEnv addError(loc src, str message, TypeEnv env) = env[errors = env.errors + <src, message>];
 

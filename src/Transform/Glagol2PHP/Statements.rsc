@@ -64,7 +64,7 @@ public PhpStmt toPhpStmt(flush(Expression expr)) = phpExprstmt(phpMethodCall(php
     phpActualParameter(toPhpExpr(expr), false)
 ]));
 
-public PhpStmt toPhpStmt(declare(Type t, Expression var)) 
+public PhpStmt toPhpStmt(declare(Type t, Expression var, emptyStmt())) 
     = phpExprstmt(phpAssign(toPhpExpr(var), phpScalar(phpNull())));
     
 public PhpStmt toPhpStmt(declare(Type t, Expression var, expression(Expression val)))

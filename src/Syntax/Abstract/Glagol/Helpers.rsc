@@ -23,6 +23,16 @@ public bool isConstructor(_) = false;
 public bool isEntity(entity(_, _)) = true;
 public bool isEntity(_) = false;
 
+public str toString(integer()) = "integer";
+public str toString(float()) = "float";
+public str toString(string()) = "string";
+public str toString(voidValue()) = "void";
+public str toString(boolean()) = "boolean";
+public str toString(\list(Type \type)) = "list of <toString(\type)>";
+public str toString(artifact(str name)) = "a <name>";
+public str toString(repository(str name)) = "a <name> repository";
+public str toString(\map(Type key, Type v)) = "map (<toString(key)>: <toString(v)>)";
+
 public bool hasConstructors(list[Declaration] declarations) = 
 	size([d | d <- declarations, isConstructor(d)]) > 0;
 

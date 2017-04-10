@@ -381,7 +381,7 @@ public Statement convertStmt(a: (Statement) `continue ;`) = \continue()[@src=a@\
 public Statement convertStmt(a: (Statement) `continue<Integer level>;`) = \continue(toInt("<level>"))[@src=a@\loc];
 
 public Statement convertStmt(a: (Statement) `<Type t> <MemberName varName>;`) = 
-	declare(convertType(t), variable("<varName>")[@src=varName@\loc])[@src=a@\loc];
+	declare(convertType(t), variable("<varName>")[@src=varName@\loc], emptyStmt()[@src=varName@\loc])[@src=a@\loc];
 public Statement convertStmt(a: (Statement) `<Type t> <MemberName varName>=<Statement defValue>`) = 
 	declare(convertType(t), variable("<varName>")[@src=varName@\loc], convertStmt(defValue))[@src=a@\loc];
 

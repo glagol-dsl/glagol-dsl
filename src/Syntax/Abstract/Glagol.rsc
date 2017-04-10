@@ -44,9 +44,9 @@ data Expression
     | string(str strValue)
     | boolean(bool boolValue)
     | \list(list[Expression] values)
-    | arrayAccess(Expression variable, Expression arrayIndexKey)
     | \map(map[Expression key, Expression \value] items)
-    | variable(str name)
+    | arrayAccess(Expression variable, Expression arrayIndexKey)
+    | variable(GlagolID name)
     | \bracket(Expression expr)
     | product(Expression lhs, Expression rhs)
     | remainder(Expression lhs, Expression rhs)
@@ -85,6 +85,7 @@ data Type
     | artifact(str name)
     | repository(str name)
     | selfie()
+    | unknownType()
     ;
 
 data Modifier
@@ -110,7 +111,6 @@ data Statement
     | persist(Expression expr)
     | remove(Expression expr)
     | flush(Expression expr)
-    | declare(Type varType, Expression varName)
     | declare(Type varType, Expression varName, Statement defaultValue)
     | foreach(Expression \list, Expression varName, Statement body)
     | foreach(Expression \list, Expression varName, Statement body, list[Expression] conditions)

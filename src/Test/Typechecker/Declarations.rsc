@@ -16,7 +16,7 @@ test bool checkDeclarationsShouldGiveErrorsWhenDuplicatingEntityPropertyDefiniti
             "id": field(property(integer(), "id", {}, emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)])
         ), (), [], [
             <|tmp:///User.g|(0, 0, <25, 25>, <30, 30>), 
-                "Cannot redefine \"id\". Property with the same name already defined in /User.g on line 20.">
+                "Cannot redefine \"id\". Already defined in /User.g on line 20.">
         ]>;
 }
 

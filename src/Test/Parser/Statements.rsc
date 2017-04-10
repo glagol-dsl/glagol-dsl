@@ -39,8 +39,8 @@ test bool testDeclarationsWithoutDefaultValue() {
         
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [
-            declare(float(), variable("myVariable")),
-            declare(integer(), variable("yourVariable")),
+            declare(float(), variable("myVariable"), emptyStmt()),
+            declare(integer(), variable("yourVariable"), emptyStmt()),
             assign(variable("yourVariable"), defaultAssign(), expression(addition(variable("yourVariable"), integer(5))))
         ])
     ]));
@@ -57,7 +57,7 @@ test bool testDeclarationsWithCustomTypes() {
         
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [
-            declare(artifact("DateTime"), variable("myDate"))
+            declare(artifact("DateTime"), variable("myDate"), emptyStmt())
         ])
     ]));
 }
@@ -211,7 +211,7 @@ test bool testForeachStatementWithIncrementStmtAndDirectList() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [
-            declare(integer(), variable("i")),
+            declare(integer(), variable("i"), emptyStmt()),
             foreach(\list([integer(1), integer(2), integer(3), integer(4), integer(5)]), 
                 variable("b"), assign(variable("i"), additionAssign(), expression(integer(1))))
         ])
