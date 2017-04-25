@@ -3,6 +3,7 @@ module Typechecker::Expression
 import Typechecker::Env;
 import Typechecker::Errors;
 import Syntax::Abstract::Glagol;
+import Typechecker::Type::Compatibility;
 
 import List;
 import Map;
@@ -43,6 +44,23 @@ private bool hasDifferentTypes(list[Expression] values, TypeEnv env) = (false | 
 @doc="Lookup variable type from type env"
 public Type lookupType(variable(GlagolID name), TypeEnv env) = unknownType() when name notin env.definitions;
 public Type lookupType(variable(GlagolID name), TypeEnv env) = lookupDefinitionType(env.definitions[name]) when name in env.definitions;
+
+@doc="Lookup brackets expression"
+public Type lookupType(\bracket(Expression expr), TypeEnv env) = lookupType(expr, env);
+
+@doc="Lookup binary arithmetic type"
+public Type lookupType(product(Expression lhs, Expression rhs), TypeEnv env) =
+	lookupMathCompatibility(lookupType(lhs, env), lookupType(rhs, env));
+	
+public Type lookupType(remainder(Expression lhs, Expression rhs), TypeEnv env) =
+	lookupMathCompatibility(lookupType(lhs, env), lookupType(rhs, env));
+	
+public Type lookupType(division(Expression lhs, Expression rhs), TypeEnv env) =
+	lookupMathCompatibility(lookupType(lhs, env), lookupType(rhs, env));
+	
+private Type lookupMathCompatibility(integer(), integer()) = integer();
+private Type lookupMathCompatibility(float(), float()) = float();
+private Type lookupMathCompatibility(Type lhs, Type rhs) = unknownType();
 
 private Type lookupDefinitionType(localVar(declare(Type varType, Expression varName, Statement defaultValue))) = varType;
 private Type lookupDefinitionType(field(property(Type valueType, GlagolID name, set[AccessProperty] valueProperties, Expression defaultValue))) = valueType;

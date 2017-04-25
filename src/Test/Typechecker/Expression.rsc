@@ -71,3 +71,18 @@ test bool shouldReturnStringTypeForFieldPropertyThatIsInEnv() =
 test bool shouldReturnStringTypeForParamThatIsInEnv() =
     float() == lookupType(variable("myVar"), addDefinition(param(float(), "myVar", emptyExpr()), emptyEnv));
 
+test bool shouldReturnIntegerTypeForIntegerInBrackets() = integer() == lookupType(\bracket(integer(12)), emptyEnv);
+
+test bool shouldReturnIntegerTypeForProductOfIntegers() = integer() == lookupType(product(integer(23), integer(33)), emptyEnv);
+test bool shouldReturnFloatTypeForProductOfFloats() = float() == lookupType(product(float(23.22), float(33.33)), emptyEnv);
+test bool shouldReturnUnknownTypeForProductOfStrings() = unknownType() == lookupType(product(string("adsdassda"), string("adsadsads")), emptyEnv);
+
+test bool shouldReturnIntegerTypeForRemainderOfIntegers() = integer() == lookupType(remainder(integer(23), integer(33)), emptyEnv);
+test bool shouldReturnFloatTypeForRemainderOfFloats() = float() == lookupType(remainder(float(23.22), float(33.33)), emptyEnv);
+test bool shouldReturnUnknownTypeForRemainderOfStrings() = unknownType() == lookupType(remainder(string("adsdassda"), string("adsadsads")), emptyEnv);
+
+test bool shouldReturnIntegerTypeForDivOfIntegers() = integer() == lookupType(division(integer(23), integer(33)), emptyEnv);
+test bool shouldReturnFloatTypeForDivOfFloats() = float() == lookupType(division(float(23.22), float(33.33)), emptyEnv);
+test bool shouldReturnUnknownTypeForDivOfStrings() = unknownType() == lookupType(division(string("adsdassda"), string("adsadsads")), emptyEnv);
+
+
