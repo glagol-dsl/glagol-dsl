@@ -16,5 +16,5 @@ if [ ! -f $RASCAL_JAR ]; then
     fi
 fi
 
-java -Xmx2G -Xss32m -cp "$RASCAL_JAR:$BASEDIR/gson-2.7.jar:$DEP_DIR/tcp-server.jar:$BASEDIR/yaml.jar:$DEP_DIR/../../src:." org.rascalmpl.shell.RascalShell $@
+java -Xmx2G -Xss32m -cp "$RASCAL_JAR:$BASEDIR/gson-2.7.jar:$BASEDIR/tcp-server.jar:$BASEDIR/yaml.jar:$DEP_DIR/../../src:." org.rascalmpl.shell.RascalShell $@
 
