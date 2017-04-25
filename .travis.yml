@@ -3,7 +3,9 @@ jdk:
   - oraclejdk8
 sudo: required
 script:
-  - cd support
-  - ./bin/build 
-  - ./bin/run_tests
-  - ./bin/coverage report
+  - cd support/bin
+  - ./download_dependencies
+  - ./build
+  - ./run_tests
+  - ./coverage report
+cache: support/bin/rascal-shell-unstable.jar

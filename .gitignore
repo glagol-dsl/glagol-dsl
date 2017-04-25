@@ -13,3 +13,4 @@ glagol.iml
 /bin/
 composer.lock
 /vendor/
+support/bin/rascal-shell-unstable.jar
