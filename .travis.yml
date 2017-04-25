@@ -8,4 +8,6 @@ script:
   - ./build
   - ./run_tests
   - ./coverage report
-cache: support/bin/rascal-shell-unstable.jar
+cache:
+  directories:
+  - support/bin/dependencies

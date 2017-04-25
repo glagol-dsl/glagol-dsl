@@ -1,6 +1,8 @@
 #!/bin/bash
 BASEDIR=$(dirname "$0")
-RASCAL_JAR="$BASEDIR/rascal-shell-unstable.jar"
+DEP_DIR="$BASEDIR/dependencies"
+RASCAL_JAR="$DEP_DIR/rascal-shell-unstable.jar"
+
 if [ ! -f $RASCAL_JAR ]; then
     echo "Rascal REPL is needed in order to run Glagol DSL. This dependency is downloaded additionally"
     read -p "Do you want to conitnue with downloading rascal-shell-unstable.jar from http://rascal-mpl.org? (Y/y/n): " -r
@@ -13,4 +15,6 @@ if [ ! -f $RASCAL_JAR ]; then
         exit 1
     fi
 fi
-java -Xmx2G -Xss32m -cp "$RASCAL_JAR:$BASEDIR/gson-2.7.jar:$BASEDIR/tcp-server.jar:$BASEDIR/yaml.jar:$BASEDIR/../../src:." org.rascalmpl.shell.RascalShell $@
+
+java -Xmx2G -Xss32m -cp "$RASCAL_JAR:$BASEDIR/gson-2.7.jar:$DEP_DIR/tcp-server.jar:$BASEDIR/yaml.jar:$DEP_DIR/../../src:." org.rascalmpl.shell.RascalShell $@
+

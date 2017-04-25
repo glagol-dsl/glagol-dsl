@@ -2,7 +2,7 @@
 BASEDIR=$(dirname "$0")
 cd $BASEDIR
 cd ../../bin
-jar cf ../support/bin/tcp-server.jar Daemon/Socket/Sockets.class
+jar cf ../support/bin/dependencies/tcp-server.jar Daemon/Socket/Sockets.class
 cd ../src
 ../support/bin/rascalu Build
 ../support/bin/rascalu BuildTests
