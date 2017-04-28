@@ -6,10 +6,11 @@ bin/*
 .settings
 build.properties
 .classpath
-src/Tests.rsc
+library/Tests.rsc
 *.orig
 glagol-dsl.iml
 glagol.iml
 /bin/
 composer.lock
 /vendor/
+/target/

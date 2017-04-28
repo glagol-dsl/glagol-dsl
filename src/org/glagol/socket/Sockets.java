@@ -1,4 +1,4 @@
-package Daemon.Socket;
+package org.glagol.socket;
 
 
 import java.io.BufferedReader;
@@ -9,10 +9,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 
+import io.usethesource.vallang.*;
 import org.rascalmpl.interpreter.utils.RuntimeExceptionFactory;
-import org.rascalmpl.value.IInteger;
-import org.rascalmpl.value.IString;
-import org.rascalmpl.value.IValueFactory;
 
 public class Sockets {
 	private static HashMap<IInteger, ServerSocket> serverSockets = new HashMap<IInteger, ServerSocket>();

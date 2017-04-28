@@ -8,23 +8,23 @@
 @contributor{Mark Hills - mhills@cs.ecu.edu (ECU)}
 module Daemon::Socket::Sockets
 
-@javaClass{Daemon.Socket.Sockets}
+@javaClass{org.glagol.socket.Sockets}
 public java int createServerSocket(int port);
 
-@javaClass{Daemon.Socket.Sockets}
+@javaClass{org.glagol.socket.Sockets}
 public java void closeServerSocket(int serverSocketId);
 
-@javaClass{Daemon.Socket.Sockets}
+@javaClass{org.glagol.socket.Sockets}
 public java int createListener(int serverSocketId);
 
-@javaClass{Daemon.Socket.Sockets}
+@javaClass{org.glagol.socket.Sockets}
 public java void closeListener(int listenerId);
 
-@javaClass{Daemon.Socket.Sockets}
+@javaClass{org.glagol.socket.Sockets}
 public java str readFrom(int listenerId);
 
-@javaClass{Daemon.Socket.Sockets}
+@javaClass{org.glagol.socket.Sockets}
 public java void writeTo(int listenerId, str msg);
 
-@javaClass{Daemon.Socket.Sockets}
+@javaClass{org.glagol.socket.Sockets}
 public java void writeToAsASCII(int listenerId, str msg);
