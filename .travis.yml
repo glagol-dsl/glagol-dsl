@@ -1,17 +1,24 @@
 language: java
 jdk:
-  - oraclejdk8
-#sudo: required
+- oraclejdk8
 env:
-  - RASCAL_JAR="$HOME/rascal/rascal-shell-unstable.jar"
+- RASCAL_JAR="$HOME/rascal/rascal-shell-unstable.jar"
 script:
-  - bin/get_rascal #only going to download if it is not cached
-  - bin/build
-  - mvn clean package
-  - bin/glagol test
-  - ls
-  #- ./coverage report
+- bin/get_rascal
+- bin/build
+- mvn clean package
+- bin/glagol test
+- ls
 cache:
   directories:
-  - $HOME/rascal
-  - $HOME/.m2
+  - "$HOME/rascal"
+  - "$HOME/.m2"
+deploy:
+  provider: releases
+  api_key:
+    secure: 13i/oHZyWzn3YVSFeifO1nnCbtak/QzsrkpXYFLln4rf7qF2hYjmZ7Z9daf60hAAyOy29TO0wHuwW8wBuT6nRgPNPxMN39pqDdBus44+vlU2WNQ128BARyZaftUJH2FdZ/1OkonanZG8DFy0C51CXz6Ti+HETAvl7xJp0K4C5bOtz+lDy/0yFG1BZrImNnQOqT2PvqkEr/smRSZiBrReGqHQB9rafwaxG1F1s0iiDQGOgp4tYurOK/Nw1UYmg3tJM/yLvb8tGgkmiWATpBUgC8sWD/WM6WviuZskYnalXW2zkMWLcx1wdpgltV2Jw+RxRiEqFX/A8PfF+LwUZJdFNPceb7t+Wgc82feQxx7zUSpO4sHSu16GBFOTWCoOa0lB9NxLUH91JpZpszay4I3HFFZAVyfpC0yXFIIzHtWy08LMaaNRrXunCSIjKUBZm/j8VzCfCVDo/Ei5ZEJcRrIWon/lo24nYn59S2WEPk3YLhbmJQqQGlzIhYz28f13icyqrBsqDDcUvOkcZOHrPi4dzmfZSdQN0iqMd2lQNO4xZocIXNELvi3X5SUlUxPccN6KXf/Wa/pEVGEntheUobfhYUlRkOy7OVATd2n9jAyLtoEq2acvVSwArIhZ2DT/ojsw22/vAv2r+LRrHfO95p6PRutFV0NI29uDTzpP7k9maVM=
+  file: target/glagol-dsl.jar
+  on:
+    repo: BulgariaPHP/glagol-dsl
+    branch: typecheck
+    tags: true
