@@ -3,6 +3,7 @@ jdk:
 - oraclejdk8
 env:
 - RASCAL_JAR="$HOME/rascal/rascal-shell-unstable.jar"
+install: true
 script:
 - bin/get_rascal
 - bin/build
