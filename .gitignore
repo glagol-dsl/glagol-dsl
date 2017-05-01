@@ -11,3 +11,5 @@ glagol.iml
 composer.lock
 /vendor/
 /target/
+/travis.log
+/dependency-reduced-pom.xml
