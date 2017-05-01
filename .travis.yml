@@ -12,4 +12,5 @@ script:
   #- ./coverage report
 cache:
   directories:
-    - $HOME/rascal
+  - $HOME/rascal
+  - $HOME/.m2
