@@ -19,5 +19,4 @@ deploy:
   file: target/glagol-dsl.jar
   on:
     repo: BulgariaPHP/glagol-dsl
-    branch: typecheck
     tags: true
