@@ -2,12 +2,14 @@ language: java
 jdk:
   - oraclejdk8
 sudo: required
+env:
+  - RASCAL_JAR="$HOME/rascal/rascal-shell-unstable.jar"
 script:
-  - cd support/bin
-  - ./download_dependencies
-  - ./build
-  - ./run_tests
-  - ./coverage report
+  - bin/get_rascal #only going to download if it is not cached
+  - bin/build
+  - mvn clean package
+  - bin/glagol test
+  #- ./coverage report
 cache:
   directories:
-  - support/bin/dependencies
+    - $HOME/rascal

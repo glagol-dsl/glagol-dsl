@@ -18,9 +18,11 @@ private alias Command = tuple[str command, loc path];
 
 public int main(list[str] args) {
 
-	println("Opening socket...");
+    int port = toInt(args[0]);
+
+	println("Daemon listens on port <port>...");
 	
-	int socketId = createServerSocket(toInt(args[0]));
+	int socketId = createServerSocket(port);
 	
 	listenForCompileSignals(socketId);
 	

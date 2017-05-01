@@ -28,7 +28,7 @@ public class ModuleRunner implements ShellRunner {
                 try {
                     list.add(vf.sourceLocation("glagol","",""));
                 } catch (URISyntaxException e) {
-                    assert false;
+                    e.printStackTrace();
                 }
             }
 
@@ -59,6 +59,5 @@ public class ModuleRunner implements ShellRunner {
         }
 
         System.exit(v instanceof IInteger ? ((IInteger) v).intValue() : 0);
-        return;
     }
 }

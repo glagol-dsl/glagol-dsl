@@ -1,7 +1,0 @@
-#!/bin/bash
-BASEDIR=$(dirname "$0")
-RASCAL_JAR="$BASEDIR/dependencies/rascal-shell-unstable.jar"
-if [ ! -f $RASCAL_JAR ]; then
-    wget -O $RASCAL_JAR http://update.rascal-mpl.org/console/rascal-shell-unstable.jar
-fi
-
