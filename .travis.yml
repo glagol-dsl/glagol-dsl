@@ -8,7 +8,6 @@ script:
 - bin/build
 - mvn clean package
 - bin/glagol test
-- ls
 cache:
   directories:
   - "$HOME/rascal"
