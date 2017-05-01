@@ -1,7 +1,7 @@
 language: java
 jdk:
   - oraclejdk8
-sudo: required
+#sudo: required
 env:
   - RASCAL_JAR="$HOME/rascal/rascal-shell-unstable.jar"
 script:
