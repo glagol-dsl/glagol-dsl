@@ -9,6 +9,7 @@ script:
   - bin/build
   - mvn clean package
   - bin/glagol test
+  - ls
   #- ./coverage report
 cache:
   directories:
