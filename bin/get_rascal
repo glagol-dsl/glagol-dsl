@@ -1,0 +1,10 @@
+#!/bin/bash
+# This program is only used for the Travis CI builds.
+# Tests are build and ran using the Rascal REPL
+RASCAL_DIR=`dirname ${RASCAL_JAR}`
+if [ ! -f ${RASCAL_JAR} ]; then
+    if [ ! -d ${RASCAL_DIR} ]; then
+        mkdir ${RASCAL_DIR}
+    fi
+    wget -O ${RASCAL_JAR} http://update.rascal-mpl.org/console/rascal-shell-unstable.jar
+fi

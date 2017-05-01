@@ -1,6 +1,4 @@
-bin/*
 /Example.g
-!bin/*.class
 .idea
 .project
 .settings
@@ -10,7 +8,6 @@ library/Tests.rsc
 *.orig
 glagol-dsl.iml
 glagol.iml
-/bin/
 composer.lock
 /vendor/
 /target/
