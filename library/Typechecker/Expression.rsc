@@ -31,7 +31,9 @@ public Type lookupType(\list(list[Expression] values), TypeEnv env) = \list(look
 public Type lookupType(\list(list[Expression] values), _) = \list(voidValue()) when size(values) == 0;
 
 @doc="Extract list of values from maps and use lookup for lists"
-public Type lookupType(\map(map[Expression, Expression] items), TypeEnv env) = lookupType(\list(toList(range(items))), env);
+public Type lookupType(\map(map[Expression, Expression] items), TypeEnv env) = \map(unknownType(), unknownType()) when size(items) == 0;
+public Type lookupType(\map(map[Expression, Expression] items), TypeEnv env) = 
+    \map(lookupType(\list(toList(domain(items))), env).\type, lookupType(\list(toList(range(items))), env).\type);
 
 public Type lookupType(arrayAccess(Expression variable, Expression arrayIndexKey), TypeEnv env) = lookupArrayType(lookupType(variable, env));
 
@@ -56,11 +58,79 @@ public Type lookupType(remainder(Expression lhs, Expression rhs), TypeEnv env) =
 	lookupMathCompatibility(lookupType(lhs, env), lookupType(rhs, env));
 	
 public Type lookupType(division(Expression lhs, Expression rhs), TypeEnv env) =
-	lookupMathCompatibility(lookupType(lhs, env), lookupType(rhs, env));
-	
+    lookupMathCompatibility(lookupType(lhs, env), lookupType(rhs, env));
+    
+public Type lookupType(subtraction(Expression lhs, Expression rhs), TypeEnv env) =
+    lookupMathCompatibility(lookupType(lhs, env), lookupType(rhs, env));
+    
+public Type lookupType(addition(Expression lhs, Expression rhs), TypeEnv env) {
+    Type lType = lookupType(lhs, env);
+    Type rType = lookupType(rhs, env);
+
+    if (lType == rType && rType == string()) {
+        return string();
+    }
+
+    return lookupMathCompatibility(lType, rType);
+}
+    
+public Type lookupType(g: greaterThanOrEq(Expression lhs, Expression rhs), TypeEnv env) =
+    lookupRelationalCompatibilityType(lookupType(lhs, env), lookupType(rhs, env), g);
+    
+public Type lookupType(g: greaterThan(Expression lhs, Expression rhs), TypeEnv env) =
+    lookupRelationalCompatibilityType(lookupType(lhs, env), lookupType(rhs, env), g);
+    
+public Type lookupType(l: lessThanOrEq(Expression lhs, Expression rhs), TypeEnv env) =
+    lookupRelationalCompatibilityType(lookupType(lhs, env), lookupType(rhs, env), l);
+    
+public Type lookupType(l: lessThan(Expression lhs, Expression rhs), TypeEnv env) =
+    lookupRelationalCompatibilityType(lookupType(lhs, env), lookupType(rhs, env), l);
+    
+public Type lookupType(e: equals(Expression lhs, Expression rhs), TypeEnv env) =
+    lookupRelationalCompatibilityType(lookupType(lhs, env), lookupType(rhs, env), e);
+    
+public Type lookupType(e: nonEquals(Expression lhs, Expression rhs), TypeEnv env) =
+    lookupRelationalCompatibilityType(lookupType(lhs, env), lookupType(rhs, env), e);
+    
+public Type lookupType(and(Expression lhs, Expression rhs), TypeEnv env) =
+    lookupBooleanCompatibilityType(lookupType(lhs, env), lookupType(rhs, env));
+    
+public Type lookupType(or(Expression lhs, Expression rhs), TypeEnv env) =
+    lookupBooleanCompatibilityType(lookupType(lhs, env), lookupType(rhs, env));
+
+public Type lookupType(positive(Expression expr), TypeEnv env) = lookupUnaryMathType(lookupType(expr, env));
+public Type lookupType(negative(Expression expr), TypeEnv env) = lookupUnaryMathType(lookupType(expr, env));
+
+public Type lookupType(ifThenElse(Expression condition, Expression ifThen, Expression \else), TypeEnv env) = 
+    lookupTernaryType(lookupType(ifThen, env), lookupType(\else, env));
+
+public Type lookupType(new(str a, list[Expression] args), TypeEnv env) = artifact(a);
+
+public Type lookupType(get(Type t), TypeEnv env) = t;
+
+private Type lookupTernaryType(artifact(str ifThen), artifact(str \else)) = ifThen == \else ? artifact(ifThen) : unknownType();
+private Type lookupTernaryType(repository(str ifThen), repository(str \else)) = ifThen == \else ? repository(ifThen) : unknownType();
+private Type lookupTernaryType(Type ifThen, Type \else) = ifThen when ifThen == \else;
+private Type lookupTernaryType(Type ifThen, Type \else) = unknownType();
+
+private Type lookupUnaryMathType(integer()) = integer();
+private Type lookupUnaryMathType(float()) = float();
+private Type lookupUnaryMathType(_) = unknownType();
+
 private Type lookupMathCompatibility(integer(), integer()) = integer();
 private Type lookupMathCompatibility(float(), float()) = float();
 private Type lookupMathCompatibility(Type lhs, Type rhs) = unknownType();
+
+private Type lookupBooleanCompatibilityType(boolean(), boolean()) = boolean();
+private Type lookupBooleanCompatibilityType(Type lhs, Type rhs) = unknownType();
+
+private Type lookupRelationalCompatibilityType(string(), string(), equals(Expression lhs, Expression rhs)) = boolean();
+private Type lookupRelationalCompatibilityType(string(), string(), nonEquals(Expression lhs, Expression rhs)) = boolean();
+private Type lookupRelationalCompatibilityType(integer(), integer(), _) = boolean();
+private Type lookupRelationalCompatibilityType(integer(), float(), _) = boolean();
+private Type lookupRelationalCompatibilityType(float(), float(), _) = boolean();
+private Type lookupRelationalCompatibilityType(float(), integer(), _) = boolean();
+private Type lookupRelationalCompatibilityType(Type lhs, Type rhs, _) = unknownType();
 
 private Type lookupDefinitionType(localVar(declare(Type varType, Expression varName, Statement defaultValue))) = varType;
 private Type lookupDefinitionType(field(property(Type valueType, GlagolID name, set[AccessProperty] valueProperties, Expression defaultValue))) = valueType;
