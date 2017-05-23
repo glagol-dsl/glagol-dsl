@@ -9,20 +9,20 @@ test bool checkImportsShouldReturnNoErrors() =
         \import("User", namespace("Test", namespace("Entity")), "UserEntity"),
         \import("Customer", namespace("Test", namespace("Entity")), "Customer"),
         \import("CustomerService", namespace("Test", namespace("Service")), "CustomerService")
-    ], <|tmp:///|, (), (), [
+    ], addToAST([
         file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))),
         file(|tmp:///Test/Entity/Customer.g|, \module(namespace("Test", namespace("Entity")), [], entity("Customer", []))),
         file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [])))
-    ], []>) == 
-    <|tmp:///|, (), (
-        "UserEntity": \import("User", namespace("Test", namespace("Entity")), "UserEntity"),
-        "Customer": \import("Customer", namespace("Test", namespace("Entity")), "Customer"),
-        "CustomerService": \import("CustomerService", namespace("Test", namespace("Service")), "CustomerService")
-    ), [
+    ], newEnv(|tmp:///|))) == 
+    
+    addImported(\import("CustomerService", namespace("Test", namespace("Service")), "CustomerService"),
+    addImported(\import("Customer", namespace("Test", namespace("Entity")), "Customer"),
+    addImported(\import("User", namespace("Test", namespace("Entity")), "UserEntity"), 
+    addToAST([
         file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))),
         file(|tmp:///Test/Entity/Customer.g|, \module(namespace("Test", namespace("Entity")), [], entity("Customer", []))),
         file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [])))
-    ], []>;
+    ], newEnv(|tmp:///|)))));
 
 
 test bool checkImportsShouldReturnAlreadyImportedError() = 
@@ -30,64 +30,54 @@ test bool checkImportsShouldReturnAlreadyImportedError() =
         \import("User", namespace("Test", namespace("Entity")), "UserEntity"),
         \import("Customer", namespace("Test", namespace("Entity")), "Customer"),
         \import("CustomerService", namespace("Test", namespace("Service")), "CustomerService")
-    ], <|tmp:///|, (), (
-        "UserEntity": \import("User", namespace("Test", namespace("Entity")), "UserEntity")
-    ), [
+    ], 
+    addImported(\import("User", namespace("Test", namespace("Entity")), "UserEntity"), 
+    addToAST([
         file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))),
         file(|tmp:///Test/Entity/Customer.g|, \module(namespace("Test", namespace("Entity")), [], entity("Customer", []))),
         file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [])))
-    ], []>) == 
-    <|tmp:///|, (), (
-        "UserEntity": \import("User", namespace("Test", namespace("Entity")), "UserEntity"),
-        "Customer": \import("Customer", namespace("Test", namespace("Entity")), "Customer"),
-        "CustomerService": \import("CustomerService", namespace("Test", namespace("Service")), "CustomerService")
-    ), [
+    ], newEnv(|tmp:///|)))) == 
+    
+    addError(|tmp:///|, "\"User\" has already been imported",
+    addImported(\import("CustomerService", namespace("Test", namespace("Service")), "CustomerService"),
+    addImported(\import("Customer", namespace("Test", namespace("Entity")), "Customer"),
+    addImported(\import("User", namespace("Test", namespace("Entity")), "UserEntity"), 
+    addToAST([
         file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))),
         file(|tmp:///Test/Entity/Customer.g|, \module(namespace("Test", namespace("Entity")), [], entity("Customer", []))),
         file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [])))
-    ], [
-        <|tmp:///|, "\"User\" has already been imported">
-    ]>;
+    ], newEnv(|tmp:///|))))));
 
 
 test bool checkImportsShouldReturnAlreadyImportedErrorUsingAlias() = 
     checkImports([
+        \import("User", namespace("Test", namespace("Entity")), "User"),
         \import("User", namespace("Test", namespace("Entity")), "UserEntity"),
         \import("Customer", namespace("Test", namespace("Entity")), "Customer"),
         \import("CustomerService", namespace("Test", namespace("Service")), "CustomerService")
-    ], <|tmp:///|, (), (
-        "User": \import("User", namespace("Test", namespace("Entity")), "User")
-    ), [
-        file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))),
+    ], addToAST([
+    	file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))),
         file(|tmp:///Test/Entity/Customer.g|, \module(namespace("Test", namespace("Entity")), [], entity("Customer", []))),
         file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [])))
-    ], []>) == 
-    <|tmp:///|, (), (
-        "User": \import("User", namespace("Test", namespace("Entity")), "User"),
-        "Customer": \import("Customer", namespace("Test", namespace("Entity")), "Customer"),
-        "CustomerService": \import("CustomerService", namespace("Test", namespace("Service")), "CustomerService")
-    ), [
-        file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))),
-        file(|tmp:///Test/Entity/Customer.g|, \module(namespace("Test", namespace("Entity")), [], entity("Customer", []))),
-        file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [])))
-    ], [
-        <|tmp:///|, "\"User\" has already been imported">
-    ]>;
+    ], newEnv(|tmp:///|))) == 
+    
+    addImported(entity("User", []), 
+    addImported(entity("Customer", []), 
+    addImported(util("CustomerService", []), 
+    addError(|tmp:///|, "\"User\" has already been imported", 
+	    addToAST([
+	    	file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))),
+	        file(|tmp:///Test/Entity/Customer.g|, \module(namespace("Test", namespace("Entity")), [], entity("Customer", []))),
+	        file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [])))
+	    ], newEnv(|tmp:///|))))));
 
 test bool checkImportsShouldReturnNotDefinedError() = 
     checkImports([
         \import("User", namespace("Test", namespace("Entity")), "UserEntity"),
         \import("Customer", namespace("Test", namespace("Entity")), "Customer"),
         \import("CustomerService", namespace("Test", namespace("Service")), "CustomerService")
-    ], <|tmp:///|, (), (), [
-        file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", [])))
-    ], []>) == 
-    <|tmp:///|, (), (
-        "UserEntity": \import("User", namespace("Test", namespace("Entity")), "UserEntity")
-    ), [
-        file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", [])))
-    ], [
-        <|tmp:///|, "Test::Entity::Customer is not defined">,
-        <|tmp:///|, "Test::Service::CustomerService is not defined">
-    ]>;
-    
+    ], addToAST(file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))), newEnv(|tmp:///|))) == 
+    addErrors([<|tmp:///|, "Test::Entity::Customer is not defined">, <|tmp:///|, "Test::Service::CustomerService is not defined">],
+	    addImported(\import("User", namespace("Test", namespace("Entity")), "UserEntity"),
+	    	addToAST(file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))), newEnv(|tmp:///|)))
+	);

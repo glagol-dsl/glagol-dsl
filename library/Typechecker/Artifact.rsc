@@ -1,6 +1,7 @@
 module Typechecker::Artifact
 
 import Syntax::Abstract::Glagol;
+import Syntax::Abstract::Glagol::Helpers;
 import Typechecker::Env;
 import Typechecker::Declarations;
 import Typechecker::Route;
@@ -30,8 +31,7 @@ private TypeEnv checkControllerFileName(c:controller(GlagolID name, ControllerTy
     env when /^[A-Z][A-Za-z]+?Controller$/ := replaceLast(c@src.file, ".<c@src.extension>", "");
 
 private TypeEnv checkRedefine(Declaration decl, TypeEnv env) = 
-	addError(decl@src, "Cannot redefine \"<decl.name>\" in <decl@src.path> on line <decl@src.begin.line> " +
-        "previously imported on line <env.imported[decl.name]@src.begin.line>", env)
+	addError(decl@src, "Cannot redefine \"<decl.name>\" in <decl@src.path> on line <decl@src.begin.line>", env)
 	when decl.name in env.imported;
 
 private TypeEnv checkRedefine(Declaration decl, TypeEnv env) = env when decl.name notin env.imported;
@@ -41,7 +41,7 @@ private TypeEnv checkRepositoryEntity(r:repository(GlagolID name, list[Declarati
 
 private TypeEnv checkRepositoryEntity(r:repository(GlagolID name, list[Declaration] declarations), TypeEnv env) =
     addError(r@src, notEntity(r), env)
-    when name in env.imported && !isEntity(env.imported[name], env);
+    when name in env.imported && !isEntity(env.imported[name]);
 
 private TypeEnv checkRepositoryEntity(r:repository(GlagolID name, list[Declaration] declarations), TypeEnv env) =
-    env when name in env.imported && isEntity(env.imported[name], env);
+    env when name in env.imported && isEntity(env.imported[name]);

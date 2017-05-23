@@ -106,7 +106,10 @@ public Type lookupType(ifThenElse(Expression condition, Expression ifThen, Expre
 
 public Type lookupType(new(str a, list[Expression] args), TypeEnv env) = artifact(a);
 
-public Type lookupType(get(Type t), TypeEnv env) = t;
+public Type lookupType(get(t: artifact(str name)), TypeEnv env) = t when isImported(t, env) && (isEntity(t, env) || isUtil(t, env));
+public Type lookupType(get(t: repository(str name)), TypeEnv env) = t;
+public Type lookupType(get(t: selfie()), TypeEnv env) = t;
+public Type lookupType(get(_), TypeEnv env) = unknownType();
 
 private Type lookupTernaryType(artifact(str ifThen), artifact(str \else)) = ifThen == \else ? artifact(ifThen) : unknownType();
 private Type lookupTernaryType(repository(str ifThen), repository(str \else)) = ifThen == \else ? repository(ifThen) : unknownType();

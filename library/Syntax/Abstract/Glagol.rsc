@@ -23,6 +23,7 @@ data Declaration
     | method(Modifier modifier, Type returnType, GlagolID name, list[Declaration] params, list[Statement] body)
     | method(Modifier modifier, Type returnType, GlagolID name, list[Declaration] params, list[Statement] body, Expression when)
     | param(Type paramType, GlagolID name, Expression defaultValue)
+    | emptyDecl()
     ;
 
 data ControllerType = jsonApi();

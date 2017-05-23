@@ -11,13 +11,10 @@ test bool checkDeclarationsShouldGiveErrorsWhenDuplicatingEntityPropertyDefiniti
     ])[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)];
     
     return
-        checkDeclarations(e.declarations, e, <|tmp:///User.g|, (), (), [], []>) == 
-        <|tmp:///User.g|, (
-            "id": field(property(integer(), "id", {}, emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)])
-        ), (), [], [
-            <|tmp:///User.g|(0, 0, <25, 25>, <30, 30>), 
-                "Cannot redefine \"id\". Already defined in /User.g on line 20.">
-        ]>;
+        checkDeclarations(e.declarations, e, newEnv(|tmp:///User.g|)) == 
+        addError(|tmp:///User.g|(0, 0, <25, 25>, <30, 30>), 
+                "Cannot redefine \"id\". Already defined in /User.g on line 20.",
+        addDefinition(property(integer(), "id", {}, emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///User.g|)));
 }
 
 test bool checkDeclarationsShouldNotGiveErrorsWhenNoDuplicatingEntityPropertyDefinitions() {
@@ -27,9 +24,6 @@ test bool checkDeclarationsShouldNotGiveErrorsWhenNoDuplicatingEntityPropertyDef
     ])[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)];
     
     return
-        checkDeclarations(e.declarations, e, <|tmp:///User.g|, (), (), [], []>) == 
-        <|tmp:///User.g|, (
-            "id": field(property(integer(), "id", {}, emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]),
-            "count": field(property(integer(), "count", {}, emptyExpr())[@src=|tmp:///User.g|(0, 0, <25, 25>, <30, 30>)])
-        ), (), [], []>;
+        checkDeclarations(e.declarations, e, newEnv(|tmp:///User.g|)) == 
+        addDefinition(property(integer(), "count", {}, emptyExpr()), addDefinition(property(integer(), "id", {}, emptyExpr()), newEnv(|tmp:///User.g|)));
 }

@@ -30,16 +30,18 @@ test bool shouldConstructFileFromControllerModuleUsingTmpLoc() =
     |tmp:///src/Test/Controller/UserController.g|;
 
 test bool shouldCheckLocVsEntityModuleWithErrors() =
-    checkLocVsModule(|tmp:///src|, file(|tmp:///src/Test/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))), <|tmp:///src|, (), (), [], []>) ==
-    <|tmp:///src|, (), (), [], [<|tmp:///src/Test/User.g|, "Wrong file name, does not follow namespace declaration and/or artifact name. " + 
-        "Expected tmp:///src/Test/Entity/User.g, got tmp:///src/Test/User.g.">]>;
+    checkLocVsModule(|tmp:///src|, file(|tmp:///src/Test/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))), newEnv(|tmp:///src|)) ==
+    addError(|tmp:///src/Test/User.g|, "Wrong file name, does not follow namespace declaration and/or artifact name. " + 
+        "Expected tmp:///src/Test/Entity/User.g, got tmp:///src/Test/User.g.", newEnv(|tmp:///src|));
 
 
 test bool shouldCheckLocVsRepositoryModuleWithErrors() =
-    checkLocVsModule(|tmp:///src|, file(|tmp:///src/Test/User.g|, \module(namespace("Test", namespace("Repository")), [], repository("User", []))), <|tmp:///src|, (), (), [], []>) ==
-    <|tmp:///src|, (), (), [], [<|tmp:///src/Test/User.g|, "Wrong file name, does not follow namespace declaration and/or artifact name. " + 
-        "Expected tmp:///src/Test/Repository/UserRepository.g, got tmp:///src/Test/User.g.">]>;
+    checkLocVsModule(|tmp:///src|, file(|tmp:///src/Test/User.g|, \module(namespace("Test", namespace("Repository")), [], repository("User", []))), 
+    newEnv(|tmp:///src|)) ==
+    addError(|tmp:///src/Test/User.g|, "Wrong file name, does not follow namespace declaration and/or artifact name. " + 
+        "Expected tmp:///src/Test/Repository/UserRepository.g, got tmp:///src/Test/User.g.", newEnv(|tmp:///src|));
 
 test bool shouldCheckLocVsEntityModuleWithNoErrors() =
-    checkLocVsModule(|tmp:///src|, file(|tmp:///src/Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))), <|tmp:///src|, (), (), [], []>) ==
-    <|tmp:///src|, (), (), [], []>;
+    checkLocVsModule(|tmp:///src|, file(|tmp:///src/Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))), 
+    newEnv(|tmp:///src|)) ==
+    newEnv(|tmp:///src|);

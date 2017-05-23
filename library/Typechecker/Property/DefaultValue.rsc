@@ -4,6 +4,7 @@ import Typechecker::Env;
 import Typechecker::Type;
 import Typechecker::Errors;
 import Syntax::Abstract::Glagol;
+import Syntax::Abstract::Glagol::Helpers;
 
 public TypeEnv checkDefaultValue(get(selfie()), TypeEnv env) = env;
 public TypeEnv checkDefaultValue(emptyExpr(), TypeEnv env) = env;
@@ -43,11 +44,11 @@ public TypeEnv checkDefaultValue(g:get(r:repository(str name)), TypeEnv env) =
 Typecheck usages of repository which is not targeting an actual entity
 }
 public TypeEnv checkDefaultValue(g:get(r:repository(str name)), TypeEnv env) = 
-    addError(g@src, notEntity(r), env) when name in env.imported && !isEntity(env.imported[name], env);
+    addError(g@src, notEntity(r), env) when name in env.imported && !isEntity(env.imported[name]);
 
 @doc="Success only: typecheck repository targeting an actual entity"
 public TypeEnv checkDefaultValue(g:get(r:repository(str name)), TypeEnv env) = 
-    env when name in env.imported && isEntity(env.imported[name], env);
+    env when name in env.imported && isEntity(env.imported[name]);
     
 @doc="Any other type of expression is not allowed as default value for properties"
 public TypeEnv checkDefaultValue(Expression expr, TypeEnv env) = 

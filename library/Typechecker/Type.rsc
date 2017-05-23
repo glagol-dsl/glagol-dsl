@@ -3,6 +3,7 @@ module Typechecker::Type
 import Typechecker::Env;
 import Typechecker::Errors;
 import Syntax::Abstract::Glagol;
+import Syntax::Abstract::Glagol::Helpers;
 
 public TypeEnv checkType(integer(), Declaration d, TypeEnv env) = env;
 public TypeEnv checkType(float(), Declaration d, TypeEnv env) = env;
@@ -31,10 +32,10 @@ public TypeEnv checkType(r:repository(str name), Declaration d, TypeEnv env) =
     
 public TypeEnv checkType(r:repository(str name), Declaration d, TypeEnv env) = 
     addError(r@src, notEntity(r), env)
-    when name in env.imported && !isEntity(env.imported[name], env);
+    when name in env.imported && !isEntity(env.imported[name]);
     
 public TypeEnv checkType(r:repository(str name), Declaration d, TypeEnv env) = 
-    env when name in env.imported && isEntity(env.imported[name], env);
+    env when name in env.imported && isEntity(env.imported[name]);
 
 public TypeEnv checkType(s:selfie(), property(_, _, _, get(selfie())), TypeEnv env) = env;
 	
