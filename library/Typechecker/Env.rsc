@@ -4,6 +4,8 @@ import Syntax::Abstract::Glagol;
 import Map;
 import List;
 
+import IO;
+
 data Definition
     = field(Declaration d)
     | param(Declaration d)
@@ -44,13 +46,11 @@ public TypeEnv addError(loc src, str message, TypeEnv env) = env[errors = env.er
 
 public TypeEnv addErrors(list[tuple[loc, str]] errors, TypeEnv env) = (env | addError(src, message, it) | <loc src, str message> <- errors);
 
-public TypeEnv addImported(d: entity(GlagolID name, _), TypeEnv env) = env[imported = env.imported + (name: d)];
-public TypeEnv addImported(d: util(GlagolID name, _), TypeEnv env) = env[imported = env.imported + (name: d)];
-public TypeEnv addImported(d: valueObject(GlagolID name, _), TypeEnv env) = env[imported = env.imported + (name: d)];
-public TypeEnv addImported(d: repository(GlagolID name, _), TypeEnv env) = env[imported = env.imported + ("<name>Repository": d)];
-public TypeEnv addImported(i: \import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = env[imported = env.imported + (as: head(findArtifact(i, env)))];
+public TypeEnv addImported(i: \import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = env[imported = env.imported + (as: i)];
 
-public bool isImported(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = as in env.imported;
+public bool isImported(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
+	(false | true | i <- range(env.imported), i.artifactName == name && i.namespace == namespace);
+	
 public bool isImported(artifact(GlagolID name), TypeEnv env) = name in env.imported;
 
 public bool isInAST(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
@@ -62,11 +62,10 @@ public list[Declaration] findArtifact(i:\import(GlagolID name, Declaration names
 public bool isEntity(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
     [entity(_, _)] := findArtifact(i, env);
     
-public bool isEntity(artifact(GlagolID name), TypeEnv env) = 
-    entity(_, _) := env.imported[name];
-    
-public bool isUtil(artifact(GlagolID name), TypeEnv env) = 
-    util(_, _) := env.imported[name];
+public bool isUtil(artifact(GlagolID name), TypeEnv env) =
+	[util(_, _)] := findArtifact(env.imported[name], env);
 
 public TypeEnv addToAST(Declaration file, TypeEnv env) = env[ast = env.ast + file];
 public TypeEnv addToAST(list[Declaration] files, TypeEnv env) = env[ast = env.ast + files];
+
+public TypeEnv setContext(Declaration ctx, TypeEnv env) = env[context = ctx];

@@ -36,8 +36,8 @@ test bool shlouldGiveErrorWhenUsingNotImportedArtifact() =
 test bool shlouldNotGiveErrorWhenUsingImportedArtifact() =
 	checkType(artifact("Date")[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], 
 		param(artifact("Date"), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], 
-	addImported(valueObject("Date", []), newEnv(|tmp:///User.g|))) == 
-	addImported(valueObject("Date", []), newEnv(|tmp:///User.g|));
+	addImported(\import("Date", namespace("Test", namespace("Entity")), "Date"), newEnv(|tmp:///User.g|))) == 
+	addImported(\import("Date", namespace("Test", namespace("Entity")), "Date"), newEnv(|tmp:///User.g|));
 
 test bool shlouldGiveErrorWhenUsingRepositoryWithNotImportedEntity() =
 	checkType(repository("Date")[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], 

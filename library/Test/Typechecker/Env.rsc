@@ -4,7 +4,7 @@ import Syntax::Abstract::Glagol;
 import Typechecker::Env;
 
 test bool shouldReturnTrueIfArtifactIsAlreadyImported() =
-    isImported(\import("User", namespace("Test"), "User"), addImported(entity("User", []), newEnv(|tmp:///|)));
+    isImported(\import("User", namespace("Test"), "User"), addImported(\import("User", namespace("Test"), "User"), newEnv(|tmp:///|)));
     
 test bool shouldReturnTrueIfArtifactIsAlreadyImportedUsingAlias() =
     isImported(\import("User", namespace("Test"), "UserEntity"), 

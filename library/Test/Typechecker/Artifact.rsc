@@ -86,7 +86,9 @@ test bool shouldNotGiveErrorsWhenRepositoryPointsToImportedEntity() =
     addImported(\import("User", namespace("Test"), "User"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
-    	newEnv(|tmp:///User.g|)))) == addImported(\import("User", namespace("Test"), "User"),
+    	newEnv(|tmp:///User.g|)))) == 
+	
+	addImported(\import("User", namespace("Test"), "User"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
     	newEnv(|tmp:///User.g|)));

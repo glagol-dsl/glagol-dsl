@@ -19,8 +19,8 @@ test bool shouldGiveNotImportedErrorOnGetArtifact() =
 test bool shouldNotGiveNotImportedErrorOnGetArtifact() = 
 	checkDefaultValue(get(artifact("User")
 		[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)]
-	)[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)], addImported(entity("User", []), newEnv(|tmp:///Util.g|))) == 
-	addImported(entity("User", []), newEnv(|tmp:///Util.g|));
+	)[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)], addImported(\import("User", namespace("Test", namespace("Entity")), "User"), newEnv(|tmp:///Util.g|))) == 
+	addImported(\import("User", namespace("Test", namespace("Entity")), "User"), newEnv(|tmp:///Util.g|));
 
 test bool shouldGiveNotImportedErrorOnGetRepository() = 
 	checkDefaultValue(get(repository("User")

@@ -41,7 +41,7 @@ private TypeEnv checkRepositoryEntity(r:repository(GlagolID name, list[Declarati
 
 private TypeEnv checkRepositoryEntity(r:repository(GlagolID name, list[Declaration] declarations), TypeEnv env) =
     addError(r@src, notEntity(r), env)
-    when name in env.imported && !isEntity(env.imported[name]);
+    when name in env.imported && !isEntity(env.imported[name], env);
 
 private TypeEnv checkRepositoryEntity(r:repository(GlagolID name, list[Declaration] declarations), TypeEnv env) =
-    env when name in env.imported && isEntity(env.imported[name]);
+    env when name in env.imported && isEntity(env.imported[name], env);

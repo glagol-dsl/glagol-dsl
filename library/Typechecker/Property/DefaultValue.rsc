@@ -44,11 +44,11 @@ public TypeEnv checkDefaultValue(g:get(r:repository(str name)), TypeEnv env) =
 Typecheck usages of repository which is not targeting an actual entity
 }
 public TypeEnv checkDefaultValue(g:get(r:repository(str name)), TypeEnv env) = 
-    addError(g@src, notEntity(r), env) when name in env.imported && !isEntity(env.imported[name]);
+    addError(g@src, notEntity(r), env) when name in env.imported && !isEntity(env.imported[name], env);
 
 @doc="Success only: typecheck repository targeting an actual entity"
 public TypeEnv checkDefaultValue(g:get(r:repository(str name)), TypeEnv env) = 
-    env when name in env.imported && isEntity(env.imported[name]);
+    env when name in env.imported && isEntity(env.imported[name], env);
     
 @doc="Any other type of expression is not allowed as default value for properties"
 public TypeEnv checkDefaultValue(Expression expr, TypeEnv env) = 

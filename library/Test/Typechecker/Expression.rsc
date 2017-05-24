@@ -177,7 +177,9 @@ test bool shouldReturnListOnTernaryOfLists() = \list(integer()) == lookupType(if
 test bool shouldReturnMapOnTernaryOfMaps() = 
     \map(integer(), string()) == lookupType(ifThenElse(boolean(true), \map((integer(1): string("s"))), \map((integer(2): string("s")))), emptyEnv);
 test bool shouldReturnArtifactOnTernaryOfSameArtifacts() = 
-    artifact("User") == lookupType(ifThenElse(boolean(true), get(artifact("User")), get(artifact("User"))), addImported(entity("User", []), emptyEnv));
+    artifact("User") == lookupType(ifThenElse(boolean(true), get(artifact("User")), get(artifact("User"))), addImported(\import("User", namespace("Test"), "User"), addToAST(
+		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))),
+		emptyEnv)));
 test bool shouldReturnUnknownTypeOnTernaryOfDifferentArtifacts() = 
     unknownType() == lookupType(ifThenElse(boolean(true), get(artifact("User")), get(artifact("Customer"))), emptyEnv);
 test bool shouldReturnRepositoryOnTernaryOfSameRepositories() = 
@@ -189,11 +191,18 @@ test bool shouldReturnUnTypeOnDifferentTypes() =
 
 test bool shouldReturnArtifactTypeOnNew() = artifact("User") == lookupType(new("User", []), emptyEnv);
 
-// TODO should be forbidden on controllers, entities and VO. Only available for utilities
 test bool shouldReturnUnknownTypeOnGetUnimportedArtifact() = unknownType() == lookupType(get(artifact("User")), emptyEnv);
-test bool shouldReturnArtifactTypeOnGetArtifactWhichIsEntity() = artifact("User") == lookupType(get(artifact("User")), addImported(entity("User", []), emptyEnv));
-test bool shouldReturnArtifactTypeOnGetArtifactWhichIsUtil() = artifact("User") == lookupType(get(artifact("User")), addImported(util("User", []), emptyEnv));
-test bool shouldReturnUnknownTypeOnGetArtifactWhichIsValueObject() = unknownType() == lookupType(get(artifact("User")), addImported(valueObject("User", []), emptyEnv));
+test bool shouldReturnUnknownTypeOnGetArtifactWhichIsEntity() = unknownType() == lookupType(get(artifact("User")), addImported(\import("User", namespace("Test"), "User"), addToAST(
+		file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", []))),
+		emptyEnv)));
+test bool shouldReturnArtifactTypeOnGetArtifactWhichIsUtil() = 
+	artifact("User") == lookupType(get(artifact("User")), addImported(\import("User", namespace("Test"), "User"), addToAST(
+		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))),
+		emptyEnv)));
+test bool shouldReturnUnknownTypeOnGetArtifactWhichIsValueObject() = 
+	unknownType() == lookupType(get(artifact("User")), addImported(\import("User", namespace("Test"), "User"), addToAST(
+		file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("User", []))),
+		emptyEnv)));
 test bool shouldReturnRepositoryTypeOnGetRepository() = repository("User") == lookupType(get(repository("User")), emptyEnv);
 test bool shouldReturnSelfieTypeOnGetSelfie() = selfie() == lookupType(get(selfie()), emptyEnv);
 test bool shouldReturnUnknownTypeOnGetVoid() = unknownType() == lookupType(get(voidValue()), emptyEnv);

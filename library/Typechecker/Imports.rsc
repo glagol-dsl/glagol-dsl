@@ -6,28 +6,22 @@ import Syntax::Abstract::Glagol::Helpers;
 import IO;
 import List;
 
-public TypeEnv checkImports(list[Declaration] imports, TypeEnv env) = checkImports(imports, [], env);
-
-public TypeEnv checkImports(list[Declaration] imports, list[str] imported, TypeEnv env) {
+public TypeEnv checkImports(list[Declaration] imports, TypeEnv env) {
     if (size(imports) == 0) {
         return env;
     }
 
     if (<next: \import(GlagolID name, Declaration namespace, GlagolID as), list[Declaration] left> := pop(imports)) {
-    	str hash = stringify(next);
-        if (isImported(next, env) || hash in imported) {
+        if (isImported(next, env)) {
             env = addError(env.location, "\"<name>\" has already been imported", env);
         } else if (isInAST(next, env)) {
-            env.imported[as] = head(findArtifact(next, env));
-            imported += hash;
+            env.imported[as] = next;
         } else {
             env = addError(env.location, "<namespaceToString(namespace, "::")>::<name> is not defined", env);
         }
         
-        return checkImports(left, imported, env);
+        return checkImports(left, env);
     }
     
     return env;
 }
-
-private str stringify(\import(str artifactName, Declaration namespace, str as)) = namespaceToString(namespace, "+") + "+<artifactName>";

@@ -61,9 +61,9 @@ test bool checkImportsShouldReturnAlreadyImportedErrorUsingAlias() =
         file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [])))
     ], newEnv(|tmp:///|))) == 
     
-    addImported(entity("User", []), 
-    addImported(entity("Customer", []), 
-    addImported(util("CustomerService", []), 
+    addImported(\import("User", namespace("Test", namespace("Entity")), "User"),
+    addImported(\import("Customer", namespace("Test", namespace("Entity")), "Customer"),
+    addImported(\import("CustomerService", namespace("Test", namespace("Service")), "CustomerService"), 
     addError(|tmp:///|, "\"User\" has already been imported", 
 	    addToAST([
 	    	file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))),
