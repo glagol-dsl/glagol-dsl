@@ -211,3 +211,7 @@ test bool shouldReturnUnknownTypeOnGetBoolean() = unknownType() == lookupType(ge
 test bool shouldReturnUnknownTypeOnGetList() = unknownType() == lookupType(get(\list(string())), newEnv(|tmp:///|));
 test bool shouldReturnUnknownTypeOnGetMap() = unknownType() == lookupType(get(\map(string(), integer())), newEnv(|tmp:///|));
 
+test bool shouldReturnStringTypeWhenInvokingStringMethod() = string() == lookupType(invoke("myString", []), addToAST(
+	
+));
+

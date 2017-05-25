@@ -15,6 +15,7 @@ data Definition
 alias TypeEnv = tuple[
     loc location,
     map[GlagolID, Definition] definitions,
+    map[GlagolID, Type] types,
     map[GlagolID, Declaration] imported,
     list[Declaration] ast,
     list[tuple[loc src, str message]] errors,
@@ -71,3 +72,16 @@ public TypeEnv addToAST(list[Declaration] files, TypeEnv env) = env[ast = env.as
 public TypeEnv setContext(Declaration ctx, TypeEnv env) = env[context = ctx];
 public Declaration getContext(TypeEnv env) = env.context;
 public TypeEnv clearContext(TypeEnv env) = setContext(emptyDecl(), env);
+
+public TypeEnv populateTypes(list[Declaration] ast, TypeEnv env) = (env | populateTypes(e, it) | e <- ast);
+
+public TypeEnv populateTypes(file(loc file, Declaration m), TypeEnv env) =
+	env[types = env.types + constructTypesMap(m)];
+
+public map[GlagolID, Type] gatherTypes(\module(Declaration namespace, _, a: entity(str name, list[Declaration] ds))) =
+	("<methodHash(namespace, a, m)>": t | m: method(_, t, _, _, _, _) <- getPublicMethods(ds));
+
+public str hash(Declaration namespace, entity(str name, _), method(_, _, m, _, _, _)) =
+	"<namespaceToString(namespace, "::")>::<name>#<m>";
+
+

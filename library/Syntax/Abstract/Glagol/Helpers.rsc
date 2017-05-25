@@ -10,14 +10,12 @@ public default bool isProperty(_) = false;
 public bool isPropertyWithDefaultValue(property(_, _, _, d)) = emptyExpr() !:= d;
 
 public bool isMethod(method(_, _, _, _, _)) = true;
-public bool isMethod(method(_, _, _, _, _, _)) = true;
 public bool isMethod(_) = false;
 
 public bool isRelation(relation(_, _, _, _, _)) = true;
 public bool isRelation(_) = false;
 
 public bool isConstructor(constructor(_, _)) = true;
-public bool isConstructor(constructor(_, _, _)) = true;
 public bool isConstructor(_) = false;
 
 public bool isEntity(entity(_, _)) = true;
@@ -40,6 +38,9 @@ public map[str name, list[Declaration] methods] categorizeMethods(list[Declarati
         name: getMethodsByName(declarations, name) | 
         name <- {ms.name | ms <- declarations, isMethod(ms)}
     );
+
+public list[Declaration] getMethods(list[Declaration] ds) = [m | m: method(_, _, _, _, _) <- ds];
+public list[Declaration] getPublicMethods(list[Declaration] ds) = [m | m: method(\public(), _, _, _, _) <- ds];
 
 public list[Declaration] getRelations(list[Declaration] declarations) = 
 	[ d | d <- declarations, isRelation(d)];
