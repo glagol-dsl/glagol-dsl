@@ -19,7 +19,7 @@ test bool shouldParseMethodWithoutModifier()
                     param(\list(string()), "names", \list([string("a"), string("b"), string("c")]))
                 ], [
                     \return(product(\bracket(addition(integer(23), integer(5))), integer(8)))
-                ]
+                ], emptyExpr()
             )
           ]
         )

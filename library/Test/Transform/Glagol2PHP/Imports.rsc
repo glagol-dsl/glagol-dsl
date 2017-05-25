@@ -9,9 +9,9 @@ test bool shouldConvertToPhpUsesOnDoctrineEntityAndOverriding() =
 	toPhpUses(\module(namespace("Example"), 
 		[\import("Blah", namespace("Foo", namespace("Bar")), "Blah")], 
 		entity("User", [
-			constructor([], []),
-			constructor([], []),
-			constructor([], [])
+			constructor([], [], emptyExpr()),
+			constructor([], [], emptyExpr()),
+			constructor([], [], emptyExpr())
 		])), [], 
 		<anyFramework(), doctrine()>) ==
 	[phpUse({
@@ -28,9 +28,9 @@ test bool shouldConvertToPhpUsesOnAnyORMEntityAndOverriding() =
 	toPhpUses(
 		\module(namespace("Example"), [\import("Blah", namespace("Foo", namespace("Bar")), "Blah")], 
 		entity("User", [
-			constructor([], []),
-			constructor([], []),
-			constructor([], [])
+			constructor([], [], emptyExpr()),
+			constructor([], [], emptyExpr()),
+			constructor([], [], emptyExpr())
 		])), [],
 		<anyFramework(), anyORM()>) ==
 	[phpUse({
@@ -44,7 +44,7 @@ test bool shouldConvertToPhpUsesOnAnyORMEntityWithoutOverriding() =
 	toPhpUses(\module(namespace("Example"), 
 		[\import("Blah", namespace("Foo", namespace("Bar")), "Blah")], 
 		entity("User", [
-			constructor([], [])
+			constructor([], [], emptyExpr())
 		])), [], 
 		<anyFramework(), anyORM()>) ==
 	[phpUse({
@@ -56,7 +56,7 @@ test bool shouldConvertToPhpUsesOnDoctrineEntityWithoutOverriding() =
     toPhpUses(\module(namespace("Example"), 
         [\import("Blah", namespace("Foo", namespace("Bar")), "Blah")], 
         entity("User", [
-            constructor([], [])
+            constructor([], [], emptyExpr())
         ])), [], 
         <anyFramework(), doctrine()>) ==
     [phpUse({
@@ -82,7 +82,7 @@ test bool shouldConvertToDsMapPhpUsesOnMapsAndMapTypes() =
         entity("User", [
             constructor([], [
                 expression(\map(()))
-            ])
+            ], emptyExpr())
         ])), [], 
         <anyFramework(), anyORM()>) ==
     [phpUse({
@@ -105,7 +105,7 @@ test bool shouldConvertToDsMapPhpUsesOnListsAndListTypes() =
         entity("User", [
             constructor([], [
                 expression(\list([]))
-            ])
+            ], emptyExpr())
         ])), [], 
         <anyFramework(), anyORM()>) ==
     [phpUse({

@@ -21,7 +21,7 @@ test bool testDeclarationsWithPrimitiveTypes() {
             declare(integer(), variable("yourVariable"), expression(integer(23))),
             declare(string(), variable("myString"), expression(string("hello world"))),
             declare(boolean(), variable("withExpr"), expression(greaterThan(variable("myVariable"), variable("yourVariable"))))
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -42,7 +42,7 @@ test bool testDeclarationsWithoutDefaultValue() {
             declare(float(), variable("myVariable"), emptyStmt()),
             declare(integer(), variable("yourVariable"), emptyStmt()),
             assign(variable("yourVariable"), defaultAssign(), expression(addition(variable("yourVariable"), integer(5))))
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -58,7 +58,7 @@ test bool testDeclarationsWithCustomTypes() {
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [
             declare(artifact("DateTime"), variable("myDate"), emptyStmt())
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -74,7 +74,7 @@ test bool testDeclarationsWithNestedAssignment() {
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a", emptyExpr())], [
             declare(integer(), variable("myNumber"), assign(variable("a"), defaultAssign(), expression(integer(5))))
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -90,7 +90,7 @@ test bool testIfStatement() {
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a", emptyExpr())], [
             ifThen(equals(variable("a"), integer(5)), \return(integer(5)))
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -106,7 +106,7 @@ test bool testIfStatementWithBlock() {
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a", emptyExpr())], [
             ifThen(equals(variable("a"), integer(5)), block([\return(integer(5))]))
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -123,7 +123,7 @@ test bool testIfElseStatement() {
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(integer(), "a", emptyExpr())], [
             ifThenElse(equals(variable("a"), integer(5)), \return(integer(5)), \return(integer(6)))
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -142,7 +142,7 @@ test bool testIfElseIfStatement() {
             ifThenElse(equals(variable("a"), integer(5)), \return(integer(5)), 
                 ifThen(equals(variable("a"), integer(6)), \return(integer(6)))    
             )
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -162,7 +162,7 @@ test bool testIfElseIfEndingWithElseStatement() {
             ifThenElse(equals(variable("a"), integer(5)), \return(integer(5)), 
                 ifThenElse(equals(variable("a"), integer(6)), \return(integer(6)), \return(integer(0)))
             )
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -178,7 +178,7 @@ test bool testForeachStatementWithEmptyStmt() {
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(\list(integer()), "a", emptyExpr())], [
             foreach(variable("a"), variable("b"), emptyStmt())
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -195,7 +195,7 @@ test bool testForeachStatementWithEmptyStmtAndDirectList() {
         constructor([], [
             foreach(\list([integer(1), integer(2), integer(3), integer(4), integer(5)]), 
                 variable("b"), emptyStmt())
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -214,7 +214,7 @@ test bool testForeachStatementWithIncrementStmtAndDirectList() {
             declare(integer(), variable("i"), emptyStmt()),
             foreach(\list([integer(1), integer(2), integer(3), integer(4), integer(5)]), 
                 variable("b"), assign(variable("i"), additionAssign(), expression(integer(1))))
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -234,7 +234,7 @@ test bool testForeachStatementWithBreak() {
             foreach(variable("a"), variable("b"), block([
                 ifThen(greaterThan(variable("a"), integer(2)), \break())
             ]))
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -257,7 +257,7 @@ test bool testForeachStatementWithLevelledBreak() {
                     ifThen(greaterThan(variable("c"), integer(2)), \break(2))
                 )
             )
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -273,7 +273,7 @@ test bool testForeachStatementWithCondition() {
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(\list(artifact("DateTime")), "a", emptyExpr()), param(artifact("DateTime"), "now", emptyExpr())], [
             foreach(variable("a"), variable("b"), emptyStmt(), [lessThan(variable("a"), variable("now"))])
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -292,7 +292,7 @@ test bool testForeachStatementWithContinue() {
             foreach(variable("a"), variable("b"), ifThen(
                 lessThan(variable("a"), variable("now")), \continue()
             ))
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -310,7 +310,7 @@ test bool testPersistStatementOnRepository() {
         repository("User", [
             method(\public(), voidValue(), "blah", [], [
                 persist(variable("a"))
-            ])
+            ], emptyExpr())
     ]));
 }
 
@@ -332,7 +332,7 @@ test bool testFlushStatementOnRepository() {
                 persist(variable("a")),
                 flush(variable("a")),
                 flush(emptyExpr())
-            ])
+            ], emptyExpr())
     ]));
 }
 
@@ -350,6 +350,6 @@ test bool testRemoveStatementOnRepository() {
         repository("User", [
             method(\public(), voidValue(), "blah", [], [
                 remove(variable("a"))
-            ])
+            ], emptyExpr())
     ]));
 }

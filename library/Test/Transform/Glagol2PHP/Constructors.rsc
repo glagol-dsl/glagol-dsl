@@ -6,15 +6,15 @@ import Transform::Glagol2PHP::Constructors;
 import Config::Config;
 
 test bool shouldTransformEmptyConstructorToEmptyPhpConstructor() =
-    toPhpClassItem(constructor([], []), <zend(), doctrine()>) == phpMethod("__construct", {phpPublic()}, false, [], [], phpNoName());
+    toPhpClassItem(constructor([], [], emptyExpr()), <zend(), doctrine()>) == phpMethod("__construct", {phpPublic()}, false, [], [], phpNoName());
 
 test bool shouldTransformConstructorToPhpConstructorWithOneParamAndNoDefaultValue() =
-    toPhpClassItem(constructor([param(integer(), "param1", emptyExpr())], []), <zend(), doctrine()>) == phpMethod("__construct", {phpPublic()}, false, [
+    toPhpClassItem(constructor([param(integer(), "param1", emptyExpr())], [], emptyExpr()), <zend(), doctrine()>) == phpMethod("__construct", {phpPublic()}, false, [
         phpParam("param1", phpNoExpr(), phpSomeName(phpName("int")), false, false)
     ], [], phpNoName());
 
 test bool shouldTransformConstructorToPhpConstructorWithOneParamWithDefaultValue() =
-    toPhpClassItem(constructor([param(integer(), "param1", integer(55))], []), <zend(), doctrine()>) == phpMethod("__construct", {phpPublic()}, false, [
+    toPhpClassItem(constructor([param(integer(), "param1", integer(55))], [], emptyExpr()), <zend(), doctrine()>) == phpMethod("__construct", {phpPublic()}, false, [
         phpParam("param1", phpSomeExpr(phpScalar(phpInteger(55))), phpSomeName(phpName("int")), false, false)
     ], [], phpNoName());
 

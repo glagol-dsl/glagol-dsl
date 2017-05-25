@@ -19,7 +19,7 @@ test bool shlouldGiveErrorWhenUsingVoidValueForParamType() =
 	addError(|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "Void type cannot be used on param \"prop\" in /User.g on line 10", newEnv(|tmp:///User.g|));
 	
 test bool shlouldNotGiveErrorWhenUsingVoidValueOnMethod() =
-	checkType(voidValue(), method(\public(), voidValue(), "prop", [], []), newEnv(|tmp:///User.g|)) == 
+	checkType(voidValue(), method(\public(), voidValue(), "prop", [], [], emptyExpr()), newEnv(|tmp:///User.g|)) == 
 	newEnv(|tmp:///User.g|);
 
 test bool shlouldNotGiveErrorsForListAndMapTypes() =

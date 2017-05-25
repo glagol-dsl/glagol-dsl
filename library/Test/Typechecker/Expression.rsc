@@ -4,213 +4,210 @@ import Typechecker::Expression;
 import Syntax::Abstract::Glagol;
 import Typechecker::Env;
 
-TypeEnv emptyEnv = newEnv(|tmp:///|);
-
 // Lookup literal types
-test bool shouldReturnIntegerWhenLookingUpTypeForIntegerLiteral() = integer() == lookupType(integer(5), emptyEnv);
-test bool shouldReturnFloatWhenLookingUpTypeForFloatLiteral() = float() == lookupType(float(5.3), emptyEnv);
-test bool shouldReturnStringWhenLookingUpTypeForStringLiteral() = string() == lookupType(string("dasads"), emptyEnv);
-test bool shouldReturnBooleanWhenLookingUpTypeForBooleanTrueLiteral() = boolean() == lookupType(boolean(true), emptyEnv);
-test bool shouldReturnBooleanWhenLookingUpTypeForBooleanFalseLiteral() = boolean() == lookupType(boolean(true), emptyEnv);
+test bool shouldReturnIntegerWhenLookingUpTypeForIntegerLiteral() = integer() == lookupType(integer(5), newEnv(|tmp:///|));
+test bool shouldReturnFloatWhenLookingUpTypeForFloatLiteral() = float() == lookupType(float(5.3), newEnv(|tmp:///|));
+test bool shouldReturnStringWhenLookingUpTypeForStringLiteral() = string() == lookupType(string("dasads"), newEnv(|tmp:///|));
+test bool shouldReturnBooleanWhenLookingUpTypeForBooleanTrueLiteral() = boolean() == lookupType(boolean(true), newEnv(|tmp:///|));
+test bool shouldReturnBooleanWhenLookingUpTypeForBooleanFalseLiteral() = boolean() == lookupType(boolean(true), newEnv(|tmp:///|));
 
 // Lookup list types
 test bool shouldReturnTheFirstElementTypeWhenLookingUpTypeForLists() = 
-    \list(integer()) == lookupType(\list([integer(5)]), emptyEnv);
+    \list(integer()) == lookupType(\list([integer(5)]), newEnv(|tmp:///|));
     
 test bool shouldReturnTheFirstElementTypeWhenLookingUpTypeForTwoMemberLists() = 
-    \list(integer()) == lookupType(\list([integer(5), integer(6)]), emptyEnv);
+    \list(integer()) == lookupType(\list([integer(5), integer(6)]), newEnv(|tmp:///|));
 
 test bool shouldReturnUnknownTypeWhenLookingUpTypeForListWithDifferentValueTypes() = 
-    \list(unknownType()) == lookupType(\list([integer(5), string("dassd")]), emptyEnv);
+    \list(unknownType()) == lookupType(\list([integer(5), string("dassd")]), newEnv(|tmp:///|));
     
 test bool shouldReturnUnTypeWhenLookingUpTypeForListWithDifferentValueTypes2() = 
-    \list(unknownType()) == lookupType(\list([string("dasdsa"), float(445.23)]), emptyEnv);
+    \list(unknownType()) == lookupType(\list([string("dasdsa"), float(445.23)]), newEnv(|tmp:///|));
     
 test bool shouldReturnVoidListTypeWhenLookingUpTypeForListNoElements() = 
-    \list(voidValue()) == lookupType(\list([]), emptyEnv);
+    \list(voidValue()) == lookupType(\list([]), newEnv(|tmp:///|));
     
 // Lookup map types
 test bool shouldReturnTheFirstElementTypeWhenLookingUpTypeForMaps() = 
-    \map(string(), integer()) == lookupType(\map((string("key1"): integer(5))), emptyEnv);
+    \map(string(), integer()) == lookupType(\map((string("key1"): integer(5))), newEnv(|tmp:///|));
     
 test bool shouldReturnTheFirstElementTypeWhenLookingUpTypeForTwoMemberMaps() = 
-    \map(string(), integer()) == lookupType(\map((string("key1"): integer(5), string("key2"): integer(6))), emptyEnv);
+    \map(string(), integer()) == lookupType(\map((string("key1"): integer(5), string("key2"): integer(6))), newEnv(|tmp:///|));
 
 test bool shouldReturnUnknownTypeWhenLookingUpTypeForMapWithDifferentValueTypes() = 
-    \map(string(), unknownType()) == lookupType(\map((string("key1"): integer(5), string("key2"): string("dassd"))), emptyEnv);
+    \map(string(), unknownType()) == lookupType(\map((string("key1"): integer(5), string("key2"): string("dassd"))), newEnv(|tmp:///|));
     
 test bool shouldReturnUnknownTypeWhenLookingUpTypeForMapWithDifferentValueTypes2() = 
-    \map(string(), unknownType()) == lookupType(\map((string("key1"): string("dasdsa"), string("key2"): float(445.23))), emptyEnv);
+    \map(string(), unknownType()) == lookupType(\map((string("key1"): string("dasdsa"), string("key2"): float(445.23))), newEnv(|tmp:///|));
     
 test bool shouldReturnVoidListTypeWhenLookingUpTypeForMapNoElements() = 
-    \map(unknownType(), unknownType()) == lookupType(\map(()), emptyEnv);
+    \map(unknownType(), unknownType()) == lookupType(\map(()), newEnv(|tmp:///|));
 
 // Lookup array access 
 test bool shouldReturnIntegerTypeFromAListUsingIndexToAccessIt() = 
-    integer() == lookupType(arrayAccess(\list([integer(5), integer(4)]), integer(0)), emptyEnv);
+    integer() == lookupType(arrayAccess(\list([integer(5), integer(4)]), integer(0)), newEnv(|tmp:///|));
     
 test bool shouldReturnListStrTypeFromAListUsingIndexToAccessIt() = 
-    \list(string()) == lookupType(arrayAccess(\list([\list([string("blah"), string("blah2")]), \list([string("blah3")])]), integer(0)), emptyEnv);
+    \list(string()) == lookupType(arrayAccess(\list([\list([string("blah"), string("blah2")]), \list([string("blah3")])]), integer(0)), newEnv(|tmp:///|));
 
 test bool shouldReturnUnknownTypeWhenTryingToAccessNonArray() = 
-    unknownType() == lookupType(arrayAccess(integer(5), integer(0)), emptyEnv);
+    unknownType() == lookupType(arrayAccess(integer(5), integer(0)), newEnv(|tmp:///|));
 
 test bool shouldReturnIntegerTypeFromAMapUsingIndexToAccessIt() = 
-    integer() == lookupType(arrayAccess(\map((string("first"): integer(5), string("second"): integer(4))), string("second")), emptyEnv);
+    integer() == lookupType(arrayAccess(\map((string("first"): integer(5), string("second"): integer(4))), string("second")), newEnv(|tmp:///|));
 
 // Variables
 test bool shouldReturnUnknownTypeForVariableThatIsNotInEnv() =
-    unknownType() == lookupType(variable("myVar"), emptyEnv);
+    unknownType() == lookupType(variable("myVar"), newEnv(|tmp:///|));
 
 test bool shouldReturnStringTypeForLocalVariableThatIsInEnv() =
-    string() == lookupType(variable("myVar"), addDefinition(declare(string(), variable("myVar"), emptyStmt()), emptyEnv));
+    string() == lookupType(variable("myVar"), addDefinition(declare(string(), variable("myVar"), emptyStmt()), newEnv(|tmp:///|)));
     
 test bool shouldReturnStringTypeForFieldPropertyThatIsInEnv() =
-    integer() == lookupType(variable("myVar"), addDefinition(property(integer(), "myVar", {}, emptyExpr()), emptyEnv));
+    integer() == lookupType(variable("myVar"), addDefinition(property(integer(), "myVar", {}, emptyExpr()), newEnv(|tmp:///|)));
     
 test bool shouldReturnStringTypeForParamThatIsInEnv() =
-    float() == lookupType(variable("myVar"), addDefinition(param(float(), "myVar", emptyExpr()), emptyEnv));
+    float() == lookupType(variable("myVar"), addDefinition(param(float(), "myVar", emptyExpr()), newEnv(|tmp:///|)));
 
-test bool shouldReturnIntegerTypeForIntegerInBrackets() = integer() == lookupType(\bracket(integer(12)), emptyEnv);
+test bool shouldReturnIntegerTypeForIntegerInBrackets() = integer() == lookupType(\bracket(integer(12)), newEnv(|tmp:///|));
 
-test bool shouldReturnIntegerTypeForProductOfIntegers() = integer() == lookupType(product(integer(23), integer(33)), emptyEnv);
-test bool shouldReturnFloatTypeForProductOfFloats() = float() == lookupType(product(float(23.22), float(33.33)), emptyEnv);
-test bool shouldReturnUnknownTypeForProductOfStrings() = unknownType() == lookupType(product(string("adsdassda"), string("adsadsads")), emptyEnv);
+test bool shouldReturnIntegerTypeForProductOfIntegers() = integer() == lookupType(product(integer(23), integer(33)), newEnv(|tmp:///|));
+test bool shouldReturnFloatTypeForProductOfFloats() = float() == lookupType(product(float(23.22), float(33.33)), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeForProductOfStrings() = unknownType() == lookupType(product(string("adsdassda"), string("adsadsads")), newEnv(|tmp:///|));
 
-test bool shouldReturnIntegerTypeForRemainderOfIntegers() = integer() == lookupType(remainder(integer(23), integer(33)), emptyEnv);
-test bool shouldReturnFloatTypeForRemainderOfFloats() = float() == lookupType(remainder(float(23.22), float(33.33)), emptyEnv);
-test bool shouldReturnUnknownTypeForRemainderOfStrings() = unknownType() == lookupType(remainder(string("adsdassda"), string("adsadsads")), emptyEnv);
+test bool shouldReturnIntegerTypeForRemainderOfIntegers() = integer() == lookupType(remainder(integer(23), integer(33)), newEnv(|tmp:///|));
+test bool shouldReturnFloatTypeForRemainderOfFloats() = float() == lookupType(remainder(float(23.22), float(33.33)), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeForRemainderOfStrings() = unknownType() == lookupType(remainder(string("adsdassda"), string("adsadsads")), newEnv(|tmp:///|));
 
-test bool shouldReturnIntegerTypeForDivOfIntegers() = integer() == lookupType(division(integer(23), integer(33)), emptyEnv);
-test bool shouldReturnFloatTypeForDivOfFloats() = float() == lookupType(division(float(23.22), float(33.33)), emptyEnv);
-test bool shouldReturnUnknownTypeForDivOfStrings() = unknownType() == lookupType(division(string("adsdassda"), string("adsadsads")), emptyEnv);
+test bool shouldReturnIntegerTypeForDivOfIntegers() = integer() == lookupType(division(integer(23), integer(33)), newEnv(|tmp:///|));
+test bool shouldReturnFloatTypeForDivOfFloats() = float() == lookupType(division(float(23.22), float(33.33)), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeForDivOfStrings() = unknownType() == lookupType(division(string("adsdassda"), string("adsadsads")), newEnv(|tmp:///|));
 
-test bool shoudReturnStringTypeForAddOfStrings() = string() == lookupType(addition(string("test"), string("test")), emptyEnv);
-test bool shoudReturnIntegerTypeForAddOfIntegers() = integer() == lookupType(addition(integer(1), integer(2)), emptyEnv);
-test bool shoudReturnFloatTypeForAddOfFloats() = float() == lookupType(addition(float(1.2), float(2.2)), emptyEnv);
+test bool shoudReturnStringTypeForAddOfStrings() = string() == lookupType(addition(string("test"), string("test")), newEnv(|tmp:///|));
+test bool shoudReturnIntegerTypeForAddOfIntegers() = integer() == lookupType(addition(integer(1), integer(2)), newEnv(|tmp:///|));
+test bool shoudReturnFloatTypeForAddOfFloats() = float() == lookupType(addition(float(1.2), float(2.2)), newEnv(|tmp:///|));
 
-test bool shoudReturnUnknownTypeForAddOfFloatAndInt() = unknownType() == lookupType(addition(float(1.2), integer(2)), emptyEnv);
+test bool shoudReturnUnknownTypeForAddOfFloatAndInt() = unknownType() == lookupType(addition(float(1.2), integer(2)), newEnv(|tmp:///|));
 
-test bool shouldReturnIntegerTypeForSubOfIntegers() = integer() == lookupType(subtraction(integer(23), integer(33)), emptyEnv);
-test bool shouldReturnFloatTypeForSubOfFloats() = float() == lookupType(subtraction(float(23.22), float(33.33)), emptyEnv);
-test bool shouldReturnUnknownTypeForSubOfStrings() = unknownType() == lookupType(subtraction(string("adsdassda"), string("adsadsads")), emptyEnv);
+test bool shouldReturnIntegerTypeForSubOfIntegers() = integer() == lookupType(subtraction(integer(23), integer(33)), newEnv(|tmp:///|));
+test bool shouldReturnFloatTypeForSubOfFloats() = float() == lookupType(subtraction(float(23.22), float(33.33)), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeForSubOfStrings() = unknownType() == lookupType(subtraction(string("adsdassda"), string("adsadsads")), newEnv(|tmp:///|));
 
-test bool shouldReturnBoolWhenComparingGTEOfIntegers() = boolean() == lookupType(greaterThanOrEq(integer(1), integer(2)), emptyEnv);
-test bool shouldReturnBoolWhenComparingGTEOfIntegerAndFloat() = boolean() == lookupType(greaterThanOrEq(integer(1), float(2.2)), emptyEnv);
-test bool shouldReturnBoolWhenComparingGTEOfFloats() = boolean() == lookupType(greaterThanOrEq(float(1.2), float(2.2)), emptyEnv);
-test bool shouldReturnBoolWhenComparingGTEOfFloatAndInteger() = boolean() == lookupType(greaterThanOrEq(float(1.2), integer(2)), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingGTEOfFloatAndBoolean() = unknownType() == lookupType(greaterThanOrEq(float(1.2), boolean(true)), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingGTEOfFloatAndString() = unknownType() == lookupType(greaterThanOrEq(float(1.2), string("s")), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingGTEOfBooleanAndFloat() = unknownType() == lookupType(greaterThanOrEq(boolean(true), float(1.2)), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingGTEOfBooleanAndString() = unknownType() == lookupType(greaterThanOrEq(boolean(false), string("s")), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingGTEOfBooleanAndInteger() = unknownType() == lookupType(greaterThanOrEq(boolean(false), integer(3)), emptyEnv);
+test bool shouldReturnBoolWhenComparingGTEOfIntegers() = boolean() == lookupType(greaterThanOrEq(integer(1), integer(2)), newEnv(|tmp:///|));
+test bool shouldReturnBoolWhenComparingGTEOfIntegerAndFloat() = boolean() == lookupType(greaterThanOrEq(integer(1), float(2.2)), newEnv(|tmp:///|));
+test bool shouldReturnBoolWhenComparingGTEOfFloats() = boolean() == lookupType(greaterThanOrEq(float(1.2), float(2.2)), newEnv(|tmp:///|));
+test bool shouldReturnBoolWhenComparingGTEOfFloatAndInteger() = boolean() == lookupType(greaterThanOrEq(float(1.2), integer(2)), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingGTEOfFloatAndBoolean() = unknownType() == lookupType(greaterThanOrEq(float(1.2), boolean(true)), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingGTEOfFloatAndString() = unknownType() == lookupType(greaterThanOrEq(float(1.2), string("s")), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingGTEOfBooleanAndFloat() = unknownType() == lookupType(greaterThanOrEq(boolean(true), float(1.2)), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingGTEOfBooleanAndString() = unknownType() == lookupType(greaterThanOrEq(boolean(false), string("s")), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingGTEOfBooleanAndInteger() = unknownType() == lookupType(greaterThanOrEq(boolean(false), integer(3)), newEnv(|tmp:///|));
 
-test bool shouldReturnBoolWhenComparingLTEOfIntegers() = boolean() == lookupType(lessThanOrEq(integer(1), integer(2)), emptyEnv);
-test bool shouldReturnBoolWhenComparingLTEOfIntegerAndFloat() = boolean() == lookupType(lessThanOrEq(integer(1), float(2.2)), emptyEnv);
-test bool shouldReturnBoolWhenComparingLTEOfFloats() = boolean() == lookupType(lessThanOrEq(float(1.2), float(2.2)), emptyEnv);
-test bool shouldReturnBoolWhenComparingLTEOfFloatAndInteger() = boolean() == lookupType(lessThanOrEq(float(1.2), integer(2)), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingLTEOfFloatAndBoolean() = unknownType() == lookupType(lessThanOrEq(float(1.2), boolean(true)), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingLTEOfFloatAndString() = unknownType() == lookupType(lessThanOrEq(float(1.2), string("s")), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingLTEOfBooleanAndFloat() = unknownType() == lookupType(lessThanOrEq(boolean(true), float(1.2)), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingLTEOfBooleanAndString() = unknownType() == lookupType(lessThanOrEq(boolean(false), string("s")), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingLTEOfBooleanAndInteger() = unknownType() == lookupType(lessThanOrEq(boolean(false), integer(3)), emptyEnv);
+test bool shouldReturnBoolWhenComparingLTEOfIntegers() = boolean() == lookupType(lessThanOrEq(integer(1), integer(2)), newEnv(|tmp:///|));
+test bool shouldReturnBoolWhenComparingLTEOfIntegerAndFloat() = boolean() == lookupType(lessThanOrEq(integer(1), float(2.2)), newEnv(|tmp:///|));
+test bool shouldReturnBoolWhenComparingLTEOfFloats() = boolean() == lookupType(lessThanOrEq(float(1.2), float(2.2)), newEnv(|tmp:///|));
+test bool shouldReturnBoolWhenComparingLTEOfFloatAndInteger() = boolean() == lookupType(lessThanOrEq(float(1.2), integer(2)), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingLTEOfFloatAndBoolean() = unknownType() == lookupType(lessThanOrEq(float(1.2), boolean(true)), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingLTEOfFloatAndString() = unknownType() == lookupType(lessThanOrEq(float(1.2), string("s")), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingLTEOfBooleanAndFloat() = unknownType() == lookupType(lessThanOrEq(boolean(true), float(1.2)), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingLTEOfBooleanAndString() = unknownType() == lookupType(lessThanOrEq(boolean(false), string("s")), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingLTEOfBooleanAndInteger() = unknownType() == lookupType(lessThanOrEq(boolean(false), integer(3)), newEnv(|tmp:///|));
 
-test bool shouldReturnBoolWhenComparingLTOfIntegers() = boolean() == lookupType(lessThan(integer(1), integer(2)), emptyEnv);
-test bool shouldReturnBoolWhenComparingLTOfIntegerAndFloat() = boolean() == lookupType(lessThan(integer(1), float(2.2)), emptyEnv);
-test bool shouldReturnBoolWhenComparingLTOfFloats() = boolean() == lookupType(lessThan(float(1.2), float(2.2)), emptyEnv);
-test bool shouldReturnBoolWhenComparingLTOfFloatAndInteger() = boolean() == lookupType(lessThan(float(1.2), integer(2)), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingLTOfFloatAndBoolean() = unknownType() == lookupType(lessThan(float(1.2), boolean(true)), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingLTOfFloatAndString() = unknownType() == lookupType(lessThan(float(1.2), string("s")), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingLTOfBooleanAndFloat() = unknownType() == lookupType(lessThan(boolean(true), float(1.2)), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingLTOfBooleanAndString() = unknownType() == lookupType(lessThan(boolean(false), string("s")), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingLTOfBooleanAndInteger() = unknownType() == lookupType(lessThan(boolean(false), integer(3)), emptyEnv);
+test bool shouldReturnBoolWhenComparingLTOfIntegers() = boolean() == lookupType(lessThan(integer(1), integer(2)), newEnv(|tmp:///|));
+test bool shouldReturnBoolWhenComparingLTOfIntegerAndFloat() = boolean() == lookupType(lessThan(integer(1), float(2.2)), newEnv(|tmp:///|));
+test bool shouldReturnBoolWhenComparingLTOfFloats() = boolean() == lookupType(lessThan(float(1.2), float(2.2)), newEnv(|tmp:///|));
+test bool shouldReturnBoolWhenComparingLTOfFloatAndInteger() = boolean() == lookupType(lessThan(float(1.2), integer(2)), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingLTOfFloatAndBoolean() = unknownType() == lookupType(lessThan(float(1.2), boolean(true)), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingLTOfFloatAndString() = unknownType() == lookupType(lessThan(float(1.2), string("s")), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingLTOfBooleanAndFloat() = unknownType() == lookupType(lessThan(boolean(true), float(1.2)), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingLTOfBooleanAndString() = unknownType() == lookupType(lessThan(boolean(false), string("s")), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingLTOfBooleanAndInteger() = unknownType() == lookupType(lessThan(boolean(false), integer(3)), newEnv(|tmp:///|));
 
-test bool shouldReturnBoolWhenComparingGTOfIntegers() = boolean() == lookupType(greaterThan(integer(1), integer(2)), emptyEnv);
-test bool shouldReturnBoolWhenComparingGTOfIntegerAndFloat() = boolean() == lookupType(greaterThan(integer(1), float(2.2)), emptyEnv);
-test bool shouldReturnBoolWhenComparingGTOfFloats() = boolean() == lookupType(greaterThan(float(1.2), float(2.2)), emptyEnv);
-test bool shouldReturnBoolWhenComparingGTOfFloatAndInteger() = boolean() == lookupType(greaterThan(float(1.2), integer(2)), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingGTOfFloatAndBoolean() = unknownType() == lookupType(greaterThan(float(1.2), boolean(true)), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingGTOfFloatAndString() = unknownType() == lookupType(greaterThan(float(1.2), string("s")), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingGTOfBooleanAndFloat() = unknownType() == lookupType(greaterThan(boolean(true), float(1.2)), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingGTOfBooleanAndString() = unknownType() == lookupType(greaterThan(boolean(false), string("s")), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingGTOfBooleanAndInteger() = unknownType() == lookupType(greaterThan(boolean(false), integer(3)), emptyEnv);
+test bool shouldReturnBoolWhenComparingGTOfIntegers() = boolean() == lookupType(greaterThan(integer(1), integer(2)), newEnv(|tmp:///|));
+test bool shouldReturnBoolWhenComparingGTOfIntegerAndFloat() = boolean() == lookupType(greaterThan(integer(1), float(2.2)), newEnv(|tmp:///|));
+test bool shouldReturnBoolWhenComparingGTOfFloats() = boolean() == lookupType(greaterThan(float(1.2), float(2.2)), newEnv(|tmp:///|));
+test bool shouldReturnBoolWhenComparingGTOfFloatAndInteger() = boolean() == lookupType(greaterThan(float(1.2), integer(2)), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingGTOfFloatAndBoolean() = unknownType() == lookupType(greaterThan(float(1.2), boolean(true)), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingGTOfFloatAndString() = unknownType() == lookupType(greaterThan(float(1.2), string("s")), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingGTOfBooleanAndFloat() = unknownType() == lookupType(greaterThan(boolean(true), float(1.2)), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingGTOfBooleanAndString() = unknownType() == lookupType(greaterThan(boolean(false), string("s")), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingGTOfBooleanAndInteger() = unknownType() == lookupType(greaterThan(boolean(false), integer(3)), newEnv(|tmp:///|));
 
-test bool shouldReturnBooleanWhenComparingEQOfStrings() = boolean() == lookupType(equals(string("dasda"), string("dads")), emptyEnv);
-test bool shouldReturnBooleanWhenComparingEQOfIntegers() = boolean() == lookupType(equals(integer(1), integer(2)), emptyEnv);
-test bool shouldReturnBooleanWhenComparingEQOfIntegerAndFloat() = boolean() == lookupType(equals(integer(1), float(2.2)), emptyEnv);
-test bool shouldReturnBooleanWhenComparingEQOfFloats() = boolean() == lookupType(equals(float(1.2), float(2.2)), emptyEnv);
-test bool shouldReturnBooleanWhenComparingEQOfFloatAndInteger() = boolean() == lookupType(equals(float(1.2), integer(2)), emptyEnv);
-test bool shouldReturnUnknownTypeWhenComparingEQOfFloatAndBoolean() = unknownType() == lookupType(equals(float(1.2), boolean(true)), emptyEnv);
-test bool shouldReturnUnknownTypeWhenComparingEQOfFloatAndString() = unknownType() == lookupType(equals(float(1.2), string("s")), emptyEnv);
-test bool shouldReturnUnknownTypeWhenComparingEQOfBooleanAndFloat() = unknownType() == lookupType(equals(boolean(true), float(1.2)), emptyEnv);
-test bool shouldReturnUnknownTypeWhenComparingEQOfBooleanAndString() = unknownType() == lookupType(equals(boolean(false), string("s")), emptyEnv);
-test bool shouldReturnUnknownTypeWhenComparingEQOfBooleanAndInteger() = unknownType() == lookupType(equals(boolean(false), integer(3)), emptyEnv);
+test bool shouldReturnBooleanWhenComparingEQOfStrings() = boolean() == lookupType(equals(string("dasda"), string("dads")), newEnv(|tmp:///|));
+test bool shouldReturnBooleanWhenComparingEQOfIntegers() = boolean() == lookupType(equals(integer(1), integer(2)), newEnv(|tmp:///|));
+test bool shouldReturnBooleanWhenComparingEQOfIntegerAndFloat() = boolean() == lookupType(equals(integer(1), float(2.2)), newEnv(|tmp:///|));
+test bool shouldReturnBooleanWhenComparingEQOfFloats() = boolean() == lookupType(equals(float(1.2), float(2.2)), newEnv(|tmp:///|));
+test bool shouldReturnBooleanWhenComparingEQOfFloatAndInteger() = boolean() == lookupType(equals(float(1.2), integer(2)), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeWhenComparingEQOfFloatAndBoolean() = unknownType() == lookupType(equals(float(1.2), boolean(true)), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeWhenComparingEQOfFloatAndString() = unknownType() == lookupType(equals(float(1.2), string("s")), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeWhenComparingEQOfBooleanAndFloat() = unknownType() == lookupType(equals(boolean(true), float(1.2)), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeWhenComparingEQOfBooleanAndString() = unknownType() == lookupType(equals(boolean(false), string("s")), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeWhenComparingEQOfBooleanAndInteger() = unknownType() == lookupType(equals(boolean(false), integer(3)), newEnv(|tmp:///|));
 
-test bool shouldReturnBoolWhenComparingNonEQOfStrings() = boolean() == lookupType(nonEquals(string("dasda"), string("dads")), emptyEnv);
-test bool shouldReturnBoolWhenComparingNonEQOfIntegers() = boolean() == lookupType(nonEquals(integer(1), integer(2)), emptyEnv);
-test bool shouldReturnBoolWhenComparingNonEQOfIntegerAndFloat() = boolean() == lookupType(nonEquals(integer(1), float(2.2)), emptyEnv);
-test bool shouldReturnBoolWhenComparingNonEQOfFloats() = boolean() == lookupType(nonEquals(float(1.2), float(2.2)), emptyEnv);
-test bool shouldReturnBoolWhenComparingNonEQOfFloatAndInteger() = boolean() == lookupType(nonEquals(float(1.2), integer(2)), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingNonEQOfFloatAndBoolean() = unknownType() == lookupType(nonEquals(float(1.2), boolean(true)), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingNonEQOfFloatAndString() = unknownType() == lookupType(nonEquals(float(1.2), string("s")), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingNonEQOfBooleanAndFloat() = unknownType() == lookupType(nonEquals(boolean(true), float(1.2)), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingNonEQOfBooleanAndString() = unknownType() == lookupType(nonEquals(boolean(false), string("s")), emptyEnv);
-test bool shouldReturnUnTypeWhenComparingNonEQOfBooleanAndInteger() = unknownType() == lookupType(nonEquals(boolean(false), integer(3)), emptyEnv);
+test bool shouldReturnBoolWhenComparingNonEQOfStrings() = boolean() == lookupType(nonEquals(string("dasda"), string("dads")), newEnv(|tmp:///|));
+test bool shouldReturnBoolWhenComparingNonEQOfIntegers() = boolean() == lookupType(nonEquals(integer(1), integer(2)), newEnv(|tmp:///|));
+test bool shouldReturnBoolWhenComparingNonEQOfIntegerAndFloat() = boolean() == lookupType(nonEquals(integer(1), float(2.2)), newEnv(|tmp:///|));
+test bool shouldReturnBoolWhenComparingNonEQOfFloats() = boolean() == lookupType(nonEquals(float(1.2), float(2.2)), newEnv(|tmp:///|));
+test bool shouldReturnBoolWhenComparingNonEQOfFloatAndInteger() = boolean() == lookupType(nonEquals(float(1.2), integer(2)), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingNonEQOfFloatAndBoolean() = unknownType() == lookupType(nonEquals(float(1.2), boolean(true)), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingNonEQOfFloatAndString() = unknownType() == lookupType(nonEquals(float(1.2), string("s")), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingNonEQOfBooleanAndFloat() = unknownType() == lookupType(nonEquals(boolean(true), float(1.2)), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingNonEQOfBooleanAndString() = unknownType() == lookupType(nonEquals(boolean(false), string("s")), newEnv(|tmp:///|));
+test bool shouldReturnUnTypeWhenComparingNonEQOfBooleanAndInteger() = unknownType() == lookupType(nonEquals(boolean(false), integer(3)), newEnv(|tmp:///|));
 
-test bool shouldReturnBooleanTypeOnConjunctionOfBooleans() = boolean() == lookupType(and(boolean(true), boolean(false)), emptyEnv);
-test bool shouldReturnUnknownTypeOnConjunctionOfNonBooleans() = unknownType() == lookupType(and(boolean(true), integer(1)), emptyEnv);
+test bool shouldReturnBooleanTypeOnConjunctionOfBooleans() = boolean() == lookupType(and(boolean(true), boolean(false)), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeOnConjunctionOfNonBooleans() = unknownType() == lookupType(and(boolean(true), integer(1)), newEnv(|tmp:///|));
 
-test bool shouldReturnBooleanTypeOnDisjunctionOfBooleans() = boolean() == lookupType(or(boolean(true), boolean(false)), emptyEnv);
-test bool shouldReturnUnknownTypeOnDisjunctionOfNonBooleans() = unknownType() == lookupType(or(boolean(true), integer(1)), emptyEnv);
+test bool shouldReturnBooleanTypeOnDisjunctionOfBooleans() = boolean() == lookupType(or(boolean(true), boolean(false)), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeOnDisjunctionOfNonBooleans() = unknownType() == lookupType(or(boolean(true), integer(1)), newEnv(|tmp:///|));
 
-test bool shouldReturnIntegerTypeOnPositiveInteger() = integer() == lookupType(positive(integer(2)), emptyEnv);
-test bool shouldReturnIntegerTypeOnPositiveFloat() = float() == lookupType(positive(float(2.2)), emptyEnv);
+test bool shouldReturnIntegerTypeOnPositiveInteger() = integer() == lookupType(positive(integer(2)), newEnv(|tmp:///|));
+test bool shouldReturnIntegerTypeOnPositiveFloat() = float() == lookupType(positive(float(2.2)), newEnv(|tmp:///|));
 
-test bool shouldReturnIntegerTypeOnNegativeInteger() = integer() == lookupType(negative(integer(2)), emptyEnv);
-test bool shouldReturnIntegerTypeOnNegativeFloat() = float() == lookupType(negative(float(2.2)), emptyEnv);
+test bool shouldReturnIntegerTypeOnNegativeInteger() = integer() == lookupType(negative(integer(2)), newEnv(|tmp:///|));
+test bool shouldReturnIntegerTypeOnNegativeFloat() = float() == lookupType(negative(float(2.2)), newEnv(|tmp:///|));
 
-test bool shouldReturnIntegerOnTernaryOfIntegers() = integer() == lookupType(ifThenElse(boolean(true), integer(1), integer(2)), emptyEnv);
-test bool shouldReturnFloatOnTernaryOfFloats() = float() == lookupType(ifThenElse(boolean(true), float(1.1), float(2.2)), emptyEnv);
-test bool shouldReturnBooleanOnTernaryOfBooleans() = boolean() == lookupType(ifThenElse(boolean(true), boolean(true), boolean(false)), emptyEnv);
-test bool shouldReturnStringOnTernaryOfStrings() = string() == lookupType(ifThenElse(boolean(true), string("s"), string("b")), emptyEnv);
-test bool shouldReturnListOnTernaryOfLists() = \list(integer()) == lookupType(ifThenElse(boolean(true), \list([integer(1), integer(2)]), \list([integer(3), integer(4)])), emptyEnv);
+test bool shouldReturnIntegerOnTernaryOfIntegers() = integer() == lookupType(ifThenElse(boolean(true), integer(1), integer(2)), newEnv(|tmp:///|));
+test bool shouldReturnFloatOnTernaryOfFloats() = float() == lookupType(ifThenElse(boolean(true), float(1.1), float(2.2)), newEnv(|tmp:///|));
+test bool shouldReturnBooleanOnTernaryOfBooleans() = boolean() == lookupType(ifThenElse(boolean(true), boolean(true), boolean(false)), newEnv(|tmp:///|));
+test bool shouldReturnStringOnTernaryOfStrings() = string() == lookupType(ifThenElse(boolean(true), string("s"), string("b")), newEnv(|tmp:///|));
+test bool shouldReturnListOnTernaryOfLists() = \list(integer()) == lookupType(ifThenElse(boolean(true), \list([integer(1), integer(2)]), \list([integer(3), integer(4)])), newEnv(|tmp:///|));
 test bool shouldReturnMapOnTernaryOfMaps() = 
-    \map(integer(), string()) == lookupType(ifThenElse(boolean(true), \map((integer(1): string("s"))), \map((integer(2): string("s")))), emptyEnv);
+    \map(integer(), string()) == lookupType(ifThenElse(boolean(true), \map((integer(1): string("s"))), \map((integer(2): string("s")))), newEnv(|tmp:///|));
 test bool shouldReturnArtifactOnTernaryOfSameArtifacts() = 
     artifact("User") == lookupType(ifThenElse(boolean(true), get(artifact("User")), get(artifact("User"))), addImported(\import("User", namespace("Test"), "User"), addToAST(
 		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))),
-		emptyEnv)));
+		newEnv(|tmp:///|))));
 test bool shouldReturnUnknownTypeOnTernaryOfDifferentArtifacts() = 
-    unknownType() == lookupType(ifThenElse(boolean(true), get(artifact("User")), get(artifact("Customer"))), emptyEnv);
+    unknownType() == lookupType(ifThenElse(boolean(true), get(artifact("User")), get(artifact("Customer"))), newEnv(|tmp:///|));
 test bool shouldReturnRepositoryOnTernaryOfSameRepositories() = 
-    repository("User") == lookupType(ifThenElse(boolean(true), get(repository("User")), get(repository("User"))), emptyEnv);
+    repository("User") == lookupType(ifThenElse(boolean(true), get(repository("User")), get(repository("User"))), newEnv(|tmp:///|));
 test bool shouldReturnUnknownTypeOnTernaryOfDifferentRepositories() = 
-    unknownType() == lookupType(ifThenElse(boolean(true), get(repository("User")), get(repository("Customer"))), emptyEnv);
+    unknownType() == lookupType(ifThenElse(boolean(true), get(repository("User")), get(repository("Customer"))), newEnv(|tmp:///|));
 test bool shouldReturnUnTypeOnDifferentTypes() = 
-    unknownType() == lookupType(ifThenElse(boolean(true), integer(2), get(artifact("User"))), emptyEnv);
+    unknownType() == lookupType(ifThenElse(boolean(true), integer(2), get(artifact("User"))), newEnv(|tmp:///|));
 
-test bool shouldReturnArtifactTypeOnNew() = artifact("User") == lookupType(new("User", []), emptyEnv);
+test bool shouldReturnArtifactTypeOnNew() = artifact("User") == lookupType(new("User", []), newEnv(|tmp:///|));
 
-test bool shouldReturnUnknownTypeOnGetUnimportedArtifact() = unknownType() == lookupType(get(artifact("User")), emptyEnv);
+test bool shouldReturnUnknownTypeOnGetUnimportedArtifact() = unknownType() == lookupType(get(artifact("User")), newEnv(|tmp:///|));
 test bool shouldReturnUnknownTypeOnGetArtifactWhichIsEntity() = unknownType() == lookupType(get(artifact("User")), addImported(\import("User", namespace("Test"), "User"), addToAST(
 		file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", []))),
-		emptyEnv)));
+		newEnv(|tmp:///|))));
 test bool shouldReturnArtifactTypeOnGetArtifactWhichIsUtil() = 
 	artifact("User") == lookupType(get(artifact("User")), addImported(\import("User", namespace("Test"), "User"), addToAST(
 		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))),
-		emptyEnv)));
+		newEnv(|tmp:///|))));
 test bool shouldReturnUnknownTypeOnGetArtifactWhichIsValueObject() = 
 	unknownType() == lookupType(get(artifact("User")), addImported(\import("User", namespace("Test"), "User"), addToAST(
 		file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("User", []))),
-		emptyEnv)));
-test bool shouldReturnRepositoryTypeOnGetRepository() = repository("User") == lookupType(get(repository("User")), emptyEnv);
-test bool shouldReturnSelfieTypeOnGetSelfie() = selfie() == lookupType(get(selfie()), emptyEnv);
-test bool shouldReturnUnknownTypeOnGetVoid() = unknownType() == lookupType(get(voidValue()), emptyEnv);
-test bool shouldReturnUnknownTypeOnGetString() = unknownType() == lookupType(get(string()), emptyEnv);
-test bool shouldReturnUnknownTypeOnGetFloat() = unknownType() == lookupType(get(float()), emptyEnv);
-test bool shouldReturnUnknownTypeOnGetInteger() = unknownType() == lookupType(get(integer()), emptyEnv);
-test bool shouldReturnUnknownTypeOnGetBoolean() = unknownType() == lookupType(get(boolean()), emptyEnv);
-test bool shouldReturnUnknownTypeOnGetList() = unknownType() == lookupType(get(\list(string())), emptyEnv);
-test bool shouldReturnUnknownTypeOnGetMap() = unknownType() == lookupType(get(\map(string(), integer())), emptyEnv);
-
+		newEnv(|tmp:///|))));
+test bool shouldReturnRepositoryTypeOnGetRepository() = repository("User") == lookupType(get(repository("User")), newEnv(|tmp:///|));
+test bool shouldReturnSelfieTypeOnGetSelfie() = selfie() == lookupType(get(selfie()), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeOnGetVoid() = unknownType() == lookupType(get(voidValue()), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeOnGetString() = unknownType() == lookupType(get(string()), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeOnGetFloat() = unknownType() == lookupType(get(float()), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeOnGetInteger() = unknownType() == lookupType(get(integer()), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeOnGetBoolean() = unknownType() == lookupType(get(boolean()), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeOnGetList() = unknownType() == lookupType(get(\list(string())), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeOnGetMap() = unknownType() == lookupType(get(\map(string(), integer())), newEnv(|tmp:///|));
 

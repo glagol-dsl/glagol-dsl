@@ -23,6 +23,6 @@ test bool shouldParseMapDeclaration()
         ], [
             declare(\map(string(), integer()), variable("query"), expression(\map((string("id"): variable("id"))))),
             \return(invoke("findOneBy", [variable("query")]))
-        ])
+        ], emptyExpr())
     ]));
 }

@@ -5,10 +5,10 @@ env:
 - RASCAL_JAR="$HOME/rascal/rascal-shell-unstable.jar"
 install: true
 script:
-- bin/get_rascal
-- bin/build
+- build/get_rascal
+- build/build
 - mvn clean package
-- bin/glagol test
+- build/glagol test
 cache:
   directories:
   - "$HOME/rascal"

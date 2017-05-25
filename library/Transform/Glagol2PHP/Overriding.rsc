@@ -17,17 +17,17 @@ public PhpExpr createOverrideRule(list[Declaration] params, list[Statement] body
     );
     
 public PhpExpr createOverrideRule(list[Declaration] params, list[Statement] body, Expression when)
-    = phpMethodCall(createOverrideRule(constructor(params, body)), phpName(phpName("when")), [
+    = phpMethodCall(createOverrideRule(constructor(params, body, emptyExpr())), phpName(phpName("when")), [
         phpActualParameter(phpClosure([
             phpReturn(phpSomeExpr(toPhpExpr(when)))
         ], [toPhpParam(param) | param <- params], [], false, false), false)
     ]);
 
-public PhpExpr createOverrideRule(constructor(list[Declaration] params, list[Statement] body)) 
+public PhpExpr createOverrideRule(constructor(list[Declaration] params, list[Statement] body, emptyExpr())) 
     = createOverrideRule(params, body);
 public PhpExpr createOverrideRule(constructor(list[Declaration] params, list[Statement] body, Expression when))
     = createOverrideRule(params, body, when);
-public PhpExpr createOverrideRule(method(_, _, _, list[Declaration] params, list[Statement] body)) 
+public PhpExpr createOverrideRule(method(_, _, _, list[Declaration] params, list[Statement] body, emptyExpr())) 
     = createOverrideRule(params, body);
 public PhpExpr createOverrideRule(method(_, _, _, list[Declaration] params, list[Statement] body, Expression when))
     = createOverrideRule(params, body, when);

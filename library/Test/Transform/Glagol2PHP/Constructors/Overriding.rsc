@@ -7,8 +7,8 @@ import Transform::Glagol2PHP::Entities;
 
 test bool shouldAddOverriderWithRulesWhenTransformingOverridedConstructors() = 
     toPhpClassDef(entity("User", [
-        constructor([param(integer(), "a", emptyExpr())], []),
-        constructor([param(string(), "b", emptyExpr())], []),
+        constructor([param(integer(), "a", emptyExpr())], [], emptyExpr()),
+        constructor([param(string(), "b", emptyExpr())], [], emptyExpr()),
         constructor([param(float(), "c", emptyExpr())], [], equals(variable("c"), integer(7)))
     ]), <zend(), doctrine()>) == 
     phpClassDef(phpClass(
@@ -50,7 +50,7 @@ test bool shouldAddOverriderWithRulesWhenTransformingOverridedConstructors() =
 test bool shouldAddOverriderWithWhenRulesWhenTransformingOverridedConstructors() = 
     toPhpClassDef(entity("User", [
         constructor([param(integer(), "a", emptyExpr())], [], equals(variable("a"), integer(7))),
-        constructor([param(integer(), "b", emptyExpr())], []),
+        constructor([param(integer(), "b", emptyExpr())], [], emptyExpr()),
         constructor([param(integer(), "c", emptyExpr())], [], greaterThan(variable("c"), integer(13)))
     ]), <zend(), doctrine()>) == 
     phpClassDef(phpClass(

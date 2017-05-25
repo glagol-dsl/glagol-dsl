@@ -58,7 +58,7 @@ test bool canUseRepositorySelfieAsParamDefaultValue()
         \module(namespace("Test"), [], util("UserCreator", [
             method(\public(), voidValue(), "make", [
                 param(repository("User"), "userRepository", get(repository("User")))
-            ], [])
+            ], [], emptyExpr())
         ]));
 }
 
@@ -78,7 +78,7 @@ test bool canUseRepositoryAssocArtifactInExpression()
             method(\public(), voidValue(), "blah", [], [
                 expression(get(repository("User"))),
                 expression(invoke(get(repository("User")), "findOneById", [integer(1)]))
-            ])
+            ], emptyExpr())
         ]));
 }
 

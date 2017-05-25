@@ -69,3 +69,5 @@ public TypeEnv addToAST(Declaration file, TypeEnv env) = env[ast = env.ast + fil
 public TypeEnv addToAST(list[Declaration] files, TypeEnv env) = env[ast = env.ast + files];
 
 public TypeEnv setContext(Declaration ctx, TypeEnv env) = env[context = ctx];
+public Declaration getContext(TypeEnv env) = env.context;
+public TypeEnv clearContext(TypeEnv env) = setContext(emptyDecl(), env);

@@ -70,6 +70,6 @@ test bool shouldParseRepositoryWithMethodAndAMap()
             param(integer(), "id", emptyExpr())
         ], [\return(
             invoke("findOneBy", [\map((string("id"): variable("id")))])
-        )])
+        )], emptyExpr())
     ]));
 }

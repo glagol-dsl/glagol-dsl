@@ -96,11 +96,11 @@ public AssignOperator convertAssignOperator(a: (AssignOperator) `+=`) = addition
 
 public Declaration convertMethod(
     a: (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`) 
-    = method(\public()[@src=a@\loc], convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body])[@src=a@\loc];
+    = method(\public()[@src=a@\loc], convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], emptyExpr())[@src=a@\loc];
 
 public Declaration convertMethod(
     a: (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`) 
-    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body])[@src=a@\loc];
+    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], emptyExpr())[@src=a@\loc];
 
 public Declaration convertMethod(
     a: (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> } <When when>;`) 
@@ -112,11 +112,11 @@ public Declaration convertMethod(
     
 public Declaration convertMethod(
     a: (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr>;`) 
-    = method(\public()[@src=a@\loc], convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))[@src=expr@\loc]])[@src=a@\loc];
+    = method(\public()[@src=a@\loc], convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))[@src=expr@\loc]], emptyExpr())[@src=a@\loc];
 
 public Declaration convertMethod(
     a: (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr>;`) 
-    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))[@src=expr@\loc]])[@src=a@\loc];
+    = method(convertModifier(modifier), convertType(returnType), "<name>", [convertParameter(p) | p <- parameters], [\return(convertExpression(expr))[@src=expr@\loc]], emptyExpr())[@src=a@\loc];
 
 public Declaration convertMethod(
     a: (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr><When when>;`) 
@@ -509,7 +509,7 @@ public Declaration convertConstructor(
         throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
     } 
     
-    return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body])[@src=a@\loc];
+    return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], emptyExpr())[@src=a@\loc];
 }
     
 public Declaration convertConstructor(
@@ -533,7 +533,7 @@ public Declaration convertConstructor(
         throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
     }
     
-    return constructor([convertParameter(p) | p <- parameters], [])[@src=a@\loc];
+    return constructor([convertParameter(p) | p <- parameters], [], emptyExpr())[@src=a@\loc];
 }
 
 public Declaration convertDeclaration((Declaration) `<Constructor construct>`, str artifactName, str artifactType) = 

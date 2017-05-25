@@ -14,7 +14,7 @@ test bool shouldParseConstructWithOneParam()
           '";
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(integer(), "param", emptyExpr())], [])
+        constructor([param(integer(), "param", emptyExpr())], [], emptyExpr())
     ]));
 }
 
@@ -29,7 +29,7 @@ test bool shouldParseConstructWithOneAnnotatedParam()
           '";
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(integer(), "param", emptyExpr())], [])
+        constructor([param(integer(), "param", emptyExpr())], [], emptyExpr())
     ])) && parseModule(code).artifact.declarations[0].params[0]@annotations==[annotation("anno", [])];
 }
 
@@ -44,7 +44,7 @@ test bool shouldParseConstructWithOneAnnotatedParamAndOneSimple()
           '";
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(integer(), "param", emptyExpr()), param(integer(), "param2", emptyExpr())], [])
+        constructor([param(integer(), "param", emptyExpr()), param(integer(), "param2", emptyExpr())], [], emptyExpr())
     ])) && parseModule(code).artifact.declarations[0].params[0]@annotations==[annotation("anno", [])];
 }
 
@@ -60,7 +60,7 @@ test bool shouldParseAnnotatedConstructWithOneParam()
           '";
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(integer(), "param", emptyExpr())], [])
+        constructor([param(integer(), "param", emptyExpr())], [], emptyExpr())
     ])) && parseModule(code).artifact.declarations[0]@annotations==[annotation("doc", [annotationVal("This is a doc")])];
 }
 
@@ -95,7 +95,7 @@ test bool shouldParseConstructWithTwoParamsAndDefaultValue()
             param(integer(), "param", emptyExpr()),
             param(float(), "param2", float(0.55)),
             param(boolean(), "param3", boolean(true))
-        ], [])
+        ], [], emptyExpr())
     ]));
 }
 
@@ -119,7 +119,7 @@ test bool shouldParseConstructWithBody()
         ], [
             expression(addition(variable("param"), variable("param2"))),
             assign(variable("param3"), defaultAssign(), expression(greaterThan(variable("param"), variable("param2"))))
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -134,7 +134,7 @@ test bool shouldParseConstructWithoutParams()
           '";
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([], [])
+        constructor([], [], emptyExpr())
     ]));
 }
 
@@ -148,7 +148,7 @@ test bool shouldParseConstructWithoutBody()
           '";
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([], [])
+        constructor([], [], emptyExpr())
     ]));
 }
 
@@ -166,7 +166,7 @@ test bool shouldParseConstructWithoutBodyWithParams()
             param(integer(), "param", emptyExpr()),
             param(float(), "param2", float(0.55)),
             param(boolean(), "param3", boolean(true))
-        ], [])
+        ], [], emptyExpr())
     ]));
 }
 

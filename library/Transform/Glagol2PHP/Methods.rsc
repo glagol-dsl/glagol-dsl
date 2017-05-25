@@ -10,7 +10,7 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import List;
 
-public PhpClassItem toPhpClassItem(d: method(modifier, returnType, name, params, body), env)
+public PhpClassItem toPhpClassItem(d: method(modifier, returnType, name, params, body, emptyExpr()), env)
     = phpMethod(
         name, 
         {toPhpModifier(modifier)}, 

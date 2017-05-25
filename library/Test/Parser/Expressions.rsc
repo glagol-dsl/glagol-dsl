@@ -20,7 +20,7 @@ test bool testShouldParseVariableInBrackets()
             expression(\bracket(\bracket(variable("theVariable")))),
             expression(addition(\bracket(variable("theVariable")), integer(1))),
             expression(variable("anotherVar"))
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -42,7 +42,7 @@ test bool testShouldParseList()
             expression(\list([integer(1), integer(2), integer(3), integer(4), integer(5)])),
             expression(\list([float(1.34), float(2.35), float(23.56)])),
             expression(\list([\list([integer(1), integer(2), integer(3)]), \list([integer(3), integer(4), integer(5)])]))
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -58,7 +58,7 @@ test bool testShouldParseExpressionsWithNegativeLiterals()
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "nestedNegative", [], [
             expression(negative(\bracket(negative(\bracket(negative(\bracket(integer(23))))))))
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -74,7 +74,7 @@ test bool testShouldParseExpressionsWithPositiveLiterals()
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "nestedNegative", [], [
             expression(positive(\bracket(positive(\bracket(positive(\bracket(integer(23))))))))
-        ])
+        ], emptyExpr())
     ]));
 }
 
@@ -117,7 +117,7 @@ test bool testShouldParseMathExpressions()
             expression(lessThanOrEq(integer(9), integer(19))),
             expression(or(or(and(integer(1), boolean(true)), boolean(false)), boolean(true))),
             expression(ifThenElse(greaterThan(variable("argument"), integer(0)), string("argument is positive"), string("argument is negative")))
-          ])
+          ], emptyExpr())
     ]));
 }
 
@@ -143,7 +143,7 @@ test bool shouldParseAllTypesOfLiterals()
             expression(boolean(true)),
             expression(boolean(false)),
             expression(variable("var"))
-          ])
+          ], emptyExpr())
     ]));
 }
 
@@ -159,7 +159,7 @@ test bool testNewInstance()
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "newInstance", [], [
             expression(new("DateTime", []))
-          ])
+          ], emptyExpr())
     ]));
 }
 
@@ -175,7 +175,7 @@ test bool testNewInstanceWithArg()
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "newInstance", [], [
             expression(new("DateTime", [string("now")]))
-          ])
+          ], emptyExpr())
     ]));
 }
 
@@ -193,7 +193,7 @@ test bool testNewInstanceWithArgs()
             expression(new("DateTime", [string("now"), new("Money", [
                 integer(2300), string("USD")
             ])]))
-          ])
+          ], emptyExpr())
     ]));
 }
 
@@ -209,7 +209,7 @@ test bool testMethodInvoke()
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "methodInvoke", [], [
             expression(invoke("methodInvoke", []))
-          ])
+          ], emptyExpr())
     ]));
 }
 
@@ -235,7 +235,7 @@ test bool testMethodInvokeChainedToAVariable()
             expression(invoke(invoke(variable("eee"), "nested", [\list([string("string")])]), "methodInvoke", [])),
             expression(invoke(fieldAccess(fieldAccess(variable("eee"), "blah"), "blah2"), "methodInvoke", [])),
             expression(invoke(new("MyClass", []), "methodInvoke", []))
-          ])
+          ], emptyExpr())
     ]));
 }
 
@@ -251,7 +251,7 @@ test bool testMethodInvokeUsingThis()
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "methodInvoke", [], [
             expression(invoke(fieldAccess(fieldAccess(this(), "field"), "nested"), "invoke", []))
-          ])
+          ], emptyExpr())
     ]));
 }
 
@@ -287,6 +287,6 @@ test bool testFieldAccessWithAssign()
             assign(fieldAccess(this(), "field"), defaultAssign(), expression(string("adsdsasad"))),
             assign(fieldAccess(invoke(this(), "invoke", []), "field2"), additionAssign(), expression(integer(33))),
             assign(fieldAccess(this(), "var"), defaultAssign(), expression(fieldAccess(variable("that"), "var2")))
-          ])
+          ], emptyExpr())
     ]));
 }

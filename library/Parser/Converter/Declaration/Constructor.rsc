@@ -27,7 +27,7 @@ public Declaration convertConstructor(
         throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
     } 
     
-    return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body])[@src=a@\loc];
+    return constructor([convertParameter(p) | p <- parameters], [convertStmt(stmt) | stmt <- body], emptyExpr())[@src=a@\loc];
 }
     
 public Declaration convertConstructor(
@@ -51,7 +51,7 @@ public Declaration convertConstructor(
         throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
     }
     
-    return constructor([convertParameter(p) | p <- parameters], [])[@src=a@\loc];
+    return constructor([convertParameter(p) | p <- parameters], [], emptyExpr())[@src=a@\loc];
 }
 
 public Declaration convertDeclaration((Declaration) `<Constructor construct>`, str artifactName, str artifactType) = 

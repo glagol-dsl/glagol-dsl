@@ -14,7 +14,7 @@ test bool shouldAddPhpAnnotationsToPhpClassDef() =
 		<anyFramework(), doctrine()>).classDef@phpAnnotations?;
 
 test bool shouldAddAnnotationsToPhpClassItems() = 
-	toPhpClassItem(constructor([], [])[@annotations=[annotation("Id", [])]], 
+	toPhpClassItem(constructor([], [], emptyExpr())[@annotations=[annotation("Id", [])]], 
 		<anyFramework(), doctrine()>)@phpAnnotations?;
 
 test bool shouldTransformPropertiesToPhpClassItems() = 
@@ -33,14 +33,14 @@ test bool shouldTransformPropertiesToPhpClassItems() =
 
 test bool shouldTransformConstructorsToPhpClassItems() = 
 	toPhpClassItems([
-		constructor([], [])
+		constructor([], [], emptyExpr())
 	], <anyFramework(), anyORM()>, entity("", [])) == 
 	[phpMethod("__construct", {phpPublic()}, false, [], [], phpNoName())];
 
 test bool shouldTransformOverridingConstructorsToPhpClassItems() = 
 	toPhpClassItems([
-		constructor([param(string(), "a", emptyExpr())], []),
-		constructor([param(integer(), "b", emptyExpr())], [])
+		constructor([param(string(), "a", emptyExpr())], [], emptyExpr()),
+		constructor([param(integer(), "b", emptyExpr())], [], emptyExpr())
 	], <anyFramework(), anyORM()>, entity("", [])) == 
 	[phpMethod(
     "__construct",
@@ -113,20 +113,20 @@ test bool shouldTransformOverridingConstructorsToPhpClassItems() =
 
 test bool shouldTransformMethodsToPhpClassItems() = 
 	toPhpClassItems([
-		method(\private(), voidValue(), "a", [], []),
-		method(\private(), voidValue(), "b", [], []),
-		method(\private(), voidValue(), "c", [], [])
+		method(\private(), voidValue(), "a", [], [], emptyExpr()),
+		method(\private(), voidValue(), "b", [], [], emptyExpr()),
+		method(\private(), voidValue(), "c", [], [], emptyExpr())
 	], <anyFramework(), anyORM()>, entity("", [])) == 
 	[
-		phpMethod("a", {phpPrivate()}, false, [], [], phpNoName()),
-		phpMethod("c", {phpPrivate()}, false, [], [], phpNoName()),
-		phpMethod("b", {phpPrivate()}, false, [], [], phpNoName())
+		phpMethod("a", {phpPrivate()}, false, [], [], phpNoName())[@phpAnnotations={}],
+		phpMethod("b", {phpPrivate()}, false, [], [], phpNoName())[@phpAnnotations={}],
+		phpMethod("c", {phpPrivate()}, false, [], [], phpNoName())[@phpAnnotations={}]
 	];
 
 test bool shouldTransformMethodsWithOverridingToPhpClassItems() = 
 	toPhpClassItems([
-		method(\private(), voidValue(), "a", [], []),
-		method(\private(), voidValue(), "a", [param(string(), "blah", emptyExpr())], [])
+		method(\private(), voidValue(), "a", [], [], emptyExpr()),
+		method(\private(), voidValue(), "a", [param(string(), "blah", emptyExpr())], [], emptyExpr())
 	], <anyFramework(), anyORM()>, util("", [])) == 
 	[
 		phpMethod(

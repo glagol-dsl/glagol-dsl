@@ -2,5 +2,5 @@
 BASEDIR=$(dirname "$0")
 cd $BASEDIR
 cd ../library
-../bin/rascalu Build
-../bin/rascalu BuildTests
+../build/rascalu Build
+../build/rascalu BuildTests

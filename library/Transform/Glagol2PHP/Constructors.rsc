@@ -11,7 +11,7 @@ import Syntax::Abstract::PHP;
 import Syntax::Abstract::PHP::Helpers;
 import List;
 
-public PhpClassItem toPhpClassItem(d: constructor(list[Declaration] params, list[Statement] body), env) 
+public PhpClassItem toPhpClassItem(d: constructor(list[Declaration] params, list[Statement] body, emptyExpr()), env) 
     = phpMethod("__construct", {phpPublic()}, false, [toPhpParam(p) | p <- params], 
     	[toPhpStmt(stmt) | stmt <- body], phpNoName())[
     	@phpAnnotations=toPhpAnnotations(d, env)
