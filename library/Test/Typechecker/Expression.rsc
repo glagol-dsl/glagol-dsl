@@ -175,33 +175,33 @@ test bool shouldReturnListOnTernaryOfLists() = \list(integer()) == lookupType(if
 test bool shouldReturnMapOnTernaryOfMaps() = 
     \map(integer(), string()) == lookupType(ifThenElse(boolean(true), \map((integer(1): string("s"))), \map((integer(2): string("s")))), newEnv(|tmp:///|));
 test bool shouldReturnArtifactOnTernaryOfSameArtifacts() = 
-    artifact("User") == lookupType(ifThenElse(boolean(true), get(artifact("User")), get(artifact("User"))), addImported(\import("User", namespace("Test"), "User"), addToAST(
+    artifact(unresolvedName("User")) == lookupType(ifThenElse(boolean(true), get(artifact(unresolvedName("User"))), get(artifact(unresolvedName("User")))), addImported(\import("User", namespace("Test"), "User"), addToAST(
 		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))),
 		newEnv(|tmp:///|))));
 test bool shouldReturnUnknownTypeOnTernaryOfDifferentArtifacts() = 
-    unknownType() == lookupType(ifThenElse(boolean(true), get(artifact("User")), get(artifact("Customer"))), newEnv(|tmp:///|));
+    unknownType() == lookupType(ifThenElse(boolean(true), get(artifact(unresolvedName("User"))), get(artifact(unresolvedName("Customer")))), newEnv(|tmp:///|));
 test bool shouldReturnRepositoryOnTernaryOfSameRepositories() = 
-    repository("User") == lookupType(ifThenElse(boolean(true), get(repository("User")), get(repository("User"))), newEnv(|tmp:///|));
+    repository(unresolvedName("User")) == lookupType(ifThenElse(boolean(true), get(repository(unresolvedName("User"))), get(repository(unresolvedName("User")))), newEnv(|tmp:///|));
 test bool shouldReturnUnknownTypeOnTernaryOfDifferentRepositories() = 
-    unknownType() == lookupType(ifThenElse(boolean(true), get(repository("User")), get(repository("Customer"))), newEnv(|tmp:///|));
+    unknownType() == lookupType(ifThenElse(boolean(true), get(repository(unresolvedName("User"))), get(repository(unresolvedName("Customer")))), newEnv(|tmp:///|));
 test bool shouldReturnUnTypeOnDifferentTypes() = 
-    unknownType() == lookupType(ifThenElse(boolean(true), integer(2), get(artifact("User"))), newEnv(|tmp:///|));
+    unknownType() == lookupType(ifThenElse(boolean(true), integer(2), get(artifact(unresolvedName("User")))), newEnv(|tmp:///|));
 
-test bool shouldReturnArtifactTypeOnNew() = artifact("User") == lookupType(new("User", []), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeOnNewNotImported() = unknownType() == lookupType(new(unresolvedName("User"), []), newEnv(|tmp:///|));
 
-test bool shouldReturnUnknownTypeOnGetUnimportedArtifact() = unknownType() == lookupType(get(artifact("User")), newEnv(|tmp:///|));
-test bool shouldReturnUnknownTypeOnGetArtifactWhichIsEntity() = unknownType() == lookupType(get(artifact("User")), addImported(\import("User", namespace("Test"), "User"), addToAST(
+test bool shouldReturnUnknownTypeOnGetUnimportedArtifact() = unknownType() == lookupType(get(artifact(unresolvedName("User"))), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeOnGetArtifactWhichIsEntity() = unknownType() == lookupType(get(artifact(unresolvedName("User"))), addImported(\import("User", namespace("Test"), "User"), addToAST(
 		file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", []))),
 		newEnv(|tmp:///|))));
 test bool shouldReturnArtifactTypeOnGetArtifactWhichIsUtil() = 
-	artifact("User") == lookupType(get(artifact("User")), addImported(\import("User", namespace("Test"), "User"), addToAST(
+	artifact(unresolvedName("User")) == lookupType(get(artifact(unresolvedName("User"))), addImported(\import("User", namespace("Test"), "User"), addToAST(
 		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))),
 		newEnv(|tmp:///|))));
 test bool shouldReturnUnknownTypeOnGetArtifactWhichIsValueObject() = 
-	unknownType() == lookupType(get(artifact("User")), addImported(\import("User", namespace("Test"), "User"), addToAST(
+	unknownType() == lookupType(get(artifact(unresolvedName("User"))), addImported(\import("User", namespace("Test"), "User"), addToAST(
 		file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("User", []))),
 		newEnv(|tmp:///|))));
-test bool shouldReturnRepositoryTypeOnGetRepository() = repository("User") == lookupType(get(repository("User")), newEnv(|tmp:///|));
+test bool shouldReturnRepositoryTypeOnGetRepository() = repository(unresolvedName("User")) == lookupType(get(repository(unresolvedName("User"))), newEnv(|tmp:///|));
 test bool shouldReturnSelfieTypeOnGetSelfie() = selfie() == lookupType(get(selfie()), newEnv(|tmp:///|));
 test bool shouldReturnUnknownTypeOnGetVoid() = unknownType() == lookupType(get(voidValue()), newEnv(|tmp:///|));
 test bool shouldReturnUnknownTypeOnGetString() = unknownType() == lookupType(get(string()), newEnv(|tmp:///|));
@@ -211,7 +211,8 @@ test bool shouldReturnUnknownTypeOnGetBoolean() = unknownType() == lookupType(ge
 test bool shouldReturnUnknownTypeOnGetList() = unknownType() == lookupType(get(\list(string())), newEnv(|tmp:///|));
 test bool shouldReturnUnknownTypeOnGetMap() = unknownType() == lookupType(get(\map(string(), integer())), newEnv(|tmp:///|));
 
-test bool shouldReturnStringTypeWhenInvokingStringMethod() = string() == lookupType(invoke("myString", []), addToAST(
+/*
+ bool shouldReturnStringTypeWhenInvokingStringMethod() = string() == lookupType(invoke("myString", []), addToAST(
 	
 ));
-
+*/

@@ -100,15 +100,15 @@ test bool testIsImportedReturnsTrue() = isImported("User", [\import("Customer", 
 test bool testIsImportedReturnsFalse() = !isImported("User", [\import("Customer", namespace("Test"), "Customer"), \import("User", namespace("Test"), "Userr")]);
 
 test bool shouldCollectOnlyDIProperties() = getDIProperties([
-        property(repository("User"), "prop", {}, get(repository("User"))),
-        property(repository("Customer"), "prop", {}, emptyExpr()),
+        property(repository(unresolvedName("User")), "prop", {}, get(repository(unresolvedName("User")))),
+        property(repository(unresolvedName("Customer")), "prop", {}, emptyExpr()),
         constructor([], [
             expression(\map(()))
         ], emptyExpr())
-    ]) == [property(repository("User"), "prop", {}, get(repository("User")))];
+    ]) == [property(repository(unresolvedName("User")), "prop", {}, get(repository(unresolvedName("User"))))];
     
 test bool shouldCollectOnlyDIProperties2() = getDIProperties([
-        property(repository("Customer"), "prop", {}, emptyExpr()),
+        property(repository(unresolvedName("Customer")), "prop", {}, emptyExpr()),
         constructor([], [
             expression(\map(()))
         ], emptyExpr())
@@ -116,12 +116,12 @@ test bool shouldCollectOnlyDIProperties2() = getDIProperties([
     
 test bool testHasDependencies() = 
 	!hasDependencies([
-        property(repository("Customer"), "prop", {}, emptyExpr()),
+        property(repository(unresolvedName("Customer")), "prop", {}, emptyExpr()),
         constructor([], [
             expression(\map(()))
         ], emptyExpr())
     ]) && hasDependencies([
-        property(repository("Customer"), "prop", {}, get(repository("Customer"))),
+        property(repository(unresolvedName("Customer")), "prop", {}, get(repository(unresolvedName("Customer")))),
         constructor([], [
             expression(\map(()))
         ], emptyExpr())
@@ -129,7 +129,7 @@ test bool testHasDependencies() =
 
 test bool testGetActions() = 
 	getActions([
-        property(repository("Customer"), "prop", {}, emptyExpr()),
+        property(repository(unresolvedName("Customer")), "prop", {}, emptyExpr()),
         action("index", [], [])
 	]) == [action("index", [], [])];
     

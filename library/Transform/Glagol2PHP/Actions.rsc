@@ -66,7 +66,7 @@ private list[PhpStmt] createInitializers(list[Declaration] params, _) {
                     ), phpName(phpName("all")), []), false)
                 ])
             );
-        else if (artifact(str artifactName) := p.paramType)
+        else if (artifact(fullName(str artifactName, _, _)) := p.paramType)
             stmts += [
                 phpExprstmt(phpAssign(phpVar("reflection"), phpNew(phpName(phpName("\\ReflectionClass")), [
                     phpActualParameter(phpFetchClassConst(phpName(phpName(artifactName)), "class"), false)

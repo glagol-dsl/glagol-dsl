@@ -7,24 +7,24 @@ import Parser::Converter::AccessProperty;
 import Parser::Converter::Annotation;
 import Parser::Converter::DefaultValue;
 
-public Declaration convertProperty(a: (Property) `<Type prop><MemberName name>;`)  = 
-    property(convertType(prop), "<name>", {}, emptyExpr())[@src=a@\loc][
-        @annotations=buildPropDefaultAnnotations(convertType(prop))
+public Declaration convertProperty(a: (Property) `<Type prop><MemberName name>;`, ParseEnv env)  =
+    property(convertType(prop, env), "<name>", {}, emptyExpr())[@src=a@\loc][
+        @annotations=buildPropDefaultAnnotations(convertType(prop, env))
     ];
 
-public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AssignDefaultValue defVal>;`) = 
-    property(convertType(prop), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop)))[@src=a@\loc][
-        @annotations=buildPropDefaultAnnotations(convertType(prop))
+public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AssignDefaultValue defVal>;`, ParseEnv env) =
+    property(convertType(prop, env), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop, env), env))[@src=a@\loc][
+        @annotations=buildPropDefaultAnnotations(convertType(prop, env))
     ];
 
-public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AccessProperties accessProperties>;`) = 
-    property(convertType(prop), "<name>", convertAccessProperties(accessProperties), emptyExpr())[@src=a@\loc][
-        @annotations=buildPropDefaultAnnotations(convertType(prop))
+public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AccessProperties accessProperties>;`, ParseEnv env) =
+    property(convertType(prop, env), "<name>", convertAccessProperties(accessProperties), emptyExpr())[@src=a@\loc][
+        @annotations=buildPropDefaultAnnotations(convertType(prop, env))
     ];
 
-public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`) = 
-    property(convertType(prop), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop)))[@src=a@\loc][
-        @annotations=buildPropDefaultAnnotations(convertType(prop))
+public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`, ParseEnv env) =
+    property(convertType(prop, env), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop, env), env))[@src=a@\loc][
+        @annotations=buildPropDefaultAnnotations(convertType(prop, env))
     ];
 
 public list[Annotation] buildPropDefaultAnnotations(Type t) = 
@@ -33,12 +33,12 @@ public list[Annotation] buildPropDefaultAnnotations(Type t) =
     
 public default list[Annotation] buildPropDefaultAnnotations(Type t) = [];
 
-public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Property prop>`, _, _) {
-    Declaration property = convertProperty(prop);
+public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Property prop>`, _, _, ParseEnv env) {
+    Declaration property = convertProperty(prop, env);
 
     list[Annotation] pAnnotations = property@annotations? ? property@annotations : [];
 
-    for (an <- convertAnnotations(annotations)) {
+    for (an <- convertAnnotations(annotations, env)) {
         if (annotation(f: /column|field/, [*Annotation L, annotationMap(m), *Annotation R]) := an, 
             pAnnotations[0]? && pAnnotations[0].arguments? && pAnnotations[0].arguments[0]?) {
             pAnnotations[0].arguments[0].\map += m;
@@ -52,4 +52,4 @@ public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations
     ][@src=a@\loc];
 }
     
-public Declaration convertDeclaration(a: (Declaration) `<Property prop>`, _, _) = convertProperty(prop);
+public Declaration convertDeclaration(a: (Declaration) `<Property prop>`, _, _, ParseEnv env) = convertProperty(prop, env);

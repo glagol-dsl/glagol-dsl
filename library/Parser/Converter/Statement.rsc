@@ -8,41 +8,41 @@ import Parser::Converter::AssignOperator;
 import Parser::Converter::Type;
 import String;
 
-public Statement convertStmt(a: (Statement) `<Expression expr>;`) = expression(convertExpression(expr))[@src=a@\loc];
-public Statement convertStmt(a: (Statement) `;`) = emptyStmt()[@src=a@\loc];
-public Statement convertStmt(a: (Statement) `{<Statement* stmts>}`) = block([convertStmt(stmt) | stmt <- stmts])[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `<Expression expr>;`, ParseEnv env) = expression(convertExpression(expr, env))[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `;`, ParseEnv env) = emptyStmt()[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `{<Statement* stmts>}`, ParseEnv env) = block([convertStmt(stmt, env) | stmt <- stmts])[@src=a@\loc];
 
-public Statement convertStmt(a: (Statement) `if ( <Expression condition> ) <Statement then>`) 
-    = ifThen(convertExpression(condition), convertStmt(then))[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `if ( <Expression condition> ) <Statement then>`, ParseEnv env)
+    = ifThen(convertExpression(condition, env), convertStmt(then, env))[@src=a@\loc];
 
-public Statement convertStmt(a: (Statement) `if ( <Expression condition> ) <Statement then> else <Statement e>`) 
-    = ifThenElse(convertExpression(condition), convertStmt(then), convertStmt(e))[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `if ( <Expression condition> ) <Statement then> else <Statement e>`, ParseEnv env)
+    = ifThenElse(convertExpression(condition, env), convertStmt(then, env), convertStmt(e, env))[@src=a@\loc];
 
-public Statement convertStmt(a: (Statement) `<Assignable assignable><AssignOperator operator><Statement val>`) 
-    = assign(convertAssignable(assignable), convertAssignOperator(operator), convertStmt(val))[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `<Assignable assignable><AssignOperator operator><Statement val>`, ParseEnv env)
+    = assign(convertAssignable(assignable, env), convertAssignOperator(operator), convertStmt(val, env))[@src=a@\loc];
 
-public Statement convertStmt(a: (Statement) `return;`) = \return(emptyExpr()[@src=a@\loc])[@src=a@\loc];
-public Statement convertStmt(a: (Statement) `return <Expression expr>;`) = \return(convertExpression(expr))[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `return;`, ParseEnv env) = \return(emptyExpr()[@src=a@\loc])[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `return <Expression expr>;`, ParseEnv env) = \return(convertExpression(expr, env))[@src=a@\loc];
 
-public Statement convertStmt(a: (Statement) `persist <Expression expr>;`) = persist(convertExpression(expr))[@src=a@\loc];
-public Statement convertStmt(a: (Statement) `remove <Expression expr>;`) = remove(convertExpression(expr))[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `persist <Expression expr>;`, ParseEnv env) = persist(convertExpression(expr, env))[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `remove <Expression expr>;`, ParseEnv env) = remove(convertExpression(expr, env))[@src=a@\loc];
 
-public Statement convertStmt(a: (Statement) `flush;`) = flush(emptyExpr()[@src=a@\loc])[@src=a@\loc];
-public Statement convertStmt(a: (Statement) `flush <Expression expr>;`) = flush(convertExpression(expr))[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `flush;`, ParseEnv env) = flush(emptyExpr()[@src=a@\loc])[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `flush <Expression expr>;`, ParseEnv env) = flush(convertExpression(expr, env))[@src=a@\loc];
 
-public Statement convertStmt(a: (Statement) `break ;`) = \break()[@src=a@\loc];
-public Statement convertStmt(a: (Statement) `break<Integer level>;`) = \break(toInt("<level>"))[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `break ;`, ParseEnv env) = \break()[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `break<Integer level>;`, ParseEnv env) = \break(toInt("<level>"))[@src=a@\loc];
 
-public Statement convertStmt(a: (Statement) `continue ;`) = \continue()[@src=a@\loc];
-public Statement convertStmt(a: (Statement) `continue<Integer level>;`) = \continue(toInt("<level>"))[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `continue ;`, ParseEnv env) = \continue()[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `continue<Integer level>;`, ParseEnv env) = \continue(toInt("<level>"))[@src=a@\loc];
 
-public Statement convertStmt(a: (Statement) `<Type t> <MemberName varName>;`) = 
-	declare(convertType(t), variable("<varName>")[@src=varName@\loc], emptyStmt()[@src=varName@\loc])[@src=a@\loc];
-public Statement convertStmt(a: (Statement) `<Type t> <MemberName varName>=<Statement defValue>`) = 
-	declare(convertType(t), variable("<varName>")[@src=varName@\loc], convertStmt(defValue))[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `<Type t> <MemberName varName>;`, ParseEnv env) =
+	declare(convertType(t, env), variable("<varName>")[@src=varName@\loc], emptyStmt()[@src=varName@\loc])[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `<Type t> <MemberName varName>=<Statement defValue>`, ParseEnv env) =
+	declare(convertType(t, env), variable("<varName>")[@src=varName@\loc], convertStmt(defValue, env))[@src=a@\loc];
 
-public Statement convertStmt(a: (Statement) `for (<Expression l>as<MemberName var>)<Statement body>`)
-    = foreach(convertExpression(l), variable("<var>")[@src=var@\loc], convertStmt(body))[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `for (<Expression l>as<MemberName var>)<Statement body>`, ParseEnv env)
+    = foreach(convertExpression(l, env), variable("<var>")[@src=var@\loc], convertStmt(body, env))[@src=a@\loc];
     
-public Statement convertStmt(a: (Statement) `for (<Expression l>as<MemberName var>, <{Expression ","}+ conds>)<Statement body>`)
-    = foreach(convertExpression(l), variable("<var>")[@src=var@\loc], convertStmt(body), [convertExpression(cond) | cond <- conds])[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `for (<Expression l>as<MemberName var>, <{Expression ","}+ conds>)<Statement body>`, ParseEnv env)
+    = foreach(convertExpression(l, env), variable("<var>")[@src=var@\loc], convertStmt(body, env), [convertExpression(cond, env) | cond <- conds])[@src=a@\loc];

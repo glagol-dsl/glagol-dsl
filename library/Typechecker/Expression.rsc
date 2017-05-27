@@ -104,15 +104,18 @@ public Type lookupType(negative(Expression expr), TypeEnv env) = lookupUnaryMath
 public Type lookupType(ifThenElse(Expression condition, Expression ifThen, Expression \else), TypeEnv env) = 
     lookupTernaryType(lookupType(ifThen, env), lookupType(\else, env));
 
-public Type lookupType(new(str a, list[Expression] args), TypeEnv env) = artifact(a);
+public Type lookupType(new(unresolvedName(_), list[Expression] args), TypeEnv env) = unknownType();
+//public Type lookupType(new(str a, list[Expression] args), TypeEnv env) = artifact(fullName(a, ));
 
-public Type lookupType(get(a: artifact(str name)), TypeEnv env) = a when isImported(a, env) && isUtil(a, env);
-public Type lookupType(get(t: repository(str name)), TypeEnv env) = t;
+
+
+public Type lookupType(get(a: artifact(Name name)), TypeEnv env) = a when isImported(a, env) && isUtil(a, env);
+public Type lookupType(get(t: repository(Name name)), TypeEnv env) = t;
 public Type lookupType(get(t: selfie()), TypeEnv env) = t;
 public Type lookupType(get(_), TypeEnv env) = unknownType();
 
-private Type lookupTernaryType(artifact(str ifThen), artifact(str \else)) = ifThen == \else ? artifact(ifThen) : unknownType();
-private Type lookupTernaryType(repository(str ifThen), repository(str \else)) = ifThen == \else ? repository(ifThen) : unknownType();
+private Type lookupTernaryType(artifact(Name ifThen), artifact(Name \else)) = ifThen == \else ? artifact(ifThen) : unknownType();
+private Type lookupTernaryType(repository(Name ifThen), repository(Name \else)) = ifThen == \else ? repository(ifThen) : unknownType();
 private Type lookupTernaryType(Type ifThen, Type \else) = ifThen when ifThen == \else;
 private Type lookupTernaryType(Type ifThen, Type \else) = unknownType();
 

@@ -22,20 +22,21 @@ public TypeEnv checkType(\list(Type \type), Declaration d, TypeEnv env) = checkT
 
 public TypeEnv checkType(\map(Type key, Type v), Declaration d, TypeEnv env) = checkType(key, d, checkType(v, d, env));
 
-public TypeEnv checkType(a:artifact(str name), Declaration d, TypeEnv env) = 
-    addError(a@src, notImported(a), env) when name notin env.imported;
+// TODO replace .localName with isImported() function call
+public TypeEnv checkType(a:artifact(Name name), Declaration d, TypeEnv env) =
+    addError(a@src, notImported(a), env) when name.localName notin env.imported;
 
-public TypeEnv checkType(a:artifact(str name), Declaration d, TypeEnv env) = env when name in env.imported;
+public TypeEnv checkType(a:artifact(Name name), Declaration d, TypeEnv env) = env when name.localName in env.imported;
 
-public TypeEnv checkType(r:repository(str name), Declaration d, TypeEnv env) = 
-    addError(r@src, notImported(r), env) when name notin env.imported;
+public TypeEnv checkType(r:repository(Name name), Declaration d, TypeEnv env) =
+    addError(r@src, notImported(r), env) when name.localName notin env.imported;
     
-public TypeEnv checkType(r:repository(str name), Declaration d, TypeEnv env) = 
+public TypeEnv checkType(r:repository(Name name), Declaration d, TypeEnv env) =
     addError(r@src, notEntity(r), env)
-    when name in env.imported && !isEntity(env.imported[name]);
+    when name.localName in env.imported && !isEntity(env.imported[name.localName]);
     
-public TypeEnv checkType(r:repository(str name), Declaration d, TypeEnv env) = 
-    env when name in env.imported && isEntity(env.imported[name]);
+public TypeEnv checkType(r:repository(Name name), Declaration d, TypeEnv env) =
+    env when name.localName in env.imported && isEntity(env.imported[name.localName]);
 
 public TypeEnv checkType(s:selfie(), property(_, _, _, get(selfie())), TypeEnv env) = env;
 	

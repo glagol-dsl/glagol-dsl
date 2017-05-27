@@ -7,6 +7,7 @@ import Transform::Glagol2PHP::Params;
 import Transform::Glagol2PHP::Overriding;
 import Transform::Glagol2PHP::ClassItems;
 import Syntax::Abstract::Glagol;
+import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
 import List;
 
@@ -57,8 +58,10 @@ private PhpOptionName toPhpReturnType(boolean()) = phpSomeName(phpName("bool"));
 private PhpOptionName toPhpReturnType(float()) = phpSomeName(phpName("float"));
 private PhpOptionName toPhpReturnType(\list(_)) = phpSomeName(phpName("Vector"));
 private PhpOptionName toPhpReturnType(\map(_,_)) = phpSomeName(phpName("Map"));
-private PhpOptionName toPhpReturnType(artifact(str name)) = phpSomeName(phpName(name));
-private PhpOptionName toPhpReturnType(repository(str name)) = phpSomeName(phpName(name + "Repository"));
+private PhpOptionName toPhpReturnType(artifact(Name name)) = phpSomeName(phpName(extractName(name)));
+private PhpOptionName toPhpReturnType(repository(Name name)) = phpSomeName(phpName(extractName(name) + "Repository"));
+
+
 
 private PhpModifier toPhpModifier(\public()) = phpPublic();
 private PhpModifier toPhpModifier(\private()) = phpPrivate();

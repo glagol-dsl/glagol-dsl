@@ -20,6 +20,7 @@ test bool shouldParseInjections()
         \import("EntityManager", namespace("Glagol", namespace("ORM")), "EntityManager"),
         \import("User", namespace("Example"), "User")
     ], repository("User", [
-        property(artifact("EntityManager"), "em", {}, get(artifact("EntityManager")))
+        property(artifact(fullName("EntityManager", namespace("Glagol", namespace("ORM")), "EntityManager")), "em", {}, 
+        	get(artifact(fullName("EntityManager", namespace("Glagol", namespace("ORM")), "EntityManager"))))
     ]));
 }

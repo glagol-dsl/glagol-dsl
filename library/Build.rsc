@@ -16,6 +16,7 @@ private void buildConverters() {
         'import Syntax::Abstract::Glagol::Helpers;
         'import Syntax::Concrete::Grammar;
         'import Parser::ParseCode;
+        'import Parser::Env;
         'import ParseTree;
         'import String;
         'import List;

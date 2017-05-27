@@ -3,13 +3,13 @@ module Parser::Converter::Type
 import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 
-public Type convertType(a: (Type) `int`) = integer()[@src=a@\loc];
-public Type convertType(a: (Type) `float`) = float()[@src=a@\loc];
-public Type convertType(a: (Type) `bool`) = boolean()[@src=a@\loc];
-public Type convertType(a: (Type) `boolean`) = boolean()[@src=a@\loc];
-public Type convertType(a: (Type) `void`) = voidValue()[@src=a@\loc];
-public Type convertType(a: (Type) `string`) = string()[@src=a@\loc];
-public Type convertType(a: (Type) `repository\<<ArtifactName name>\>`) = repository("<name>")[@src=a@\loc];
-public Type convertType(a: (Type) `<Type t>[]`) = \list(convertType(t))[@src=a@\loc];
-public Type convertType(a: (Type) `{<Type key>,<Type v>}`) = \map(convertType(key), convertType(v))[@src=a@\loc];
-public Type convertType(a: (Type) `<ArtifactName name>`) = artifact("<name>")[@src=a@\loc];
+public Type convertType(a: (Type) `int`, ParseEnv env) = integer()[@src=a@\loc];
+public Type convertType(a: (Type) `float`, ParseEnv env) = float()[@src=a@\loc];
+public Type convertType(a: (Type) `bool`, ParseEnv env) = boolean()[@src=a@\loc];
+public Type convertType(a: (Type) `boolean`, ParseEnv env) = boolean()[@src=a@\loc];
+public Type convertType(a: (Type) `void`, ParseEnv env) = voidValue()[@src=a@\loc];
+public Type convertType(a: (Type) `string`, ParseEnv env) = string()[@src=a@\loc];
+public Type convertType(a: (Type) `repository\<<ArtifactName name>\>`, ParseEnv env) = repository(createName("<name>", env))[@src=a@\loc];
+public Type convertType(a: (Type) `<Type t>[]`, ParseEnv env) = \list(convertType(t, env))[@src=a@\loc];
+public Type convertType(a: (Type) `{<Type key>,<Type v>}`, ParseEnv env) = \map(convertType(key, env), convertType(v, env))[@src=a@\loc];
+public Type convertType(a: (Type) `<ArtifactName name>`, ParseEnv env) = artifact(createName("<name>", env))[@src=a@\loc];

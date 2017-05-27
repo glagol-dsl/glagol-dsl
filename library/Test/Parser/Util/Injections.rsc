@@ -14,7 +14,7 @@ test bool canParseRepositoryInjection()
     
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
-            property(repository("User"), "userRepository", {}, get(repository("User")))
+            property(repository(unresolvedName("User")), "userRepository", {}, get(repository(unresolvedName("User"))))
         ]));
 }
 
@@ -28,7 +28,7 @@ test bool canParseUtilRepositoryInjection()
     
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
-            property(repository("User"), "userRepository", {}, get(repository("User")))
+            property(repository(unresolvedName("User")), "userRepository", {}, get(repository(unresolvedName("User"))))
         ]));
 }   
 
@@ -42,7 +42,7 @@ test bool canUseRepositorySelfie()
     
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
-            property(repository("User"), "userRepository", {}, get(repository("User")))
+            property(repository(unresolvedName("User")), "userRepository", {}, get(repository(unresolvedName("User"))))
         ]));
 }
 
@@ -57,7 +57,7 @@ test bool canUseRepositorySelfieAsParamDefaultValue()
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
             method(\public(), voidValue(), "make", [
-                param(repository("User"), "userRepository", get(repository("User")))
+                param(repository(unresolvedName("User")), "userRepository", get(repository(unresolvedName("User"))))
             ], [], emptyExpr())
         ]));
 }
@@ -76,8 +76,8 @@ test bool canUseRepositoryAssocArtifactInExpression()
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
             method(\public(), voidValue(), "blah", [], [
-                expression(get(repository("User"))),
-                expression(invoke(get(repository("User")), "findOneById", [integer(1)]))
+                expression(get(repository(unresolvedName("User")))),
+                expression(invoke(get(repository(unresolvedName("User"))), "findOneById", [integer(1)]))
             ], emptyExpr())
         ]));
 }
@@ -92,6 +92,6 @@ test bool canCreateNewServiceAsAPropertyDefaultValue()
     
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
-            property(artifact("UserService"), "userService", {}, new("UserService", []))
+            property(artifact(unresolvedName("UserService")), "userService", {}, new(unresolvedName("UserService"), []))
         ]));
 }

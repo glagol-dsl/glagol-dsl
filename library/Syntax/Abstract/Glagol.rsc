@@ -63,7 +63,7 @@ data Expression
     | negative(Expression expr)
     | positive(Expression expr)
     | ifThenElse(Expression condition, Expression ifThen, Expression \else)
-    | new(str artifact, list[Expression] args)
+    | new(Name artifact, list[Expression] args)
     | get(Type t)
     | invoke(str methodName, list[Expression] args)
     | invoke(Expression prev, str methodName, list[Expression] args)
@@ -81,11 +81,16 @@ data Type
     | boolean()
     | \list(Type \type)
     | \map(Type key, Type v)
-    | artifact(str name)
-    | repository(str name)
+    | artifact(Name name)
+    | repository(Name name)
     | selfie()
     | unknownType()
     ;
+
+data Name
+	= fullName(str localName, Declaration namespace, str originalName)
+	| unresolvedName(str localName)
+	;
 
 data Modifier
     = \public()

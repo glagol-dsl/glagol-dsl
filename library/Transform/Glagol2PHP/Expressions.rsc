@@ -22,16 +22,16 @@ public PhpExpr toPhpExpr(\map(map[Expression key, Expression \value] m)) =
         phpActualParameter(toPhpExpr(m[k]), false)]), false) | k <- m
     ]);
 
-public PhpExpr toPhpExpr(get(artifact(str name)))
-    = phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("_<toLowerCaseFirstChar(name)>")));
+public PhpExpr toPhpExpr(get(artifact(Name name)))
+    = phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("_<toLowerCaseFirstChar(name.localName)>")));
 
 public PhpExpr toPhpExpr(variable(GlagolID name)) = phpVar(phpName(phpName(name)));
 
 public PhpExpr toPhpExpr(ifThenElse(Expression condition, Expression ifThen, Expression \else)) 
     = phpTernary(toPhpExpr(condition), phpSomeExpr(toPhpExpr(ifThen)), toPhpExpr(\else));
 
-public PhpExpr toPhpExpr(new(str artifact, list[Expression] args))
-    = phpNew(phpName(phpName(artifact)), [phpActualParameter(toPhpExpr(arg), false) | arg <- args]);
+public PhpExpr toPhpExpr(new(Name artifact, list[Expression] args))
+    = phpNew(phpName(phpName(artifact.localName)), [phpActualParameter(toPhpExpr(arg), false) | arg <- args]);
 
 // Binary operations
 public PhpExpr toPhpExpr(equals(Expression l, Expression r)) = phpBinaryOperation(toPhpExpr(l), toPhpExpr(r), phpIdentical());

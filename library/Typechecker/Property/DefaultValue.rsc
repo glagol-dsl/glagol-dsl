@@ -27,32 +27,33 @@ public TypeEnv checkDefaultValue(\map(map[Expression key, Expression \value] ite
 	);
 
 @doc="Typecheck unimported usages of artifacts"
-public TypeEnv checkDefaultValue(g:get(a:artifact(str name)), TypeEnv env) = 
-    addError(g@src, notImported(a), env) when name notin env.imported;
+public TypeEnv checkDefaultValue(g:get(a:artifact(Name name)), TypeEnv env) =
+    addError(g@src, notImported(a), env) when name.localName notin env.imported;
     
 @doc="Success only: typecheck imported usages of artifacts"
-public TypeEnv checkDefaultValue(g:get(a:artifact(str name)), TypeEnv env) = 
-    env when name in env.imported;
+public TypeEnv checkDefaultValue(g:get(a:artifact(Name name)), TypeEnv env) =
+    env when name.localName in env.imported;
 
+// TODO use isImported() instead of notin
 @doc{
 Typecheck unimported usages of repository
 }
-public TypeEnv checkDefaultValue(g:get(r:repository(str name)), TypeEnv env) = 
-    addError(g@src, notImported(r), env) when name notin env.imported;
+public TypeEnv checkDefaultValue(g:get(r:repository(Name name)), TypeEnv env) =
+    addError(g@src, notImported(r), env) when name.localName notin env.imported;
 
 @doc{
 Typecheck usages of repository which is not targeting an actual entity
 }
-public TypeEnv checkDefaultValue(g:get(r:repository(str name)), TypeEnv env) = 
-    addError(g@src, notEntity(r), env) when name in env.imported && !isEntity(env.imported[name], env);
+public TypeEnv checkDefaultValue(g:get(r:repository(Name name)), TypeEnv env) =
+    addError(g@src, notEntity(r), env) when name.localName in env.imported && !isEntity(env.imported[name.localName], env);
 
 @doc="Success only: typecheck repository targeting an actual entity"
-public TypeEnv checkDefaultValue(g:get(r:repository(str name)), TypeEnv env) = 
-    env when name in env.imported && isEntity(env.imported[name], env);
+public TypeEnv checkDefaultValue(g:get(r:repository(Name name)), TypeEnv env) =
+    env when name.localName in env.imported && isEntity(env.imported[name.localName], env);
     
 @doc="Any other type of expression is not allowed as default value for properties"
 public TypeEnv checkDefaultValue(Expression expr, TypeEnv env) = 
-	addError(expr@src, notAllowed(expr));
+	addError(expr@src, notAllowed(expr), env);
 
 private bool isArrayItemAllowed(integer(_)) = true;
 private bool isArrayItemAllowed(float(_)) = true;

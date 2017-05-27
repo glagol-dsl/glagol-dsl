@@ -7,133 +7,133 @@ import Parser::Converter::Boolean;
 import Parser::Converter::QuotedString;
 import Exceptions::ParserExceptions;
 
-public Expression convertExpression(a: (Expression) `(<Expression expr>)`) = \bracket(convertExpression(expr))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `(<Expression expr>)`, ParseEnv env) = \bracket(convertExpression(expr, env))[@src=a@\loc];
 
-public Expression convertExpression(a: (Expression) `<Expression lhs> * <Expression rhs>`) 
-    = product(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `<Expression lhs> * <Expression rhs>`, ParseEnv env)
+    = product(convertExpression(lhs, env), convertExpression(rhs, env))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<Expression lhs> / <Expression rhs>`) 
-    = division(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `<Expression lhs> / <Expression rhs>`, ParseEnv env)
+    = division(convertExpression(lhs, env), convertExpression(rhs, env))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<Expression lhs> + <Expression rhs>`) 
-    = addition(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `<Expression lhs> + <Expression rhs>`, ParseEnv env)
+    = addition(convertExpression(lhs, env), convertExpression(rhs, env))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<Expression lhs> - <Expression rhs>`) 
-    = subtraction(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `<Expression lhs> - <Expression rhs>`, ParseEnv env)
+    = subtraction(convertExpression(lhs, env), convertExpression(rhs, env))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<Expression lhs> \>= <Expression rhs>`) 
-    = greaterThanOrEq(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `<Expression lhs> \>= <Expression rhs>`, ParseEnv env)
+    = greaterThanOrEq(convertExpression(lhs, env), convertExpression(rhs, env))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<Expression lhs> \<= <Expression rhs>`) 
-    = lessThanOrEq(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `<Expression lhs> \<= <Expression rhs>`, ParseEnv env)
+    = lessThanOrEq(convertExpression(lhs, env), convertExpression(rhs, env))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<Expression lhs> \< <Expression rhs>`) 
-    = lessThan(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `<Expression lhs> \< <Expression rhs>`, ParseEnv env)
+    = lessThan(convertExpression(lhs, env), convertExpression(rhs, env))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<Expression lhs> \> <Expression rhs>`) 
-    = greaterThan(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `<Expression lhs> \> <Expression rhs>`, ParseEnv env)
+    = greaterThan(convertExpression(lhs, env), convertExpression(rhs, env))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<Expression lhs> == <Expression rhs>`) 
-    = equals(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `<Expression lhs> == <Expression rhs>`, ParseEnv env)
+    = equals(convertExpression(lhs, env), convertExpression(rhs, env))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<Expression lhs> != <Expression rhs>`) 
-    = nonEquals(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `<Expression lhs> != <Expression rhs>`, ParseEnv env)
+    = nonEquals(convertExpression(lhs, env), convertExpression(rhs, env))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<Expression lhs> && <Expression rhs>`) 
-    = and(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `<Expression lhs> && <Expression rhs>`, ParseEnv env)
+    = and(convertExpression(lhs, env), convertExpression(rhs, env))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<Expression lhs> || <Expression rhs>`) 
-    = or(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `<Expression lhs> || <Expression rhs>`, ParseEnv env)
+    = or(convertExpression(lhs, env), convertExpression(rhs, env))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<Expression lhs> % <Expression rhs>`) 
-    = remainder(convertExpression(lhs), convertExpression(rhs))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `<Expression lhs> % <Expression rhs>`, ParseEnv env)
+    = remainder(convertExpression(lhs, env), convertExpression(rhs, env))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<Expression condition>?<Expression thenExp>:<Expression elseExp>`) 
-    = ifThenElse(convertExpression(condition), convertExpression(thenExp), convertExpression(elseExp))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `<Expression condition>?<Expression thenExp>:<Expression elseExp>`, ParseEnv env)
+    = ifThenElse(convertExpression(condition, env), convertExpression(thenExp, env), convertExpression(elseExp, env))[@src=a@\loc];
 
-public Expression convertExpression(a: (Expression) `<StringQuoted s>`)
+public Expression convertExpression(a: (Expression) `<StringQuoted s>`, ParseEnv env)
     = string(convertStringQuoted(s))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<DecimalIntegerLiteral number>`)
+public Expression convertExpression(a: (Expression) `<DecimalIntegerLiteral number>`, ParseEnv env)
     = integer(toInt("<number>"))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<DeciFloatNumeral number>`)
+public Expression convertExpression(a: (Expression) `<DeciFloatNumeral number>`, ParseEnv env)
     = float(toReal("<number>"))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<Boolean b>`)
+public Expression convertExpression(a: (Expression) `<Boolean b>`, ParseEnv env)
     = boolean(convertBoolean(b))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `[<{Expression ","}* items>]`)
-    = \list([convertExpression(i) | i <- items])[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `[<{Expression ","}* items>]`, ParseEnv env)
+    = \list([convertExpression(i, env) | i <- items])[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<MemberName varName>`)
+public Expression convertExpression(a: (Expression) `<MemberName varName>`, ParseEnv env)
     = variable("<varName>")[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `-<Expression expr>`) 
-    = negative(convertExpression(expr))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `-<Expression expr>`, ParseEnv env)
+    = negative(convertExpression(expr, env))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `+<Expression expr>`) 
-    = positive(convertExpression(expr))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `+<Expression expr>`, ParseEnv env)
+    = positive(convertExpression(expr, env))[@src=a@\loc];
 
-public Expression convertExpression(a: (Expression) `this`) = this()[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `this`, ParseEnv env) = this()[@src=a@\loc];
 
-public Expression convertExpression(a: (DefaultValue) `<StringQuoted s>`)
+public Expression convertExpression(a: (DefaultValue) `<StringQuoted s>`, ParseEnv env)
     = string(convertStringQuoted(s))[@src=a@\loc];
     
-public Expression convertExpression(a: (DefaultValue) `<DecimalIntegerLiteral number>`)
+public Expression convertExpression(a: (DefaultValue) `<DecimalIntegerLiteral number>`, ParseEnv env)
     = integer(toInt("<number>"))[@src=a@\loc];
     
-public Expression convertExpression(a: (DefaultValue) `<DeciFloatNumeral number>`)
+public Expression convertExpression(a: (DefaultValue) `<DeciFloatNumeral number>`, ParseEnv env)
     = float(toReal("<number>"))[@src=a@\loc];
     
-public Expression convertExpression(a: (DefaultValue) `<Boolean b>`)
+public Expression convertExpression(a: (DefaultValue) `<Boolean b>`, ParseEnv env)
     = boolean(convertBoolean(b))[@src=a@\loc];
     
-public Expression convertExpression(a: (DefaultValue) `[<{DefaultValue ","}* items>]`)
-    = \list([convertExpression(i) | i <- items])[@src=a@\loc];
+public Expression convertExpression(a: (DefaultValue) `[<{DefaultValue ","}* items>]`, ParseEnv env)
+    = \list([convertExpression(i, env) | i <- items])[@src=a@\loc];
     
-public Expression convertExpression(a: (DefaultValue) `get <InstanceType t>`)
-    = get(convertInstanceType(t))[@src=a@\loc];
+public Expression convertExpression(a: (DefaultValue) `get <InstanceType t>`, ParseEnv env)
+    = get(convertInstanceType(t, env))[@src=a@\loc];
     
-public Expression convertExpression(a: (DefaultValue) `new <ArtifactName name>(<{Expression ","}* args>)`) 
-    = new("<name>", [convertExpression(arg) | arg <- args])[@src=a@\loc];
+public Expression convertExpression(a: (DefaultValue) `new <ArtifactName name>(<{Expression ","}* args>)`, ParseEnv env)
+    = new(createName("<name>", env), [convertExpression(arg, env) | arg <- args])[@src=a@\loc];
     
-public Type convertInstanceType(a: (InstanceType) `<Type t>`) = convertType(t)[@src=a@\loc];
-public Type convertInstanceType(a: (InstanceType) `selfie`) = selfie()[@src=a@\loc];
+public Type convertInstanceType(a: (InstanceType) `<Type t>`, ParseEnv env) = convertType(t, env)[@src=a@\loc];
+public Type convertInstanceType(a: (InstanceType) `selfie`, ParseEnv env) = selfie()[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) 
-    = new("<name>", [convertExpression(arg) | arg <- args])[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `new <ArtifactName name>(<{Expression ","}* args>)`, ParseEnv env)
+    = new(createName("<name>", env), [convertExpression(arg, env) | arg <- args])[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `get <Type t>`)
-    = get(convertType(t))[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `get <Type t>`, ParseEnv env)
+    = get(convertType(t, env))[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<MemberName method>(<{Expression ","}* args>)`) 
-    = invoke("<method>", [convertExpression(arg) | arg <- args])[@src=a@\loc];
+public Expression convertExpression(a: (Expression) `<MemberName method>(<{Expression ","}* args>)`, ParseEnv env)
+    = invoke("<method>", [convertExpression(arg, env) | arg <- args])[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `<Expression prev>.<MemberName method>(<{Expression ","}* args>)`) {
+public Expression convertExpression(a: (Expression) `<Expression prev>.<MemberName method>(<{Expression ","}* args>)`, ParseEnv env) {
     
     if (!isValidForAccessChain(prev)) {
         throw IllegalObjectOperator("Invalid expression followed by object operator", a@\loc);
     }
     
-    return invoke(convertExpression(prev), "<method>", [convertExpression(arg) | arg <- args])[@src=a@\loc];
+    return invoke(convertExpression(prev, env), "<method>", [convertExpression(arg, env) | arg <- args])[@src=a@\loc];
 }
 
-public Expression convertExpression(a: (Expression) `<Expression prev>.<MemberName field>`) {
+public Expression convertExpression(a: (Expression) `<Expression prev>.<MemberName field>`, ParseEnv env) {
 
     if (!isValidForAccessChain(prev)) {
         throw IllegalObjectOperator("Invalid expression followed by object operator", a@\loc);
     }
 
-    return fieldAccess(convertExpression(prev), "<field>")[@src=a@\loc];
+    return fieldAccess(convertExpression(prev, env), "<field>")[@src=a@\loc];
 }
 
-public Expression convertExpression(a: (Expression) `{<{MapPair ","}* pairs>}`) = \map(
-    ( key: v | p <- pairs, <Expression key, Expression v> := convertMapPair(p) )
+public Expression convertExpression(a: (Expression) `{<{MapPair ","}* pairs>}`, ParseEnv env) = \map(
+    ( key: v | p <- pairs, <Expression key, Expression v> := convertMapPair(p, env) )
 )[@src=a@\loc];
 
-private tuple[Expression key, Expression \value] convertMapPair((MapPair) `<Expression key>:<Expression v>`)
-    = <convertExpression(key), convertExpression(v)>;
+private tuple[Expression key, Expression \value] convertMapPair((MapPair) `<Expression key>:<Expression v>`, ParseEnv env)
+    = <convertExpression(key, env), convertExpression(v, env)>;
 
 private bool isValidForAccessChain((Expression) `<MemberName varName>`) = true;
 private bool isValidForAccessChain((Expression) `this`) = true;

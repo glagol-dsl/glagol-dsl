@@ -15,7 +15,6 @@ data Definition
 alias TypeEnv = tuple[
     loc location,
     map[GlagolID, Definition] definitions,
-    map[GlagolID, Type] types,
     map[GlagolID, Declaration] imported,
     list[Declaration] ast,
     list[tuple[loc src, str message]] errors,
@@ -52,7 +51,7 @@ public TypeEnv addImported(i: \import(GlagolID name, Declaration namespace, Glag
 public bool isImported(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
 	(false | true | i <- range(env.imported), i.artifactName == name && i.namespace == namespace);
 	
-public bool isImported(artifact(GlagolID name), TypeEnv env) = name in env.imported;
+public bool isImported(artifact(Name name), TypeEnv env) = name.localName in env.imported;
 
 public bool isInAST(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
     (false | true | file(_, \module(Declaration ns, _, artifact)) <- env.ast, artifact.name == name && ns == namespace);
@@ -63,8 +62,8 @@ public list[Declaration] findArtifact(i:\import(GlagolID name, Declaration names
 public bool isEntity(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
     [entity(_, _)] := findArtifact(i, env);
     
-public bool isUtil(artifact(GlagolID name), TypeEnv env) =
-	[util(_, _)] := findArtifact(env.imported[name], env);
+public bool isUtil(artifact(Name name), TypeEnv env) =
+	[util(_, _)] := findArtifact(env.imported[name.localName], env);
 
 public TypeEnv addToAST(Declaration file, TypeEnv env) = env[ast = env.ast + file];
 public TypeEnv addToAST(list[Declaration] files, TypeEnv env) = env[ast = env.ast + files];

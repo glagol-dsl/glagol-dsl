@@ -11,25 +11,25 @@ test bool shouldNotGiveErrorOnEmptyExpr() =
 	checkDefaultValue(emptyExpr(), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|);
 
 test bool shouldGiveNotImportedErrorOnGetArtifact() = 
-	checkDefaultValue(get(artifact("User")
+	checkDefaultValue(get(artifact(unresolvedName("User"))
 		[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)]
 	)[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)], newEnv(|tmp:///Util.g|)) == 
 	addError(|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>), "\"User\" not imported, but used in /Util.g on line 10", newEnv(|tmp:///Util.g|));
 
 test bool shouldNotGiveNotImportedErrorOnGetArtifact() = 
-	checkDefaultValue(get(artifact("User")
+	checkDefaultValue(get(artifact(unresolvedName("User"))
 		[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)]
 	)[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)], addImported(\import("User", namespace("Test", namespace("Entity")), "User"), newEnv(|tmp:///Util.g|))) == 
 	addImported(\import("User", namespace("Test", namespace("Entity")), "User"), newEnv(|tmp:///Util.g|));
 
 test bool shouldGiveNotImportedErrorOnGetRepository() = 
-	checkDefaultValue(get(repository("User")
+	checkDefaultValue(get(repository(unresolvedName("User"))
 		[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)]
 	)[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)], newEnv(|tmp:///Util.g|)) == 
 	addError(|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>), "\"User\" not imported, but used for a repository in /Util.g on line 10", newEnv(|tmp:///Util.g|));
 
 test bool shouldGiveNotEntityErrorOnGetRepository() = 
-	checkDefaultValue(get(repository("User")
+	checkDefaultValue(get(repository(unresolvedName("User"))
 		[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)]
 	)[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)], 
 	
@@ -38,7 +38,7 @@ test bool shouldGiveNotEntityErrorOnGetRepository() =
 		addImported(\import("User", namespace("Test"), "User"), addToAST(file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), newEnv(|tmp:///Util.g|))));
 
 test bool shouldNotGiveErrorOnGetRepository() = 
-	checkDefaultValue(get(repository("User")
+	checkDefaultValue(get(repository(unresolvedName("User"))
 		[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)]
 	)[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)], 
 		addImported(\import("User", namespace("Test"), "User"),

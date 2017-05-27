@@ -7,12 +7,12 @@ import Parser::Converter::RelationDir;
 import Parser::Converter::AccessProperty;
 
 // TODO enable only on entities
-public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Relation relation>`, _, str artifactType) 
+public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Relation relation>`, _, str artifactType, ParseEnv env)
     = convertRelation(relation, artifactType)[
-    	@annotations = convertAnnotations(annotations)
+    	@annotations = convertAnnotations(annotations, env)
     ][@src=a@\loc];
 
-public Declaration convertDeclaration(a: (Declaration) `<Relation relation>`, _, str artifactType) = convertRelation(relation, artifactType);
+public Declaration convertDeclaration(a: (Declaration) `<Relation relation>`, _, str artifactType, _) = convertRelation(relation, artifactType);
 
 public Declaration convertRelation(a: _, at: /^(?!entity).*$/) {
 	throw RelationNotAllowed("Relations only allowed on entities", a@\loc);

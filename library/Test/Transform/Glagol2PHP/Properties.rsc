@@ -6,11 +6,11 @@ import Syntax::Abstract::PHP;
 import Config::Config;
 
 test bool propertyShouldTransformToPhpPropertyHavingNoDefaultValueWhenGetIsUsed() =
-    toPhpClassItem(property(artifact("SomeUtil"), "someUtil", {}, get(selfie())), <zend(), doctrine()>, entity("", [])) ==
+    toPhpClassItem(property(artifact(unresolvedName("SomeUtil")), "someUtil", {}, get(selfie())), <zend(), doctrine()>, entity("", [])) ==
     phpProperty({phpPrivate()}, [phpProperty("someUtil", phpNoExpr())]);
 
 test bool propertyShouldTransformToPhpPropertyWithoutDefaultValue() =
-    toPhpClassItem(property(artifact("SomeUtil"), "someUtil", {}, emptyExpr()), <zend(), doctrine()>, entity("", [])) ==
+    toPhpClassItem(property(artifact(unresolvedName("SomeUtil")), "someUtil", {}, emptyExpr()), <zend(), doctrine()>, entity("", [])) ==
     phpProperty({phpPrivate()}, [phpProperty("someUtil", phpNoExpr())]);
 
 test bool propertyShouldTransformToPhpPropertyWithDefaultValue() =

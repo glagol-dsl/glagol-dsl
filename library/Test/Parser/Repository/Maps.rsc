@@ -18,7 +18,7 @@ test bool shouldParseMapDeclaration()
     return parseModule(code) == \module(namespace("Example"), [
     		\import("User", namespace("Example"), "User")
     	], repository("User", [
-        method(\public(), \list(artifact("User")), "findById", [
+        method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findById", [
             param(integer(), "id", emptyExpr())
         ], [
             declare(\map(string(), integer()), variable("query"), expression(\map((string("id"): variable("id"))))),
