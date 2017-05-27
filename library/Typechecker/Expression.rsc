@@ -136,7 +136,22 @@ public Type lookupType(get(a: artifact(local(str name))), TypeEnv env) {
 public Type lookupType(get(a: artifact(e: external(str name, Declaration namespace, str originalName))), TypeEnv env) = 
 	a when isInAST(toNamespace(e), env) && isUtil(toNamespace(e), env);
 
-public Type lookupType(get(t: repository(Name name)), TypeEnv env) = t;
+public Type lookupType(get(a: artifact(e: external(str name, Declaration namespace, str originalName))), TypeEnv env) = unknownType();
+
+public Type lookupType(get(t: repository(local(str name))), TypeEnv env) {
+	if (hasLocalArtifact(name, env)) {
+		Name externalName = getFullNameOfLocalArtifact(name, env);
+		if (isEntity(toNamespace(externalName), env)) {
+			return repository(externalName);
+		}
+	}
+	
+	return unknownType();
+}
+
+public Type lookupType(get(a: repository(e: external(str name, Declaration namespace, str originalName))), TypeEnv env) = 
+	a when isInAST(toNamespace(e), env) && isEntity(toNamespace(e), env);
+
 public Type lookupType(get(t: selfie()), TypeEnv env) = t;
 public Type lookupType(get(_), TypeEnv env) = unknownType();
 

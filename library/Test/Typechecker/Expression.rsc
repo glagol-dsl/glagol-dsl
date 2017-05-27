@@ -182,7 +182,10 @@ test bool shouldReturnArtifactOnTernaryOfSameArtifacts() =
 test bool shouldReturnUnknownTypeOnTernaryOfDifferentArtifacts() = 
     unknownType() == lookupType(ifThenElse(boolean(true), get(artifact(local("User"))), get(artifact(local("Customer")))), newEnv(|tmp:///|));
 test bool shouldReturnRepositoryOnTernaryOfSameRepositories() = 
-    repository(local("User")) == lookupType(ifThenElse(boolean(true), get(repository(local("User"))), get(repository(local("User")))), newEnv(|tmp:///|));
+    repository(external("User", namespace("Test"), "User")) == lookupType(ifThenElse(boolean(true), get(repository(local("User"))), get(repository(local("User")))), 
+    	setContext(\module(namespace("Test"), [], util("UserService", [])), addToAST(
+    		file(|tmp:///|, \module(namespace("Test"), [], entity("User", []))),
+    	newEnv(|tmp:///|))));
 test bool shouldReturnUnknownTypeOnTernaryOfDifferentRepositories() = 
     unknownType() == lookupType(ifThenElse(boolean(true), get(repository(local("User"))), get(repository(local("Customer")))), newEnv(|tmp:///|));
 test bool shouldReturnUnTypeOnDifferentTypes() = 
@@ -214,8 +217,10 @@ test bool shouldReturnUnknownTypeOnNewExternalThatIsNotAnEntity() = unknownType(
 @doc{
 Test getting artifacts locally and internally
 }
-test bool shouldReturnUnknownTypeOnGetUnimportedArtifact() = unknownType() == lookupType(get(artifact(local("User"))), newEnv(|tmp:///|));
-test bool shouldReturnUnknownTypeOnGetArtifactWhichIsEntity() = unknownType() == lookupType(get(artifact(local("User"))), addImported(\import("User", namespace("Test"), "User"), addToAST(
+test bool shouldReturnUnknownTypeOnGetUnimportedArtifact() = 
+	unknownType() == lookupType(get(artifact(local("User"))), newEnv(|tmp:///|));
+test bool shouldReturnUnknownTypeOnGetArtifactWhichIsEntity() = 
+	unknownType() == lookupType(get(artifact(local("User"))), addImported(\import("User", namespace("Test"), "User"), addToAST(
 		file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", []))),
 		newEnv(|tmp:///|))));
 test bool shouldReturnArtifactTypeOnGetArtifactWhichIsUtil() = 
@@ -228,7 +233,34 @@ test bool shouldReturnUnknownTypeOnGetArtifactWhichIsValueObject() =
 		file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("User", []))),
 		newEnv(|tmp:///|))));
 
-test bool shouldReturnRepositoryTypeOnGetRepository() = repository(local("User")) == lookupType(get(repository(local("User"))), newEnv(|tmp:///|));
+test bool shouldReturnArtifactTypeOnGetExternalArtifact() = 
+	artifact(external("User", namespace("Test"), "User")) == lookupType(get(artifact(external("User", namespace("Test"), "User"))), 
+	addImported(\import("User", namespace("Test"), "User"), addToAST(
+    		file(|tmp:///|, \module(namespace("Test"), [], util("User", []))),
+    	newEnv(|tmp:///|))));
+
+test bool shouldReturnArtifactTypeOnGetExternalArtifact() = 
+	unknownType() == lookupType(get(artifact(external("User", namespace("Test"), "User"))), 
+	addImported(\import("User", namespace("Test"), "User"), addToAST(
+    		file(|tmp:///|, \module(namespace("Test"), [], entity("User", []))),
+    	newEnv(|tmp:///|))));
+
+
+test bool shouldReturnUnknownTypeOnGetLocalRepositoryWithMissingEntity() = 
+	unknownType() == lookupType(get(repository(local("User"))), newEnv(|tmp:///|));
+
+test bool shouldReturnRepositoryTypeOnGetRepository() = 
+	repository(external("User", namespace("Test"), "User")) == lookupType(get(repository(local("User"))), 
+	setContext(\module(namespace("Test"), [], util("UserService", [])), addToAST(
+    		file(|tmp:///|, \module(namespace("Test"), [], entity("User", []))),
+    	newEnv(|tmp:///|))));
+    	
+test bool shouldReturnRepositoryTypeOnGetExternalRepository() = 
+	repository(external("User", namespace("Test"), "User")) == lookupType(get(repository(external("User", namespace("Test"), "User"))), 
+	addImported(\import("User", namespace("Test"), "User"), addToAST(
+    		file(|tmp:///|, \module(namespace("Test"), [], entity("User", []))),
+    	newEnv(|tmp:///|))));
+
 test bool shouldReturnSelfieTypeOnGetSelfie() = selfie() == lookupType(get(selfie()), newEnv(|tmp:///|));
 test bool shouldReturnUnknownTypeOnGetVoid() = unknownType() == lookupType(get(voidValue()), newEnv(|tmp:///|));
 test bool shouldReturnUnknownTypeOnGetString() = unknownType() == lookupType(get(string()), newEnv(|tmp:///|));
