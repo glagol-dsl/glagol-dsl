@@ -3,6 +3,7 @@ module Typechecker::Expression
 import Typechecker::Env;
 import Typechecker::Errors;
 import Syntax::Abstract::Glagol;
+import Syntax::Abstract::Glagol::Helpers;
 import Typechecker::Type::Compatibility;
 
 import List;
@@ -104,12 +105,37 @@ public Type lookupType(negative(Expression expr), TypeEnv env) = lookupUnaryMath
 public Type lookupType(ifThenElse(Expression condition, Expression ifThen, Expression \else), TypeEnv env) = 
     lookupTernaryType(lookupType(ifThen, env), lookupType(\else, env));
 
-public Type lookupType(new(local(_), list[Expression] args), TypeEnv env) = unknownType();
-//public Type lookupType(new(str a, list[Expression] args), TypeEnv env) = artifact(external(a, ));
+public Type lookupType(new(local(str name), list[Expression] args), TypeEnv env) {
+	if (hasLocalArtifact(name, env)) {
+		Name externalName = getFullNameOfLocalArtifact(name, env);
+		Declaration \import = toNamespace(externalName);
+		if (isEntity(\import, env) || isValueObject(\import, env)) {
+			return artifact(externalName);
+		}
+	}
+	
+	return unknownType();
+}
 
+public Type lookupType(new(e: external(str localName, Declaration namespace, str originalName), list[Expression] args), TypeEnv env) = 
+	artifact(e) when isInAST(toNamespace(e), env) && (isEntity(toNamespace(e), env) || isValueObject(toNamespace(e), env));
+public Type lookupType(new(e: external(str localName, Declaration namespace, str originalName), list[Expression] args), TypeEnv env) = 
+	unknownType();
 
+public Type lookupType(get(a: artifact(local(str name))), TypeEnv env) {
+	if (hasLocalArtifact(name, env)) {
+		Name externalName = getFullNameOfLocalArtifact(name, env);
+		if (isUtil(toNamespace(externalName), env)) {
+			return artifact(externalName);
+		}
+	}
+	
+	return unknownType();
+}
 
-public Type lookupType(get(a: artifact(Name name)), TypeEnv env) = a when isImported(a, env) && isUtil(a, env);
+public Type lookupType(get(a: artifact(e: external(str name, Declaration namespace, str originalName))), TypeEnv env) = 
+	a when isInAST(toNamespace(e), env) && isUtil(toNamespace(e), env);
+
 public Type lookupType(get(t: repository(Name name)), TypeEnv env) = t;
 public Type lookupType(get(t: selfie()), TypeEnv env) = t;
 public Type lookupType(get(_), TypeEnv env) = unknownType();

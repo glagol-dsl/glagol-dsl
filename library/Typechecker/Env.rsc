@@ -62,6 +62,12 @@ public list[Declaration] findArtifact(i:\import(GlagolID name, Declaration names
 public bool isEntity(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
     [entity(_, _)] := findArtifact(i, env);
     
+public bool isValueObject(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
+    [valueObject(_, _)] := findArtifact(i, env);
+    
+public bool isUtil(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
+    [util(_, _)] := findArtifact(i, env);
+    
 public bool isUtil(artifact(Name name), TypeEnv env) =
 	[util(_, _)] := findArtifact(env.imported[name.localName], env);
 
@@ -71,6 +77,15 @@ public TypeEnv addToAST(list[Declaration] files, TypeEnv env) = env[ast = env.as
 public TypeEnv setContext(Declaration ctx, TypeEnv env) = env[context = ctx];
 public Declaration getContext(TypeEnv env) = env.context;
 public TypeEnv clearContext(TypeEnv env) = setContext(emptyDecl(), env);
+
+public bool hasLocalArtifact(str name, TypeEnv env) = hasLocalArtifact(name, getContext(env), env);
+public bool hasLocalArtifact(str name, emptyDecl(), TypeEnv env) = false;
+public bool hasLocalArtifact(str name, Declaration d, TypeEnv env) = isInAST(\import(name, getContextNamespace(d), name), env);
+
+public Name getFullNameOfLocalArtifact(str name, TypeEnv env) = external(name, getContextNamespace(env), name);
+
+public Declaration getContextNamespace(TypeEnv env) = getContextNamespace(getContext(env));
+public Declaration getContextNamespace(\module(Declaration namespace, _, _)) = namespace;
 
 public TypeEnv populateTypes(list[Declaration] ast, TypeEnv env) = (env | populateTypes(e, it) | e <- ast);
 
