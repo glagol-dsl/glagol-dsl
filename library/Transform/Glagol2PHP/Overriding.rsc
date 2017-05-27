@@ -42,9 +42,9 @@ private PhpExpr createOverrideType(\list(Type \type)) = phpNew(phpName(phpName("
 private PhpExpr createOverrideType(\map(Type key, Type v)) = phpNew(phpName(phpName("Parameter\\Map")), [
     phpActualParameter(createOverrideType(key), false), phpActualParameter(createOverrideType(v), false)
 ]);
-private PhpExpr createOverrideType(artifact(fullName(str name, _, _))) = phpNew(phpName(phpName("Parameter\\Custom")), [
+private PhpExpr createOverrideType(artifact(external(str name, _, _))) = phpNew(phpName(phpName("Parameter\\Custom")), [
     phpActualParameter(phpScalar(phpString(name)), false)
 ]);
-private PhpExpr createOverrideType(repository(fullName(str name, _, _))) = phpNew(phpName(phpName("Parameter\\Custom")), [
+private PhpExpr createOverrideType(repository(external(str name, _, _))) = phpNew(phpName(phpName("Parameter\\Custom")), [
     phpActualParameter(phpScalar(phpString(name + "Repository")), false)
 ]);

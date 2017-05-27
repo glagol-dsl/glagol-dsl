@@ -13,7 +13,7 @@ test bool testShouldParseEntityWithValues()
                
     list[Declaration] expectedValues = [
         property(integer(), "id", {read()}, emptyExpr()),
-        property(artifact(unresolvedName("Date")), "addedOn", {read(), \set()}, emptyExpr())
+        property(artifact(local("Date")), "addedOn", {read(), \set()}, emptyExpr())
     ];
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", expectedValues));
@@ -49,7 +49,7 @@ test bool testShouldParseEntityWithValuesAndAnnotations()
     	parseModule(code) == \module(namespace("Example"), [], entity("User", [
     	   property(float(), "id", {read()}, emptyExpr()), 
            property(string(), "id", {read()}, emptyExpr()), 
-           property(artifact(unresolvedName("Weight")), "id", {}, emptyExpr())
+           property(artifact(local("Weight")), "id", {}, emptyExpr())
 	   ])) &&
     	parseModule(code).artifact.declarations[0]@annotations == [
             annotation("column", [

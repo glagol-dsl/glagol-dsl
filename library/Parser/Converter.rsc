@@ -546,8 +546,8 @@ public Expression convertAssignable(a: (Assignable) `<Expression prev>.<MemberNa
 
 
 public Name createName(str localName, ParseEnv env) = createName(localName, getImported(localName, env)) when isImported(localName, env);
-public Name createName(str localName, ParseEnv env) = unresolvedName(localName) when !isImported(localName, env);
-public Name createName(str localName, \import(GlagolID originalName, Declaration namespace, _)) = fullName(localName, namespace, originalName);
+public Name createName(str localName, ParseEnv env) = local(localName) when !isImported(localName, env);
+public Name createName(str localName, \import(GlagolID originalName, Declaration namespace, _)) = external(localName, namespace, originalName);
 
 
 

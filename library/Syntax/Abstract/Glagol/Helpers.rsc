@@ -85,5 +85,5 @@ public str namespaceToString(namespace(str name), _) = name;
 public str namespaceToString(namespace(str name, Declaration subNamespace), str delimiter) = 
     name + delimiter + namespaceToString(subNamespace, delimiter);
 
-public str extractName(fullName(str localName, Declaration namespace, str originalName)) = localName;
-public str extractName(unresolvedName(str localName)) = localName;
+public str extractName(external(str localName, Declaration namespace, str originalName)) = localName;
+public str extractName(local(str localName)) = localName;

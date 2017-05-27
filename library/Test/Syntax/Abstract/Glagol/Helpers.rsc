@@ -100,15 +100,15 @@ test bool testIsImportedReturnsTrue() = isImported("User", [\import("Customer", 
 test bool testIsImportedReturnsFalse() = !isImported("User", [\import("Customer", namespace("Test"), "Customer"), \import("User", namespace("Test"), "Userr")]);
 
 test bool shouldCollectOnlyDIProperties() = getDIProperties([
-        property(repository(unresolvedName("User")), "prop", {}, get(repository(unresolvedName("User")))),
-        property(repository(unresolvedName("Customer")), "prop", {}, emptyExpr()),
+        property(repository(local("User")), "prop", {}, get(repository(local("User")))),
+        property(repository(local("Customer")), "prop", {}, emptyExpr()),
         constructor([], [
             expression(\map(()))
         ], emptyExpr())
-    ]) == [property(repository(unresolvedName("User")), "prop", {}, get(repository(unresolvedName("User"))))];
+    ]) == [property(repository(local("User")), "prop", {}, get(repository(local("User"))))];
     
 test bool shouldCollectOnlyDIProperties2() = getDIProperties([
-        property(repository(unresolvedName("Customer")), "prop", {}, emptyExpr()),
+        property(repository(local("Customer")), "prop", {}, emptyExpr()),
         constructor([], [
             expression(\map(()))
         ], emptyExpr())
@@ -116,12 +116,12 @@ test bool shouldCollectOnlyDIProperties2() = getDIProperties([
     
 test bool testHasDependencies() = 
 	!hasDependencies([
-        property(repository(unresolvedName("Customer")), "prop", {}, emptyExpr()),
+        property(repository(local("Customer")), "prop", {}, emptyExpr()),
         constructor([], [
             expression(\map(()))
         ], emptyExpr())
     ]) && hasDependencies([
-        property(repository(unresolvedName("Customer")), "prop", {}, get(repository(unresolvedName("Customer")))),
+        property(repository(local("Customer")), "prop", {}, get(repository(local("Customer")))),
         constructor([], [
             expression(\map(()))
         ], emptyExpr())
@@ -129,7 +129,7 @@ test bool testHasDependencies() =
 
 test bool testGetActions() = 
 	getActions([
-        property(repository(unresolvedName("Customer")), "prop", {}, emptyExpr()),
+        property(repository(local("Customer")), "prop", {}, emptyExpr()),
         action("index", [], [])
 	]) == [action("index", [], [])];
     

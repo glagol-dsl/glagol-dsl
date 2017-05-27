@@ -57,7 +57,7 @@ test bool testDeclarationsWithCustomTypes() {
         
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [
-            declare(artifact(unresolvedName("DateTime")), variable("myDate"), emptyStmt())
+            declare(artifact(local("DateTime")), variable("myDate"), emptyStmt())
         ], emptyExpr())
     ]));
 }
@@ -271,7 +271,7 @@ test bool testForeachStatementWithCondition() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(\list(artifact(unresolvedName("DateTime"))), "a", emptyExpr()), param(artifact(unresolvedName("DateTime")), "now", emptyExpr())], [
+        constructor([param(\list(artifact(local("DateTime"))), "a", emptyExpr()), param(artifact(local("DateTime")), "now", emptyExpr())], [
             foreach(variable("a"), variable("b"), emptyStmt(), [lessThan(variable("a"), variable("now"))])
         ], emptyExpr())
     ]));
@@ -288,7 +288,7 @@ test bool testForeachStatementWithContinue() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(\list(artifact(unresolvedName("DateTime"))), "a", emptyExpr()), param(artifact(unresolvedName("DateTime")), "now", emptyExpr())], [
+        constructor([param(\list(artifact(local("DateTime"))), "a", emptyExpr()), param(artifact(local("DateTime")), "now", emptyExpr())], [
             foreach(variable("a"), variable("b"), ifThen(
                 lessThan(variable("a"), variable("now")), \continue()
             ))

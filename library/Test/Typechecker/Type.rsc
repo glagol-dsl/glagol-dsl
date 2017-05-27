@@ -29,26 +29,26 @@ test bool shlouldNotGiveErrorsForListAndMapTypes() =
 	newEnv(|tmp:///User.g|);
 
 test bool shlouldGiveErrorWhenUsingNotImportedArtifact() =
-	checkType(artifact(unresolvedName("Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
-		param(artifact(unresolvedName("Date")), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
+	checkType(artifact(local("Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+		param(artifact(local("Date")), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
 	addError(|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "\"Date\" not imported, but used in /User.g on line 10", newEnv(|tmp:///User.g|));
 
 test bool shlouldNotGiveErrorWhenUsingImportedArtifact() =
-	checkType(artifact(unresolvedName("Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
-		param(artifact(unresolvedName("Date")), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+	checkType(artifact(local("Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+		param(artifact(local("Date")), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
 	addImported(\import("Date", namespace("Test", namespace("Entity")), "Date"), newEnv(|tmp:///User.g|))) == 
 	addImported(\import("Date", namespace("Test", namespace("Entity")), "Date"), newEnv(|tmp:///User.g|));
 
 test bool shlouldGiveErrorWhenUsingRepositoryWithNotImportedEntity() =
-	checkType(repository(unresolvedName("Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
-		param(repository(unresolvedName("Date")), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
+	checkType(repository(local("Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+		param(repository(local("Date")), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
 	addError(|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "\"Date\" not imported, but used for a repository in /User.g on line 10",
 		newEnv(|tmp:///User.g|)
 	);
 
 test bool shlouldGiveErrorWhenUsingRepositoryWithImportedArtifactButIsNotEntity() =
-	checkType(repository(unresolvedName("Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
-		param(repository(unresolvedName("Date")), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+	checkType(repository(local("Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+		param(repository(local("Date")), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
 		
 		addImported(\import("Date", namespace("Test"), "Date"),
 			addToAST(file(|tmp:///Date.g|, \module(namespace("Test"), [], util("Date", [])[@src=|tmp:///Date.g|(0, 0, <10, 10>, <20, 20>)])), newEnv(|tmp:///User.g|))
@@ -60,13 +60,13 @@ test bool shlouldGiveErrorWhenUsingRepositoryWithImportedArtifactButIsNotEntity(
 	));
 
 test bool shouldNotGiveErrorsWhenUsingSelfieForGettingPropertyInstance() = 
-	checkType(selfie(), property(repository(unresolvedName("User")), "users", {}, get(selfie())), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|);
+	checkType(selfie(), property(repository(local("User")), "users", {}, get(selfie())), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|);
 
 test bool shouldGiveErrorsWhenUsingSelfieForSomethingElseThanGettingPropertyInstance() = 
-	checkType(selfie()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], property(repository(unresolvedName("User")), "users", {}, emptyExpr()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)])[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
+	checkType(selfie()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], property(repository(local("User")), "users", {}, emptyExpr()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)])[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
 	addError(|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "Cannot use selfie as type in /User.g on line 10", newEnv(|tmp:///User.g|));
 	
 test bool shouldGiveErrorsWhenUsingSelfieForSomethingElseThanGettingPropertyInstance2() = 
-	checkType(selfie()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], param(repository(unresolvedName("User"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], "users", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
+	checkType(selfie()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], param(repository(local("User"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], "users", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
 	addError(|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "Cannot use selfie as type in /User.g on line 10", newEnv(|tmp:///User.g|));
 

@@ -74,7 +74,7 @@ private list[Declaration] findRepositoryDependencies(\module(Declaration ns, lis
 	list[Declaration] repoImports = [];
 
 	top-down visit (artifact) {
-		case r: repository(fullName(str name, _, _)): {
+		case r: repository(external(str name, _, _)): {
 			if (!isImported(name, imports)) {
 				// TODO specify location
 				throw ArtifactNotImported("Entity by the name of \'<name>\' is not imported", (r@src?) ? r@src : |tmp:///|);

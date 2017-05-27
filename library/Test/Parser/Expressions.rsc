@@ -158,7 +158,7 @@ test bool testNewInstance()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "newInstance", [], [
-            expression(new(unresolvedName("DateTime"), []))
+            expression(new(local("DateTime"), []))
           ], emptyExpr())
     ]));
 }
@@ -174,7 +174,7 @@ test bool testNewInstanceWithArg()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "newInstance", [], [
-            expression(new(unresolvedName("DateTime"), [string("now")]))
+            expression(new(local("DateTime"), [string("now")]))
           ], emptyExpr())
     ]));
 }
@@ -190,7 +190,7 @@ test bool testNewInstanceWithArgs()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "newInstance", [], [
-            expression(new(unresolvedName("DateTime"), [string("now"), new(unresolvedName("Money"), [
+            expression(new(local("DateTime"), [string("now"), new(local("Money"), [
                 integer(2300), string("USD")
             ])]))
           ], emptyExpr())
@@ -228,13 +228,13 @@ test bool testMethodInvokeChainedToAVariable()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "methodInvoke", [], [
-            declare(artifact(unresolvedName("SomeEntity")), variable("eee"), expression(
-                new(unresolvedName("SomeEntity"), [])
+            declare(artifact(local("SomeEntity")), variable("eee"), expression(
+                new(local("SomeEntity"), [])
             )),
             expression(invoke(variable("eee"), "methodInvoke", [])),
             expression(invoke(invoke(variable("eee"), "nested", [\list([string("string")])]), "methodInvoke", [])),
             expression(invoke(fieldAccess(fieldAccess(variable("eee"), "blah"), "blah2"), "methodInvoke", [])),
-            expression(invoke(new(unresolvedName("MyClass"), []), "methodInvoke", []))
+            expression(invoke(new(local("MyClass"), []), "methodInvoke", []))
           ], emptyExpr())
     ]));
 }

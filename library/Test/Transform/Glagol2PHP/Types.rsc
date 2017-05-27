@@ -29,8 +29,8 @@ test bool shouldTransformTypedMapTwoToPhpTypeName()
     = toPhpTypeName(\map(string(), string())) == phpName("Map");
     
 test bool shouldTransformArtifactTypeToPhpTypeName()
-    = toPhpTypeName(artifact(unresolvedName("SomeUtil"))) == phpName("SomeUtil");
+    = toPhpTypeName(artifact(local("SomeUtil"))) == phpName("SomeUtil");
     
 test bool shouldTransformRepositoryTypeToPhpTypeName()
-    = toPhpTypeName(repository(unresolvedName("User"))) == phpName("UserRepository");
+    = toPhpTypeName(repository(local("User"))) == phpName("UserRepository");
     

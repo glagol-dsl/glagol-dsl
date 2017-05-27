@@ -104,8 +104,8 @@ public Type lookupType(negative(Expression expr), TypeEnv env) = lookupUnaryMath
 public Type lookupType(ifThenElse(Expression condition, Expression ifThen, Expression \else), TypeEnv env) = 
     lookupTernaryType(lookupType(ifThen, env), lookupType(\else, env));
 
-public Type lookupType(new(unresolvedName(_), list[Expression] args), TypeEnv env) = unknownType();
-//public Type lookupType(new(str a, list[Expression] args), TypeEnv env) = artifact(fullName(a, ));
+public Type lookupType(new(local(_), list[Expression] args), TypeEnv env) = unknownType();
+//public Type lookupType(new(str a, list[Expression] args), TypeEnv env) = artifact(external(a, ));
 
 
 
