@@ -105,3 +105,38 @@ public bool hasModule(artifact(Name name), TypeEnv env) = size(findArtifact(toNa
 public bool hasModule(repository(external(str name, Declaration ns, str original)), TypeEnv env) = 
 	(false | true | file(_, m: \module(ns, _, repository(original, _))) <- env.ast);
 public bool hasModule(_, TypeEnv env) = false;
+
+public bool hasLocalProperty(GlagolID name, TypeEnv env) {
+	visit (getContext(env)) {
+		case property(_, name, _, _): 
+			return true;
+	}
+	return false;
+}
+
+
+public Declaration findLocalProperty(GlagolID name, TypeEnv env) {
+	visit (getContext(env)) {
+		case p: property(_, name, _, _): 
+			return p;
+	}
+
+	throw "Property not found";
+}
+
+public bool hasLocalRelation(GlagolID name, TypeEnv env) {
+	visit (getContext(env)) {
+		case relation(_, _, _, name, _): 
+			return true;
+	}
+	return false;
+}
+
+public Declaration findLocalRelation(GlagolID name, TypeEnv env) {
+	visit (getContext(env)) {
+		case r: relation(_, _, _, name, _): 
+			return r;
+	}
+	
+	throw "Relation not found";
+}

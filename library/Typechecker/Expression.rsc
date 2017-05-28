@@ -172,6 +172,21 @@ public Type lookupType(Type prev, i: invoke(str m, params), TypeEnv env) =
 	
 public Type lookupType(Type prev, i: invoke(str m, params), TypeEnv) = unknownType();
 
+public Type lookupType(fieldAccess(str field), TypeEnv env) = 
+	externalize(findLocalProperty(field, env).valueType, env) when hasLocalProperty(field, env);
+	
+public Type lookupType(f: fieldAccess(str field), TypeEnv env) = 
+	lookupType(findLocalRelation(field, env), f, env) when hasLocalRelation(field, env);
+
+public Type lookupType(relation(_, \one(), name, _, _), fieldAccess(str field), TypeEnv env) = 
+	artifact(getFullNameOfLocalArtifact(name, env)) when hasLocalArtifact(name, env);
+	
+public Type lookupType(relation(_, \many(), name, _, _), fieldAccess(str field), TypeEnv env) = 
+	\list(artifact(getFullNameOfLocalArtifact(name, env))) when hasLocalArtifact(name, env);
+	
+public Type lookupType(Declaration relation, fieldAccess(str field), TypeEnv env) = 
+	unknownType();
+
 private Type lookupTernaryType(artifact(Name ifThen), artifact(Name \else)) = ifThen == \else ? artifact(ifThen) : unknownType();
 private Type lookupTernaryType(repository(Name ifThen), repository(Name \else)) = ifThen == \else ? repository(ifThen) : unknownType();
 private Type lookupTernaryType(Type ifThen, Type \else) = ifThen when ifThen == \else;
