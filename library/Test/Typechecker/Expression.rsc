@@ -239,7 +239,7 @@ test bool shouldReturnArtifactTypeOnGetExternalArtifact() =
     		file(|tmp:///|, \module(namespace("Test"), [], util("User", []))),
     	newEnv(|tmp:///|))));
 
-test bool shouldReturnArtifactTypeOnGetExternalArtifact() = 
+test bool shouldReturnUnknownTypeOnGetExternalArtifactThatIsNotEntity() = 
 	unknownType() == lookupType(get(artifact(external("User", namespace("Test"), "User"))), 
 	addImported(\import("User", namespace("Test"), "User"), addToAST(
     		file(|tmp:///|, \module(namespace("Test"), [], entity("User", []))),
@@ -270,8 +270,72 @@ test bool shouldReturnUnknownTypeOnGetBoolean() = unknownType() == lookupType(ge
 test bool shouldReturnUnknownTypeOnGetList() = unknownType() == lookupType(get(\list(string())), newEnv(|tmp:///|));
 test bool shouldReturnUnknownTypeOnGetMap() = unknownType() == lookupType(get(\map(string(), integer())), newEnv(|tmp:///|));
 
-/*
- bool shouldReturnStringTypeWhenInvokingStringMethod() = string() == lookupType(invoke("myString", []), addToAST(
-	
+test bool shouldReturnStringTypeWhenInvokingStringMethod() = string() == lookupType(invoke("myString", []), setContext(
+	\module(namespace("Test"), [], entity("User", [
+		method(\public(), string(), "myString", [], [], emptyExpr())
+	])), newEnv(|tmp:///|)
 ));
-*/
+
+test bool shouldReturnUnknownTypeWhenInvokingUnknownMethod() = unknownType() == lookupType(invoke("myString", []), setContext(
+	\module(namespace("Test"), [], entity("User", [])), newEnv(|tmp:///|)
+));
+
+test bool shouldReturnIntegerTypeWhenInvokingIntgerMethod() = integer() == lookupType(invoke("myString", []), setContext(
+	\module(namespace("Test"), [], entity("User", [
+		method(\public(), integer(), "myString", [], [], emptyExpr())
+	])), newEnv(|tmp:///|)
+));
+
+test bool shouldReturnExternalArtifactTypeWhenInvokingLocalArtifactMethod() = artifact(external("User", namespace("Test"), "User")) == lookupType(invoke("myString", []), setContext(
+	\module(namespace("Test"), [], entity("User", [
+		method(\public(), artifact(local("User")), "myString", [], [], emptyExpr())
+	])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], entity("User", [
+		method(\public(), artifact(local("User")), "myString", [], [], emptyExpr())
+	]))), newEnv(|tmp:///|))
+));
+
+test bool shouldReturnExternalArtifactTypeWhenInvokingExternalArtifactMethod() = artifact(external("User", namespace("Example"), "User")) == 
+	lookupType(invoke("myString", []), setContext(
+		\module(namespace("Test"), [], entity("User", [
+			method(\public(), artifact(external("User", namespace("Example"), "User")), "myString", [], [], emptyExpr())
+		])), addToAST(file(|tmp:///|, \module(namespace("Example"), [], entity("User", []))), newEnv(|tmp:///|))
+	));
+
+test bool shouldReturnStringTypeWhenInvokingStringMethodInRepository() = string() == lookupType(invoke("myString", []), setContext(
+	\module(namespace("Test"), [], repository("User", [
+		method(\public(), string(), "myString", [], [], emptyExpr())
+	])), newEnv(|tmp:///|)
+));
+
+test bool shouldReturnIntegerOnChainedInvokeFromLocalArtifact() = integer() == lookupType(invoke(invoke("artifact", []), "myInt", []), setContext(
+	\module(namespace("Test"), [], repository("User", [
+		method(\public(), artifact(local("Customer")), "artifact", [], [], emptyExpr())
+	])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], util("Customer", [
+		method(\public(), integer(), "myInt", [], [], emptyExpr())
+	]))), newEnv(|tmp:///|))
+));
+
+test bool shouldReturnUnknownTypeOnChainedInvokeFromLocalArtifactThatHasStringReturnedInTheMiddle() = 
+	unknownType() == lookupType(invoke(invoke("artifact", []), "myInt", []), setContext(
+	\module(namespace("Test"), [], repository("User", [
+		method(\public(), string(), "artifact", [], [], emptyExpr())
+	])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], util("Customer", [
+		method(\public(), integer(), "myInt", [], [], emptyExpr())
+	]))), newEnv(|tmp:///|))
+));
+
+test bool shouldReturnIntegerOnChainedInvokeFromLocalRepository() = integer() == lookupType(invoke(invoke("repo", []), "myInt", []), setContext(
+	\module(namespace("Test"), [], util("User", [
+		method(\public(), repository(local("Customer")), "repo", [], [], emptyExpr())
+	])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+		method(\public(), integer(), "myInt", [], [], emptyExpr())
+	]))), newEnv(|tmp:///|))
+));
+
+test bool shouldReturnIntegerOnChainedInvokeFromExternalRepository() = integer() == lookupType(invoke(invoke("repo", []), "myInt", []), setContext(
+	\module(namespace("Test"), [], util("User", [
+		method(\public(), repository(external("Customer", namespace("Example"), "Customer")), "repo", [], [], emptyExpr())
+	])), addToAST(file(|tmp:///|, \module(namespace("Example"), [], repository("Customer", [
+		method(\public(), integer(), "myInt", [], [], emptyExpr())
+	]))), newEnv(|tmp:///|))
+));

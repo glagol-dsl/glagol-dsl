@@ -155,6 +155,23 @@ public Type lookupType(get(a: repository(e: external(str name, Declaration names
 public Type lookupType(get(t: selfie()), TypeEnv env) = t;
 public Type lookupType(get(_), TypeEnv env) = unknownType();
 
+public Type lookupType(invoke(str m, _), TypeEnv env) {
+	visit (getContext(env)) { 
+		case method(\public(), Type t, m, _, _, _): 
+			return externalize(t, env); 
+	}
+	
+	return unknownType();
+}
+
+public Type lookupType(invoke(Expression prev, str m, params), TypeEnv env) = 
+	lookupType(externalize(lookupType(prev, env), env), invoke(m , params), env);
+	
+public Type lookupType(Type prev, i: invoke(str m, params), TypeEnv env) = 
+	lookupType(i, setContext(findModule(prev, env), env)) when hasModule(prev, env);
+	
+public Type lookupType(Type prev, i: invoke(str m, params), TypeEnv) = unknownType();
+
 private Type lookupTernaryType(artifact(Name ifThen), artifact(Name \else)) = ifThen == \else ? artifact(ifThen) : unknownType();
 private Type lookupTernaryType(repository(Name ifThen), repository(Name \else)) = ifThen == \else ? repository(ifThen) : unknownType();
 private Type lookupTernaryType(Type ifThen, Type \else) = ifThen when ifThen == \else;

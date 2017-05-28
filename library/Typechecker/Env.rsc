@@ -1,6 +1,7 @@
 module Typechecker::Env
 
 import Syntax::Abstract::Glagol;
+import Syntax::Abstract::Glagol::Helpers;
 import Map;
 import List;
 
@@ -57,7 +58,7 @@ public bool isInAST(\import(GlagolID name, Declaration namespace, GlagolID as), 
     (false | true | file(_, \module(Declaration ns, _, artifact)) <- env.ast, artifact.name == name && ns == namespace);
 
 public list[Declaration] findArtifact(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) =
-	[artifact | file(_, \module(Declaration ns, _, artifact)) <- env.ast, artifact.name == name && ns == namespace];
+	[artifact | file(_, \module(Declaration ns, _, artifact)) <- env.ast, !isRepository(artifact) && !isController(artifact) && artifact.name == name && ns == namespace];
 
 public bool isEntity(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
     [entity(_, _)] := findArtifact(i, env);
@@ -87,15 +88,20 @@ public Name getFullNameOfLocalArtifact(str name, TypeEnv env) = external(name, g
 public Declaration getContextNamespace(TypeEnv env) = getContextNamespace(getContext(env));
 public Declaration getContextNamespace(\module(Declaration namespace, _, _)) = namespace;
 
-public TypeEnv populateTypes(list[Declaration] ast, TypeEnv env) = (env | populateTypes(e, it) | e <- ast);
+public Type externalize(artifact(local(str name)), TypeEnv env) = artifact(getFullNameOfLocalArtifact(name, env)) when hasLocalArtifact(name, env);
+public Type externalize(artifact(local(str name)), TypeEnv env) = unknownType() when !hasLocalArtifact(name, env);
+public Type externalize(repository(local(str name)), TypeEnv env) = repository(getFullNameOfLocalArtifact(name, env)) when hasLocalArtifact(name, env);
+public Type externalize(repository(local(str name)), TypeEnv env) = unknownType() when !hasLocalArtifact(name, env);
+public Type externalize(Type t, TypeEnv env) = t;
 
-public TypeEnv populateTypes(file(loc file, Declaration m), TypeEnv env) =
-	env[types = env.types + constructTypesMap(m)];
+public Declaration findModule(artifact(Name name), TypeEnv env) = findModule(toNamespace(name), env);
+public Declaration findModule(repository(external(str name, Declaration ns, str original)), TypeEnv env) = 
+	head([m | file(_, m: \module(ns, _, repository(original, _))) <- env.ast]);
+	
+public Declaration findModule(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
+	head([m | file(_, m: \module(Declaration ns, _, artifact)) <- env.ast, !isRepository(artifact) && !isController(artifact) && artifact.name == name && ns == namespace]);
 
-public map[GlagolID, Type] gatherTypes(\module(Declaration namespace, _, a: entity(str name, list[Declaration] ds))) =
-	("<methodHash(namespace, a, m)>": t | m: method(_, t, _, _, _, _) <- getPublicMethods(ds));
-
-public str hash(Declaration namespace, entity(str name, _), method(_, _, m, _, _, _)) =
-	"<namespaceToString(namespace, "::")>::<name>#<m>";
-
-
+public bool hasModule(artifact(Name name), TypeEnv env) = size(findArtifact(toNamespace(name), env)) > 0;
+public bool hasModule(repository(external(str name, Declaration ns, str original)), TypeEnv env) = 
+	(false | true | file(_, m: \module(ns, _, repository(original, _))) <- env.ast);
+public bool hasModule(_, TypeEnv env) = false;

@@ -21,6 +21,12 @@ public bool isConstructor(_) = false;
 public bool isEntity(entity(_, _)) = true;
 public bool isEntity(_) = false;
 
+public bool isRepository(repository(_, _)) = true;
+public bool isRepository(_) = false;
+
+public bool isController(controller(_, _, _, _)) = true;
+public bool isController(_) = false;
+
 public bool hasConstructors(list[Declaration] declarations) = 
 	size([d | d <- declarations, isConstructor(d)]) > 0;
 
