@@ -179,10 +179,10 @@ public Type lookupType(f: fieldAccess(str field), TypeEnv env) =
 	lookupType(findLocalRelation(field, env), f, env) when hasLocalRelation(field, env);
 
 public Type lookupType(relation(_, \one(), name, _, _), fieldAccess(str field), TypeEnv env) = 
-	artifact(getFullNameOfLocalArtifact(name, env)) when hasLocalArtifact(name, env);
+	externalize(artifact(local(name)), env) when hasLocalArtifact(name, env);
 	
 public Type lookupType(relation(_, \many(), name, _, _), fieldAccess(str field), TypeEnv env) = 
-	\list(artifact(getFullNameOfLocalArtifact(name, env))) when hasLocalArtifact(name, env);
+	\list(externalize(artifact(local(name)), env)) when hasLocalArtifact(name, env);
 	
 public Type lookupType(Declaration relation, fieldAccess(str field), TypeEnv env) = 
 	unknownType();
