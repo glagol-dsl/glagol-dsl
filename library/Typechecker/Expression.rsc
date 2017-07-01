@@ -177,6 +177,11 @@ public Type lookupType(fieldAccess(str field), TypeEnv env) =
 	
 public Type lookupType(f: fieldAccess(str field), TypeEnv env) = 
 	lookupType(findLocalRelation(field, env), f, env) when hasLocalRelation(field, env);
+	
+public Type lookupType(f: fieldAccess(str field), TypeEnv env) = unknownType();
+
+public Type lookupType(f: fieldAccess(this(), str field), TypeEnv env) = lookupType(fieldAccess(field), env);
+public Type lookupType(f: fieldAccess(_, str field), TypeEnv env) = unknownType();
 
 public Type lookupType(relation(_, \one(), name, _, _), fieldAccess(str field), TypeEnv env) = 
 	externalize(artifact(local(name)), env) when hasLocalArtifact(name, env);

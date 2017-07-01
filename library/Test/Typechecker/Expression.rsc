@@ -280,7 +280,7 @@ test bool shouldReturnUnknownTypeWhenInvokingUnknownMethod() = unknownType() == 
 	\module(namespace("Test"), [], entity("User", [])), newEnv(|tmp:///|)
 ));
 
-test bool shouldReturnIntegerTypeWhenInvokingIntgerMethod() = integer() == lookupType(invoke("myString", []), setContext(
+test bool shouldReturnIntegerTypeWhenInvokingIntegerMethod() = integer() == lookupType(invoke("myString", []), setContext(
 	\module(namespace("Test"), [], entity("User", [
 		method(\public(), integer(), "myString", [], [], emptyExpr())
 	])), newEnv(|tmp:///|)
@@ -350,8 +350,25 @@ test bool shouldReturnIntegerOnAccessingIntegerLocalProperty() = integer() == lo
 	newEnv(|tmp:///|)
 ));
 
+test bool shouldReturnIntegerOnAccessingIntegerLocalPropertyUsingThis() = integer() == lookupType(fieldAccess(this(), "prop"), setContext(
+	\module(namespace("Test"), [], entity("User", [
+		property(integer(), "prop", {}, emptyExpr())
+	])),
+	newEnv(|tmp:///|)
+));
+
 test bool shouldReturnIntegerOnAccessingIntegerLocalOneOneRelation() = artifact(external("User", namespace("Test"), "User")) == 
 	lookupType(fieldAccess("prop"), setContext(
+		\module(namespace("Test"), [], entity("User", [
+			relation(\one(), \one(), "User", "prop", {})
+		])),
+		addToAST(file(|tmp:///|, \module(namespace("Test"), [], entity("User", [
+			relation(\one(), \one(), "User", "prop", {})
+		]))), newEnv(|tmp:///|))
+	));
+
+test bool shouldReturnIntegerOnAccessingIntegerLocalOneOneRelationUsingThis() = artifact(external("User", namespace("Test"), "User")) == 
+	lookupType(fieldAccess(this(), "prop"), setContext(
 		\module(namespace("Test"), [], entity("User", [
 			relation(\one(), \one(), "User", "prop", {})
 		])),
@@ -370,4 +387,29 @@ test bool shouldReturnIntegerOnAccessingIntegerLocalOneManyRelation() =
 			relation(\one(), many(), "User", "prop", {})
 		]))), newEnv(|tmp:///|))
 	));
-	
+
+test bool shouldReturnIntegerOnAccessingIntegerLocalOneManyRelationUsingThis() = 
+	\list(artifact(external("User", namespace("Test"), "User"))) == 
+	lookupType(fieldAccess(this(), "prop"), setContext(
+		\module(namespace("Test"), [], entity("User", [
+			relation(\one(), many(), "User", "prop", {})
+		])),
+		addToAST(file(|tmp:///|, \module(namespace("Test"), [], entity("User", [
+			relation(\one(), many(), "User", "prop", {})
+		]))), newEnv(|tmp:///|))
+	));
+
+test bool shouldReturnUnknownTypeOnAccessingUndefinedField() = 
+	unknownType() == 
+	lookupType(fieldAccess("prop"), setContext(
+		\module(namespace("Test"), [], entity("User", [])),
+		addToAST(file(|tmp:///|, \module(namespace("Test"), [], entity("User", []))), newEnv(|tmp:///|))
+	));
+
+test bool shouldReturnUnknownTypeOnAccessingRemoteField() = 
+	unknownType() == 
+	lookupType(fieldAccess(variable("someObject"), "prop"), setContext(
+		\module(namespace("Test"), [], entity("User", [])),
+		addToAST(file(|tmp:///|, \module(namespace("Test"), [], entity("User", []))), newEnv(|tmp:///|))
+	));
+

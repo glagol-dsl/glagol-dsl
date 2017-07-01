@@ -14,13 +14,21 @@ Typecheck property:
     - Checks for type mismatch
 }
 public TypeEnv checkProperty(
+    p:property(Type \type, GlagolID name, set[AccessProperty] valueProperties, emptyExpr()), 
+    TypeEnv env) = checkType(\type, p, env);
+
+public TypeEnv checkProperty(
     p:property(Type \type, GlagolID name, set[AccessProperty] valueProperties, Expression defaultValue), 
-    TypeEnv env) = checkTypeMismatch(lookupType(defaultValue, env), \type, checkDefaultValue(defaultValue, checkType(\type, p, env)));
+    TypeEnv env) = checkTypeMismatch(lookupType(defaultValue, env), externalize(\type, env), checkDefaultValue(defaultValue, checkType(\type, p, env)));
 
+
+public TypeEnv checkTypeMismatch(selfie(), artifact(_), TypeEnv env) = env;
+public TypeEnv checkTypeMismatch(selfie(), repository(_), TypeEnv env) = env;
+public TypeEnv checkTypeMismatch(Type valueType, Type \type, TypeEnv env) = env when valueType == \type;
 public TypeEnv checkTypeMismatch(Type valueType, Type \type, TypeEnv env) =
-    addError(typeMismatch(\type, valueType), env) when !isTypeCompatibleWith(\type, valueType);
+    addError(\type@src, typeMismatch(\type, valueType), env);
 
-public TypeEnv checkTypeMismatch(Type valueType, Type \type, TypeEnv env) = env when isTypeCompatibleWith(\type, valueType);
 
-@todo="Decompose"
-private bool isTypeCompatibleWith(_, _) = true;
+private bool isTypeCompatibleWith(selfie(), artifact(_)) = valueType == \type;
+private bool isTypeCompatibleWith(Type valueType, Type \type) = valueType == \type;
+private bool isTypeCompatibleWith(_, _) = false;
