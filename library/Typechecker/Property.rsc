@@ -21,14 +21,9 @@ public TypeEnv checkProperty(
     p:property(Type \type, GlagolID name, Expression defaultValue), 
     TypeEnv env) = checkTypeMismatch(lookupType(defaultValue, env), externalize(\type, env), checkDefaultValue(defaultValue, checkType(\type, p, env)));
 
-
 public TypeEnv checkTypeMismatch(selfie(), artifact(_), TypeEnv env) = env;
 public TypeEnv checkTypeMismatch(selfie(), repository(_), TypeEnv env) = env;
 public TypeEnv checkTypeMismatch(Type valueType, Type \type, TypeEnv env) = env when valueType == \type;
 public TypeEnv checkTypeMismatch(Type valueType, Type \type, TypeEnv env) =
     addError(\type@src, typeMismatch(\type, valueType), env);
 
-
-private bool isTypeCompatibleWith(selfie(), artifact(_)) = valueType == \type;
-private bool isTypeCompatibleWith(Type valueType, Type \type) = valueType == \type;
-private bool isTypeCompatibleWith(_, _) = false;
