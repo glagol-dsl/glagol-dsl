@@ -5,7 +5,7 @@ import Transform::Glagol2PHP::Expressions;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 
-public PhpClassItem toPhpClassItem(d: relation(l, r, str name, str as, valueProperties), env: <_, doctrine()>) 
+public PhpClassItem toPhpClassItem(d: relation(l, r, str name, str as), env: <_, doctrine()>) 
     = phpProperty({phpPrivate()}, [phpProperty(as, phpNoExpr())])[@phpAnnotations={
         phpAnnotation("ORM\\<toStrDir(l, r)>", phpAnnotationVal((
             "targetEntity": phpAnnotationVal("<name>")

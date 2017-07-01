@@ -64,7 +64,7 @@ test bool shouldReturnStringTypeForLocalVariableThatIsInEnv() =
     string() == lookupType(variable("myVar"), addDefinition(declare(string(), variable("myVar"), emptyStmt()), newEnv(|tmp:///|)));
     
 test bool shouldReturnStringTypeForFieldPropertyThatIsInEnv() =
-    integer() == lookupType(variable("myVar"), addDefinition(property(integer(), "myVar", {}, emptyExpr()), newEnv(|tmp:///|)));
+    integer() == lookupType(variable("myVar"), addDefinition(property(integer(), "myVar", emptyExpr()), newEnv(|tmp:///|)));
     
 test bool shouldReturnStringTypeForParamThatIsInEnv() =
     float() == lookupType(variable("myVar"), addDefinition(param(float(), "myVar", emptyExpr()), newEnv(|tmp:///|)));
@@ -345,14 +345,14 @@ Lookup of property types
 }
 test bool shouldReturnIntegerOnAccessingIntegerLocalProperty() = integer() == lookupType(fieldAccess("prop"), setContext(
 	\module(namespace("Test"), [], entity("User", [
-		property(integer(), "prop", {}, emptyExpr())
+		property(integer(), "prop", emptyExpr())
 	])),
 	newEnv(|tmp:///|)
 ));
 
 test bool shouldReturnIntegerOnAccessingIntegerLocalPropertyUsingThis() = integer() == lookupType(fieldAccess(this(), "prop"), setContext(
 	\module(namespace("Test"), [], entity("User", [
-		property(integer(), "prop", {}, emptyExpr())
+		property(integer(), "prop", emptyExpr())
 	])),
 	newEnv(|tmp:///|)
 ));
@@ -360,20 +360,20 @@ test bool shouldReturnIntegerOnAccessingIntegerLocalPropertyUsingThis() = intege
 test bool shouldReturnIntegerOnAccessingIntegerLocalOneOneRelation() = artifact(external("User", namespace("Test"), "User")) == 
 	lookupType(fieldAccess("prop"), setContext(
 		\module(namespace("Test"), [], entity("User", [
-			relation(\one(), \one(), "User", "prop", {})
+			relation(\one(), \one(), "User", "prop")
 		])),
 		addToAST(file(|tmp:///|, \module(namespace("Test"), [], entity("User", [
-			relation(\one(), \one(), "User", "prop", {})
+			relation(\one(), \one(), "User", "prop")
 		]))), newEnv(|tmp:///|))
 	));
 
 test bool shouldReturnIntegerOnAccessingIntegerLocalOneOneRelationUsingThis() = artifact(external("User", namespace("Test"), "User")) == 
 	lookupType(fieldAccess(this(), "prop"), setContext(
 		\module(namespace("Test"), [], entity("User", [
-			relation(\one(), \one(), "User", "prop", {})
+			relation(\one(), \one(), "User", "prop")
 		])),
 		addToAST(file(|tmp:///|, \module(namespace("Test"), [], entity("User", [
-			relation(\one(), \one(), "User", "prop", {})
+			relation(\one(), \one(), "User", "prop")
 		]))), newEnv(|tmp:///|))
 	));
 
@@ -381,10 +381,10 @@ test bool shouldReturnIntegerOnAccessingIntegerLocalOneManyRelation() =
 	\list(artifact(external("User", namespace("Test"), "User"))) == 
 	lookupType(fieldAccess("prop"), setContext(
 		\module(namespace("Test"), [], entity("User", [
-			relation(\one(), many(), "User", "prop", {})
+			relation(\one(), many(), "User", "prop")
 		])),
 		addToAST(file(|tmp:///|, \module(namespace("Test"), [], entity("User", [
-			relation(\one(), many(), "User", "prop", {})
+			relation(\one(), many(), "User", "prop")
 		]))), newEnv(|tmp:///|))
 	));
 
@@ -392,10 +392,10 @@ test bool shouldReturnIntegerOnAccessingIntegerLocalOneManyRelationUsingThis() =
 	\list(artifact(external("User", namespace("Test"), "User"))) == 
 	lookupType(fieldAccess(this(), "prop"), setContext(
 		\module(namespace("Test"), [], entity("User", [
-			relation(\one(), many(), "User", "prop", {})
+			relation(\one(), many(), "User", "prop")
 		])),
 		addToAST(file(|tmp:///|, \module(namespace("Test"), [], entity("User", [
-			relation(\one(), many(), "User", "prop", {})
+			relation(\one(), many(), "User", "prop")
 		]))), newEnv(|tmp:///|))
 	));
 

@@ -7,7 +7,7 @@ import Syntax::Abstract::Glagol;
 public TypeEnv checkDeclarations(list[Declaration] declarations, entity(GlagolID name, _), TypeEnv env) {
     for (declaration <- declarations) {
         switch (declaration) {
-            case property(_, _, _, _): env = addDefinition(declaration, checkProperty(declaration, env));
+            case property(_, _, _): env = addDefinition(declaration, checkProperty(declaration, env));
         }
     }
     

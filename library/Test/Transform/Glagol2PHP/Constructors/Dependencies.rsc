@@ -7,8 +7,8 @@ import Transform::Glagol2PHP::Utils;
 
 test bool shouldCreateConstructorWhenUtilHasDependencies() = 
     toPhpClassDef(util("UserCreator", [
-        property(repository(local("User")), "users", {}, get(repository(local("User")))),
-        property(repository(local("Customer")), "customers", {}, get(repository(local("Customer"))))
+        property(repository(local("User")), "users", get(repository(local("User")))),
+        property(repository(local("Customer")), "customers", get(repository(local("Customer"))))
     ]), <zend(), doctrine()>) == 
     phpClassDef(phpClass(
         "UserCreator", {}, phpNoName(), [], [

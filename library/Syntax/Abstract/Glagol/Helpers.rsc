@@ -4,15 +4,15 @@ import Syntax::Abstract::Glagol;
 import List;
 import IO;
 
-public bool isProperty(property(_, _, _, _)) = true;
+public bool isProperty(property(_, _, _)) = true;
 public default bool isProperty(_) = false;
 
-public bool isPropertyWithDefaultValue(property(_, _, _, d)) = emptyExpr() !:= d;
+public bool isPropertyWithDefaultValue(property(_, _, d)) = emptyExpr() !:= d;
 
 public bool isMethod(method(_, _, _, _, _, _)) = true;
 public bool isMethod(_) = false;
 
-public bool isRelation(relation(_, _, _, _, _)) = true;
+public bool isRelation(relation(_, _, _, _)) = true;
 public bool isRelation(_) = false;
 
 public bool isConstructor(constructor(_, _, _)) = true;
@@ -75,9 +75,9 @@ public bool isImported(str \alias, list[Declaration] imports) =
 	(false | it ? true : as == \alias | \import(str artifactName, Declaration namespace, str as) <- imports);
 
 public list[Declaration] getDIProperties(list[Declaration] declarations) =
-	[p | p: property(_, _, _, get(_)) <- declarations];
+	[p | p: property(_, _, get(_)) <- declarations];
 
-public bool hasDependencies(list[Declaration] declarations) = (false | true | property(_, _, _, get(_)) <- declarations);
+public bool hasDependencies(list[Declaration] declarations) = (false | true | property(_, _, get(_)) <- declarations);
 
 public list[Declaration] getActions(list[Declaration] declarations) = [d | d: action(_, _, _) <- declarations];
 

@@ -5,13 +5,13 @@ import Typechecker::Env;
 import Syntax::Abstract::Glagol;
 
 test bool shlouldNotGiveErrorsForScalarTypes() =
-	checkType(integer(), property(integer(), "prop", {}, emptyExpr()), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|) &&
-	checkType(integer(), property(float(), "prop", {}, emptyExpr()), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|) &&
-	checkType(integer(), property(boolean(), "prop", {}, emptyExpr()), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|) &&
-	checkType(integer(), property(string(), "prop", {}, emptyExpr()), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|);
+	checkType(integer(), property(integer(), "prop", emptyExpr()), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|) &&
+	checkType(integer(), property(float(), "prop", emptyExpr()), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|) &&
+	checkType(integer(), property(boolean(), "prop", emptyExpr()), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|) &&
+	checkType(integer(), property(string(), "prop", emptyExpr()), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|);
 
 test bool shlouldGiveErrorWhenUsingVoidValueForPropertyType() =
-	checkType(voidValue(), property(voidValue(), "prop", {}, emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) == 
+	checkType(voidValue(), property(voidValue(), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) == 
 	addError(|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "Void type cannot be used on property in /User.g on line 10", newEnv(|tmp:///User.g|));
 	
 test bool shlouldGiveErrorWhenUsingVoidValueForParamType() =
@@ -23,9 +23,9 @@ test bool shlouldNotGiveErrorWhenUsingVoidValueOnMethod() =
 	newEnv(|tmp:///User.g|);
 
 test bool shlouldNotGiveErrorsForListAndMapTypes() =
-	checkType(\list(integer()), property(\list(integer()), "prop", {}, emptyExpr()), newEnv(|tmp:///User.g|)) == 
+	checkType(\list(integer()), property(\list(integer()), "prop", emptyExpr()), newEnv(|tmp:///User.g|)) == 
 	newEnv(|tmp:///User.g|) &&
-	checkType(\map(integer(), string()), property(\map(integer(), string()), "prop", {}, emptyExpr()), newEnv(|tmp:///User.g|)) == 
+	checkType(\map(integer(), string()), property(\map(integer(), string()), "prop", emptyExpr()), newEnv(|tmp:///User.g|)) == 
 	newEnv(|tmp:///User.g|);
 
 test bool shlouldGiveErrorWhenUsingNotImportedArtifact() =
@@ -60,10 +60,10 @@ test bool shlouldGiveErrorWhenUsingRepositoryWithImportedArtifactButIsNotEntity(
 	));
 
 test bool shouldNotGiveErrorsWhenUsingSelfieForGettingPropertyInstance() = 
-	checkType(selfie(), property(repository(local("User")), "users", {}, get(selfie())), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|);
+	checkType(selfie(), property(repository(local("User")), "users", get(selfie())), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|);
 
 test bool shouldGiveErrorsWhenUsingSelfieForSomethingElseThanGettingPropertyInstance() = 
-	checkType(selfie()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], property(repository(local("User")), "users", {}, emptyExpr()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)])[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
+	checkType(selfie()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], property(repository(local("User")), "users", emptyExpr()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)])[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
 	addError(|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "Cannot use selfie as type in /User.g on line 10", newEnv(|tmp:///User.g|));
 	
 test bool shouldGiveErrorsWhenUsingSelfieForSomethingElseThanGettingPropertyInstance2() = 

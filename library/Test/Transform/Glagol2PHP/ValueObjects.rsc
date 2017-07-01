@@ -8,7 +8,7 @@ import Config::Config;
 
 test bool shouldTransformToValueObjectPhpClassDefStmt() = 
 	toPhpClassDef(valueObject("Money", [
-		property(string(), "a property", {}, emptyExpr())
+		property(string(), "a property", emptyExpr())
 	]), <anyFramework(), anyORM()>) ==
 	phpClassDef(phpClass("Money", {}, phpNoName(), [], [
 		phpProperty(

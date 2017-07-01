@@ -19,10 +19,10 @@ test bool shouldAddAnnotationsToPhpClassItems() =
 
 test bool shouldTransformPropertiesToPhpClassItems() = 
 	toPhpClassItems([
-		property(voidValue(), "prop1", {}, emptyExpr()),
-		property(voidValue(), "prop2", {}, emptyExpr()),
-		property(voidValue(), "prop3", {}, emptyExpr()),
-		property(voidValue(), "prop4", {}, emptyExpr())[@annotations=[]]
+		property(voidValue(), "prop1", emptyExpr()),
+		property(voidValue(), "prop2", emptyExpr()),
+		property(voidValue(), "prop3", emptyExpr()),
+		property(voidValue(), "prop4", emptyExpr())[@annotations=[]]
 	], <anyFramework(), anyORM()>, entity("", [])) == 
 	[
 		phpProperty({phpPrivate()}, [phpProperty("prop1", phpNoExpr())]),
@@ -189,7 +189,7 @@ test bool shouldTransformMethodsWithOverridingToPhpClassItems() =
 
 test bool shouldTransformRelationsToPhpClassItems() = 
 	toPhpClassItems([
-		relation(\one(), \one(), "User", "owner", {})
+		relation(\one(), \one(), "User", "owner")
 	], <anyFramework(), doctrine()>, entity("", [])) == 
 	[
 		phpProperty(
@@ -198,7 +198,7 @@ test bool shouldTransformRelationsToPhpClassItems() =
 		        "owner",
 		        phpNoExpr())])
 	] && toPhpClassItems([
-		relation(\one(), \one(), "User", "owner", {})
+		relation(\one(), \one(), "User", "owner")
 	], <anyFramework(), doctrine()>, entity("", []))[0]@phpAnnotations == 
 	{
 		phpAnnotation("ORM\\OneToOne", phpAnnotationVal(("targetEntity":phpAnnotationVal("User")))),

@@ -14,11 +14,11 @@ Typecheck property:
     - Checks for type mismatch
 }
 public TypeEnv checkProperty(
-    p:property(Type \type, GlagolID name, set[AccessProperty] valueProperties, emptyExpr()), 
+    p:property(Type \type, GlagolID name, emptyExpr()), 
     TypeEnv env) = checkType(\type, p, env);
 
 public TypeEnv checkProperty(
-    p:property(Type \type, GlagolID name, set[AccessProperty] valueProperties, Expression defaultValue), 
+    p:property(Type \type, GlagolID name, Expression defaultValue), 
     TypeEnv env) = checkTypeMismatch(lookupType(defaultValue, env), externalize(\type, env), checkDefaultValue(defaultValue, checkType(\type, p, env)));
 
 

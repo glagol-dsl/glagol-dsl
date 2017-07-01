@@ -79,6 +79,7 @@ public void main(list[str] args)
                         'public int main(list[str] args) {
                         '
                         '	testsPassed = 0;
+                        '	errorMessages = [];
                         '   map[bool () fn, loc file] tests = (<substring(fnMap, 0, size(fnMap) - 1)>);
                         '
                         '   for (t \<- tests) {

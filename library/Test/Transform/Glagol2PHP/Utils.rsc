@@ -8,7 +8,7 @@ import Config::Config;
 
 test bool shouldTransformToUtilPhpClassDefStmt() = 
 	toPhpClassDef(util("User", [
-		property(string(), "a property", {}, emptyExpr())
+		property(string(), "a property", emptyExpr())
 	]), <anyFramework(), anyORM()>) ==
 	phpClassDef(phpClass("User", {}, phpNoName(), [], [
 		phpProperty(

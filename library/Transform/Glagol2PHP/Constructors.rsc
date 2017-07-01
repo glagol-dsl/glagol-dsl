@@ -51,11 +51,11 @@ public PhpClassItem createConstructor(list[Declaration] declarations, env) =
 
 public PhpClassItem createDIConstructor(list[Declaration] declarations, env) = 
 	phpMethod("__construct", {phpPublic()}, false, 
-		[toPhpParam(param(valueType, name, emptyExpr())) | p: property(Type valueType, str name, _, get(_)) <- declarations],
+		[toPhpParam(param(valueType, name, emptyExpr())) | p: property(Type valueType, str name, get(_)) <- declarations],
 		[
 			phpExprstmt(phpAssign(phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName(name))), phpVar(phpName(phpName(name))))) | 
-			property(Type valueType, str name, _, get(_)) <- declarations
+			property(Type valueType, str name, get(_)) <- declarations
 		],
     phpNoName())[
-    	@phpAnnotations={a | d: property(_, _, _, get(_)) <- declarations, a: annotation("doc", _) <- toPhpAnnotations(d, env)}
+    	@phpAnnotations={a | d: property(_, _, get(_)) <- declarations, a: annotation("doc", _) <- toPhpAnnotations(d, env)}
     ];

@@ -14,7 +14,7 @@ test bool canParseRepositoryInjection()
     
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
-            property(repository(local("User")), "userRepository", {}, get(repository(local("User"))))
+            property(repository(local("User")), "userRepository", get(repository(local("User"))))
         ]));
 }
 
@@ -28,7 +28,7 @@ test bool canParseUtilRepositoryInjection()
     
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
-            property(repository(local("User")), "userRepository", {}, get(repository(local("User"))))
+            property(repository(local("User")), "userRepository", get(repository(local("User"))))
         ]));
 }   
 
@@ -42,7 +42,7 @@ test bool canUseRepositorySelfie()
     
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
-            property(repository(local("User")), "userRepository", {}, get(repository(local("User"))))
+            property(repository(local("User")), "userRepository", get(repository(local("User"))))
         ]));
 }
 
@@ -92,6 +92,6 @@ test bool canCreateNewServiceAsAPropertyDefaultValue()
     
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
-            property(artifact(local("UserService")), "userService", {}, new(local("UserService"), []))
+            property(artifact(local("UserService")), "userService", new(local("UserService"), []))
         ]));
 }

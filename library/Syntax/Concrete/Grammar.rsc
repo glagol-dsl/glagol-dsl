@@ -83,10 +83,10 @@ syntax Declaration
     ;
 
 syntax Relation
-    = "relation" RelationDir l ":" RelationDir r ArtifactName entity "as" MemberName alias AccessProperties? accessProperties ";";
+    = "relation" RelationDir l ":" RelationDir r ArtifactName entity "as" MemberName alias ";";
 
 syntax Property 
-    = Type type MemberName name AssignDefaultValue? AccessProperties? accessProperties ";";
+    = Type type MemberName name AssignDefaultValue? ";";
 
 syntax Constructor
     = ArtifactName "(" {AbstractParameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?

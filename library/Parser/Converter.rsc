@@ -277,27 +277,20 @@ private bool isValidForAccessChain((Expression) `<Expression prev>.<MemberName f
 private default bool isValidForAccessChain(_) = false;
 
 
+public str convertStringQuoted(string) = substring("<string>", 1, size("<string>") - 1);
+
+
 public bool convertBoolean((Boolean) `true`) = true;
 public bool convertBoolean((Boolean) `false`) = false;
 
 
 public Declaration convertProperty(a: (Property) `<Type prop><MemberName name>;`, ParseEnv env)  =
-    property(convertType(prop, env), "<name>", {}, emptyExpr())[@src=a@\loc][
+    property(convertType(prop, env), "<name>", emptyExpr())[@src=a@\loc][
         @annotations=buildPropDefaultAnnotations(convertType(prop, env))
     ];
 
 public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AssignDefaultValue defVal>;`, ParseEnv env) =
-    property(convertType(prop, env), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop, env), env))[@src=a@\loc][
-        @annotations=buildPropDefaultAnnotations(convertType(prop, env))
-    ];
-
-public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AccessProperties accessProperties>;`, ParseEnv env) =
-    property(convertType(prop, env), "<name>", convertAccessProperties(accessProperties), emptyExpr())[@src=a@\loc][
-        @annotations=buildPropDefaultAnnotations(convertType(prop, env))
-    ];
-
-public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`, ParseEnv env) =
-    property(convertType(prop, env), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop, env), env))[@src=a@\loc][
+    property(convertType(prop, env), "<name>", convertParameterDefaultVal(defVal, convertType(prop, env), env))[@src=a@\loc][
         @annotations=buildPropDefaultAnnotations(convertType(prop, env))
     ];
 
@@ -429,24 +422,8 @@ public Declaration convertRelation(a: _, at: /^(?!entity).*$/) {
 	throw RelationNotAllowed("Relations only allowed on entities", a@\loc);
 }
 
-public Declaration convertRelation(a: (Relation) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as><AccessProperties accessProperties>;`, _) 
-    = relation(convertRelationDir(l), convertRelationDir(r), "<entity>", "<as>", convertAccessProperties(accessProperties))[@src=a@\loc];
-
 public Declaration convertRelation(a: (Relation) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as>;`, _) 
-    = relation(convertRelationDir(l), convertRelationDir(r), "<entity>", "<as>", {})[@src=a@\loc];
-
-
-public set[AccessProperty] convertAccessProperties((AccessProperties) `with { <{AccessProperty ","}* props> }`)
-    = {convertAccessProperty(p) | p <- props};
-
-public AccessProperty convertAccessProperty(a: (AccessProperty) `get`) = read()[@src=a@\loc];
-public AccessProperty convertAccessProperty(a: (AccessProperty) `set`) = \set()[@src=a@\loc];
-public AccessProperty convertAccessProperty(a: (AccessProperty) `add`) = add()[@src=a@\loc];
-public AccessProperty convertAccessProperty(a: (AccessProperty) `clear`) = clear()[@src=a@\loc];
-public AccessProperty convertAccessProperty(a: (AccessProperty) `reset`) = clear()[@src=a@\loc];
-
-
-public str convertStringQuoted(string) = substring("<string>", 1, size("<string>") - 1);
+    = relation(convertRelationDir(l), convertRelationDir(r), "<entity>", "<as>")[@src=a@\loc];
 
 
 public Type convertType(a: (Type) `int`, ParseEnv env) = integer()[@src=a@\loc];

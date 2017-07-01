@@ -183,10 +183,10 @@ public Type lookupType(f: fieldAccess(str field), TypeEnv env) = unknownType();
 public Type lookupType(f: fieldAccess(this(), str field), TypeEnv env) = lookupType(fieldAccess(field), env);
 public Type lookupType(f: fieldAccess(_, str field), TypeEnv env) = unknownType();
 
-public Type lookupType(relation(_, \one(), name, _, _), fieldAccess(str field), TypeEnv env) = 
+public Type lookupType(relation(_, \one(), name, _), fieldAccess(str field), TypeEnv env) = 
 	externalize(artifact(local(name)), env) when hasLocalArtifact(name, env);
 	
-public Type lookupType(relation(_, \many(), name, _, _), fieldAccess(str field), TypeEnv env) = 
+public Type lookupType(relation(_, \many(), name, _), fieldAccess(str field), TypeEnv env) = 
 	\list(externalize(artifact(local(name)), env)) when hasLocalArtifact(name, env);
 	
 public Type lookupType(Declaration relation, fieldAccess(str field), TypeEnv env) = 
@@ -217,5 +217,5 @@ private Type lookupRelationalCompatibilityType(float(), integer(), _) = boolean(
 private Type lookupRelationalCompatibilityType(Type lhs, Type rhs, _) = unknownType();
 
 private Type lookupDefinitionType(localVar(declare(Type varType, Expression varName, Statement defaultValue))) = varType;
-private Type lookupDefinitionType(field(property(Type valueType, GlagolID name, set[AccessProperty] valueProperties, Expression defaultValue))) = valueType;
+private Type lookupDefinitionType(field(property(Type valueType, GlagolID name, Expression defaultValue))) = valueType;
 private Type lookupDefinitionType(param(param(Type paramType, GlagolID name, Expression defaultValue))) = paramType;

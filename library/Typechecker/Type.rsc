@@ -10,7 +10,7 @@ public TypeEnv checkType(float(), Declaration d, TypeEnv env) = env;
 public TypeEnv checkType(string(), Declaration d, TypeEnv env) = env;
 public TypeEnv checkType(boolean(), Declaration d, TypeEnv env) = env;
 
-public TypeEnv checkType(voidValue(), p:property(_, _, _, _), TypeEnv env) = 
+public TypeEnv checkType(voidValue(), p:property(_, _, _), TypeEnv env) = 
     addError(p@src, "Void type cannot be used on property in <p@src.path> on line <p@src.begin.line>", env);
 
 public TypeEnv checkType(voidValue(), p:param(Type paramType, GlagolID name, _), TypeEnv env) = 
@@ -38,7 +38,7 @@ public TypeEnv checkType(r:repository(Name name), Declaration d, TypeEnv env) =
 public TypeEnv checkType(r:repository(Name name), Declaration d, TypeEnv env) =
     env when name.localName in env.imported && isEntity(env.imported[name.localName]);
 
-public TypeEnv checkType(s:selfie(), property(_, _, _, get(selfie())), TypeEnv env) = env;
+public TypeEnv checkType(s:selfie(), property(_, _, get(selfie())), TypeEnv env) = env;
 	
 public TypeEnv checkType(s:selfie(), Declaration d, TypeEnv env) = 
     addError(s@src, "Cannot use selfie as type in <d@src.path> on line <d@src.begin.line>", env);

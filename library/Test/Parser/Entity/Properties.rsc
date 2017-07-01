@@ -7,13 +7,13 @@ test bool testShouldParseEntityWithValues()
 {
     str code = "namespace Example
                'entity User {
-               '    int id with {get};
-               '    Date addedOn with {get, set};
+               '    int id;
+               '    Date addedOn;
                '}";
                
     list[Declaration] expectedValues = [
-        property(integer(), "id", {read()}, emptyExpr()),
-        property(artifact(local("Date")), "addedOn", {read(), \set()}, emptyExpr())
+        property(integer(), "id", emptyExpr()),
+        property(artifact(local("Date")), "addedOn", emptyExpr())
     ];
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", expectedValues));
@@ -31,7 +31,7 @@ test bool testShouldParseEntityWithValuesAndAnnotations()
                '        size: 11,
                '        column: \"id\"
                '    })
-               '    float id with {get};
+               '    float id;
                '
                '    @column({
                '        key: primary,
@@ -39,7 +39,7 @@ test bool testShouldParseEntityWithValuesAndAnnotations()
                '        size: 11,
                '        column: \"id\"
                '    })
-               '    string id with {get};
+               '    string id;
                '
                '    @column={type: int}
                '    Weight id;
@@ -47,9 +47,9 @@ test bool testShouldParseEntityWithValuesAndAnnotations()
 
     return 
     	parseModule(code) == \module(namespace("Example"), [], entity("User", [
-    	   property(float(), "id", {read()}, emptyExpr()), 
-           property(string(), "id", {read()}, emptyExpr()), 
-           property(artifact(local("Weight")), "id", {}, emptyExpr())
+    	   property(float(), "id", emptyExpr()), 
+           property(string(), "id", emptyExpr()), 
+           property(artifact(local("Weight")), "id", emptyExpr())
 	   ])) &&
     	parseModule(code).artifact.declarations[0]@annotations == [
             annotation("column", [

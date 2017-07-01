@@ -37,7 +37,7 @@ test bool shouldTransformSimpleEntityToPhpScriptUsingDoctrine()
         \import("Money", namespace("Currency", namespace("Value")), "Money"),
         \import("Currency", namespace("Currency", namespace("Value")), "CurrencyVB")
     ], entity("Customer", [
-        property(integer(), "id", {}, emptyExpr())
+        property(integer(), "id", emptyExpr())
     ])), [])
     == ("User/Entity/Customer.php": phpScript([
     	phpDeclare([phpDeclaration("strict_types", phpScalar(phpInteger(1)))], []),
@@ -63,7 +63,7 @@ test bool shouldTransformSimpleAnnotatedEntityToPhpScriptUsingDoctrine()
         \import("Money", namespace("Currency", namespace("Value")), "Money"),
         \import("Currency", namespace("Currency", namespace("Value")), "CurrencyVB")
     ], entity("Customer", [
-        property(integer(), "id", {}, emptyExpr())
+        property(integer(), "id", emptyExpr())
     ])[@annotations=[annotation("table", [])]]), [])
     == ("User/Entity/Customer.php": phpScript([
     	phpDeclare([phpDeclaration("strict_types", phpScalar(phpInteger(1)))], []),
@@ -89,7 +89,7 @@ test bool shouldTransformSimpleAnnotatedWithValueEntityToPhpScriptUsingDoctrine(
         \import("Money", namespace("Currency", namespace("Value")), "Money"),
         \import("Currency", namespace("Currency", namespace("Value")), "CurrencyVB")
     ], entity("Customer", [
-        property(integer(), "id", {}, emptyExpr())[@annotations=[
+        property(integer(), "id", emptyExpr())[@annotations=[
             annotation("id", []),
             annotation("field", [
                 annotationMap((
@@ -136,7 +136,7 @@ test bool shouldTransformEntityWithRelationsToPhpScriptUsingDoctrine() {
         \import("Money", namespace("Currency", namespace("Value")), "Money"),
         \import("Currency", namespace("Currency", namespace("Value")), "CurrencyVB")
     ], entity("Customer", [
-        property(integer(), "id", {}, emptyExpr())[@annotations=[
+        property(integer(), "id", emptyExpr())[@annotations=[
             annotation("id", []),
             annotation("field", [
                 annotationMap((
@@ -151,7 +151,7 @@ test bool shouldTransformEntityWithRelationsToPhpScriptUsingDoctrine() {
                 ))
             ])
         ]],
-        relation(\one(), \one(), "Language", "userLang", {})
+        relation(\one(), \one(), "Language", "userLang")
     ])[@annotations=[annotation("table", [annotationVal("customers")])]]), []);
     
     PhpScript ast = asts["User/Entity/Customer.php"];

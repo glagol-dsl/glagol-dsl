@@ -3,27 +3,16 @@ module Parser::Converter::Declaration::Property
 import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 import Parser::Converter::Type;
-import Parser::Converter::AccessProperty;
 import Parser::Converter::Annotation;
 import Parser::Converter::DefaultValue;
 
 public Declaration convertProperty(a: (Property) `<Type prop><MemberName name>;`, ParseEnv env)  =
-    property(convertType(prop, env), "<name>", {}, emptyExpr())[@src=a@\loc][
+    property(convertType(prop, env), "<name>", emptyExpr())[@src=a@\loc][
         @annotations=buildPropDefaultAnnotations(convertType(prop, env))
     ];
 
 public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AssignDefaultValue defVal>;`, ParseEnv env) =
-    property(convertType(prop, env), "<name>", {}, convertParameterDefaultVal(defVal, convertType(prop, env), env))[@src=a@\loc][
-        @annotations=buildPropDefaultAnnotations(convertType(prop, env))
-    ];
-
-public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AccessProperties accessProperties>;`, ParseEnv env) =
-    property(convertType(prop, env), "<name>", convertAccessProperties(accessProperties), emptyExpr())[@src=a@\loc][
-        @annotations=buildPropDefaultAnnotations(convertType(prop, env))
-    ];
-
-public Declaration convertProperty(a: (Property) `<Type prop><MemberName name><AssignDefaultValue defVal><AccessProperties accessProperties>;`, ParseEnv env) =
-    property(convertType(prop, env), "<name>", convertAccessProperties(accessProperties), convertParameterDefaultVal(defVal, convertType(prop, env), env))[@src=a@\loc][
+    property(convertType(prop, env), "<name>", convertParameterDefaultVal(defVal, convertType(prop, env), env))[@src=a@\loc][
         @annotations=buildPropDefaultAnnotations(convertType(prop, env))
     ];
 

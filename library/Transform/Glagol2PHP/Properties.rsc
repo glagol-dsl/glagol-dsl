@@ -15,21 +15,21 @@ private str toString(\map(Type key, Type v)) = "Map";
 private str toString(artifact(Name name)) = name.localName;
 private str toString(repository(Name name)) = "<name.localName>Repository";
 
-public PhpClassItem toPhpClassItem(d: property(Type valueType, str name, _, emptyExpr()), env, context)
+public PhpClassItem toPhpClassItem(d: property(Type valueType, str name, emptyExpr()), env, context)
     = phpProperty({phpPrivate()}, [phpProperty(name, phpNoExpr())])[
     	@phpAnnotations=toPhpAnnotations(d, env, context) + {
     		phpAnnotation("var", phpAnnotationVal(toString(valueType)))
     	}
     ];
 
-public PhpClassItem toPhpClassItem(d: property(Type \valueType, str name, _, get(_)), env, context)
+public PhpClassItem toPhpClassItem(d: property(Type \valueType, str name, get(_)), env, context)
     = phpProperty({phpPrivate()}, [phpProperty(name, phpNoExpr())])[
     	@phpAnnotations=toPhpAnnotations(d, env, context) + {
     		phpAnnotation("var", phpAnnotationVal(toString(valueType)))
     	}
     ];
     
-public PhpClassItem toPhpClassItem(d: property(Type \valueType, str name, _, Expression defaultValue), env, context)
+public PhpClassItem toPhpClassItem(d: property(Type \valueType, str name, Expression defaultValue), env, context)
     = phpProperty({phpPrivate()}, [phpProperty(name, phpSomeExpr(toPhpExpr(defaultValue)))])[
     	@phpAnnotations=toPhpAnnotations(d, env, context) + {
     		phpAnnotation("var", phpAnnotationVal(toString(valueType)))

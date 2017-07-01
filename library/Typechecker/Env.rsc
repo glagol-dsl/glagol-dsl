@@ -24,11 +24,11 @@ alias TypeEnv = tuple[
 
 public TypeEnv newEnv(loc location) = <location, (), (), [], [], emptyDecl()>;
 
-public TypeEnv addDefinition(p:property(_, GlagolID name, _, _), TypeEnv env) = 
+public TypeEnv addDefinition(p:property(_, GlagolID name, _), TypeEnv env) = 
     addError(p@src, "Cannot redefine \"<name>\". Already defined in <p@src.path> on line <env.definitions[name].d@src.begin.line>.", env) 
     when name in env.definitions;
 
-public TypeEnv addDefinition(p:property(_, GlagolID name, _, _), TypeEnv env) = 
+public TypeEnv addDefinition(p:property(_, GlagolID name, _), TypeEnv env) = 
     env[definitions = env.definitions + (name: field(p))] 
     when name notin env.definitions;
 
@@ -108,7 +108,7 @@ public bool hasModule(_, TypeEnv env) = false;
 
 public bool hasLocalProperty(GlagolID name, TypeEnv env) {
 	visit (getContext(env)) {
-		case property(_, name, _, _): 
+		case property(_, name, _): 
 			return true;
 	}
 	return false;
@@ -117,7 +117,7 @@ public bool hasLocalProperty(GlagolID name, TypeEnv env) {
 
 public Declaration findLocalProperty(GlagolID name, TypeEnv env) {
 	visit (getContext(env)) {
-		case p: property(_, name, _, _): 
+		case p: property(_, name, _): 
 			return p;
 	}
 
@@ -126,7 +126,7 @@ public Declaration findLocalProperty(GlagolID name, TypeEnv env) {
 
 public bool hasLocalRelation(GlagolID name, TypeEnv env) {
 	visit (getContext(env)) {
-		case relation(_, _, _, name, _): 
+		case relation(_, _, _, name): 
 			return true;
 	}
 	return false;
@@ -134,7 +134,7 @@ public bool hasLocalRelation(GlagolID name, TypeEnv env) {
 
 public Declaration findLocalRelation(GlagolID name, TypeEnv env) {
 	visit (getContext(env)) {
-		case r: relation(_, _, _, name, _): 
+		case r: relation(_, _, _, name): 
 			return r;
 	}
 	

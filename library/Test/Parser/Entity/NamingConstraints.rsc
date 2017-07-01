@@ -115,7 +115,7 @@ test bool entityValuesShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     str failCodeUpperCaseFirst
         = "namespace Example
           'entity User {
-          '    int MyValue with {get, set};
+          '    int MyValue;
           '}
           '";
     
@@ -125,7 +125,7 @@ test bool entityValuesShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     str failCodeUnderscore 
         = "namespace Example
           'entity User {
-          '    int my_Value with {get, set};
+          '    int my_Value;
           '}
           '";
     
@@ -137,7 +137,7 @@ test bool entityValuesShouldStartWithLowerCaseAndBeAlphaCharsOnly()
     str successCode 
         = "namespace Example
           'entity User {
-          '    int myValue with {get, set};
+          '    int myValue;
           '}
           '";
     
