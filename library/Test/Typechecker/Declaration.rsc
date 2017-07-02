@@ -1,6 +1,6 @@
-module Test::Typechecker::Declarations
+module Test::Typechecker::Declaration
 
-import Typechecker::Declarations;
+import Typechecker::Declaration;
 import Typechecker::Env;
 import Syntax::Abstract::Glagol;
 

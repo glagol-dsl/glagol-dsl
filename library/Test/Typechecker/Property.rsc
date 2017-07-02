@@ -20,3 +20,14 @@ test bool shouldGiveTypeMismatchErrorWhenTypesDoNotMatch() =
 		typeMismatch(string()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		integer()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]), newEnv(|tmp:///|));
 	
+test bool shouldGiveTypeMismatchErrorWhenHavingUnknownTypeAsDefaultValue() = 
+	checkProperty(property(\list(integer())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], "prop", \list([
+		integer(12)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+		string("dasdas")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]
+	])), newEnv(|tmp:///|)) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		typeMismatch(\list(integer())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+		\list(unknownType())), newEnv(|tmp:///|));
+
+	
+	

@@ -1,19 +1,8 @@
 module Typechecker::Errors
 
+import Typechecker::Type;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
-
-private str toString(integer()) = "integer";
-private str toString(float()) = "float";
-private str toString(string()) = "string";
-private str toString(voidValue()) = "void";
-private str toString(boolean()) = "bool";
-private str toString(\list(Type \type)) = "list of <toString(\type)>";
-private str toString(artifact(Name name)) = "<name.localName>";
-private str toString(repository(Name name)) = "<name.localName> repository";
-private str toString(\map(Type key, Type v)) = "map (<toString(key)>: <toString(v)>)";
-private str toString(selfie()) = "selfie";
-private str toString(unknownType()) = "unknown type";
 
 public str notImported(a:artifact(Name name)) = "\"<name.localName>\" not imported, but used in <a@src.path> on line <a@src.begin.line>";
 public str notImported(r:repository(Name name)) = "\"<name.localName>\" not imported, but used for a repository in <r@src.path> on line <r@src.begin.line>";

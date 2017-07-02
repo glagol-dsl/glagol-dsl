@@ -96,3 +96,6 @@ public Declaration toNamespace(external(str localName, Declaration namespace, st
 
 public str extractName(external(str localName, Declaration namespace, str originalName)) = localName;
 public str extractName(local(str localName)) = localName;
+
+public str toString(\public()) = "public";
+public str toString(\private()) = "private";

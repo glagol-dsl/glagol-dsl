@@ -3,7 +3,7 @@ module Typechecker::Artifact
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import Typechecker::Env;
-import Typechecker::Declarations;
+import Typechecker::Declaration;
 import Typechecker::Route;
 import Typechecker::Errors;
 import String;

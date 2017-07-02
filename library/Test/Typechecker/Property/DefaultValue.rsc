@@ -2,6 +2,7 @@ module Test::Typechecker::Property::DefaultValue
 
 import Typechecker::Property::DefaultValue;
 import Typechecker::Env;
+import Typechecker::Errors;
 import Syntax::Abstract::Glagol;
 
 test bool shouldNotGiveErrorOnGetSelfie() = 
@@ -61,5 +62,38 @@ test bool shouldNotGiveErrorOnStringScalar() =
 
 test bool shouldNotGiveErrorOnBooleanScalar() = 
 	checkDefaultValue(boolean(false), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|);
+
+test bool shouldNotGiveErrorOnListOfIntegers() = 
+	checkDefaultValue(\list([integer(1), integer(2)]), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|);
+
+test bool shouldNotGiveErrorOnListOfStrings() = 
+	checkDefaultValue(\list([string("das"), string("adasd")]), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|);
+
+test bool shouldNotGiveErrorOnListOfBools() = 
+	checkDefaultValue(\list([boolean(true), boolean(false)]), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|);
+	
+test bool shouldNotGiveErrorOnListOfFloats() = 
+	checkDefaultValue(\list([float(12.3), float(15.3)]), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|);
+	
+test bool shouldGiveErrorOnListOfVariables() = 
+	checkDefaultValue(\list([
+		variable("das")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]
+	]), newEnv(|tmp:///User.g|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		notAllowed(variable("das")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]), newEnv(|tmp:///User.g|));
+	
+test bool shouldGiveErrorOnMapOfVariablesAsKeys() = 
+	checkDefaultValue(\map((
+		variable("das")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]: integer(2)
+	)), newEnv(|tmp:///User.g|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		notAllowed(variable("das")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]), newEnv(|tmp:///User.g|));
+		
+test bool shouldGiveErrorOnMapOfVariablesAsItems() = 
+	checkDefaultValue(\map((
+		integer(2): variable("das")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]
+	)), newEnv(|tmp:///User.g|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		notAllowed(variable("das")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]), newEnv(|tmp:///User.g|));
 
 
