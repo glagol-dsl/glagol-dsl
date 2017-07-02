@@ -55,6 +55,8 @@ public void main(list[str] args)
                         '
                         'private int testsPassed = 0;
                         '
+                        'private int testsPerLine = 60;
+                        '
                         'private void runTest(bool () t, loc location) {
                         '	bool isSuccessful;
                         '
@@ -73,7 +75,7 @@ public void main(list[str] args)
                         '
                         '   testsPassed += 1;
                         '
-                        '   if (testsPassed % 30 == 0) println(\" \<toInt((toReal(testsPassed)/<toReal("<size(functions)>")>)*100)\>%\");
+                        '   if (testsPassed % testsPerLine == 0) println(\" \<toInt((toReal(testsPassed)/<toReal("<size(functions)>")>)*100)\>%\");
                         '} 
                         '
                         'public int main(list[str] args) {
@@ -87,7 +89,7 @@ public void main(list[str] args)
                         '		catch e: errorMessages += e;
                         '	}
                         '
-                        '	for (k \<- [0..(30 - testsPassed % 30)]) print(\" \");	
+                        '	for (k \<- [0..(testsPerLine - testsPassed % testsPerLine)]) print(\" \");	
                         '
                         '   println(\" 100%\");
                         '

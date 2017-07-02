@@ -9,11 +9,11 @@ private str toString(string()) = "string";
 private str toString(voidValue()) = "void";
 private str toString(boolean()) = "bool";
 private str toString(\list(Type \type)) = "list of <toString(\type)>";
-private str toString(artifact(Name name)) = "a <name.localName>";
-private str toString(repository(Name name)) = "a <name.localName> repository";
+private str toString(artifact(Name name)) = "<name.localName>";
+private str toString(repository(Name name)) = "<name.localName> repository";
 private str toString(\map(Type key, Type v)) = "map (<toString(key)>: <toString(v)>)";
-private str toString(selfie()) = "a selfie";
-private str toString(unknownType()) = "an unknown type";
+private str toString(selfie()) = "selfie";
+private str toString(unknownType()) = "unknown type";
 
 public str notImported(a:artifact(Name name)) = "\"<name.localName>\" not imported, but used in <a@src.path> on line <a@src.begin.line>";
 public str notImported(r:repository(Name name)) = "\"<name.localName>\" not imported, but used for a repository in <r@src.path> on line <r@src.begin.line>";

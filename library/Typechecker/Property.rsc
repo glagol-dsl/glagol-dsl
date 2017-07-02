@@ -19,7 +19,7 @@ public TypeEnv checkProperty(
 
 public TypeEnv checkProperty(
     p:property(Type \type, GlagolID name, Expression defaultValue), 
-    TypeEnv env) = checkTypeMismatch(lookupType(defaultValue, env), externalize(\type, env), checkDefaultValue(defaultValue, checkType(\type, p, env)));
+    TypeEnv env) = checkTypeMismatch(externalize(lookupType(defaultValue, env), env), externalize(\type, env), checkDefaultValue(defaultValue, checkType(\type, p, env)));
 
 public TypeEnv checkTypeMismatch(selfie(), artifact(_), TypeEnv env) = env;
 public TypeEnv checkTypeMismatch(selfie(), repository(_), TypeEnv env) = env;
