@@ -27,6 +27,12 @@ public bool isRepository(_) = false;
 public bool isController(controller(_, _, _, _)) = true;
 public bool isController(_) = false;
 
+public bool isIfThenElse(ifThenElse(Expression condition, Statement then, Statement \else)) = true;
+public bool isIfThenElse(_) = false;
+
+public bool isEmpty(emptyExpr()) = true;
+public bool isEmpty(_) = false;
+
 public bool hasConstructors(list[Declaration] declarations) = 
 	size([d | d <- declarations, isConstructor(d)]) > 0;
 

@@ -15,9 +15,9 @@ Runs typecheck on Glagol file:
 }
 public TypeEnv checkFile(Config config, f:file(loc src, m:\module(ns, list[Declaration] imports, Declaration artifact)), TypeEnv env) = 
     checkArtifact(artifact,
-    	checkImports(
+    	setContext(m, checkImports(
     	   m, checkLocVsModule(getSourcesPath(config), f, env[location = src])
-    	)
+    	))
 	);
 
 @doc="Module location correspondence typecheck failure case"
@@ -25,7 +25,7 @@ public TypeEnv checkLocVsModule(loc sources, file(loc src, m:\module(ns, imports
     addError(src, "Wrong file name, does not follow namespace declaration and/or artifact name. " + 
         "Expected <constructFileFromModule(sources, m).uri>, got <src.uri>.", env)
     when src != constructFileFromModule(sources, m);
-    
+
 @doc="Module location correspondence typecheck SUCCESS case (returns untouched env directly)"
 public TypeEnv checkLocVsModule(loc sources, file(loc src, m:\module(ns, imports, Declaration artifact)), TypeEnv env) =
     env when src == constructFileFromModule(sources, m);

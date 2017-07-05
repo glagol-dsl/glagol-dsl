@@ -25,7 +25,7 @@ public TypeEnv checkMethod(m: method(_, t, GlagolID name, _, _, _), Declaration 
 	when isDefinedWithDifferentReturnTypes(m, parent.declarations);
 
 public TypeEnv checkMethod(m: method(_, Type t, _, list[Declaration] params, list[Statement] body, Expression guard), Declaration parent, TypeEnv env) =
-	checkBody(body, checkGuard(guard, checkParams(params, env)));
+	checkBody(body, t, m, parent, checkGuard(guard, checkParams(params, env)));
 
 private bool hasDuplicates(method(_, _, n, p, _, g), list[Declaration] declarations) = 
 	size([d | d: method(_, _, n, p, _, g) <- declarations]) > 1;
