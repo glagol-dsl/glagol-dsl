@@ -3,6 +3,18 @@ module Test::Typechecker::Env
 import Syntax::Abstract::Glagol;
 import Typechecker::Env;
 
+test bool shouldReturnTrueWhenVariableIsDefined() = 
+	isDefined(variable("a"), addDefinition(param(integer(), "a", emptyExpr()), newEnv(|tmp:///|)));
+	
+test bool shouldReturnFalseWhenVariableIsUndefined() = 
+	!isDefined(variable("a"), newEnv(|tmp:///|));
+
+test bool shouldReturnTrueWhenFieldIsDefined() = 
+	isDefined(fieldAccess("a"), addDefinition(param(integer(), "a", emptyExpr()), newEnv(|tmp:///|)));
+	
+test bool shouldReturnFalseWhenFieldIsUndefined() = 
+	!isDefined(fieldAccess("a"), newEnv(|tmp:///|));
+
 test bool shouldReturnTrueIfArtifactIsAlreadyImported() =
     isImported(\import("User", namespace("Test"), "User"), addImported(\import("User", namespace("Test"), "User"), newEnv(|tmp:///|)));
     

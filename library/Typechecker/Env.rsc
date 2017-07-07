@@ -48,6 +48,11 @@ public TypeEnv addDefinition(d:declare(Type varType, variable(GlagolID name), St
     addError(d@src, "Cannot decleare \"<name>\". Already decleared in <d@src.path> on line <env.definitions[name].d@src.begin.line>.", env) 
     when name in env.definitions && field(_) !:= env.definitions[name];
 
+public bool isDefined(variable(GlagolID name), TypeEnv env) = name in env.definitions;
+public bool isDefined(fieldAccess(str field), TypeEnv env) = field in env.definitions;
+public bool isDefined(fieldAccess(this(), str field), TypeEnv env) = field in env.definitions;
+public bool isDefined(Expression expr, TypeEnv env) = false;
+
 public TypeEnv addError(loc src, str message, TypeEnv env) = env[errors = env.errors + <src, message>];
 
 public TypeEnv addErrors(list[tuple[loc, str]] errors, TypeEnv env) = (env | addError(src, message, it) | <loc src, str message> <- errors);

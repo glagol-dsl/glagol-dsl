@@ -4,6 +4,52 @@ import Typechecker::Expression;
 import Syntax::Abstract::Glagol;
 import Typechecker::Env;
 
+// Check array access
+test bool shouldGiveErrorWhenUnknownTypeIsUsedAsKeyForArrayAccess() = 
+	checkIndexKey(unknownType(), emptyExpr()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Type of array index key used cannot be determined in /User.g on line 20", newEnv(|tmp:///|));
+
+test bool shouldGiveErrorWhenVoidTypeIsUsedAsKeyForArrayAccess() = 
+	checkIndexKey(voidValue(), emptyExpr()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Void cannot be used as array index key in /User.g on line 20", newEnv(|tmp:///|));
+
+test bool shouldNotGiveErrorWhenNormalTypeIsUsedAsKeyForArrayAccess() = 
+	checkIndexKey(integer(), emptyExpr()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+
+test bool shouldGiveErrorWhenTryingToAccessListUsingNonInteger() = 
+	checkExpression(arrayAccess(variable("a"), string("key"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+		addDefinition(param(\list(string()), "a", emptyExpr()), newEnv(|tmp:///|))) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		"List cannot be accessed using string, only integers allowed in /User.g on line 20", 
+		
+		addDefinition(param(\list(string()), "a", emptyExpr()), newEnv(|tmp:///|)));
+		
+test bool shouldNotGiveErrorWhenTryingToAccessListUsingInteger() = 
+	checkExpression(arrayAccess(variable("a"), integer(4))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+		addDefinition(param(\list(string()), "a", emptyExpr()), newEnv(|tmp:///|))) ==  
+	addDefinition(param(\list(string()), "a", emptyExpr()), newEnv(|tmp:///|));
+		
+test bool shouldGiveErrorWhenTryingToAccessMapUsingWrongType() = 
+	checkExpression(arrayAccess(variable("a"), string("key"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+		addDefinition(param(\map(float(), integer()), "a", emptyExpr()), newEnv(|tmp:///|))) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		"Map key type is float, cannot access using string in /User.g on line 20", 
+		addDefinition(param(\map(float(), integer()), "a", emptyExpr()), newEnv(|tmp:///|)));
+
+test bool shouldNotGiveErrorWhenTryingToAccessMapUsingCorrectType() = 
+	checkExpression(arrayAccess(variable("a"), string("key"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+		addDefinition(param(\map(string(), integer()), "a", emptyExpr()), newEnv(|tmp:///|))) == 
+	addDefinition(param(\map(string(), integer()), "a", emptyExpr()), newEnv(|tmp:///|));
+
+// Check variable definition
+test bool shouldNotGiveErrorWhenCheckAlreadyDefinedVariable() = 
+	checkIsVariableDefined(variable("a"), addDefinition(param(integer(), "a", emptyExpr()), newEnv(|tmp:///|))) ==
+	addDefinition(param(integer(), "a", emptyExpr()), newEnv(|tmp:///|));
+	
+test bool shouldGiveErrorWhenCheckUndefinedVariable() = 
+	checkIsVariableDefined(variable("a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined in /User.g on line 20", newEnv(|tmp:///|));
+
 // Lookup literal types
 test bool shouldReturnIntegerWhenLookingUpTypeForIntegerLiteral() = integer() == lookupType(integer(5), newEnv(|tmp:///|));
 test bool shouldReturnFloatWhenLookingUpTypeForFloatLiteral() = float() == lookupType(float(5.3), newEnv(|tmp:///|));

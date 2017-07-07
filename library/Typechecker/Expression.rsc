@@ -2,6 +2,7 @@ module Typechecker::Expression
 
 import Typechecker::Env;
 import Typechecker::Errors;
+import Typechecker::Type;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import Typechecker::Type::Compatibility;
@@ -9,6 +10,44 @@ import Typechecker::Type::Compatibility;
 import List;
 import Map;
 import Set;
+
+public TypeEnv checkExpression(boolean(_), TypeEnv env) = env;
+public TypeEnv checkExpression(string(_), TypeEnv env) = env;
+public TypeEnv checkExpression(integer(_), TypeEnv env) = env;
+public TypeEnv checkExpression(v: variable(GlagolID name), TypeEnv env) = checkIsVariableDefined(v, env);
+public TypeEnv checkExpression(a: arrayAccess(_, _), TypeEnv env) = checkArrayAccess(a, env);
+
+public TypeEnv checkIsVariableDefined(v: variable(GlagolID name), TypeEnv env) = 
+	addError(v@src, "\'<name>\' is undefined in <v@src.path> on line <v@src.begin.line>", env)
+	when !isDefined(v, env);
+
+public TypeEnv checkIsVariableDefined(v: variable(GlagolID name), TypeEnv env) = env;
+
+public TypeEnv checkArrayAccess(a: arrayAccess(Expression variable, Expression arrayIndexKey), TypeEnv env) = 
+	checkArrayAccess(lookupType(variable, env), lookupType(arrayIndexKey, env), a, checkIndexKey(arrayIndexKey, checkExpression(variable, env)));
+
+public TypeEnv checkArrayAccess(\map(Type key, Type v), Type indexKeyType, _, TypeEnv env) = env when key == indexKeyType;
+
+public TypeEnv checkArrayAccess(\map(Type key, Type v), Type indexKeyType, a, TypeEnv env) = 
+	addError(a@src, 
+		"Map key type is <toString(key)>, cannot access using <toString(indexKeyType)> in <a@src.path> on line <a@src.begin.line>", env)
+	when key != indexKeyType;
+	
+public TypeEnv checkArrayAccess(\list(Type \type), integer(), _, TypeEnv env) = env;
+
+public TypeEnv checkArrayAccess(\list(Type \type), Type indexKeyType, a, TypeEnv env) = 
+	addError(a@src, 
+		"List cannot be accessed using <toString(indexKeyType)>, only integers allowed in <a@src.path> on line <a@src.begin.line>", env)
+	when integer() != indexKeyType;
+
+public TypeEnv checkIndexKey(Expression key, TypeEnv env) = checkIndexKey(lookupType(key, env), key, checkExpression(key, env));
+
+public TypeEnv checkIndexKey(unknownType(), key, TypeEnv env) = 
+	addError(key@src, "Type of array index key used cannot be determined in <key@src.path> on line <key@src.begin.line>", env);
+public TypeEnv checkIndexKey(voidValue(), key, TypeEnv env) = 
+	addError(key@src, "Void cannot be used as array index key in <key@src.path> on line <key@src.begin.line>", env);
+	
+public TypeEnv checkIndexKey(Type t, key, TypeEnv env) = env;
 
 @doc="Empty expression is always unknown type"
 public Type lookupType(emptyExpr(), _) = unknownType();
