@@ -67,8 +67,8 @@ data Expression
     | get(Type t)
     | invoke(str methodName, list[Expression] args)
     | invoke(Expression prev, str methodName, list[Expression] args)
-    | fieldAccess(str field)
-    | fieldAccess(Expression prev, str field)
+    | fieldAccess(str name)
+    | fieldAccess(Expression prev, str name)
     | emptyExpr()
     | this()
     ;

@@ -15,13 +15,15 @@ public TypeEnv checkExpression(boolean(_), TypeEnv env) = env;
 public TypeEnv checkExpression(string(_), TypeEnv env) = env;
 public TypeEnv checkExpression(integer(_), TypeEnv env) = env;
 public TypeEnv checkExpression(v: variable(GlagolID name), TypeEnv env) = checkIsVariableDefined(v, env);
+public TypeEnv checkExpression(f: fieldAccess(_), TypeEnv env) = checkIsVariableDefined(f, env);
+public TypeEnv checkExpression(f: fieldAccess(_, _), TypeEnv env) = checkIsVariableDefined(f, env);
 public TypeEnv checkExpression(a: arrayAccess(_, _), TypeEnv env) = checkArrayAccess(a, env);
 
-public TypeEnv checkIsVariableDefined(v: variable(GlagolID name), TypeEnv env) = 
-	addError(v@src, "\'<name>\' is undefined in <v@src.path> on line <v@src.begin.line>", env)
-	when !isDefined(v, env);
+public TypeEnv checkIsVariableDefined(Expression expr, TypeEnv env) = 
+	addError(expr@src, "\'<expr.name>\' is undefined in <expr@src.path> on line <expr@src.begin.line>", env)
+	when !isDefined(expr, env);
 
-public TypeEnv checkIsVariableDefined(v: variable(GlagolID name), TypeEnv env) = env;
+public TypeEnv checkIsVariableDefined(Expression, TypeEnv env) = env;
 
 public TypeEnv checkArrayAccess(a: arrayAccess(Expression variable, Expression arrayIndexKey), TypeEnv env) = 
 	checkArrayAccess(lookupType(variable, env), lookupType(arrayIndexKey, env), a, checkIndexKey(arrayIndexKey, checkExpression(variable, env)));
@@ -39,6 +41,9 @@ public TypeEnv checkArrayAccess(\list(Type \type), Type indexKeyType, a, TypeEnv
 	addError(a@src, 
 		"List cannot be accessed using <toString(indexKeyType)>, only integers allowed in <a@src.path> on line <a@src.begin.line>", env)
 	when integer() != indexKeyType;
+
+public TypeEnv checkArrayAccess(Type t, Type indexKeyType, a, TypeEnv env) = 
+	addError(a@src, "Cannot access <toString(t)> as array in <a@src.path> on line <a@src.begin.line>", env);
 
 public TypeEnv checkIndexKey(Expression key, TypeEnv env) = checkIndexKey(lookupType(key, env), key, checkExpression(key, env));
 

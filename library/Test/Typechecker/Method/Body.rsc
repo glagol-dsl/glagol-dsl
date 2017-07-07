@@ -5,19 +5,10 @@ import Typechecker::Env;
 import Typechecker::Errors;
 import Syntax::Abstract::Glagol;
 
-test bool shouldAddErrorWhenReturnIsNotVoidOnVoidMethod() = 
-	checkBody([
-		ifThenElse(boolean(true), \return(variable("a"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], block([]))
-	], voidValue(), method(\public(), voidValue(), "test", [], [], emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
-	entity("User", []), newEnv(|tmp:///|)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Cannot return value on void method in /User.g on line 20", 
-		newEnv(|tmp:///|));
-
 test bool shouldAddErrorWhenReturnIsNotAvailableOnSubroutineUsingCheckBody() = 
 	checkBody([
-		ifThenElse(boolean(true), \return(variable("a")), block([
-			ifThenElse(boolean(true), block([]), \return(variable("a")))
+		ifThenElse(boolean(true), \return(integer(1))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], block([
+			ifThenElse(boolean(true), block([]), \return(integer(2))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)])
 		]))
 	], integer(), method(\public(), integer(), "test", [], [], emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 	entity("User", []), newEnv(|tmp:///|)) == 

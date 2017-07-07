@@ -42,7 +42,7 @@ public TypeEnv addDefinition(p:param(Type paramType, GlagolID name, Expression d
     
 public TypeEnv addDefinition(d:declare(Type varType, variable(GlagolID name), Statement defaultValue), TypeEnv env) = 
     env[definitions = env.definitions + (name: localVar(d))]
-    when name notin env.definitions || (name in env.definitions && field(_) := env.definitions[name]);
+    when name notin env.definitions || (name in env.definitions && isField(env.definitions[name]));
 
 public TypeEnv addDefinition(d:declare(Type varType, variable(GlagolID name), Statement defaultValue), TypeEnv env) = 
     addError(d@src, "Cannot decleare \"<name>\". Already decleared in <d@src.path> on line <env.definitions[name].d@src.begin.line>.", env) 
@@ -50,7 +50,7 @@ public TypeEnv addDefinition(d:declare(Type varType, variable(GlagolID name), St
 
 public bool isDefined(variable(GlagolID name), TypeEnv env) = name in env.definitions;
 public bool isDefined(fieldAccess(str field), TypeEnv env) = field in env.definitions;
-public bool isDefined(fieldAccess(this(), str field), TypeEnv env) = field in env.definitions;
+public bool isDefined(fieldAccess(this(), str field), TypeEnv env) = field in env.definitions && isField(env.definitions[field]);
 public bool isDefined(Expression expr, TypeEnv env) = false;
 
 public TypeEnv addError(loc src, str message, TypeEnv env) = env[errors = env.errors + <src, message>];
@@ -81,6 +81,9 @@ public bool isUtil(i:\import(GlagolID name, Declaration namespace, GlagolID as),
     
 public bool isUtil(artifact(Name name), TypeEnv env) =
 	[util(_, _)] := findArtifact(env.imported[name.localName], env);
+
+public bool isField(field(_)) = true;
+public bool isField(_) = false;
 
 public TypeEnv addToAST(Declaration file, TypeEnv env) = env[ast = env.ast + file];
 public TypeEnv addToAST(list[Declaration] files, TypeEnv env) = env[ast = env.ast + files];
