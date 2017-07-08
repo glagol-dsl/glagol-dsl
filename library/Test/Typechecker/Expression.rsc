@@ -23,7 +23,6 @@ test bool shouldGiveErrorWhenTryingToAccessListUsingNonInteger() =
 		addDefinition(param(\list(string()), "a", emptyExpr()), newEnv(|tmp:///|))) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
 		"List cannot be accessed using string, only integers allowed in /User.g on line 20", 
-		
 		addDefinition(param(\list(string()), "a", emptyExpr()), newEnv(|tmp:///|)));
 		
 test bool shouldNotGiveErrorWhenTryingToAccessListUsingInteger() = 

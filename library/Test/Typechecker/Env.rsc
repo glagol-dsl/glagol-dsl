@@ -58,7 +58,7 @@ test bool shouldGiveErrorWhenTryingToRedecleareParameter() =
         "id": param(param(integer(), "id", emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)])
     ), (), [], [
         <|tmp:///User.g|(0, 0, <25, 25>, <30, 30>), 
-            "Cannot decleare \"id\". Already decleared in /User.g on line 20.">
+            "Cannot decleare \"id\" in /User.g on line 25. Already decleared in /User.g on line 20.">
     ], emptyDecl()>;
 
 test bool shouldAddErrorToEnv() = addError(|tmp:///User.g|, "this is an error message", <|tmp:///User.g|, (), (), [], [], emptyDecl()>) == <|tmp:///User.g|, (), (), [], [

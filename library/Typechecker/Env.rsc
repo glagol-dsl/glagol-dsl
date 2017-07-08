@@ -45,7 +45,8 @@ public TypeEnv addDefinition(d:declare(Type varType, variable(GlagolID name), St
     when name notin env.definitions || (name in env.definitions && isField(env.definitions[name]));
 
 public TypeEnv addDefinition(d:declare(Type varType, variable(GlagolID name), Statement defaultValue), TypeEnv env) = 
-    addError(d@src, "Cannot decleare \"<name>\". Already decleared in <d@src.path> on line <env.definitions[name].d@src.begin.line>.", env) 
+    addError(d@src, "Cannot decleare \"<name>\" in <d@src.path> on line <d@src.begin.line>. " + 
+    				"Already decleared in <d@src.path> on line <env.definitions[name].d@src.begin.line>.", env) 
     when name in env.definitions && field(_) !:= env.definitions[name];
 
 public bool isDefined(variable(GlagolID name), TypeEnv env) = name in env.definitions;
@@ -72,6 +73,9 @@ public list[Declaration] findArtifact(i:\import(GlagolID name, Declaration names
 
 public bool isEntity(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
     [entity(_, _)] := findArtifact(i, env);
+    
+public bool isEntity(a: artifact(e: external(_, _, _)), TypeEnv env) = isEntity(toNamespace(e), env);
+public bool isEntity(a: artifact(local(_)), TypeEnv env) = isEntity(externalize(a, env), env);
     
 public bool isValueObject(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
     [valueObject(_, _)] := findArtifact(i, env);

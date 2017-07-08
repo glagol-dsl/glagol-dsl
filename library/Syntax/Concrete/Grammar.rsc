@@ -209,6 +209,7 @@ syntax Statement
     | ifThenElse: "if" "(" Expression condition ")" Statement then "else" Statement else
     | assign: Assignable assignable AssignOperator operator Statement value !emptyStmt!block!ifThen!ifThenElse!return!break
     | foreach: "for" "(" Expression list "as" MemberName var (","  {Expression ","}+ conditions)? ")" Statement body
+    | foreach: "for" "(" Expression list "as" MemberName key ":" MemberName var (","  {Expression ","}+ conditions)? ")" Statement body
     > non-assoc  (
             \return: "return" Expression? expr ";"
         |   \persist: "persist" Expression expr ";"
