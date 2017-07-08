@@ -177,7 +177,7 @@ test bool testForeachStatementWithEmptyStmt() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(\list(integer()), "a", emptyExpr())], [
-            foreach(variable("a"), variable("b"), emptyStmt())
+            foreach(variable("a"), emptyExpr(), variable("b"), emptyStmt(), [])
         ], emptyExpr())
     ]));
 }
@@ -193,8 +193,8 @@ test bool testForeachStatementWithEmptyStmtAndDirectList() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [
-            foreach(\list([integer(1), integer(2), integer(3), integer(4), integer(5)]), 
-                variable("b"), emptyStmt())
+            foreach(\list([integer(1), integer(2), integer(3), integer(4), integer(5)]), emptyExpr(), 
+                variable("b"), emptyStmt(), [])
         ], emptyExpr())
     ]));
 }
@@ -212,8 +212,8 @@ test bool testForeachStatementWithIncrementStmtAndDirectList() {
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [
             declare(integer(), variable("i"), emptyStmt()),
-            foreach(\list([integer(1), integer(2), integer(3), integer(4), integer(5)]), 
-                variable("b"), assign(variable("i"), additionAssign(), expression(integer(1))))
+            foreach(\list([integer(1), integer(2), integer(3), integer(4), integer(5)]), emptyExpr(), 
+                variable("b"), assign(variable("i"), additionAssign(), expression(integer(1))), [])
         ], emptyExpr())
     ]));
 }
@@ -223,7 +223,7 @@ test bool testForeachStatementWithBreak() {
         = "namespace Example
         'entity User {
         '   User(int[] a) {
-        '       for (a as b) {
+        '       for (a as d:b) {
         '           if (a \> 2) break;
         '       }
         '   }
@@ -231,9 +231,9 @@ test bool testForeachStatementWithBreak() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(\list(integer()), "a", emptyExpr())], [
-            foreach(variable("a"), variable("b"), block([
+            foreach(variable("a"), variable("d"), variable("b"), block([
                 ifThen(greaterThan(variable("a"), integer(2)), \break())
-            ]))
+            ]), [])
         ], emptyExpr())
     ]));
 }
@@ -252,10 +252,10 @@ test bool testForeachStatementWithLevelledBreak() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(\list(integer()), "a", emptyExpr())], [
-            foreach(variable("a"), variable("b"), 
-                foreach(variable("c"), variable("d"), 
-                    ifThen(greaterThan(variable("c"), integer(2)), \break(2))
-                )
+            foreach(variable("a"), emptyExpr(), variable("b"), 
+                foreach(variable("c"), emptyExpr(), variable("d"), 
+                    ifThen(greaterThan(variable("c"), integer(2)), \break(2)), []
+                ), []
             )
         ], emptyExpr())
     ]));
@@ -272,7 +272,7 @@ test bool testForeachStatementWithCondition() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(\list(artifact(local("DateTime"))), "a", emptyExpr()), param(artifact(local("DateTime")), "now", emptyExpr())], [
-            foreach(variable("a"), variable("b"), emptyStmt(), [lessThan(variable("a"), variable("now"))])
+            foreach(variable("a"), emptyExpr(), variable("b"), emptyStmt(), [lessThan(variable("a"), variable("now"))])
         ], emptyExpr())
     ]));
 }
@@ -289,9 +289,9 @@ test bool testForeachStatementWithContinue() {
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(\list(artifact(local("DateTime"))), "a", emptyExpr()), param(artifact(local("DateTime")), "now", emptyExpr())], [
-            foreach(variable("a"), variable("b"), ifThen(
+            foreach(variable("a"), emptyExpr(), variable("b"), ifThen(
                 lessThan(variable("a"), variable("now")), \continue()
-            ))
+            ), [])
         ], emptyExpr())
     ]));
 }

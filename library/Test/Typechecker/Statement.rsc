@@ -48,12 +48,6 @@ test bool shouldGiveErrorWhenArrayAccessAsAssignableIsUndefined() =
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot access unknown type as array in /User.g on line 20", 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined in /User.g on line 20", newEnv(|tmp:///|)));
 	
-test bool shouldGiveErrorWhenArrayAccessAsAssignableIsUndefined() = 
-	checkAssignable(arrayAccess(variable("a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], integer(1))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
-		newEnv(|tmp:///|)) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot access unknown type as array in /User.g on line 20", 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined in /User.g on line 20", newEnv(|tmp:///|)));
-	
 test bool shouldGiveErrorWhenAssigningValueToNonAssignableExpression() = 
 	checkAssignable(string("a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		newEnv(|tmp:///|)) ==

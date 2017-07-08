@@ -42,7 +42,14 @@ public Statement convertStmt(a: (Statement) `<Type t> <MemberName varName>=<Stat
 	declare(convertType(t, env), variable("<varName>")[@src=varName@\loc], convertStmt(defValue, env))[@src=a@\loc];
 
 public Statement convertStmt(a: (Statement) `for (<Expression l>as<MemberName var>)<Statement body>`, ParseEnv env)
-    = foreach(convertExpression(l, env), variable("<var>")[@src=var@\loc], convertStmt(body, env))[@src=a@\loc];
+    = foreach(convertExpression(l, env), emptyExpr(), variable("<var>")[@src=var@\loc], convertStmt(body, env), [])[@src=a@\loc];
     
 public Statement convertStmt(a: (Statement) `for (<Expression l>as<MemberName var>, <{Expression ","}+ conds>)<Statement body>`, ParseEnv env)
-    = foreach(convertExpression(l, env), variable("<var>")[@src=var@\loc], convertStmt(body, env), [convertExpression(cond, env) | cond <- conds])[@src=a@\loc];
+    = foreach(convertExpression(l, env), emptyExpr(), variable("<var>")[@src=var@\loc], convertStmt(body, env), [convertExpression(cond, env) | cond <- conds])[@src=a@\loc];
+
+public Statement convertStmt(a: (Statement) `for (<Expression l>as<MemberName key>:<MemberName var>)<Statement body>`, ParseEnv env)
+    = foreach(convertExpression(l, env), variable("<key>"), variable("<var>")[@src=var@\loc], convertStmt(body, env), [])[@src=a@\loc];
+    
+public Statement convertStmt(a: (Statement) `for (<Expression l>as<MemberName key>:<MemberName var>, <{Expression ","}+ conds>)<Statement body>`, ParseEnv env)
+    = foreach(convertExpression(l, env), variable("<key>"), variable("<var>")[@src=var@\loc], convertStmt(body, env), [convertExpression(cond, env) | cond <- conds])[@src=a@\loc];
+    

@@ -81,7 +81,7 @@ test bool shouldTransformToDeclarationWithAssignAsDefaultValue() =
     phpExprstmt(phpAssign(phpVar(phpName(phpName("var1"))), phpAssign(phpVar(phpName(phpName("var2"))), phpScalar(phpInteger(44)))));
 
 test bool shouldTransformToForeach() = 
-    toPhpStmt(foreach(variable("categories"), variable("category"), expression(invoke("func", [])))) ==
+    toPhpStmt(foreach(variable("categories"), emptyExpr(), variable("category"), expression(invoke("func", [])), [])) ==
     phpForeach(
         phpVar(phpName(phpName("categories"))), 
         phpNoExpr(), false, phpVar(phpName(phpName("category"))), [
@@ -90,7 +90,7 @@ test bool shouldTransformToForeach() =
     );
 
 test bool shouldTransformToForeachWithConditions() = 
-    toPhpStmt(foreach(variable("categories"), variable("category"), expression(invoke("func", [])), [boolean(true)])) ==
+    toPhpStmt(foreach(variable("categories"), emptyExpr(), variable("category"), expression(invoke("func", [])), [boolean(true)])) ==
     phpForeach(
         phpVar(phpName(phpName("categories"))), 
         phpNoExpr(), false, phpVar(phpName(phpName("category"))), [
@@ -101,7 +101,7 @@ test bool shouldTransformToForeachWithConditions() =
     );
 
 test bool shouldTransformToForeachWithConditions2() = 
-    toPhpStmt(foreach(variable("categories"), variable("category"), expression(invoke("func", [])), [boolean(true), boolean(true)])) ==
+    toPhpStmt(foreach(variable("categories"), emptyExpr(), variable("category"), expression(invoke("func", [])), [boolean(true), boolean(true)])) ==
     phpForeach(
         phpVar(phpName(phpName("categories"))), 
         phpNoExpr(), false, phpVar(phpName(phpName("category"))), [
@@ -112,7 +112,7 @@ test bool shouldTransformToForeachWithConditions2() =
     );
 
 test bool shouldTransformToForeachWithConditions3() = 
-    toPhpStmt(foreach(variable("categories"), variable("category"), expression(invoke("func", [])), [boolean(true), boolean(true), boolean(true)])) ==
+    toPhpStmt(foreach(variable("categories"), emptyExpr(), variable("category"), expression(invoke("func", [])), [boolean(true), boolean(true), boolean(true)])) ==
     phpForeach(
         phpVar(phpName(phpName("categories"))), 
         phpNoExpr(), false, phpVar(phpName(phpName("category"))), [
