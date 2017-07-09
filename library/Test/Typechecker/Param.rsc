@@ -38,3 +38,9 @@ test bool shouldGiveTypeMismatchErrorWhenMismatchingTypesOnParams() =
 			boolean()), newEnv(|tmp:///|)
 		)
 	);
+
+test bool shouldNotGiveTypeMismatchErrorWhenUsingVoidList() = 
+	checkParams([
+		param(\list(integer()), "test1", \list([]))
+	], newEnv(|tmp:///|)) == 
+	addDefinition(param(\list(integer()), "test1", \list([])), newEnv(|tmp:///|));

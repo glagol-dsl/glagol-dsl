@@ -14,6 +14,8 @@ public TypeEnv checkParam(p: param(Type paramType, GlagolID name, emptyExpr()), 
 public TypeEnv checkParam(p: param(Type paramType, GlagolID name, Expression defaultValue), TypeEnv env)
 	= addDefinition(p, checkTypeMismatch(lookupType(defaultValue, env), paramType, checkDefaultValue(defaultValue, env)));
 	
+private TypeEnv checkTypeMismatch(\list(voidValue()), \list(_), TypeEnv env) = env;
+private TypeEnv checkTypeMismatch(\map(voidValue(), voidValue()), \map(_, _), TypeEnv env) = env;
 private TypeEnv checkTypeMismatch(Type valueType, Type \type, TypeEnv env) = env when valueType == \type;
 private TypeEnv checkTypeMismatch(Type valueType, Type \type, TypeEnv env) =
     addError(\type@src, typeMismatch(\type, valueType), env);

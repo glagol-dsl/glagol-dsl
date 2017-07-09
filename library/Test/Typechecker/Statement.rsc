@@ -59,7 +59,6 @@ test bool shouldGiveErrorWhenAssigningWrongTypeOfValue() =
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
 		"Cannot assign value of type integer to a variable of type string in /User.g on line 20", 
 		addDefinition(param(string(), "a", emptyExpr()), newEnv(|tmp:///|)));
-		
 test bool shouldNotGiveErrorWhenAssigningEmptyListOnTypedList() = 
 	checkStatement(assign(variable("a"), defaultAssign(), expression(\list([])))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
 		addDefinition(param(\list(integer()), "a", emptyExpr()), newEnv(|tmp:///|))) ==
@@ -164,6 +163,16 @@ test bool shouldGiveErrorWhenTryingToRemoveANonEntity() =
 		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), 
 		setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 	));
+
+test bool shouldNotGiveErrorWhenDeclaringVariableOfTypeListWithVoidListAsDefaultValue() = 
+	checkStatement(declare(\list(integer()), variable("a"), expression(\list([]))), 
+		voidValue(), emptyDecl(), newEnv(|tmp:///|)) == 
+	addDefinition(declare(\list(integer()), variable("a"), expression(\list([]))), newEnv(|tmp:///|));
+
+test bool shouldNotGiveErrorWhenDeclaringVariableOfTypeListWithVoidMapAsDefaultValue() = 
+	checkStatement(declare(\map(string(), integer()), variable("a"), expression(\map(()))), 
+		voidValue(), emptyDecl(), newEnv(|tmp:///|)) == 
+	addDefinition(declare(\map(string(), integer()), variable("a"), expression(\map(()))), newEnv(|tmp:///|));
 
 test bool shouldGiveErrorWhenDeclaringVariableWithWrongDefaultValueType() = 
 	checkStatement(declare(integer(), variable("a"), expression(string("aaa")))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 

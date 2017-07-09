@@ -13,6 +13,12 @@ test bool shouldNotGiveErrorsOnCheckTypeMismatchOfSelfieOnRepository() =
 
 test bool shouldNotGiveErrorsOnCheckTypeMismatchOfSameTypes() = 
 	checkTypeMismatch(integer(), integer(), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+
+test bool shouldNotGiveErrorsOnCheckTypeMismatchOnVoidList() = 
+	checkTypeMismatch(\list(voidValue()), \list(integer()), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+	
+test bool shouldNotGiveErrorsOnCheckTypeMismatchOnVoidMap() = 
+	checkTypeMismatch(\map(voidValue(), voidValue()), \map(integer(), integer()), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
 	
 test bool shouldGiveTypeMismatchErrorWhenTypesDoNotMatch() = 
 	checkTypeMismatch(integer(), string()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 

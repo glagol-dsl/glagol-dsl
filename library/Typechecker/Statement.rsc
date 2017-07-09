@@ -79,6 +79,9 @@ public TypeEnv checkStatement(d: declare(_, Expression varName, _), _,  _, TypeE
 public TypeEnv checkStatement(d: declare(Type varType, variable(GlagolID name), Statement defaultValue), t, s, TypeEnv env) = 
 	checkStatement(defaultValue, t, s, checkDeclareType(varType, lookupType(defaultValue, env), name, d, env));
 
+public TypeEnv checkDeclareType(\list(_), \list(voidValue()), GlagolID name, d, TypeEnv env) = addDefinition(d, env);
+public TypeEnv checkDeclareType(\map(_, _), \map(voidValue(), voidValue()), GlagolID name, d, TypeEnv env) = addDefinition(d, env);
+
 public TypeEnv checkDeclareType(Type expectedType, Type actualType, GlagolID name, d, TypeEnv env) = 
 	addError(d@src, 
 		"Cannot assign <toString(actualType)> to variable <name> originally defined as <toString(expectedType)> " + 

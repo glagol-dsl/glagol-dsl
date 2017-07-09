@@ -11,6 +11,8 @@ import List;
 import Map;
 import Set;
 
+public TypeEnv checkExpression(\list([]), TypeEnv env) = env;
+public TypeEnv checkExpression(\map(map[Expression, Expression] items), TypeEnv env) = env when size(items) == 0;
 public TypeEnv checkExpression(boolean(_), TypeEnv env) = env;
 public TypeEnv checkExpression(string(_), TypeEnv env) = env;
 public TypeEnv checkExpression(integer(_), TypeEnv env) = env;
