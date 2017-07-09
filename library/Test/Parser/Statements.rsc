@@ -232,7 +232,7 @@ test bool testForeachStatementWithBreak() {
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(\list(integer()), "a", emptyExpr())], [
             foreach(variable("a"), variable("d"), variable("b"), block([
-                ifThen(greaterThan(variable("a"), integer(2)), \break())
+                ifThen(greaterThan(variable("a"), integer(2)), \break(1))
             ]), [])
         ], emptyExpr())
     ]));
@@ -290,7 +290,7 @@ test bool testForeachStatementWithContinue() {
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([param(\list(artifact(local("DateTime"))), "a", emptyExpr()), param(artifact(local("DateTime")), "now", emptyExpr())], [
             foreach(variable("a"), emptyExpr(), variable("b"), ifThen(
-                lessThan(variable("a"), variable("now")), \continue()
+                lessThan(variable("a"), variable("now")), \continue(1)
             ), [])
         ], emptyExpr())
     ]));

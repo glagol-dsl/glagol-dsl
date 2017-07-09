@@ -349,10 +349,10 @@ public Statement convertStmt(a: (Statement) `remove <Expression expr>;`, ParseEn
 public Statement convertStmt(a: (Statement) `flush;`, ParseEnv env) = flush(emptyExpr()[@src=a@\loc])[@src=a@\loc];
 public Statement convertStmt(a: (Statement) `flush <Expression expr>;`, ParseEnv env) = flush(convertExpression(expr, env))[@src=a@\loc];
 
-public Statement convertStmt(a: (Statement) `break ;`, ParseEnv env) = \break()[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `break ;`, ParseEnv env) = \break(1)[@src=a@\loc];
 public Statement convertStmt(a: (Statement) `break<Integer level>;`, ParseEnv env) = \break(toInt("<level>"))[@src=a@\loc];
 
-public Statement convertStmt(a: (Statement) `continue ;`, ParseEnv env) = \continue()[@src=a@\loc];
+public Statement convertStmt(a: (Statement) `continue ;`, ParseEnv env) = \continue(1)[@src=a@\loc];
 public Statement convertStmt(a: (Statement) `continue<Integer level>;`, ParseEnv env) = \continue(toInt("<level>"))[@src=a@\loc];
 
 public Statement convertStmt(a: (Statement) `<Type t> <MemberName varName>;`, ParseEnv env) =

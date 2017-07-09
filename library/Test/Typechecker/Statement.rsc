@@ -309,4 +309,30 @@ test bool shouldNotGiveErrorWhenUsingNotDefinedKeyOnMapTraversing() =
 	addDefinition(declare(string(), variable("item"), emptyStmt()), 
 		addDefinition(declare(integer(), variable("i"), emptyStmt()), newEnv(|tmp:///|)));
 
+test bool shouldGiveErrorWhenBreakingOutFromZeroLevel() = 
+	checkStatement(\break(0)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), newEnv(|tmp:///|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		"Cannot break out from structure using level 0 in /User.g on line 20", newEnv(|tmp:///|));
 
+test bool shouldGiveErrorWhenBreakingOutFromIllegalLevel() = 
+	checkStatement(\break(1)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), newEnv(|tmp:///|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		"Cannot break out from structure using level 1 in /User.g on line 20", newEnv(|tmp:///|));
+
+test bool shouldNotGiveErrorWhenBreakingOutFromExistingLevel() = 
+	checkStatement(\break(1), voidValue(), emptyDecl(), incrementControlLevel(newEnv(|tmp:///|))) == 
+	incrementControlLevel(newEnv(|tmp:///|));
+
+test bool shouldGiveErrorWhenContinueOutFromZeroLevel() = 
+	checkStatement(\continue(0)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), newEnv(|tmp:///|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		"Cannot continue from structure using level 0 in /User.g on line 20", newEnv(|tmp:///|));
+
+test bool shouldGiveErrorWhenContinueOutFromIllegalLevel() = 
+	checkStatement(\continue(1)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), newEnv(|tmp:///|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		"Cannot continue from structure using level 1 in /User.g on line 20", newEnv(|tmp:///|));
+
+test bool shouldNotGiveErrorWhenContinueOutFromExistingLevel() = 
+	checkStatement(\continue(1), voidValue(), emptyDecl(), incrementControlLevel(newEnv(|tmp:///|))) == 
+	incrementControlLevel(newEnv(|tmp:///|));

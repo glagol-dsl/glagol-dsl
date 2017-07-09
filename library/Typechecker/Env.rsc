@@ -21,13 +21,14 @@ alias TypeEnv = tuple[
     list[Declaration] ast,
     list[tuple[loc src, str message]] errors,
     Declaration context,
-    int loopLevel
+    int controlLevel
 ];
 
 public TypeEnv newEnv(loc location) = <location, (), (), [], [], emptyDecl(), 0>;
 
-public TypeEnv incrementLoopLevel(TypeEnv env) = env[loopLevel = env.loopLevel + 1];
-public TypeEnv decrementLoopLevel(TypeEnv env) = env[loopLevel = env.loopLevel - 1];
+public TypeEnv incrementControlLevel(TypeEnv env) = env[controlLevel = env.controlLevel + 1];
+public TypeEnv decrementControlLevel(TypeEnv env) = env[controlLevel = env.controlLevel - 1];
+public bool isControlLevelCorrect(int level, TypeEnv env) = env.controlLevel >= level;
 
 public TypeEnv addDefinition(p:property(_, GlagolID name, _), TypeEnv env) = 
     addError(p@src, "Cannot redefine \"<name>\". Already defined in <p@src.path> on line <env.definitions[name].d@src.begin.line>.", env) 

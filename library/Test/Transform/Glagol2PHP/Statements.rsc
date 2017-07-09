@@ -149,13 +149,13 @@ test bool shouldTransformToEntityManagerFlushWithArgument() =
     ]));
 
 test bool shouldTransformToContinue() =
-    toPhpStmt(\continue()) == phpContinue(phpNoExpr());
+    toPhpStmt(\continue(1)) == phpContinue(phpNoExpr());
     
 test bool shouldTransformToContinue2() =
     toPhpStmt(\continue(2)) == phpContinue(phpSomeExpr(phpScalar(phpInteger(2))));
     
 test bool shouldTransformToBreak() =
-    toPhpStmt(\break()) == phpBreak(phpNoExpr());
+    toPhpStmt(\break(1)) == phpBreak(phpNoExpr());
     
 test bool shouldTransformToBreak2() =
     toPhpStmt(\break(2)) == phpBreak(phpSomeExpr(phpScalar(phpInteger(2))));

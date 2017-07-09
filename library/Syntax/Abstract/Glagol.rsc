@@ -117,9 +117,7 @@ data Statement
     | flush(Expression expr)
     | declare(Type varType, Expression varName, Statement defaultValue)
     | foreach(Expression \list, Expression key, Expression varName, Statement body, list[Expression] conditions)
-    | \break()
     | \break(int level)
-    | \continue()
     | \continue(int level)
     ;
 

@@ -101,7 +101,7 @@ private str stringify(flush(Expression expr)) = "flushed";
 private str stringify(remove(Expression expr)) = "removed";
 
 public TypeEnv checkStatement(f: foreach(_, _, _, Statement body, _), t, s, TypeEnv env) = 
-	decrementLoopLevel(checkStatement(body, t, s, incrementLoopLevel(checkForeach(f, env))));
+	decrementControlLevel(checkStatement(body, t, s, incrementControlLevel(checkForeach(f, env))));
 
 public TypeEnv checkForeach(f: foreach(Expression \list, Expression key, Expression varName, Statement body, list[Expression] conditions), TypeEnv env) = 
 	checkConditions(conditions, checkForeachTypes(lookupType(\list, env), key, varName, env));
@@ -162,6 +162,24 @@ public TypeEnv checkIsKeyCompatibleWithCollection(\map(Type key, _), v: variable
 	addDefinition(declare(key, v, emptyStmt())[@src=v@src], env);
 
 public TypeEnv checkIsKeyCompatibleWithCollection(_, _, TypeEnv env) = env;
+
+public TypeEnv checkStatement(b: \break(0), t, s, TypeEnv env) = 
+	addError(b@src, "Cannot break out from structure using level 0 in <b@src.path> on line <b@src.begin.line>", env);
+	
+public TypeEnv checkStatement(b: \break(int level), t, s, TypeEnv env) = 
+	addError(b@src, "Cannot break out from structure using level <level> in <b@src.path> on line <b@src.begin.line>", env)
+	when !isControlLevelCorrect(level, env);
+	
+public TypeEnv checkStatement(b: \break(int level), t, s, TypeEnv env) = env;
+
+public TypeEnv checkStatement(c: \continue(0), t, s, TypeEnv env) = 
+	addError(c@src, "Cannot continue from structure using level 0 in <c@src.path> on line <c@src.begin.line>", env);
+	
+public TypeEnv checkStatement(c: \continue(int level), t, s, TypeEnv env) = 
+	addError(c@src, "Cannot continue from structure using level <level> in <c@src.path> on line <c@src.begin.line>", env)
+	when !isControlLevelCorrect(level, env);
+	
+public TypeEnv checkStatement(c: \continue(int level), t, s, TypeEnv env) = env;
 
 /*
 public TypeEnv checkStatement() = ;
