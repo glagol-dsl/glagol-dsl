@@ -40,7 +40,9 @@ public TypeEnv checkMap(m, \map(_, _), TypeEnv env) = env;
 
 public TypeEnv checkExpression(boolean(_), TypeEnv env) = env;
 public TypeEnv checkExpression(string(_), TypeEnv env) = env;
+public TypeEnv checkExpression(float(_), TypeEnv env) = env;
 public TypeEnv checkExpression(integer(_), TypeEnv env) = env;
+public TypeEnv checkExpression(\bracket(Expression expr), TypeEnv env) = checkExpression(expr, env);
 public TypeEnv checkExpression(v: variable(GlagolID name), TypeEnv env) = checkIsVariableDefined(v, env);
 public TypeEnv checkExpression(f: fieldAccess(_), TypeEnv env) = checkIsVariableDefined(f, env);
 public TypeEnv checkExpression(f: fieldAccess(_, _), TypeEnv env) = checkIsVariableDefined(f, env);
@@ -80,6 +82,75 @@ public TypeEnv checkIndexKey(voidValue(), key, TypeEnv env) =
 	addError(key@src, "Void cannot be used as array index key in <key@src.path> on line <key@src.begin.line>", env);
 	
 public TypeEnv checkIndexKey(Type t, key, TypeEnv env) = env;
+
+public TypeEnv checkExpression(e: product(Expression lhs, Expression rhs), TypeEnv env) = checkBinaryMath(e, lhs, rhs, env);
+public TypeEnv checkExpression(e: remainder(Expression lhs, Expression rhs), TypeEnv env) = checkBinaryMath(e, lhs, rhs, env);
+public TypeEnv checkExpression(e: division(Expression lhs, Expression rhs), TypeEnv env) = checkBinaryMath(e, lhs, rhs, env);
+public TypeEnv checkExpression(e: addition(Expression lhs, Expression rhs), TypeEnv env) = checkBinaryMath(e, lhs, rhs, env);
+public TypeEnv checkExpression(e: subtraction(Expression lhs, Expression rhs), TypeEnv env) = checkBinaryMath(e, lhs, rhs, env);
+
+public TypeEnv checkBinaryMath(e, Expression lhs, Expression rhs, TypeEnv env) = 
+	checkExpression(rhs, checkExpression(lhs, checkBinaryMath(e, lookupType(lhs, env), lookupType(rhs, env), env)));
+
+public TypeEnv checkBinaryMath(e, unknownType(), _, env) = 
+	addError(e@src, "Cannot apply <stringify(e)> on unknown type in <e@src.path> on line <e@src.begin.line>", env);
+	
+public TypeEnv checkBinaryMath(e, _, unknownType(), env) = 
+	addError(e@src, "Cannot apply <stringify(e)> on unknown type in <e@src.path> on line <e@src.begin.line>", env);
+	
+public TypeEnv checkBinaryMath(e, integer(), integer(), env) = env;
+public TypeEnv checkBinaryMath(e, integer(), float(), env) = env;
+public TypeEnv checkBinaryMath(e, float(), float(), env) = env;
+public TypeEnv checkBinaryMath(e, float(), integer(), env) = env;
+public TypeEnv checkBinaryMath(e, Type lhs, Type rhs, env) = 
+	addError(e@src, "Cannot apply <stringify(e)> on <toString(lhs)> and <toString(rhs)> " + 
+					"in <e@src.path> on line <e@src.begin.line>", env);
+
+private str stringify(product(_, _)) = "multiplication";
+private str stringify(remainder(_, _)) = "remainder";
+private str stringify(division(_, _)) = "division";
+private str stringify(addition(_, _)) = "addition";
+private str stringify(subtraction(_, _)) = "subtraction";
+
+public TypeEnv checkExpression(e: greaterThanOrEq(Expression lhs, Expression rhs), TypeEnv env) = checkComparison(e, lhs, rhs, env);
+public TypeEnv checkExpression(e: lessThanOrEq(Expression lhs, Expression rhs), TypeEnv env) = checkComparison(e, lhs, rhs, env);
+public TypeEnv checkExpression(e: lessThan(Expression lhs, Expression rhs), TypeEnv env) = checkComparison(e, lhs, rhs, env);
+public TypeEnv checkExpression(e: greaterThan(Expression lhs, Expression rhs), TypeEnv env) = checkComparison(e, lhs, rhs, env);
+public TypeEnv checkExpression(e: equals(Expression lhs, Expression rhs), TypeEnv env) = checkComparison(e, lhs, rhs, env);
+public TypeEnv checkExpression(e: nonEquals(Expression lhs, Expression rhs), TypeEnv env) = checkComparison(e, lhs, rhs, env);
+
+public TypeEnv checkComparison(e, Expression lhs, Expression rhs, TypeEnv env) = 
+	checkExpression(rhs, checkExpression(lhs, checkComparison(e, lookupType(lhs, env), lookupType(rhs, env), env)));
+
+public TypeEnv checkComparison(e, integer(), integer(), TypeEnv env) = env;
+public TypeEnv checkComparison(e, float(), integer(), TypeEnv env) = env;
+public TypeEnv checkComparison(e, integer(), float(), TypeEnv env) = env;
+public TypeEnv checkComparison(e, float(), float(), TypeEnv env) = env;
+public TypeEnv checkComparison(equals(_, _), Type l, Type r, TypeEnv env) = env when l == r;
+public TypeEnv checkComparison(nonEquals(_, _), Type l, Type r, TypeEnv env) = env when l == r;
+public TypeEnv checkComparison(e, Type l, Type r, TypeEnv env) = 
+	addError(e@src, "Cannot compare <toString(l)> and <toString(r)> in <e@src.path> on line <e@src.begin.line>", env);
+
+public TypeEnv checkExpression(e: and(Expression lhs, Expression rhs), TypeEnv env) = 
+	checkExpression(rhs, checkExpression(lhs, checkBinaryLogic(e, lookupType(lhs, env), lookupType(rhs, env), env)));
+
+public TypeEnv checkExpression(e: or(Expression lhs, Expression rhs), TypeEnv env) = 
+	checkExpression(rhs, checkExpression(lhs, checkBinaryLogic(e, lookupType(lhs, env), lookupType(rhs, env), env)));
+
+public TypeEnv checkBinaryLogic(e, boolean(), boolean(), TypeEnv env) = env;
+public TypeEnv checkBinaryLogic(e, Type l, Type r, TypeEnv env) = 
+	addError(e@src, "Cannot apply logical operation on <toString(l)> and <toString(r)> in <e@src.path> on line <e@src.begin.line>", env);
+
+public TypeEnv checkExpression(e: negative(Expression expr), TypeEnv env) = checkUnaryLogic(e, lookupType(expr, env), env);
+
+public TypeEnv checkUnaryLogic(e, float(), TypeEnv env) = env;
+public TypeEnv checkUnaryLogic(e, integer(), TypeEnv env) = env;
+public TypeEnv checkUnaryLogic(n: negative(_), Type t, TypeEnv env) = 
+	addError(n@src, "Cannot apply minus on <toString(t)> in <n@src.path> on line <n@src.begin.line>", env);
+public TypeEnv checkUnaryLogic(n: positive(_), Type t, TypeEnv env) = 
+	addError(n@src, "Cannot apply plus on <toString(t)> in <n@src.path> on line <n@src.begin.line>", env);
+
+public TypeEnv checkExpression(emptyExpr(), TypeEnv env) = env;
 
 @doc="Empty expression is always unknown type"
 public Type lookupType(emptyExpr(), _) = unknownType();
@@ -274,6 +345,8 @@ private Type lookupUnaryMathType(_) = unknownType();
 
 private Type lookupMathCompatibility(integer(), integer()) = integer();
 private Type lookupMathCompatibility(float(), float()) = float();
+private Type lookupMathCompatibility(integer(), float()) = float();
+private Type lookupMathCompatibility(float(), integer()) = float();
 private Type lookupMathCompatibility(Type lhs, Type rhs) = unknownType();
 
 private Type lookupBooleanCompatibilityType(boolean(), boolean()) = boolean();

@@ -4,6 +4,42 @@ import Typechecker::Expression;
 import Syntax::Abstract::Glagol;
 import Typechecker::Env;
 
+// Check binary math operations
+test bool shouldGiveErrorWhenApplyingProductOnUnknownType() = 
+	checkExpression(product(emptyExpr(), emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot apply multiplication on unknown type in /User.g on line 20", newEnv(|tmp:///|));
+	
+test bool shouldGiveErrorWhenApplyingProductOnWrongTypes() = 
+	checkExpression(product(string("dsadsadsa"), boolean(true))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot apply multiplication on string and bool in /User.g on line 20", newEnv(|tmp:///|));
+
+test bool shouldNotGiveErrorWhenComparingIntegers() = 
+	checkExpression(greaterThanOrEq(integer(3), integer(5)), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+	
+test bool shouldGiveErrorWhenComparingIntegerAndString() = 
+	checkExpression(greaterThanOrEq(integer(3), string("asd"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot compare integer and string in /User.g on line 20", newEnv(|tmp:///|));
+	
+test bool shouldGiveErrorWhenComparingStringAndString() = 
+	checkExpression(greaterThanOrEq(string("dd"), string("asd"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot compare string and string in /User.g on line 20", newEnv(|tmp:///|));
+	
+test bool shouldNotGiveErrorWhenComparingStringAndString() = 
+	checkExpression(equals(string("dd"), string("asd"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
+	newEnv(|tmp:///|);
+	
+test bool shouldNotGiveErrorWhenApplyingLogicalAndOnBooleans() = checkExpression(and(boolean(true), boolean(false)), newEnv(|tmp:///|)) == newEnv(|tmp:///|);	
+test bool shouldGiveErrorWhenApplyingLogicalAndOnBooleanAndInteger() = 
+	checkExpression(and(boolean(true), integer(1))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		"Cannot apply logical operation on bool and integer in /User.g on line 20", newEnv(|tmp:///|));
+	
+test bool shouldNotGiveErrorWhenApplyingLogicalOrOnBooleans() = checkExpression(or(boolean(true), boolean(false)), newEnv(|tmp:///|)) == newEnv(|tmp:///|);	
+test bool shouldGiveErrorWhenApplyingLogicalOrOnBooleanAndInteger() = 
+	checkExpression(or(boolean(true), integer(1))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		"Cannot apply logical operation on bool and integer in /User.g on line 20", newEnv(|tmp:///|));
+
 // Check lists
 test bool shouldNotGiveErrorWhenCheckingEmptyList() = 
 	checkExpression(\list([]), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
@@ -29,6 +65,12 @@ test bool shouldGiveErrorOnMapOfUnknownTypeAsValue() =
 test bool shouldGiveErrorOnMapOfUnknownTypeAsValueAndKey() = 
 	checkExpression(\map((boolean(true): string("a"), integer(2): integer(5)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot unveil map key and value types in /User.g on line 20", newEnv(|tmp:///|));
+
+// check scalars
+test bool shouldNotGiveErrorOnIntegers() = checkExpression(integer(1), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+test bool shouldNotGiveErrorOnFloats() = checkExpression(float(1.2), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+test bool shouldNotGiveErrorOnStrings() = checkExpression(string("dsadsa"), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+test bool shouldNotGiveErrorOnBooleans() = checkExpression(boolean(true), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
 
 // Check array access
 test bool shouldGiveErrorWhenUnknownTypeIsUsedAsKeyForArrayAccess() = 
@@ -158,7 +200,7 @@ test bool shoudReturnStringTypeForAddOfStrings() = string() == lookupType(additi
 test bool shoudReturnIntegerTypeForAddOfIntegers() = integer() == lookupType(addition(integer(1), integer(2)), newEnv(|tmp:///|));
 test bool shoudReturnFloatTypeForAddOfFloats() = float() == lookupType(addition(float(1.2), float(2.2)), newEnv(|tmp:///|));
 
-test bool shoudReturnUnknownTypeForAddOfFloatAndInt() = unknownType() == lookupType(addition(float(1.2), integer(2)), newEnv(|tmp:///|));
+test bool shoudReturnUnknownTypeForAddOfFloatAndInt() = float() == lookupType(addition(float(1.2), integer(2)), newEnv(|tmp:///|));
 
 test bool shouldReturnIntegerTypeForSubOfIntegers() = integer() == lookupType(subtraction(integer(23), integer(33)), newEnv(|tmp:///|));
 test bool shouldReturnFloatTypeForSubOfFloats() = float() == lookupType(subtraction(float(23.22), float(33.33)), newEnv(|tmp:///|));
