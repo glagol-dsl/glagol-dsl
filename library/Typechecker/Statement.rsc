@@ -28,6 +28,9 @@ public TypeEnv checkStatement(ifThenElse(condition, then, \else), t, s, env) =
 public TypeEnv checkStatement(a: assign(assignable, operator, val), t, s, env) = 
 	checkAssignType(a, lookupType(assignable, env), lookupType(val, env), checkAssignable(assignable, env));
 
+public TypeEnv checkAssignType(Statement s, \list(_), \list(voidValue()), TypeEnv env) = env;
+public TypeEnv checkAssignType(Statement s, \map(_, _), \map(voidValue(), voidValue()), TypeEnv env) = env;
+	
 public TypeEnv checkAssignType(Statement s, Type expectedType, Type actualType, TypeEnv env) =
 	addError(s@src, 
 		"Cannot assign value of type <toString(actualType)> to a variable of type " + 

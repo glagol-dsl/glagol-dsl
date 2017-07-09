@@ -60,6 +60,16 @@ test bool shouldGiveErrorWhenAssigningWrongTypeOfValue() =
 		"Cannot assign value of type integer to a variable of type string in /User.g on line 20", 
 		addDefinition(param(string(), "a", emptyExpr()), newEnv(|tmp:///|)));
 		
+test bool shouldNotGiveErrorWhenAssigningEmptyListOnTypedList() = 
+	checkStatement(assign(variable("a"), defaultAssign(), expression(\list([])))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
+		addDefinition(param(\list(integer()), "a", emptyExpr()), newEnv(|tmp:///|))) ==
+	addDefinition(param(\list(integer()), "a", emptyExpr()), newEnv(|tmp:///|));
+		
+test bool shouldNotGiveErrorWhenAssigningEmptyMapOnTypedMap() = 
+	checkStatement(assign(variable("a"), defaultAssign(), expression(\map(())))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
+		addDefinition(param(\map(string(), integer()), "a", emptyExpr()), newEnv(|tmp:///|))) ==
+	addDefinition(param(\map(string(), integer()), "a", emptyExpr()), newEnv(|tmp:///|));
+		
 test bool shouldNotGiveErrorWhenAssigningCorrectTypeOfValue() = 
 	checkStatement(assign(variable("a"), defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
 		addDefinition(param(integer(), "a", emptyExpr()), newEnv(|tmp:///|))) ==

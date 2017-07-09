@@ -65,6 +65,9 @@ public Type lookupType(boolean(bool boolValue), _) = boolean();
 
 @doc="Lookup list types"
 
+@doc="Empty list"
+public Type lookupType(\list([]), _) = \list(voidValue());
+
 @doc="Will return unknown type if lists consists of unequal types"
 public Type lookupType(\list(list[Expression] values), TypeEnv env) = \list(unknownType()) 
     when size(values) > 1 && hasDifferentTypes(values, env);
@@ -72,11 +75,8 @@ public Type lookupType(\list(list[Expression] values), TypeEnv env) = \list(unkn
 @doc="Will try to get the list type from the first element"
 public Type lookupType(\list(list[Expression] values), TypeEnv env) = \list(lookupType(values[0], env)) when size(values) > 0;
 
-@doc="Empty list"
-public Type lookupType(\list(list[Expression] values), _) = \list(voidValue()) when size(values) == 0;
-
 @doc="Extract list of values from maps and use lookup for lists"
-public Type lookupType(\map(map[Expression, Expression] items), TypeEnv env) = \map(unknownType(), unknownType()) when size(items) == 0;
+public Type lookupType(\map(map[Expression, Expression] items), TypeEnv env) = \map(voidValue(), voidValue()) when size(items) == 0;
 public Type lookupType(\map(map[Expression, Expression] items), TypeEnv env) = 
     \map(lookupType(\list(toList(domain(items))), env).\type, lookupType(\list(toList(range(items))), env).\type);
 

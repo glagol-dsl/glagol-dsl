@@ -4,8 +4,6 @@ import Typechecker::Expression;
 import Syntax::Abstract::Glagol;
 import Typechecker::Env;
 
-// 
-
 // Check array access
 test bool shouldGiveErrorWhenUnknownTypeIsUsedAsKeyForArrayAccess() = 
 	checkIndexKey(unknownType(), emptyExpr()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
@@ -88,7 +86,7 @@ test bool shouldReturnUnknownTypeWhenLookingUpTypeForMapWithDifferentValueTypes2
     \map(string(), unknownType()) == lookupType(\map((string("key1"): string("dasdsa"), string("key2"): float(445.23))), newEnv(|tmp:///|));
     
 test bool shouldReturnVoidListTypeWhenLookingUpTypeForMapNoElements() = 
-    \map(unknownType(), unknownType()) == lookupType(\map(()), newEnv(|tmp:///|));
+    \map(voidValue(), voidValue()) == lookupType(\map(()), newEnv(|tmp:///|));
 
 // Lookup array access 
 test bool shouldReturnIntegerTypeFromAListUsingIndexToAccessIt() = 
