@@ -12,7 +12,32 @@ import Map;
 import Set;
 
 public TypeEnv checkExpression(\list([]), TypeEnv env) = env;
+
+public TypeEnv checkExpression(l: \list(list[Expression] items), TypeEnv env) = checkList(l, lookupType(l, env), checkExpressions(items, env));
+
+public TypeEnv checkExpressions(list[Expression] exprs, TypeEnv env) = (env | checkExpression(expr, it) | expr <- exprs);
+public TypeEnv checkExpressions(map[Expression, Expression] exprs, TypeEnv env) = 
+	(env | checkExpression(exprs[expr], checkExpression(expr, it)) | expr <- exprs);
+
+public TypeEnv checkList(l, \list(unknownType()), TypeEnv env) = addError(l@src, "Cannot unveil list type in <l@src.path> on line <l@src.begin.line>", env);
+public TypeEnv checkList(l, \list(_), TypeEnv env) = env;
+	
 public TypeEnv checkExpression(\map(map[Expression, Expression] items), TypeEnv env) = env when size(items) == 0;
+
+public TypeEnv checkExpression(m: \map(map[Expression, Expression] items), TypeEnv env) = 
+	checkMap(m, lookupType(m, env), checkExpressions(items, env));
+
+public TypeEnv checkMap(m, \map(unknownType(), unknownType()), TypeEnv env) = 
+	addError(m@src,  "Cannot unveil map key and value types in <m@src.path> on line <m@src.begin.line>", env);
+	
+public TypeEnv checkMap(m, \map(unknownType(), _), TypeEnv env) = 
+	addError(m@src,  "Cannot unveil map key type in <m@src.path> on line <m@src.begin.line>", env);
+	
+public TypeEnv checkMap(m, \map(_, unknownType()), TypeEnv env) = 
+	addError(m@src,  "Cannot unveil map value type in <m@src.path> on line <m@src.begin.line>", env);
+	
+public TypeEnv checkMap(m, \map(_, _), TypeEnv env) = env;
+
 public TypeEnv checkExpression(boolean(_), TypeEnv env) = env;
 public TypeEnv checkExpression(string(_), TypeEnv env) = env;
 public TypeEnv checkExpression(integer(_), TypeEnv env) = env;

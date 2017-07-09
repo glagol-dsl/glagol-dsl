@@ -4,6 +4,32 @@ import Typechecker::Expression;
 import Syntax::Abstract::Glagol;
 import Typechecker::Env;
 
+// Check lists
+test bool shouldNotGiveErrorWhenCheckingEmptyList() = 
+	checkExpression(\list([]), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+	
+test bool shouldGiveErrorOnListOfUnknownType() = 
+	checkExpression(\list([integer(1), string("a")])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot unveil list type in /User.g on line 20", newEnv(|tmp:///|));
+	
+test bool shouldNotGiveErrorWhenCheckingCorrectlyTypedList() = 
+	checkExpression(\list([integer(1), integer(2)]), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+
+// Check maps
+test bool shouldNotGiveErrorWhenCheckingEmptyMap() = checkExpression(\map(()), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+	
+test bool shouldGiveErrorOnMapOfUnknownTypeAsKey() = 
+	checkExpression(\map((integer(1): string("a"), string("d"): string("a")))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot unveil map key type in /User.g on line 20", newEnv(|tmp:///|));
+	
+test bool shouldGiveErrorOnMapOfUnknownTypeAsValue() = 
+	checkExpression(\map((integer(1): string("a"), integer(2): integer(5)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot unveil map value type in /User.g on line 20", newEnv(|tmp:///|));
+	
+test bool shouldGiveErrorOnMapOfUnknownTypeAsValueAndKey() = 
+	checkExpression(\map((boolean(true): string("a"), integer(2): integer(5)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot unveil map key and value types in /User.g on line 20", newEnv(|tmp:///|));
+
 // Check array access
 test bool shouldGiveErrorWhenUnknownTypeIsUsedAsKeyForArrayAccess() = 
 	checkIndexKey(unknownType(), emptyExpr()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
