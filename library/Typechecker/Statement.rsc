@@ -54,7 +54,8 @@ public TypeEnv checkAssignable(a: arrayAccess(_, _), TypeEnv env) = checkExpress
 public TypeEnv checkAssignable(e, TypeEnv env) = addError(e@src, "Cannot assign value to expression in <e@src.path> on line <e@src.begin.line>", env);
 
 public TypeEnv checkCondition(Expression condition, TypeEnv env) = checkIsBoolean(lookupType(condition, env), condition, checkExpression(condition, env));
-
+public TypeEnv checkConditions(list[Expression] conditions, TypeEnv env) = (env | checkCondition(c, it) | c <- conditions);
+	
 public TypeEnv checkIsBoolean(boolean(), _, TypeEnv env) = env;
 public TypeEnv checkIsBoolean(_, c, TypeEnv env) = 
 	addError(c@src, "Condition does not evaluate to boolean in <c@src.path> on line <c@src.begin.line>", env);
@@ -93,8 +94,69 @@ private str stringify(persist(Expression expr)) = "persisted";
 private str stringify(flush(Expression expr)) = "flushed";
 private str stringify(remove(Expression expr)) = "removed";
 
+public TypeEnv checkStatement(f: foreach(_, _, _, _, _), t, s, TypeEnv env) = checkForeach(f, env);
+
+public TypeEnv checkForeach(f: foreach(Expression \list, Expression key, Expression varName, Statement body, list[Expression] conditions), TypeEnv env) = 
+	checkConditions(conditions, checkForeachTypes(lookupType(\list, env), key, varName, env));
+
+public TypeEnv checkForeachTypes(l: \list(_), Expression key, Expression var, TypeEnv env) = 
+	checkIsVarCompatibleWithCollection(l, var, checkIsKeyCompatibleWithCollection(l, key, env));
+	
+public TypeEnv checkForeachTypes(m: \map(_, _), Expression key, Expression var, TypeEnv env) = 
+	checkIsVarCompatibleWithCollection(m, var, checkIsKeyCompatibleWithCollection(m, key, env));
+	
+public TypeEnv checkForeachTypes(Type t, Expression key, Expression var, TypeEnv env) = 
+	addError(var@src, "Cannot traverse <toString(t)> in <var@src.path> on line <var@src.begin.line>", env);
+
+public TypeEnv checkIsVarCompatibleWithCollection(\list(Type t), v: variable(name), TypeEnv env) = 
+	addError(v@src, "Cannot use <name> as value in list traversing: already decleared and is not <toString(t)> " +
+					"in <v@src.path> on line <v@src.begin.line>", env)
+	when isDefined(v, env) && lookupType(v, env) != t;
+
+public TypeEnv checkIsVarCompatibleWithCollection(\list(Type t), v: variable(name), TypeEnv env) = 
+	env when isDefined(v, env) && lookupType(v, env) == t;
+	
+public TypeEnv checkIsVarCompatibleWithCollection(\list(Type t), v: variable(name), TypeEnv env) = 
+	addDefinition(declare(t, v, emptyStmt())[@src=v@src], env);
+	
+public TypeEnv checkIsVarCompatibleWithCollection(\map(_, Type t), v: variable(name), TypeEnv env) = 
+	addError(v@src, "Cannot use <name> as value in map traversing: already decleared and is not <toString(t)> " +
+					"in <v@src.path> on line <v@src.begin.line>", env)
+	when isDefined(v, env) && lookupType(v, env) != t;
+
+public TypeEnv checkIsVarCompatibleWithCollection(\map(_, Type t), v: variable(name), TypeEnv env) = 
+	env when isDefined(v, env) && lookupType(v, env) == t;
+	
+public TypeEnv checkIsVarCompatibleWithCollection(\map(_, Type t), v: variable(name), TypeEnv env) = 
+	addDefinition(declare(t, v, emptyStmt())[@src=v@src], env);
+
+public TypeEnv checkIsKeyCompatibleWithCollection(\list(_), emptyExpr(), TypeEnv env) = env;
+public TypeEnv checkIsKeyCompatibleWithCollection(\list(_), v: variable(name), TypeEnv env) = 
+	addError(v@src, "Cannot use <name> as key in list traversing: already decleared and it is not an integer " +
+					"in <v@src.path> on line <v@src.begin.line>", env) 
+	when isDefined(v, env) && lookupType(v, env) != integer();
+	
+public TypeEnv checkIsKeyCompatibleWithCollection(\list(_), v: variable(name), TypeEnv env) = 
+	env when isDefined(v, env) && lookupType(v, env) == integer();
+	
+public TypeEnv checkIsKeyCompatibleWithCollection(\list(_), v: variable(name), TypeEnv env) = 
+	addDefinition(declare(integer(), v, emptyStmt())[@src=v@src], env);
+	
+public TypeEnv checkIsKeyCompatibleWithCollection(\map(_, _), emptyExpr(), TypeEnv env) = env;
+public TypeEnv checkIsKeyCompatibleWithCollection(\map(Type key, _), v: variable(name), TypeEnv env) = 
+	addError(v@src, "Cannot use <name> as key in map traversing: already decleared and it is not an <toString(key)> " +
+					"in <v@src.path> on line <v@src.begin.line>", env) 
+	when isDefined(v, env) && lookupType(v, env) != key;
+	
+public TypeEnv checkIsKeyCompatibleWithCollection(\map(Type key, _), v: variable(name), TypeEnv env) = 
+	env when isDefined(v, env) && lookupType(v, env) == key;
+
+public TypeEnv checkIsKeyCompatibleWithCollection(\map(Type key, _), v: variable(name), TypeEnv env) = 
+	addDefinition(declare(key, v, emptyStmt())[@src=v@src], env);
+	
+public TypeEnv checkIsKeyCompatibleWithCollection(_, _, TypeEnv env) = env;
+
 /*
-public TypeEnv checkStatement() = ;
 public TypeEnv checkStatement() = ;
 public TypeEnv checkStatement() = ;
 public TypeEnv checkStatement() = ;*/

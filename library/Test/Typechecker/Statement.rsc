@@ -166,3 +166,128 @@ test bool shouldNotGiveErrorWhenDeclaringVariableWithCorrectDefaultValueType() =
 		voidValue(), emptyDecl(), newEnv(|tmp:///|)) == 
 	addDefinition(declare(string(), variable("a"), expression(string("aaa"))), newEnv(|tmp:///|));
 	
+test bool shouldGiveCannotTraverseErrorWhenUsingNonCollectionWithForeach() = 
+	checkStatement(
+		foreach(string("ha"), emptyExpr(), variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
+		voidValue(), emptyDecl(), newEnv(|tmp:///|)) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot traverse string in /User.g on line 20", newEnv(|tmp:///|));
+	
+test bool shouldGiveConditionShouldBeBooleanErrorWithForeach() = 
+	checkStatement(
+		foreach(\list([integer(1)]), emptyExpr(), variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+			emptyStmt(), [string("ha")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]]), 
+		voidValue(), emptyDecl(), newEnv(|tmp:///|)) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		"Condition does not evaluate to boolean in /User.g on line 20", 
+		addDefinition(declare(integer(), variable("item"), emptyStmt()), newEnv(|tmp:///|)));
+		
+test bool shouldNotGiveConditionShouldBeBooleanErrorWithForeach() = 
+	checkStatement(
+		foreach(\list([integer(1)]), emptyExpr(), variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+			emptyStmt(), [boolean(false)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]]), 
+		voidValue(), emptyDecl(), newEnv(|tmp:///|)) ==
+	addDefinition(declare(integer(), variable("item"), emptyStmt()), newEnv(|tmp:///|));
+	
+test bool shouldGiveErrorWhenUsingValueForTraversingWhichIsAlreadyDefinedWithDifferentType() = 
+	checkStatement(
+		foreach(\list([string("s")]), emptyExpr(), variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
+		voidValue(), emptyDecl(), addDefinition(param(integer(), "item", emptyExpr()), newEnv(|tmp:///|))) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot use item as value in list traversing: already decleared and is not string in /User.g on line 20", 
+		addDefinition(param(integer(), "item", emptyExpr()), newEnv(|tmp:///|)));
+	
+test bool shouldNotGiveErrorWhenUsingValueForTraversingWhichIsAlreadyDefinedWithSameType() = 
+	checkStatement(
+		foreach(\list([string("s")]), emptyExpr(), variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
+		voidValue(), emptyDecl(), addDefinition(param(string(), "item", emptyExpr()), newEnv(|tmp:///|))) ==
+	addDefinition(param(string(), "item", emptyExpr()), newEnv(|tmp:///|));
+	
+test bool shouldNotGiveErrorWhenUsingValueForTraversingWhichIsNotDefinedYet() = 
+	checkStatement(
+		foreach(\list([string("s")]), emptyExpr(), variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
+		voidValue(), emptyDecl(), newEnv(|tmp:///|)) ==
+	addDefinition(declare(string(), variable("item"), emptyStmt()), newEnv(|tmp:///|));
+	
+test bool shouldGiveErrorWhenUsingValueForTraversingWhichIsAlreadyDefinedWithDifferentTypeOnMap() = 
+	checkStatement(
+		foreach(\map((string("s"): string("b"))), emptyExpr(), variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
+		voidValue(), emptyDecl(), addDefinition(param(integer(), "item", emptyExpr()), newEnv(|tmp:///|))) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot use item as value in map traversing: already decleared and is not string in /User.g on line 20", 
+		addDefinition(param(integer(), "item", emptyExpr()), newEnv(|tmp:///|)));
+	
+test bool shouldNotGiveErrorWhenUsingValueForTraversingWhichIsAlreadyDefinedWithSameTypeOnMap() = 
+	checkStatement(
+		foreach(\map((string("s"): string("dass"))), emptyExpr(), variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
+		voidValue(), emptyDecl(), addDefinition(param(string(), "item", emptyExpr()), newEnv(|tmp:///|))) ==
+	addDefinition(param(string(), "item", emptyExpr()), newEnv(|tmp:///|));
+	
+test bool shouldNotGiveErrorWhenUsingValueForTraversingWhichIsNotDefinedYetOnMap() = 
+	checkStatement(
+		foreach(\map((string("s"): string("dassaddas"))), emptyExpr(), variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
+		voidValue(), emptyDecl(), newEnv(|tmp:///|)) ==
+	addDefinition(declare(string(), variable("item"), emptyStmt()), newEnv(|tmp:///|));
+	
+test bool shouldNotGiveErrorWhenUsingNoKeyOnListTraversing() = 
+	checkStatement(
+		foreach(\list([string("das")]), emptyExpr(), variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
+		voidValue(), emptyDecl(), newEnv(|tmp:///|)) ==
+	addDefinition(declare(string(), variable("item"), emptyStmt()), newEnv(|tmp:///|));
+
+test bool shouldGiveErrorWhenUsingAlreadyDefinedKeyOnListTraversingAndItIsNotInteger() = 
+	checkStatement(
+		foreach(\list([string("das")]), 
+			variable("i")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+			variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
+		voidValue(), emptyDecl(), addDefinition(param(string(), "i", emptyExpr()), newEnv(|tmp:///|))) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		"Cannot use i as key in list traversing: already decleared and it is not an integer in /User.g on line 20", 
+		addDefinition(declare(string(), variable("item"), emptyStmt()), 
+		addDefinition(param(string(), "i", emptyExpr()), newEnv(|tmp:///|))));
+
+test bool shouldNotGiveErrorWhenUsingAlreadyDefinedKeyOnListTraversingAndItIsInteger() = 
+	checkStatement(
+		foreach(\list([string("das")]), 
+			variable("i")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+			variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
+		voidValue(), emptyDecl(), addDefinition(param(integer(), "i", emptyExpr()), newEnv(|tmp:///|))) ==
+	addDefinition(declare(string(), variable("item"), emptyStmt()), 
+		addDefinition(param(integer(), "i", emptyExpr()), newEnv(|tmp:///|)));
+
+test bool shouldNotGiveErrorWhenUsingNotDefinedKeyOnListTraversing() = 
+	checkStatement(
+		foreach(\list([string("das")]), 
+			variable("i")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+			variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
+		voidValue(), emptyDecl(), newEnv(|tmp:///|)) ==
+	addDefinition(declare(string(), variable("item"), emptyStmt()), 
+		addDefinition(declare(integer(), variable("i"), emptyStmt()), newEnv(|tmp:///|)));
+		
+test bool shouldGiveErrorWhenUsingAlreadyDefinedKeyOnMapTraversingAndItIsNotMapDefinedKeyType() = 
+	checkStatement(
+		foreach(\map((integer(3): string("das"))), 
+			variable("i")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+			variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
+		voidValue(), emptyDecl(), addDefinition(param(string(), "i", emptyExpr()), newEnv(|tmp:///|))) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		"Cannot use i as key in map traversing: already decleared and it is not an integer in /User.g on line 20", 
+		addDefinition(declare(string(), variable("item"), emptyStmt()), 
+		addDefinition(param(string(), "i", emptyExpr()), newEnv(|tmp:///|))));
+
+test bool shouldNotGiveErrorWhenUsingAlreadyDefinedKeyOnMapTraversingAndItIsMapDefinedKeyType() = 
+	checkStatement(
+		foreach(\map((integer(3): string("das"))), 
+			variable("i")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+			variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
+		voidValue(), emptyDecl(), addDefinition(param(integer(), "i", emptyExpr()), newEnv(|tmp:///|))) ==
+	addDefinition(declare(string(), variable("item"), emptyStmt()), 
+		addDefinition(param(integer(), "i", emptyExpr()), newEnv(|tmp:///|)));
+
+test bool shouldNotGiveErrorWhenUsingNotDefinedKeyOnMapTraversing() = 
+	checkStatement(
+		foreach(\map((integer(3): string("das"))), 
+			variable("i")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+			variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
+		voidValue(), emptyDecl(), newEnv(|tmp:///|)) ==
+	addDefinition(declare(string(), variable("item"), emptyStmt()), 
+		addDefinition(declare(integer(), variable("i"), emptyStmt()), newEnv(|tmp:///|)));
+
+	
