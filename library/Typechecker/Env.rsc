@@ -20,10 +20,14 @@ alias TypeEnv = tuple[
     map[GlagolID, Declaration] imported,
     list[Declaration] ast,
     list[tuple[loc src, str message]] errors,
-    Declaration context
+    Declaration context,
+    int loopLevel
 ];
 
-public TypeEnv newEnv(loc location) = <location, (), (), [], [], emptyDecl()>;
+public TypeEnv newEnv(loc location) = <location, (), (), [], [], emptyDecl(), 0>;
+
+public TypeEnv incrementLoopLevel(TypeEnv env) = env[loopLevel = env.loopLevel + 1];
+public TypeEnv decrementLoopLevel(TypeEnv env) = env[loopLevel = env.loopLevel - 1];
 
 public TypeEnv addDefinition(p:property(_, GlagolID name, _), TypeEnv env) = 
     addError(p@src, "Cannot redefine \"<name>\". Already defined in <p@src.path> on line <env.definitions[name].d@src.begin.line>.", env) 

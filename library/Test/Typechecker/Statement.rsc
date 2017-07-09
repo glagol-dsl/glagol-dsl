@@ -309,4 +309,4 @@ test bool shouldNotGiveErrorWhenUsingNotDefinedKeyOnMapTraversing() =
 	addDefinition(declare(string(), variable("item"), emptyStmt()), 
 		addDefinition(declare(integer(), variable("i"), emptyStmt()), newEnv(|tmp:///|)));
 
-	
+

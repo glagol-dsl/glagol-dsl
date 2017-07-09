@@ -100,7 +100,8 @@ private str stringify(persist(Expression expr)) = "persisted";
 private str stringify(flush(Expression expr)) = "flushed";
 private str stringify(remove(Expression expr)) = "removed";
 
-public TypeEnv checkStatement(f: foreach(_, _, _, _, _), t, s, TypeEnv env) = checkForeach(f, env);
+public TypeEnv checkStatement(f: foreach(_, _, _, Statement body, _), t, s, TypeEnv env) = 
+	decrementLoopLevel(checkStatement(body, t, s, incrementLoopLevel(checkForeach(f, env))));
 
 public TypeEnv checkForeach(f: foreach(Expression \list, Expression key, Expression varName, Statement body, list[Expression] conditions), TypeEnv env) = 
 	checkConditions(conditions, checkForeachTypes(lookupType(\list, env), key, varName, env));
@@ -153,13 +154,13 @@ public TypeEnv checkIsKeyCompatibleWithCollection(\map(Type key, _), v: variable
 	addError(v@src, "Cannot use <name> as key in map traversing: already decleared and it is not an <toString(key)> " +
 					"in <v@src.path> on line <v@src.begin.line>", env) 
 	when isDefined(v, env) && lookupType(v, env) != key;
-	
+
 public TypeEnv checkIsKeyCompatibleWithCollection(\map(Type key, _), v: variable(name), TypeEnv env) = 
 	env when isDefined(v, env) && lookupType(v, env) == key;
 
 public TypeEnv checkIsKeyCompatibleWithCollection(\map(Type key, _), v: variable(name), TypeEnv env) = 
 	addDefinition(declare(key, v, emptyStmt())[@src=v@src], env);
-	
+
 public TypeEnv checkIsKeyCompatibleWithCollection(_, _, TypeEnv env) = env;
 
 /*
