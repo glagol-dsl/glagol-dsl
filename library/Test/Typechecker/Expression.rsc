@@ -4,6 +4,40 @@ import Typechecker::Expression;
 import Syntax::Abstract::Glagol;
 import Typechecker::Env;
 
+test bool shouldGiveErrorWhenTernaryConditionIsNotBoolean() = 
+	checkExpression(ifThenElse(string("dassad")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], integer(1), integer(2)), newEnv(|tmp:///|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Condition does not evaluate to boolean in /User.g on line 20", newEnv(|tmp:///|));
+
+test bool shouldNotGiveErrorWhenTernaryConditionIsBoolean() = 
+	checkExpression(ifThenElse(boolean(true), integer(1), integer(2)), newEnv(|tmp:///|)) == 
+	newEnv(|tmp:///|);
+	
+test bool shouldGiveErrorWhenTernarySidesAreDifferentTypes() = 
+	checkExpression(ifThenElse(boolean(true), float(1.2), integer(2))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Ternary cannot return different types in /User.g on line 20", newEnv(|tmp:///|));
+	
+test bool shouldNotGiveErrorWhenTernarySidesAreEmptyListAndTypedList() = 
+	checkExpression(ifThenElse(boolean(true), \list([integer(1)]), \list([])), newEnv(|tmp:///|)) == 
+	newEnv(|tmp:///|);
+	
+test bool shouldNotGiveErrorWhenTernarySidesAreEmptyMapAndTypedMap() = 
+	checkExpression(ifThenElse(boolean(true), \map((integer(1): integer(1))), \map(())), newEnv(|tmp:///|)) == 
+	newEnv(|tmp:///|);
+	
+test bool shouldGiveErrorWhenTernarySidesAreDifferentlyTypedMaps() = 
+	checkExpression(
+		ifThenElse(boolean(true), \map((integer(1): integer(1))), \map((integer(1): float(1.2))))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Ternary cannot return different types in /User.g on line 20", newEnv(|tmp:///|));
+
+test bool shouldGiveErrorWhenConditionIsNotBoolean() = 
+	checkCondition(string("a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+		newEnv(|tmp:///|)) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Condition does not evaluate to boolean in /User.g on line 20", newEnv(|tmp:///|));
+
+test bool shouldNotGiveErrorWhenConditionIsBoolean() = 
+	checkCondition(boolean(true)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+		newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+
 // Check binary math operations
 test bool shouldGiveErrorWhenApplyingProductOnUnknownType() = 
 	checkExpression(product(emptyExpr(), emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
@@ -33,12 +67,25 @@ test bool shouldGiveErrorWhenApplyingLogicalAndOnBooleanAndInteger() =
 	checkExpression(and(boolean(true), integer(1))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
 		"Cannot apply logical operation on bool and integer in /User.g on line 20", newEnv(|tmp:///|));
-	
+
 test bool shouldNotGiveErrorWhenApplyingLogicalOrOnBooleans() = checkExpression(or(boolean(true), boolean(false)), newEnv(|tmp:///|)) == newEnv(|tmp:///|);	
 test bool shouldGiveErrorWhenApplyingLogicalOrOnBooleanAndInteger() = 
 	checkExpression(or(boolean(true), integer(1))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
 		"Cannot apply logical operation on bool and integer in /User.g on line 20", newEnv(|tmp:///|));
+
+test bool shouldNotGiveErrorWhenApplyingNegativeOnInteger() = checkExpression(negative(integer(2))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+test bool shouldNotGiveErrorWhenApplyingNegativeOnFloat() = checkExpression(negative(float(2.4)), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+test bool shouldNotGiveErrorWhenApplyingPositiveOnInteger() = checkExpression(positive(integer(2)), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+test bool shouldNotGiveErrorWhenApplyingPositiveOnFloat() = checkExpression(positive(float(2.4)), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+
+test bool shouldGiveErrorWhenApplyingNegativeOnString() = 
+	checkExpression(negative(string("2.4"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot apply minus on string in /User.g on line 20", newEnv(|tmp:///|));
+
+test bool shouldGiveErrorWhenApplyingPositiveOnString() = 
+	checkExpression(positive(string("2.4"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot apply plus on string in /User.g on line 20", newEnv(|tmp:///|));
 
 // Check lists
 test bool shouldNotGiveErrorWhenCheckingEmptyList() = 

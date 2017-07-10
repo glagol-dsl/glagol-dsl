@@ -81,15 +81,6 @@ test bool shouldGiveErrorWhenUsingWrongOperator() =
 		"Assignment operator not allowed in /User.g on line 20", 
 		addDefinition(param(string(), "a", emptyExpr()), newEnv(|tmp:///|)));
 
-test bool shouldGiveErrorWhenConditionIsNotBoolean() = 
-	checkCondition(string("a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
-		newEnv(|tmp:///|)) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Condition does not evaluate to boolean in /User.g on line 20", newEnv(|tmp:///|));
-
-test bool shouldNotGiveErrorWhenConditionIsBoolean() = 
-	checkCondition(boolean(true)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
-		newEnv(|tmp:///|)) == newEnv(|tmp:///|);
-
 test bool shouldNotGiveErrorWhenTryingToPersistAnEntity() = 
 	checkStatement(persist(new(local("User"), []))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
 		addImported(\import("User", namespace("Test"), "User"), addToAST(

@@ -56,12 +56,7 @@ public TypeEnv checkAssignable(f: fieldAccess(_, _), TypeEnv env) = checkExpress
 public TypeEnv checkAssignable(a: arrayAccess(_, _), TypeEnv env) = checkExpression(a, env);
 public TypeEnv checkAssignable(e, TypeEnv env) = addError(e@src, "Cannot assign value to expression in <e@src.path> on line <e@src.begin.line>", env);
 
-public TypeEnv checkCondition(Expression condition, TypeEnv env) = checkIsBoolean(lookupType(condition, env), condition, checkExpression(condition, env));
 public TypeEnv checkConditions(list[Expression] conditions, TypeEnv env) = (env | checkCondition(c, it) | c <- conditions);
-	
-public TypeEnv checkIsBoolean(boolean(), _, TypeEnv env) = env;
-public TypeEnv checkIsBoolean(_, c, TypeEnv env) = 
-	addError(c@src, "Condition does not evaluate to boolean in <c@src.path> on line <c@src.begin.line>", env);
 
 public TypeEnv checkStatement(emptyStmt(), _, _, TypeEnv env) = env;
 public TypeEnv checkStatement(p: persist(Expression expr), _, _, TypeEnv env) = checkORMFunction(lookupType(expr, env), p, env);

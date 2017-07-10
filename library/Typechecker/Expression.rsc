@@ -10,7 +10,7 @@ import Typechecker::Type::Compatibility;
 import List;
 import Map;
 import Set;
-
+	
 public TypeEnv checkExpression(\list([]), TypeEnv env) = env;
 
 public TypeEnv checkExpression(l: \list(list[Expression] items), TypeEnv env) = checkList(l, lookupType(l, env), checkExpressions(items, env));
@@ -141,15 +141,39 @@ public TypeEnv checkBinaryLogic(e, boolean(), boolean(), TypeEnv env) = env;
 public TypeEnv checkBinaryLogic(e, Type l, Type r, TypeEnv env) = 
 	addError(e@src, "Cannot apply logical operation on <toString(l)> and <toString(r)> in <e@src.path> on line <e@src.begin.line>", env);
 
-public TypeEnv checkExpression(e: negative(Expression expr), TypeEnv env) = checkUnaryLogic(e, lookupType(expr, env), env);
+public TypeEnv checkExpression(e: negative(Expression expr), TypeEnv env) = 
+	checkExpression(expr, checkUnaryMath(e, lookupType(expr, env), env));
+public TypeEnv checkExpression(e: positive(Expression expr), TypeEnv env) = 
+	checkExpression(expr, checkUnaryMath(e, lookupType(expr, env), env));
 
-public TypeEnv checkUnaryLogic(e, float(), TypeEnv env) = env;
-public TypeEnv checkUnaryLogic(e, integer(), TypeEnv env) = env;
-public TypeEnv checkUnaryLogic(n: negative(_), Type t, TypeEnv env) = 
-	addError(n@src, "Cannot apply minus on <toString(t)> in <n@src.path> on line <n@src.begin.line>", env);
-public TypeEnv checkUnaryLogic(n: positive(_), Type t, TypeEnv env) = 
-	addError(n@src, "Cannot apply plus on <toString(t)> in <n@src.path> on line <n@src.begin.line>", env);
+public TypeEnv checkUnaryMath(Expression, float(), TypeEnv env) = env;
+public TypeEnv checkUnaryMath(Expression, integer(), TypeEnv env) = env;
+public TypeEnv checkUnaryMath(n, Type t, TypeEnv env) = 
+	addError(n@src, "Cannot apply <stringify(n)> on <toString(t)> in <n@src.path> on line <n@src.begin.line>", env);
 
+private str stringify(negative(_)) = "minus";
+private str stringify(positive(_)) = "plus";
+
+public TypeEnv checkExpression(e: ifThenElse(Expression condition, Expression ifThen, Expression \else), TypeEnv env) = checkIfThenElse(e, env);
+
+public TypeEnv checkIfThenElse(e: ifThenElse(Expression condition, Expression ifThen, Expression \else), TypeEnv env) = 
+	checkIfThenElse(e, lookupType(ifThen, env), lookupType(\else, env), checkExpression(ifThen, checkExpression(\else, checkCondition(condition, env))));
+
+public TypeEnv checkIfThenElse(e, \list(_), \list(voidValue()), TypeEnv env) = env;
+public TypeEnv checkIfThenElse(e, \list(voidValue()), \list(_), TypeEnv env) = env;
+public TypeEnv checkIfThenElse(e, \map(_, _), \map(voidValue(), voidValue()), TypeEnv env) = env;
+public TypeEnv checkIfThenElse(e, \map(voidValue(), voidValue()), \map(_, _), TypeEnv env) = env;
+public TypeEnv checkIfThenElse(e, Type leftType, Type rightType, TypeEnv env) = env when leftType == rightType;
+public TypeEnv checkIfThenElse(e, Type leftType, Type rightType, TypeEnv env) = 
+	addError(e@src, "Ternary cannot return different types in <e@src.path> on line <e@src.begin.line>", env) 
+	when leftType != rightType;
+
+public TypeEnv checkCondition(Expression condition, TypeEnv env) = checkIsBoolean(lookupType(condition, env), condition, checkExpression(condition, env));
+
+public TypeEnv checkIsBoolean(boolean(), _, TypeEnv env) = env;
+public TypeEnv checkIsBoolean(_, c, TypeEnv env) = 
+	addError(c@src, "Condition does not evaluate to boolean in <c@src.path> on line <c@src.begin.line>", env);
+	
 public TypeEnv checkExpression(emptyExpr(), TypeEnv env) = env;
 
 @doc="Empty expression is always unknown type"
