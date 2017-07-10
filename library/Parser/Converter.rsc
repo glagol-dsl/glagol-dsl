@@ -227,16 +227,15 @@ public Expression convertExpression(a: (DefaultValue) `get <InstanceType t>`, Pa
     = get(convertInstanceType(t, env))[@src=a@\loc];
     
 public Expression convertExpression(a: (DefaultValue) `new <ArtifactName name>(<{Expression ","}* args>)`, ParseEnv env)
-    = new(createName("<name>", env), [convertExpression(arg, env) | arg <- args])[@src=a@\loc];
+    = new(createName("<name>", env)[@src=name@\loc], [convertExpression(arg, env) | arg <- args])[@src=a@\loc];
     
 public Type convertInstanceType(a: (InstanceType) `<Type t>`, ParseEnv env) = convertType(t, env)[@src=a@\loc];
 public Type convertInstanceType(a: (InstanceType) `selfie`, ParseEnv env) = selfie()[@src=a@\loc];
     
 public Expression convertExpression(a: (Expression) `new <ArtifactName name>(<{Expression ","}* args>)`, ParseEnv env)
-    = new(createName("<name>", env), [convertExpression(arg, env) | arg <- args])[@src=a@\loc];
+    = new(createName("<name>", env)[@src=name@\loc], [convertExpression(arg, env) | arg <- args])[@src=a@\loc];
     
-public Expression convertExpression(a: (Expression) `get <Type t>`, ParseEnv env)
-    = get(convertType(t, env))[@src=a@\loc];
+// public Expression convertExpression(a: (Expression) `get <Type t>`, ParseEnv env) = get(convertType(t, env))[@src=a@\loc];
     
 public Expression convertExpression(a: (Expression) `<MemberName method>(<{Expression ","}* args>)`, ParseEnv env)
     = invoke("<method>", [convertExpression(arg, env) | arg <- args])[@src=a@\loc];
@@ -269,7 +268,7 @@ private tuple[Expression key, Expression \value] convertMapPair((MapPair) `<Expr
 private bool isValidForAccessChain((Expression) `<MemberName varName>`) = true;
 private bool isValidForAccessChain((Expression) `this`) = true;
 private bool isValidForAccessChain((Expression) `<MemberName method>(<{Expression ","}* args>)`) = true;
-private bool isValidForAccessChain((Expression) `get <Type t>`) = true;
+//private bool isValidForAccessChain((Expression) `get <Type t>`) = true;
 private bool isValidForAccessChain((Expression) `new <ArtifactName name>(<{Expression ","}* args>)`) = true;
 private bool isValidForAccessChain((Expression) `<MemberName method>(<{Expression ","}* args>)`) = true;
 private bool isValidForAccessChain((Expression) `<Expression prev>.<MemberName method>(<{Expression ","}* args>)`) = true;
@@ -439,10 +438,10 @@ public Type convertType(a: (Type) `bool`, ParseEnv env) = boolean()[@src=a@\loc]
 public Type convertType(a: (Type) `boolean`, ParseEnv env) = boolean()[@src=a@\loc];
 public Type convertType(a: (Type) `void`, ParseEnv env) = voidValue()[@src=a@\loc];
 public Type convertType(a: (Type) `string`, ParseEnv env) = string()[@src=a@\loc];
-public Type convertType(a: (Type) `repository\<<ArtifactName name>\>`, ParseEnv env) = repository(createName("<name>", env))[@src=a@\loc];
+public Type convertType(a: (Type) `repository\<<ArtifactName name>\>`, ParseEnv env) = repository(createName("<name>", env)[@src=name@\loc])[@src=a@\loc];
 public Type convertType(a: (Type) `<Type t>[]`, ParseEnv env) = \list(convertType(t, env))[@src=a@\loc];
 public Type convertType(a: (Type) `{<Type key>,<Type v>}`, ParseEnv env) = \map(convertType(key, env), convertType(v, env))[@src=a@\loc];
-public Type convertType(a: (Type) `<ArtifactName name>`, ParseEnv env) = artifact(createName("<name>", env))[@src=a@\loc];
+public Type convertType(a: (Type) `<ArtifactName name>`, ParseEnv env) = artifact(createName("<name>", env)[@src=name@\loc])[@src=a@\loc];
 
 
 public Expression convertWhen((When) `when <Expression expr>`, ParseEnv env) = convertExpression(expr, env);

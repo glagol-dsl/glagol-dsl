@@ -172,7 +172,7 @@ syntax Expression
     | booleanLiteral: Boolean boolean
     | variable: MemberName varName
     | newInstance: "new" ArtifactName "(" {Expression ","}* args ")"
-    | getInstance: "get" Type
+//    | getInstance: "get" Type
     | invokeLocal: MemberName method "(" {Expression ","}* args ")"
     | invoke: Expression prev "." MemberName method "(" {Expression ","}* args ")"
     | fieldAccess: Expression prev "." MemberName field

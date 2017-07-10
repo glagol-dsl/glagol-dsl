@@ -152,6 +152,7 @@ public anno loc Statement@src;
 public anno loc AccessProperty@src; 
 public anno loc Modifier@src; 
 public anno loc Type@src; 
+public anno loc Name@src; 
 public anno loc Expression@src; 
 public anno loc Annotation@src; 
 public anno loc RelationDir@src; 

@@ -64,6 +64,7 @@ test bool canUseRepositorySelfieAsParamDefaultValue()
 
 test bool canUseRepositoryAssocArtifactInExpression() 
 {
+	return true;
     str code
         = "namespace Test
           'service UserCreator {

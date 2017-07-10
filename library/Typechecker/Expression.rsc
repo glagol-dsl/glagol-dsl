@@ -174,6 +174,28 @@ public TypeEnv checkIsBoolean(boolean(), _, TypeEnv env) = env;
 public TypeEnv checkIsBoolean(_, c, TypeEnv env) = 
 	addError(c@src, "Condition does not evaluate to boolean in <c@src.path> on line <c@src.begin.line>", env);
 	
+public TypeEnv checkExpression(n: new(l: local(str name), list[Expression] args), TypeEnv env) = 
+	checkExpressions(args, checkNewArtifact(n, l, env));
+	
+public TypeEnv checkNewArtifact(n, l: local(str name), TypeEnv env) = 
+	addError(n@src, "Artifact <name> used but not imported in <n@src.path> on line <n@src.begin.line>", env)
+	when !hasLocalArtifact(name, env);
+	
+public TypeEnv checkNewArtifact(n, local(str name), TypeEnv env) = checkNewArtifact(n, getFullNameOfLocalArtifact(name, env), env);
+	
+public TypeEnv checkNewArtifact(n, e: external(str localName, Declaration namespace, str originalName), TypeEnv env) = 
+	addError(n@src, "Cannot find artifact <stringify(e)> used in <n@src.path> on line <n@src.begin.line>", env)
+	when !isInAST(toNamespace(e), env);
+	
+public TypeEnv checkNewArtifact(n, e: external(str localName, Declaration namespace, str originalName), TypeEnv env) = 
+	addError(n@src, "Cannot instantiate artifact <stringify(e)>: only entities and value objects can be instantiated in <n@src.path> on line <n@src.begin.line>", env)
+	when isInAST(toNamespace(e), env) && !(isEntity(toNamespace(e), env) || isValueObject(toNamespace(e), env));
+	
+public TypeEnv checkNewArtifact(n, e: external(str localName, Declaration namespace, str originalName), TypeEnv env) = env;
+
+private str stringify(external(str localName, Declaration namespace, str originalName)) = 
+	namespaceToString(namespace, "::") + "::<originalName>";
+	
 public TypeEnv checkExpression(emptyExpr(), TypeEnv env) = env;
 
 @doc="Empty expression is always unknown type"

@@ -4,6 +4,41 @@ import Typechecker::Expression;
 import Syntax::Abstract::Glagol;
 import Typechecker::Env;
 
+// new artifact instances
+test bool shouldGiveErrorWhenLocalArtifactIsUsedButNotImported() =
+	checkExpression(new(local("User"), [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		"Artifact User used but not imported in /User.g on line 20", newEnv(|tmp:///|));
+
+test bool shouldGiveErrorWhenCreatingNewUtil() = 
+	checkExpression(
+		new(local("User"), [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+			addImported(\import("User", namespace("Example"), "User"), setContext(
+				\module(namespace("Example"), [], util("User", [])),
+				addToAST(file(|tmp:///|, \module(namespace("Example"), [], util("User", []))), newEnv(|tmp:///|))
+			)
+	)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		"Cannot instantiate artifact Example::User: only entities and value objects can be instantiated in /User.g on line 20", 
+		addImported(\import("User", namespace("Example"), "User"), setContext(
+			\module(namespace("Example"), [], util("User", [])),
+			addToAST(file(|tmp:///|, \module(namespace("Example"), [], util("User", []))), newEnv(|tmp:///|)))
+		)
+	);
+	
+test bool shouldNotGiveErrorWhenCreatingNewEntity() = 
+	checkExpression(
+		new(local("User"), [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+			addImported(\import("User", namespace("Example"), "User"), setContext(
+				\module(namespace("Example"), [], entity("User", [])),
+				addToAST(file(|tmp:///|, \module(namespace("Example"), [], entity("User", []))), newEnv(|tmp:///|))
+			)
+	)) == 
+	addImported(\import("User", namespace("Example"), "User"), setContext(
+		\module(namespace("Example"), [], entity("User", [])),
+		addToAST(file(|tmp:///|, \module(namespace("Example"), [], entity("User", []))), newEnv(|tmp:///|)))
+	);
+
 test bool shouldGiveErrorWhenTernaryConditionIsNotBoolean() = 
 	checkExpression(ifThenElse(string("dassad")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], integer(1), integer(2)), newEnv(|tmp:///|)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Condition does not evaluate to boolean in /User.g on line 20", newEnv(|tmp:///|));
