@@ -33,8 +33,16 @@ test bool shouldGiveErrorWhenThisFieldAsAssignableIsUndefined() =
 	
 test bool shouldNotGiveErrorWhenThisFieldAsAssignableIsDefined() = 
 	checkAssignable(fieldAccess(this(), "a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
-		addDefinition(property(integer(), "a", emptyExpr()), newEnv(|tmp:///|))) ==
-	addDefinition(property(integer(), "a", emptyExpr()), newEnv(|tmp:///|));
+		addDefinition(property(integer(), "a", emptyExpr()), setContext(
+		\module(namespace("Test"), [], entity("User", [
+			property(integer(), "a", emptyExpr())
+		])),
+		newEnv(|tmp:///|)))) ==
+	addDefinition(property(integer(), "a", emptyExpr()), setContext(
+		\module(namespace("Test"), [], entity("User", [
+			property(integer(), "a", emptyExpr())
+		])),
+		newEnv(|tmp:///|)));
 	
 test bool shouldGiveErrorWhenThisFieldAsAssignableIsTargettingNonField() = 
 	checkAssignable(fieldAccess(this(), "a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 

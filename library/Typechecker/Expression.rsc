@@ -10,7 +10,7 @@ import Typechecker::Type::Compatibility;
 import List;
 import Map;
 import Set;
-	
+
 public TypeEnv checkExpression(\list([]), TypeEnv env) = env;
 
 public TypeEnv checkExpression(l: \list(list[Expression] items), TypeEnv env) = checkList(l, lookupType(l, env), checkExpressions(items, env));
@@ -47,6 +47,18 @@ public TypeEnv checkExpression(v: variable(GlagolID name), TypeEnv env) = checkI
 public TypeEnv checkExpression(f: fieldAccess(_), TypeEnv env) = checkIsVariableDefined(f, env);
 public TypeEnv checkExpression(f: fieldAccess(_, _), TypeEnv env) = checkIsVariableDefined(f, env);
 public TypeEnv checkExpression(a: arrayAccess(_, _), TypeEnv env) = checkArrayAccess(a, env);
+
+public TypeEnv checkIsVariableDefined(expr: fieldAccess(str name), TypeEnv env) = 
+	addError(expr@src, "\'<expr.name>\' is undefined in <expr@src.path> on line <expr@src.begin.line>", env)
+	when !hasLocalProperty(name, env);
+	
+public TypeEnv checkIsVariableDefined(expr: fieldAccess(str name), TypeEnv env) = env;
+	
+public TypeEnv checkIsVariableDefined(expr: fieldAccess(this(), str name), TypeEnv env) = 
+	addError(expr@src, "\'<expr.name>\' is undefined in <expr@src.path> on line <expr@src.begin.line>", env)
+	when !hasLocalProperty(name, env);
+	
+public TypeEnv checkIsVariableDefined(expr: fieldAccess(this(), str name), TypeEnv env) = env;
 
 public TypeEnv checkIsVariableDefined(Expression expr, TypeEnv env) = 
 	addError(expr@src, "\'<expr.name>\' is undefined in <expr@src.path> on line <expr@src.begin.line>", env)
@@ -247,7 +259,7 @@ public TypeEnv checkInvoke(Type prevType, i: invoke(Expression prev, str m, list
 			incrementDimension(setContext(findModule(prevType, env), checkExpression(prev, env)))
 		)
 	));
-
+	
 public TypeEnv checkExpression(emptyExpr(), TypeEnv env) = env;
 
 @doc="Empty expression is always unknown type"

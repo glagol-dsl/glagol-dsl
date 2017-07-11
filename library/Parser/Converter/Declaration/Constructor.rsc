@@ -25,7 +25,7 @@ public Declaration convertConstructor(
         throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
     } 
     
-    return constructor([convertParameter(p, env) | p <- parameters], [convertStmt(stmt, env) | stmt <- body], emptyExpr())[@src=a@\loc];
+    return constructor([convertParameter(p, env) | p <- parameters], [convertStmt(stmt, env) | stmt <- body], emptyExpr()[@src=a@\loc])[@src=a@\loc];
 }
     
 public Declaration convertConstructor(
@@ -47,7 +47,7 @@ public Declaration convertConstructor(
         throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
     }
     
-    return constructor([convertParameter(p, env) | p <- parameters], [], emptyExpr())[@src=a@\loc];
+    return constructor([convertParameter(p, env) | p <- parameters], [], emptyExpr()[@src=a@\loc])[@src=a@\loc];
 }
 
 public Declaration convertDeclaration((Declaration) `<Constructor construct>`, str artifactName, str artifactType, ParseEnv env) = 

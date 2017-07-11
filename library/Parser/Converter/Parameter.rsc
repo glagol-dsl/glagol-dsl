@@ -17,7 +17,7 @@ public Declaration convertParameter(a: (AbstractParameter) `<Annotation+ annotat
     ][@src=a@\loc];
 
 public Declaration convertParameter(a: (Parameter) `<Type paramType> <MemberName name>`, ParseEnv env) =
-	param(convertType(paramType, env), "<name>", emptyExpr())[@src=a@\loc];
+	param(convertType(paramType, env), "<name>", emptyExpr()[@src=a@\loc])[@src=a@\loc];
 
 public Declaration convertParameter(a: (Parameter) `<Type paramType> <MemberName name> <AssignDefaultValue defaultValue>`, ParseEnv env)
     = param(convertType(paramType, env), "<name>", convertParameterDefaultVal(defaultValue, convertType(paramType, env), env))[@src=a@\loc];

@@ -3,9 +3,13 @@ module Typechecker::CheckFile
 import Config::Config;
 import Config::Reader;
 import Typechecker::Env;
+import Typechecker::Artifact;
+import Typechecker::Imports;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import String;
+
+public TypeEnv checkAST(Config config, list[Declaration] ast) = (newEnv(ast) | checkFile(config, f, cleanCopy(it)) | f <- ast);
 
 @doc{
 Runs typecheck on Glagol file:
@@ -16,7 +20,7 @@ Runs typecheck on Glagol file:
 public TypeEnv checkFile(Config config, f:file(loc src, m:\module(ns, list[Declaration] imports, Declaration artifact)), TypeEnv env) = 
     checkArtifact(artifact,
     	setContext(m, checkImports(
-    	   m, checkLocVsModule(getSourcesPath(config), f, env[location = src])
+    	   imports, checkLocVsModule(getSourcesPath(config), f, setLocation(src, env))
     	))
 	);
 

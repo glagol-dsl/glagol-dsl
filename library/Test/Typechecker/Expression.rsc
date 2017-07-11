@@ -153,6 +153,30 @@ test bool shouldGiveErrorWhenInvokingExternalMethodWithWrongSignature() =
 		]))), newEnv(|tmp:///|))
 	));
 
+test bool shouldNotGiveErrorWhenAccessingLocalField() = 
+	checkExpression(fieldAccess(this(), "i"), addDefinition(property(integer(), "i", emptyExpr()), setContext(
+		\module(namespace("Test"), [], util("User", [
+			property(integer(), "i", emptyExpr())
+		])), newEnv(|tmp:///|)
+	))) == 
+	 addDefinition(property(integer(), "i", emptyExpr()), setContext(
+		\module(namespace("Test"), [], util("User", [
+			property(integer(), "i", emptyExpr())
+		])), newEnv(|tmp:///|)
+	));
+
+test bool shouldNotGiveErrorWhenAccessingLocalField2() = 
+	checkExpression(fieldAccess("i"), addDefinition(property(integer(), "i", emptyExpr()), setContext(
+		\module(namespace("Test"), [], util("User", [
+			property(integer(), "i", emptyExpr())
+		])), newEnv(|tmp:///|)
+	))) == 
+	 addDefinition(property(integer(), "i", emptyExpr()), setContext(
+		\module(namespace("Test"), [], util("User", [
+			property(integer(), "i", emptyExpr())
+		])), newEnv(|tmp:///|)
+	));
+
 // new artifact instances
 test bool shouldGiveErrorWhenLocalArtifactIsUsedButNotImported() =
 	checkExpression(new(local("User"), [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==

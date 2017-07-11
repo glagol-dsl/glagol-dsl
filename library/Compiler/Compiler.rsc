@@ -9,6 +9,8 @@ import Config::Reader;
 import Compiler::PHP::Compiler;
 import Compiler::EnvFiles;
 import Transform::Glagol2PHP::Namespaces;
+import Typechecker::CheckFile;
+import Typechecker::Env;
 import IO;
 import ValueIO;
 
@@ -20,6 +22,19 @@ public void compile(loc projectPath, int listenerId) {
     list[Declaration] ast = parseMultiple(
         findAllSourceFiles(getSourcesPath(config)) + findAllSourceFiles(getVendorPath(config))
     );
+    
+    TypeEnv typeEnv = checkAST(config, ast);
+    
+    if (hasErrors(typeEnv)) {
+    	for (<_, str msg> <- getErrors(typeEnv)) {
+    		respondWith(error(msg), listenerId);
+    	}
+    	
+    	for (str id <- typeEnv.definitions) {
+    		respondWith(info("<id>: <typeEnv.definitions[id]>"), listenerId);
+    	}
+    	return;
+    }
     
 	cleanUpOld(config, listenerId);
     

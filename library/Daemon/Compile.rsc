@@ -67,9 +67,8 @@ private void controller(str inputStream, int listenerId) {
 		respondWith(error(e.msg, e.at), listenerId);
     } catch TransformException e: {
 		respondWith(error(e.msg, e.at), listenerId);
-    } catch e: {
-    	respondWith(error("Error: <e>"), listenerId);
     }
+    
     respondWith(end(), listenerId);
 }
 

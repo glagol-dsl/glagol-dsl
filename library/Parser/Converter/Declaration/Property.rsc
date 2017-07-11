@@ -7,7 +7,7 @@ import Parser::Converter::Annotation;
 import Parser::Converter::DefaultValue;
 
 public Declaration convertProperty(a: (Property) `<Type prop><MemberName name>;`, ParseEnv env)  =
-    property(convertType(prop, env), "<name>", emptyExpr())[@src=a@\loc][
+    property(convertType(prop, env), "<name>", emptyExpr()[@src=a@\loc])[@src=a@\loc][
         @annotations=buildPropDefaultAnnotations(convertType(prop, env))
     ];
 

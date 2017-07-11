@@ -14,12 +14,14 @@ data Definition
     | method(Declaration d)
     ;
 
+alias Error = tuple[loc src, str message];
+
 alias TypeEnv = tuple[
     loc location,
     map[GlagolID, Definition] definitions,
     map[GlagolID, Declaration] imported,
     list[Declaration] ast,
-    list[tuple[loc src, str message]] errors,
+    list[Error] errors,
     Declaration context,
     int controlLevel,
     int dimension
@@ -29,7 +31,18 @@ public int getDimension(TypeEnv env) = env.dimension;
 public TypeEnv incrementDimension(TypeEnv env) = env[dimension = env.dimension + 1];
 public TypeEnv decrementDimension(TypeEnv env) = env[dimension = env.dimension - 1];
 
+public TypeEnv newEnv() = <|tmp:///|, (), (), [], [], emptyDecl(), 0, 0>;
+public TypeEnv newEnv(list[Declaration] ast) = <|tmp:///|, (), (), ast, [], emptyDecl(), 0, 0>;
 public TypeEnv newEnv(loc location) = <location, (), (), [], [], emptyDecl(), 0, 0>;
+public TypeEnv cleanCopy(TypeEnv env) {
+	env.definitions = ();
+	env.imported = ();
+	env.controlLevel = 0;
+	env.dimension = 0;
+	return env;
+}
+
+public TypeEnv setLocation(loc src, TypeEnv env) = env[location = src];
 
 public TypeEnv incrementControlLevel(TypeEnv env) = env[controlLevel = env.controlLevel + 1];
 public TypeEnv decrementControlLevel(TypeEnv env) = env[controlLevel = env.controlLevel - 1];
@@ -67,6 +80,9 @@ public bool isDefined(Expression expr, TypeEnv env) = false;
 public TypeEnv addError(loc src, str message, TypeEnv env) = env[errors = env.errors + <src, message>];
 
 public TypeEnv addErrors(list[tuple[loc, str]] errors, TypeEnv env) = (env | addError(src, message, it) | <loc src, str message> <- errors);
+
+public bool hasErrors(TypeEnv env) = size(env.errors) > 0;
+public list[Error] getErrors(TypeEnv env) = env.errors;
 
 public TypeEnv addImported(i: \import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = env[imported = env.imported + (as: i)];
 

@@ -25,5 +25,6 @@ test bool checkDeclarationsShouldNotGiveErrorsWhenNoDuplicatingEntityPropertyDef
     
     return
         checkDeclarations(e.declarations, e, newEnv(|tmp:///User.g|)) == 
-        addDefinition(property(integer()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], "count", emptyExpr()), addDefinition(property(integer(), "id", emptyExpr()), newEnv(|tmp:///User.g|)));
+        addDefinition(property(integer()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], "count", emptyExpr()), 
+        addDefinition(property(integer(), "id", emptyExpr()), newEnv(|tmp:///User.g|)));
 }

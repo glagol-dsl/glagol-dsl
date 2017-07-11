@@ -97,11 +97,11 @@ public AssignOperator convertAssignOperator(a: (AssignOperator) `+=`) = addition
 
 public Declaration convertMethod(
     a: (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`, ParseEnv env) 
-    = method(\public()[@src=a@\loc], convertType(returnType, env), "<name>", [convertParameter(p, env) | p <- parameters], [convertStmt(stmt, env) | stmt <- body], emptyExpr())[@src=a@\loc];
+    = method(\public()[@src=a@\loc], convertType(returnType, env), "<name>", [convertParameter(p, env) | p <- parameters], [convertStmt(stmt, env) | stmt <- body], emptyExpr()[@src=a@\loc])[@src=a@\loc];
 
 public Declaration convertMethod(
     a: (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> }`, ParseEnv env) 
-    = method(convertModifier(modifier), convertType(returnType, env), "<name>", [convertParameter(p, env) | p <- parameters], [convertStmt(stmt, env) | stmt <- body], emptyExpr())[@src=a@\loc];
+    = method(convertModifier(modifier), convertType(returnType, env), "<name>", [convertParameter(p, env) | p <- parameters], [convertStmt(stmt, env) | stmt <- body], emptyExpr()[@src=a@\loc])[@src=a@\loc];
 
 public Declaration convertMethod(
     a: (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) { <Statement* body> } <When when>;`, ParseEnv env) 
@@ -113,11 +113,11 @@ public Declaration convertMethod(
     
 public Declaration convertMethod(
     a: (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr>;`, ParseEnv env) 
-    = method(\public()[@src=a@\loc], convertType(returnType, env), "<name>", [convertParameter(p, env) | p <- parameters], [\return(convertExpression(expr, env))[@src=expr@\loc]], emptyExpr())[@src=a@\loc];
+    = method(\public()[@src=a@\loc], convertType(returnType, env), "<name>", [convertParameter(p, env) | p <- parameters], [\return(convertExpression(expr, env))[@src=expr@\loc]], emptyExpr()[@src=a@\loc])[@src=a@\loc];
 
 public Declaration convertMethod(
     a: (Method) `<Modifier modifier><Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr>;`, ParseEnv env) 
-    = method(convertModifier(modifier), convertType(returnType, env), "<name>", [convertParameter(p, env) | p <- parameters], [\return(convertExpression(expr, env))[@src=expr@\loc]], emptyExpr())[@src=a@\loc];
+    = method(convertModifier(modifier), convertType(returnType, env), "<name>", [convertParameter(p, env) | p <- parameters], [\return(convertExpression(expr, env))[@src=expr@\loc]], emptyExpr()[@src=a@\loc])[@src=a@\loc];
 
 public Declaration convertMethod(
     a: (Method) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>) = <Expression expr><When when>;`, ParseEnv env) 
@@ -284,7 +284,7 @@ public bool convertBoolean((Boolean) `false`) = false;
 
 
 public Declaration convertProperty(a: (Property) `<Type prop><MemberName name>;`, ParseEnv env)  =
-    property(convertType(prop, env), "<name>", emptyExpr())[@src=a@\loc][
+    property(convertType(prop, env), "<name>", emptyExpr()[@src=a@\loc])[@src=a@\loc][
         @annotations=buildPropDefaultAnnotations(convertType(prop, env))
     ];
 
@@ -360,10 +360,10 @@ public Statement convertStmt(a: (Statement) `<Type t> <MemberName varName>=<Stat
 	declare(convertType(t, env), variable("<varName>")[@src=varName@\loc], convertStmt(defValue, env))[@src=a@\loc];
 
 public Statement convertStmt(a: (Statement) `for (<Expression l>as<MemberName var>)<Statement body>`, ParseEnv env)
-    = foreach(convertExpression(l, env), emptyExpr(), variable("<var>")[@src=var@\loc], convertStmt(body, env), [])[@src=a@\loc];
+    = foreach(convertExpression(l, env), emptyExpr()[@src=a@\loc], variable("<var>")[@src=var@\loc], convertStmt(body, env), [])[@src=a@\loc];
     
 public Statement convertStmt(a: (Statement) `for (<Expression l>as<MemberName var>, <{Expression ","}+ conds>)<Statement body>`, ParseEnv env)
-    = foreach(convertExpression(l, env), emptyExpr(), variable("<var>")[@src=var@\loc], convertStmt(body, env), [convertExpression(cond, env) | cond <- conds])[@src=a@\loc];
+    = foreach(convertExpression(l, env), emptyExpr()[@src=a@\loc], variable("<var>")[@src=var@\loc], convertStmt(body, env), [convertExpression(cond, env) | cond <- conds])[@src=a@\loc];
 
 public Statement convertStmt(a: (Statement) `for (<Expression l>as<MemberName key>:<MemberName var>)<Statement body>`, ParseEnv env)
     = foreach(convertExpression(l, env), variable("<key>"), variable("<var>")[@src=var@\loc], convertStmt(body, env), [])[@src=a@\loc];
@@ -444,7 +444,7 @@ public Type convertType(a: (Type) `{<Type key>,<Type v>}`, ParseEnv env) = \map(
 public Type convertType(a: (Type) `<ArtifactName name>`, ParseEnv env) = artifact(createName("<name>", env)[@src=name@\loc])[@src=a@\loc];
 
 
-public Expression convertWhen((When) `when <Expression expr>`, ParseEnv env) = convertExpression(expr, env);
+public Expression convertWhen(w: (When) `when <Expression expr>`, ParseEnv env) = convertExpression(expr, env)[@src=w@\loc];
 
 
 public Declaration convertImport(a: (Import) `import <Namespace n>::<ArtifactName artifact><ImportAlias as>;`)
@@ -472,7 +472,7 @@ public Declaration convertConstructor(
         throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
     } 
     
-    return constructor([convertParameter(p, env) | p <- parameters], [convertStmt(stmt, env) | stmt <- body], emptyExpr())[@src=a@\loc];
+    return constructor([convertParameter(p, env) | p <- parameters], [convertStmt(stmt, env) | stmt <- body], emptyExpr()[@src=a@\loc])[@src=a@\loc];
 }
     
 public Declaration convertConstructor(
@@ -494,7 +494,7 @@ public Declaration convertConstructor(
         throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
     }
     
-    return constructor([convertParameter(p, env) | p <- parameters], [], emptyExpr())[@src=a@\loc];
+    return constructor([convertParameter(p, env) | p <- parameters], [], emptyExpr()[@src=a@\loc])[@src=a@\loc];
 }
 
 public Declaration convertDeclaration((Declaration) `<Constructor construct>`, str artifactName, str artifactType, ParseEnv env) = 
@@ -515,7 +515,7 @@ public Declaration convertParameter(a: (AbstractParameter) `<Annotation+ annotat
     ][@src=a@\loc];
 
 public Declaration convertParameter(a: (Parameter) `<Type paramType> <MemberName name>`, ParseEnv env) =
-	param(convertType(paramType, env), "<name>", emptyExpr())[@src=a@\loc];
+	param(convertType(paramType, env), "<name>", emptyExpr()[@src=a@\loc])[@src=a@\loc];
 
 public Declaration convertParameter(a: (Parameter) `<Type paramType> <MemberName name> <AssignDefaultValue defaultValue>`, ParseEnv env)
     = param(convertType(paramType, env), "<name>", convertParameterDefaultVal(defaultValue, convertType(paramType, env), env))[@src=a@\loc];

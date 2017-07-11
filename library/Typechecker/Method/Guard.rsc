@@ -6,6 +6,8 @@ import Typechecker::Type;
 import Typechecker::Expression;
 import Syntax::Abstract::Glagol;
 
+public TypeEnv checkGuard(emptyExpr(), TypeEnv env) = env;
+
 public TypeEnv checkGuard(Expression guard, TypeEnv env) = checkGuard(guard, lookupType(guard, env), env);
 
 public TypeEnv checkGuard(Expression guard, Type actualType, TypeEnv env) = 

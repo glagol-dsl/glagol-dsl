@@ -6,8 +6,10 @@ import Typechecker::Expression;
 import Typechecker::Type;
 import Syntax::Abstract::Glagol;
 
-public TypeEnv checkStatements(list[Statement] stmts, t, subroutine, TypeEnv env) =
-	(env | checkStatement(stmt, t, subroutine, it) | stmt <- stmts);
+public TypeEnv checkStatements(list[Statement] stmts, t, subroutine, TypeEnv env) {
+	for (stmt <- stmts) env = checkStatement(stmt, t, subroutine, env);
+	return env;
+}
 
 public TypeEnv checkStatement(r: \return(Expression expr), t, s, TypeEnv env) = checkReturn(lookupType(expr, env), t, r, env);
 
@@ -26,7 +28,7 @@ public TypeEnv checkStatement(ifThenElse(condition, then, \else), t, s, env) =
 	checkStatement(\else, t, s, checkStatement(then, t, s, checkCondition(condition, env)));
 
 public TypeEnv checkStatement(a: assign(assignable, operator, val), t, s, env) = 
-	checkAssignType(a, lookupType(assignable, env), lookupType(val, env), checkAssignable(assignable, env));
+	checkAssignType(a, lookupType(assignable, env), lookupType(val, env), checkAssignable(assignable, checkStatement(val, t, s, env)));
 
 public TypeEnv checkAssignType(Statement s, \list(_), \list(voidValue()), TypeEnv env) = env;
 public TypeEnv checkAssignType(Statement s, \map(_, _), \map(voidValue(), voidValue()), TypeEnv env) = env;
