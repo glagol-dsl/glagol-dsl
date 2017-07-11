@@ -195,11 +195,66 @@ public TypeEnv checkNewArtifact(n, e: external(str localName, Declaration namesp
 
 private str stringify(external(str localName, Declaration namespace, str originalName)) = 
 	namespaceToString(namespace, "::") + "::<originalName>";
+
+public TypeEnv checkExpression(i: invoke(str m, list[Expression] params), TypeEnv env) = 
+	checkInvoke(i, toSignature(params, env), env);
+
+public TypeEnv checkInvoke(i: invoke(str m, list[Expression] params), list[Type] signature, TypeEnv env) = 
+	addError(i@src, 
+		"Call to an undefined method <m>(<toString(signature,  ", ")>) in <i@src.path> on line <i@src.begin.line>", env)
+	when !hasMethod(m, signature, env);
 	
+public TypeEnv checkInvoke(i: invoke(str m, list[Expression] params), list[Type] signature, TypeEnv env) = env;
+
+public bool hasMethod(str name, list[Type] signature, TypeEnv env) = 
+	(false | true | method(Modifier access, _, name, params, _, _) <- getMethods(getContext(env)), 
+		isSignatureMatching(signature, params, env) && isMethodAccessible(access, getDimension(env)));
+	
+public bool isMethodAccessible(Modifier, 0) = true;
+public bool isMethodAccessible(\public(), int i) = true when i > 0;
+public bool isMethodAccessible(\private(), int i) = false when i > 0;
+	
+public bool isSignatureMatching(list[Type] signature, list[Declaration] params, TypeEnv env) = 
+	signature <= toSignature(params, env) && haveDefaultValues(slice(params, size(signature), size(params) - size(signature)));
+	
+public bool haveDefaultValues(list[Declaration] params) = 
+	params == [p | p: param(_, _, Expression defaultValue) <- params, emptyExpr() != defaultValue];
+
+public list[Type] toSignature(list[Expression] params, TypeEnv env) = [lookupType(p, env) | p <- params];
+public list[Type] toSignature(list[Declaration] params, TypeEnv env) = [t | param(Type t, _, _) <- params];
+
+public TypeEnv checkExpression(i: invoke(Expression prev, str m, list[Expression] params), TypeEnv env) = 
+	checkInvoke(lookupType(prev, env), i, toSignature(params, env), env);
+
+public TypeEnv checkInvoke(self(), i: invoke(Expression prev, str m, list[Expression] params), list[Type] signature, TypeEnv env) =
+	checkInvoke(invoke(m, params)[@src=i@src], signature, env);
+
+public TypeEnv checkInvoke(unknownType(), i: invoke(Expression prev, str m, list[Expression] params), list[Type] signature, TypeEnv env) =
+	addError(i@src, 
+		"Cannot call method <m>(<toString(signature,  ", ")>) on unknown type in <i@src.path> on line <i@src.begin.line>", 
+		checkExpression(prev, env)
+	);
+	
+public TypeEnv checkInvoke(Type prevType, i: invoke(Expression prev, str m, list[Expression] params), list[Type] signature, TypeEnv env) =
+	addError(i@src, 
+		"Cannot call method <m>(<toString(signature,  ", ")>) on <toString(prevType)> in <i@src.path> on line <i@src.begin.line>", 
+		checkExpression(prev, env)
+	) when (artifact(_) !:= prevType && repository(_) !:= prevType);
+	
+public TypeEnv checkInvoke(Type prevType, i: invoke(Expression prev, str m, list[Expression] params), list[Type] signature, TypeEnv env) =
+	decrementDimension(setContext(getContext(env), 
+		checkInvoke(invoke(m, params)[@src=i@src], signature, 
+			incrementDimension(setContext(findModule(prevType, env), checkExpression(prev, env)))
+		)
+	));
+
 public TypeEnv checkExpression(emptyExpr(), TypeEnv env) = env;
 
 @doc="Empty expression is always unknown type"
 public Type lookupType(emptyExpr(), _) = unknownType();
+
+@doc="Lookup this"
+public Type lookupType(this(), TypeEnv env) = self();
 
 @doc="Lookup literal types"
 public Type lookupType(integer(int intValue), _) = integer();
@@ -343,10 +398,12 @@ public Type lookupType(get(a: repository(e: external(str name, Declaration names
 public Type lookupType(get(t: selfie()), TypeEnv env) = t;
 public Type lookupType(get(_), TypeEnv env) = unknownType();
 
-public Type lookupType(invoke(str m, _), TypeEnv env) {
+public Type lookupType(invoke(str m, args), TypeEnv env) {
 	visit (getContext(env)) { 
-		case method(\public(), Type t, m, _, _, _): 
-			return externalize(t, env); 
+		case method(Modifier access, Type t, m, params, _, _): 
+			if (isMethodAccessible(access, getDimension(env)) && isSignatureMatching(toSignature(args, env), params, env)) {
+				return externalize(t, env); 
+			}
 	}
 	
 	return unknownType();
@@ -355,8 +412,10 @@ public Type lookupType(invoke(str m, _), TypeEnv env) {
 public Type lookupType(invoke(Expression prev, str m, params), TypeEnv env) = 
 	lookupType(externalize(lookupType(prev, env), env), invoke(m , params), env);
 	
+public Type lookupType(self(), i: invoke(str m, params), TypeEnv env) = lookupType(i, env);
+	
 public Type lookupType(Type prev, i: invoke(str m, params), TypeEnv env) = 
-	lookupType(i, setContext(findModule(prev, env), env)) when hasModule(prev, env);
+	lookupType(i, incrementDimension(setContext(findModule(prev, env), env))) when hasModule(prev, env);
 	
 public Type lookupType(Type prev, i: invoke(str m, params), TypeEnv) = unknownType();
 
@@ -369,7 +428,11 @@ public Type lookupType(f: fieldAccess(str field), TypeEnv env) =
 public Type lookupType(f: fieldAccess(str field), TypeEnv env) = unknownType();
 
 public Type lookupType(f: fieldAccess(this(), str field), TypeEnv env) = lookupType(fieldAccess(field), env);
-public Type lookupType(f: fieldAccess(_, str field), TypeEnv env) = unknownType();
+public Type lookupType(f: fieldAccess(Expression prev, str field), TypeEnv env) = 
+	lookupType(lookupType(prev, env), fieldAccess(field), env);
+	
+public Type lookupType(self(), f: fieldAccess(str field), TypeEnv env) = lookupType(f, env);
+public Type lookupType(_, f: fieldAccess(str field), TypeEnv env) = unknownType();
 
 public Type lookupType(relation(_, \one(), name, _), fieldAccess(str field), TypeEnv env) = 
 	externalize(artifact(local(name)), env) when hasLocalArtifact(name, env);

@@ -4,6 +4,7 @@ import Typechecker::Env;
 import Typechecker::Errors;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
+import Utils::Glue;
 
 public TypeEnv checkType(selfie(), Declaration d, TypeEnv env) = 
     addError(d@src, "Selfie cannot be used as property type in <d@src.path> on line <d@src.begin.line>", env);
@@ -58,14 +59,16 @@ public TypeEnv checkType(boolean(), Declaration d, TypeEnv env) = env when !hasG
 private bool hasGetSelfie(property(_, _, get(selfie()))) = true;
 private bool hasGetSelfie(_) = false;
 
+public str toString(list[Type] types, str d) = glue([toString(t) | t <- types], d);
 public str toString(integer()) = "integer";
 public str toString(float()) = "float";
 public str toString(string()) = "string";
 public str toString(voidValue()) = "void";
 public str toString(boolean()) = "bool";
-public str toString(\list(Type \type)) = "list of <toString(\type)>";
+public str toString(\list(Type \type)) = "<toString(\type)>[]";
 public str toString(artifact(Name name)) = "<name.localName>";
 public str toString(repository(Name name)) = "<name.localName> repository";
 public str toString(\map(Type key, Type v)) = "map (<toString(key)>: <toString(v)>)";
 public str toString(selfie()) = "selfie";
+public str toString(self()) = "self";
 public str toString(unknownType()) = "unknown type";

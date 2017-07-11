@@ -21,10 +21,15 @@ alias TypeEnv = tuple[
     list[Declaration] ast,
     list[tuple[loc src, str message]] errors,
     Declaration context,
-    int controlLevel
+    int controlLevel,
+    int dimension
 ];
 
-public TypeEnv newEnv(loc location) = <location, (), (), [], [], emptyDecl(), 0>;
+public int getDimension(TypeEnv env) = env.dimension;
+public TypeEnv incrementDimension(TypeEnv env) = env[dimension = env.dimension + 1];
+public TypeEnv decrementDimension(TypeEnv env) = env[dimension = env.dimension - 1];
+
+public TypeEnv newEnv(loc location) = <location, (), (), [], [], emptyDecl(), 0, 0>;
 
 public TypeEnv incrementControlLevel(TypeEnv env) = env[controlLevel = env.controlLevel + 1];
 public TypeEnv decrementControlLevel(TypeEnv env) = env[controlLevel = env.controlLevel - 1];
@@ -100,6 +105,8 @@ public TypeEnv addToAST(list[Declaration] files, TypeEnv env) = env[ast = env.as
 public TypeEnv setContext(Declaration ctx, TypeEnv env) = env[context = ctx];
 public Declaration getContext(TypeEnv env) = env.context;
 public TypeEnv clearContext(TypeEnv env) = setContext(emptyDecl(), env);
+
+public Declaration getNamespace(TypeEnv env) = env.context.namespace;
 
 public bool hasLocalArtifact(str name, TypeEnv env) = hasLocalArtifact(name, getContext(env), env);
 public bool hasLocalArtifact(str name, emptyDecl(), TypeEnv env) = false;

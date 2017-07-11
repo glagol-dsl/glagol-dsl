@@ -4,6 +4,155 @@ import Typechecker::Expression;
 import Syntax::Abstract::Glagol;
 import Typechecker::Env;
 
+// method invoke
+test bool shouldNotGiveErrorWhenInvokingLocalPrivateMethod() = 
+	checkExpression(invoke("myString", []), setContext(
+		\module(namespace("Test"), [], entity("User", [
+			method(\private(), string(), "myString", [], [], emptyExpr())
+		])), newEnv(|tmp:///|)
+	)) == setContext(
+		\module(namespace("Test"), [], entity("User", [
+			method(\private(), string(), "myString", [], [], emptyExpr())
+		])), newEnv(|tmp:///|)
+	);
+	
+test bool shouldGiveErrorWhenInvokingLocalPrivateMethodUsingWrongSignature() = 
+	checkExpression(invoke("myString", [integer(5)])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], setContext(
+		\module(namespace("Test"), [], entity("User", [
+			method(\private(), string(), "myString", [], [], emptyExpr())
+		])), newEnv(|tmp:///|)
+	)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		"Call to an undefined method myString(integer) in /User.g on line 20", setContext(
+		\module(namespace("Test"), [], entity("User", [
+			method(\private(), string(), "myString", [], [], emptyExpr())
+		])), newEnv(|tmp:///|)
+	));
+	
+test bool shouldNotGiveErrorWhenInvokingLocalPublicMethod() = 
+	checkExpression(invoke("myString", []), setContext(
+		\module(namespace("Test"), [], entity("User", [
+			method(\private(), string(), "myString", [], [], emptyExpr())
+		])), newEnv(|tmp:///|)
+	)) == setContext(
+		\module(namespace("Test"), [], entity("User", [
+			method(\private(), string(), "myString", [], [], emptyExpr())
+		])), newEnv(|tmp:///|)
+	);
+	
+test bool shouldNotGiveErrorWhenInvokingLocalPrivateMethodUsingThis() = 
+	checkExpression(invoke(this(), "myString", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], setContext(
+		\module(namespace("Test"), [], entity("User", [
+			method(\private(), string(), "myString", [], [], emptyExpr())
+		])), newEnv(|tmp:///|)
+	)) == setContext(
+		\module(namespace("Test"), [], entity("User", [
+			method(\private(), string(), "myString", [], [], emptyExpr())
+		])), newEnv(|tmp:///|)
+	);
+	
+test bool shouldGiveErrorWhenInvokingNonExistingLocalPrivateMethodUsingThis() = 
+	checkExpression(invoke(variable("d")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+		"myString", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], setContext(
+		\module(namespace("Test"), [], entity("User", [])), newEnv(|tmp:///|)
+	)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		"Cannot call method myString() on unknown type in /User.g on line 20",
+		addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+			"\'d\' is undefined in /User.g on line 20", setContext(
+			\module(namespace("Test"), [], entity("User", [])), newEnv(|tmp:///|)
+		))
+	);
+	
+test bool shouldGiveErrorWhenInvokingMethodOnScalar() = 
+	checkExpression(invoke(integer(34), 
+		"myString", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], setContext(
+		\module(namespace("Test"), [], entity("User", [])), newEnv(|tmp:///|)
+	)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+		"Cannot call method myString() on integer in /User.g on line 20", setContext(
+		\module(namespace("Test"), [], entity("User", [])), newEnv(|tmp:///|)
+	));
+	
+test bool shouldNotGiveErrorWhenInvokingExternalExistingPublicMethod() = 
+	checkExpression(invoke(invoke("repo", []), "myInt", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], setContext(
+		\module(namespace("Test"), [], util("User", [
+			method(\public(), repository(local("Customer")), "repo", [], [], emptyExpr())
+		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+			method(\public(), integer(), "myInt", [], [], emptyExpr())
+		]))), newEnv(|tmp:///|))
+	)) == 
+	setContext(
+		\module(namespace("Test"), [], util("User", [
+			method(\public(), repository(local("Customer")), "repo", [], [], emptyExpr())
+		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+			method(\public(), integer(), "myInt", [], [], emptyExpr())
+		]))), newEnv(|tmp:///|))
+	);
+	
+test bool shouldNotGiveErrorWhenInvokingExternalExistingPublicMethodStartingWithThis() = 
+	checkExpression(
+		invoke(invoke(this(), "repo", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+			"myInt", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+		setContext(
+			\module(namespace("Test"), [], util("User", [
+				method(\public(), repository(local("Customer")), "repo", [], [], emptyExpr())
+			])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+				method(\public(), integer(), "myInt", [], [], emptyExpr())
+			]))), newEnv(|tmp:///|))
+	)) == 
+	setContext(
+		\module(namespace("Test"), [], util("User", [
+			method(\public(), repository(local("Customer")), "repo", [], [], emptyExpr())
+		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+			method(\public(), integer(), "myInt", [], [], emptyExpr())
+		]))), newEnv(|tmp:///|))
+	);
+	
+test bool shouldGiveErrorWhenInvokingExternalNonExistingMethod() = 
+	checkExpression(invoke(invoke("repo", []), "myInt", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], setContext(
+		\module(namespace("Test"), [], util("User", [
+			method(\public(), repository(local("Customer")), "repo", [], [], emptyExpr())
+		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", []))), newEnv(|tmp:///|))
+	)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Call to an undefined method myInt() in /User.g on line 20", setContext(
+		\module(namespace("Test"), [], util("User", [
+			method(\public(), repository(local("Customer")), "repo", [], [], emptyExpr())
+		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", []))), newEnv(|tmp:///|))
+	));
+	
+test bool shouldGiveErrorWhenInvokingExternalExistingPrivateMethod() = 
+	checkExpression(invoke(invoke("repo", []), "myInt", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], setContext(
+		\module(namespace("Test"), [], util("User", [
+			method(\public(), repository(local("Customer")), "repo", [], [], emptyExpr())
+		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+			method(\private(), integer(), "myInt", [], [], emptyExpr())
+		]))), newEnv(|tmp:///|))
+	)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Call to an undefined method myInt() in /User.g on line 20", setContext(
+		\module(namespace("Test"), [], util("User", [
+			method(\public(), repository(local("Customer")), "repo", [], [], emptyExpr())
+		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+			method(\private(), integer(), "myInt", [], [], emptyExpr())
+		]))), newEnv(|tmp:///|))
+	));
+	
+test bool shouldGiveErrorWhenInvokingExternalMethodWithWrongSignature() = 
+	checkExpression(invoke(invoke("repo", []), "myInt", [integer(33)])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], setContext(
+		\module(namespace("Test"), [], util("User", [
+			method(\public(), repository(local("Customer")), "repo", [], [], emptyExpr())
+		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+			method(\public(), integer(), "myInt", [], [], emptyExpr())
+		]))), newEnv(|tmp:///|))
+	)) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Call to an undefined method myInt(integer) in /User.g on line 20", setContext(
+		\module(namespace("Test"), [], util("User", [
+			method(\public(), repository(local("Customer")), "repo", [], [], emptyExpr())
+		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+			method(\public(), integer(), "myInt", [], [], emptyExpr())
+		]))), newEnv(|tmp:///|))
+	));
+
 // new artifact instances
 test bool shouldGiveErrorWhenLocalArtifactIsUsedButNotImported() =
 	checkExpression(new(local("User"), [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
@@ -468,6 +617,12 @@ test bool shouldReturnUnknownTypeOnGetMap() = unknownType() == lookupType(get(\m
 test bool shouldReturnStringTypeWhenInvokingStringMethod() = string() == lookupType(invoke("myString", []), setContext(
 	\module(namespace("Test"), [], entity("User", [
 		method(\public(), string(), "myString", [], [], emptyExpr())
+	])), newEnv(|tmp:///|)
+));
+
+test bool shouldReturnStringTypeWhenInvokingPrivateStringMethod() = string() == lookupType(invoke("myString", []), setContext(
+	\module(namespace("Test"), [], entity("User", [
+		method(\private(), string(), "myString", [], [], emptyExpr())
 	])), newEnv(|tmp:///|)
 ));
 

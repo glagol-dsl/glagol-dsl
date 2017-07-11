@@ -84,6 +84,7 @@ data Type
     | artifact(Name name)
     | repository(Name name)
     | selfie()
+    | self()
     | unknownType()
     ;
 

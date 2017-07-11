@@ -51,8 +51,9 @@ public map[str name, list[Declaration] methods] categorizeMethods(list[Declarati
         name <- {ms.name | ms <- declarations, isMethod(ms)}
     );
 
-public list[Declaration] getMethods(list[Declaration] ds) = [m | m: method(_, _, _, _, _) <- ds];
-public list[Declaration] getPublicMethods(list[Declaration] ds) = [m | m: method(\public(), _, _, _, _) <- ds];
+public list[Declaration] getMethods(list[Declaration] ds) = [m | m: method(_, _, _, _, _, _) <- ds];
+public list[Declaration] getMethods(\module(_, _, Declaration artifact)) = getMethods(artifact.declarations);
+public list[Declaration] getPublicMethods(list[Declaration] ds) = [m | m: method(\public(), _, _, _, _, _) <- ds];
 
 public list[Declaration] getRelations(list[Declaration] declarations) = 
 	[ d | d <- declarations, isRelation(d)];
