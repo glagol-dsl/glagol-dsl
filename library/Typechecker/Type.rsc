@@ -71,4 +71,4 @@ public str toString(repository(Name name)) = "<name.localName> repository";
 public str toString(\map(Type key, Type v)) = "map (<toString(key)>: <toString(v)>)";
 public str toString(selfie()) = "selfie";
 public str toString(self()) = "self";
-public str toString(unknownType()) = "unknown type";
+public str toString(unknownType()) = "unknown_type";
