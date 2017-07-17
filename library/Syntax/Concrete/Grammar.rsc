@@ -138,10 +138,6 @@ syntax DefaultValue
     | newInstance: "new" InstanceType "(" {Expression ","}* args ")"
     ;
 
-syntax AccessProperties
-    = "with" "{" {AccessProperty ","}* props "}"
-    ;
-
 syntax InstanceType
     = "selfie"
     | Type
