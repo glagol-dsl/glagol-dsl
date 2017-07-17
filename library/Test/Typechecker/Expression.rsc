@@ -23,7 +23,7 @@ test bool shouldGiveErrorWhenInvokingLocalPrivateMethodUsingWrongSignature() =
 		])), newEnv(|tmp:///|)
 	)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Call to an undefined method myString(integer) in /User.g on line 20", setContext(
+		"Call to an undefined method myString(integer)", setContext(
 		\module(namespace("Test"), [], entity("User", [
 			method(\private(), string(), "myString", [], [], emptyExpr())
 		])), newEnv(|tmp:///|)
@@ -57,9 +57,9 @@ test bool shouldGiveErrorWhenInvokingNonExistingLocalPrivateMethodUsingThis() =
 		\module(namespace("Test"), [], entity("User", [])), newEnv(|tmp:///|)
 	)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Cannot call method myString() on unknown type in /User.g on line 20",
+		"Cannot call method myString() on unknown type",
 		addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-			"\'d\' is undefined in /User.g on line 20", setContext(
+			"\'d\' is undefined", setContext(
 			\module(namespace("Test"), [], entity("User", [])), newEnv(|tmp:///|)
 		))
 	);
@@ -70,7 +70,7 @@ test bool shouldGiveErrorWhenInvokingMethodOnScalar() =
 		\module(namespace("Test"), [], entity("User", [])), newEnv(|tmp:///|)
 	)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Cannot call method myString() on integer in /User.g on line 20", setContext(
+		"Cannot call method myString() on integer", setContext(
 		\module(namespace("Test"), [], entity("User", [])), newEnv(|tmp:///|)
 	));
 	
@@ -115,7 +115,7 @@ test bool shouldGiveErrorWhenInvokingExternalNonExistingMethod() =
 			method(\public(), repository(local("Customer")), "repo", [], [], emptyExpr())
 		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", []))), newEnv(|tmp:///|))
 	)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Call to an undefined method myInt() in /User.g on line 20", setContext(
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Call to an undefined method myInt()", setContext(
 		\module(namespace("Test"), [], util("User", [
 			method(\public(), repository(local("Customer")), "repo", [], [], emptyExpr())
 		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", []))), newEnv(|tmp:///|))
@@ -129,7 +129,7 @@ test bool shouldGiveErrorWhenInvokingExternalExistingPrivateMethod() =
 			method(\private(), integer(), "myInt", [], [], emptyExpr())
 		]))), newEnv(|tmp:///|))
 	)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Call to an undefined method myInt() in /User.g on line 20", setContext(
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Call to an undefined method myInt()", setContext(
 		\module(namespace("Test"), [], util("User", [
 			method(\public(), repository(local("Customer")), "repo", [], [], emptyExpr())
 		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
@@ -145,7 +145,7 @@ test bool shouldGiveErrorWhenInvokingExternalMethodWithWrongSignature() =
 			method(\public(), integer(), "myInt", [], [], emptyExpr())
 		]))), newEnv(|tmp:///|))
 	)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Call to an undefined method myInt(integer) in /User.g on line 20", setContext(
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Call to an undefined method myInt(integer)", setContext(
 		\module(namespace("Test"), [], util("User", [
 			method(\public(), repository(local("Customer")), "repo", [], [], emptyExpr())
 		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
@@ -181,7 +181,7 @@ test bool shouldNotGiveErrorWhenAccessingLocalField2() =
 test bool shouldGiveErrorWhenLocalArtifactIsUsedButNotImported() =
 	checkExpression(new(local("User"), [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Artifact User used but not imported in /User.g on line 20", newEnv(|tmp:///|));
+		"Artifact User used but not imported", newEnv(|tmp:///|));
 
 test bool shouldGiveErrorWhenCreatingNewUtil() = 
 	checkExpression(
@@ -192,7 +192,7 @@ test bool shouldGiveErrorWhenCreatingNewUtil() =
 			)
 	)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Cannot instantiate artifact Example::User: only entities and value objects can be instantiated in /User.g on line 20", 
+		"Cannot instantiate artifact Example::User: only entities and value objects can be instantiated",
 		addImported(\import("User", namespace("Example"), "User"), setContext(
 			\module(namespace("Example"), [], util("User", [])),
 			addToAST(file(|tmp:///|, \module(namespace("Example"), [], util("User", []))), newEnv(|tmp:///|)))
@@ -214,7 +214,7 @@ test bool shouldNotGiveErrorWhenCreatingNewEntity() =
 
 test bool shouldGiveErrorWhenTernaryConditionIsNotBoolean() = 
 	checkExpression(ifThenElse(string("dassad")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], integer(1), integer(2)), newEnv(|tmp:///|)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Condition does not evaluate to boolean in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Condition does not evaluate to boolean", newEnv(|tmp:///|));
 
 test bool shouldNotGiveErrorWhenTernaryConditionIsBoolean() = 
 	checkExpression(ifThenElse(boolean(true), integer(1), integer(2)), newEnv(|tmp:///|)) == 
@@ -222,7 +222,7 @@ test bool shouldNotGiveErrorWhenTernaryConditionIsBoolean() =
 	
 test bool shouldGiveErrorWhenTernarySidesAreDifferentTypes() = 
 	checkExpression(ifThenElse(boolean(true), float(1.2), integer(2))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Ternary cannot return different types in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Ternary cannot return different types", newEnv(|tmp:///|));
 	
 test bool shouldNotGiveErrorWhenTernarySidesAreEmptyListAndTypedList() = 
 	checkExpression(ifThenElse(boolean(true), \list([integer(1)]), \list([])), newEnv(|tmp:///|)) == 
@@ -235,12 +235,12 @@ test bool shouldNotGiveErrorWhenTernarySidesAreEmptyMapAndTypedMap() =
 test bool shouldGiveErrorWhenTernarySidesAreDifferentlyTypedMaps() = 
 	checkExpression(
 		ifThenElse(boolean(true), \map((integer(1): integer(1))), \map((integer(1): float(1.2))))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Ternary cannot return different types in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Ternary cannot return different types", newEnv(|tmp:///|));
 
 test bool shouldGiveErrorWhenConditionIsNotBoolean() = 
 	checkCondition(string("a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		newEnv(|tmp:///|)) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Condition does not evaluate to boolean in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Condition does not evaluate to boolean", newEnv(|tmp:///|));
 
 test bool shouldNotGiveErrorWhenConditionIsBoolean() = 
 	checkCondition(boolean(true)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
@@ -249,22 +249,22 @@ test bool shouldNotGiveErrorWhenConditionIsBoolean() =
 // Check binary math operations
 test bool shouldGiveErrorWhenApplyingProductOnUnknownType() = 
 	checkExpression(product(emptyExpr(), emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot apply multiplication on unknown type in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot apply multiplication on unknown type", newEnv(|tmp:///|));
 	
 test bool shouldGiveErrorWhenApplyingProductOnWrongTypes() = 
 	checkExpression(product(string("dsadsadsa"), boolean(true))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot apply multiplication on string and bool in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot apply multiplication on string and bool", newEnv(|tmp:///|));
 
 test bool shouldNotGiveErrorWhenComparingIntegers() = 
 	checkExpression(greaterThanOrEq(integer(3), integer(5)), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
 	
 test bool shouldGiveErrorWhenComparingIntegerAndString() = 
 	checkExpression(greaterThanOrEq(integer(3), string("asd"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot compare integer and string in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot compare integer and string", newEnv(|tmp:///|));
 	
 test bool shouldGiveErrorWhenComparingStringAndString() = 
 	checkExpression(greaterThanOrEq(string("dd"), string("asd"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot compare string and string in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot compare string and string", newEnv(|tmp:///|));
 	
 test bool shouldNotGiveErrorWhenComparingStringAndString() = 
 	checkExpression(equals(string("dd"), string("asd"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
@@ -274,13 +274,13 @@ test bool shouldNotGiveErrorWhenApplyingLogicalAndOnBooleans() = checkExpression
 test bool shouldGiveErrorWhenApplyingLogicalAndOnBooleanAndInteger() = 
 	checkExpression(and(boolean(true), integer(1))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Cannot apply logical operation on bool and integer in /User.g on line 20", newEnv(|tmp:///|));
+		"Cannot apply logical operation on bool and integer", newEnv(|tmp:///|));
 
 test bool shouldNotGiveErrorWhenApplyingLogicalOrOnBooleans() = checkExpression(or(boolean(true), boolean(false)), newEnv(|tmp:///|)) == newEnv(|tmp:///|);	
 test bool shouldGiveErrorWhenApplyingLogicalOrOnBooleanAndInteger() = 
 	checkExpression(or(boolean(true), integer(1))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Cannot apply logical operation on bool and integer in /User.g on line 20", newEnv(|tmp:///|));
+		"Cannot apply logical operation on bool and integer", newEnv(|tmp:///|));
 
 test bool shouldNotGiveErrorWhenApplyingNegativeOnInteger() = checkExpression(negative(integer(2))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == newEnv(|tmp:///|);
 test bool shouldNotGiveErrorWhenApplyingNegativeOnFloat() = checkExpression(negative(float(2.4)), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
@@ -289,11 +289,11 @@ test bool shouldNotGiveErrorWhenApplyingPositiveOnFloat() = checkExpression(posi
 
 test bool shouldGiveErrorWhenApplyingNegativeOnString() = 
 	checkExpression(negative(string("2.4"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot apply minus on string in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot apply minus on string", newEnv(|tmp:///|));
 
 test bool shouldGiveErrorWhenApplyingPositiveOnString() = 
 	checkExpression(positive(string("2.4"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot apply plus on string in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot apply plus on string", newEnv(|tmp:///|));
 
 // Check lists
 test bool shouldNotGiveErrorWhenCheckingEmptyList() = 
@@ -301,7 +301,7 @@ test bool shouldNotGiveErrorWhenCheckingEmptyList() =
 	
 test bool shouldGiveErrorOnListOfUnknownType() = 
 	checkExpression(\list([integer(1), string("a")])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot unveil list type in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot unveil list type", newEnv(|tmp:///|));
 	
 test bool shouldNotGiveErrorWhenCheckingCorrectlyTypedList() = 
 	checkExpression(\list([integer(1), integer(2)]), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
@@ -311,15 +311,15 @@ test bool shouldNotGiveErrorWhenCheckingEmptyMap() = checkExpression(\map(()), n
 	
 test bool shouldGiveErrorOnMapOfUnknownTypeAsKey() = 
 	checkExpression(\map((integer(1): string("a"), string("d"): string("a")))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot unveil map key type in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot unveil map key type", newEnv(|tmp:///|));
 	
 test bool shouldGiveErrorOnMapOfUnknownTypeAsValue() = 
 	checkExpression(\map((integer(1): string("a"), integer(2): integer(5)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot unveil map value type in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot unveil map value type", newEnv(|tmp:///|));
 	
 test bool shouldGiveErrorOnMapOfUnknownTypeAsValueAndKey() = 
 	checkExpression(\map((boolean(true): string("a"), integer(2): integer(5)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot unveil map key and value types in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot unveil map key and value types", newEnv(|tmp:///|));
 
 // check scalars
 test bool shouldNotGiveErrorOnIntegers() = checkExpression(integer(1), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
@@ -330,11 +330,11 @@ test bool shouldNotGiveErrorOnBooleans() = checkExpression(boolean(true), newEnv
 // Check array access
 test bool shouldGiveErrorWhenUnknownTypeIsUsedAsKeyForArrayAccess() = 
 	checkIndexKey(unknownType(), emptyExpr()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Type of array index key used cannot be determined in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Type of array index key used cannot be determined", newEnv(|tmp:///|));
 
 test bool shouldGiveErrorWhenVoidTypeIsUsedAsKeyForArrayAccess() = 
 	checkIndexKey(voidValue(), emptyExpr()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Void cannot be used as array index key in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Void cannot be used as array index key", newEnv(|tmp:///|));
 
 test bool shouldNotGiveErrorWhenNormalTypeIsUsedAsKeyForArrayAccess() = 
 	checkIndexKey(integer(), emptyExpr()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == newEnv(|tmp:///|);
@@ -343,7 +343,7 @@ test bool shouldGiveErrorWhenTryingToAccessListUsingNonInteger() =
 	checkExpression(arrayAccess(variable("a"), string("key"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		addDefinition(param(\list(string()), "a", emptyExpr()), newEnv(|tmp:///|))) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"List cannot be accessed using string, only integers allowed in /User.g on line 20", 
+		"List cannot be accessed using string, only integers allowed",
 		addDefinition(param(\list(string()), "a", emptyExpr()), newEnv(|tmp:///|)));
 		
 test bool shouldNotGiveErrorWhenTryingToAccessListUsingInteger() = 
@@ -355,7 +355,7 @@ test bool shouldGiveErrorWhenTryingToAccessMapUsingWrongType() =
 	checkExpression(arrayAccess(variable("a"), string("key"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		addDefinition(param(\map(float(), integer()), "a", emptyExpr()), newEnv(|tmp:///|))) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Map key type is float, cannot access using string in /User.g on line 20", 
+		"Map key type is float, cannot access using string",
 		addDefinition(param(\map(float(), integer()), "a", emptyExpr()), newEnv(|tmp:///|)));
 
 test bool shouldNotGiveErrorWhenTryingToAccessMapUsingCorrectType() = 
@@ -370,7 +370,7 @@ test bool shouldNotGiveErrorWhenCheckAlreadyDefinedVariable() =
 	
 test bool shouldGiveErrorWhenCheckUndefinedVariable() = 
 	checkIsVariableDefined(variable("a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined", newEnv(|tmp:///|));
 
 // Lookup literal types
 test bool shouldReturnIntegerWhenLookingUpTypeForIntegerLiteral() = integer() == lookupType(integer(5), newEnv(|tmp:///|));

@@ -77,8 +77,7 @@ public bool isDefined(fieldAccess(this(), str field), TypeEnv env) = field in en
 public bool isDefined(Expression expr, TypeEnv env) = false;
 
 public TypeEnv addError(loc src, str message, TypeEnv env) = env[errors = env.errors + <src, message>];
-public TypeEnv addError(element, str message, TypeEnv env) = 
-	env[errors = env.errors + <element@src, "<message> in <element@src.path> on line <element@src.begin.line>">];
+public TypeEnv addError(element, str message, TypeEnv env) = addError(element@src, message, env);
 
 public TypeEnv addErrors(list[tuple[loc, str]] errors, TypeEnv env) = (env | addError(src, message, it) | <loc src, str message> <- errors);
 public TypeEnv addErrors(list[tuple[node, str]] errors, TypeEnv env) = (env | addError(element, message, it) | <element, str message> <- errors);

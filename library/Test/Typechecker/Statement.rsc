@@ -10,7 +10,7 @@ test bool shouldGiveErrorWhenReturnValueTypeDoesNotMatchMethodReturnType() =
 		\return(integer(1))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		string(), 
 		method(\public(), string(), "test", [], [], emptyExpr()), newEnv(|tmp:///|)) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Returning integer, string expected in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Returning integer, string expected", newEnv(|tmp:///|));
 
 test bool shouldNotGiveErrorWhenReturningValueTypeThatMatchesMethodReturnType() = 
 	checkStatement(
@@ -21,15 +21,15 @@ test bool shouldNotGiveErrorWhenReturningValueTypeThatMatchesMethodReturnType() 
 
 test bool shouldGiveErrorWhenVariableAsAssignableIsUndefined() = 
 	checkAssignable(variable("a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined", newEnv(|tmp:///|));
 	
 test bool shouldGiveErrorWhenFieldAsAssignableIsUndefined() = 
 	checkAssignable(fieldAccess("a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined", newEnv(|tmp:///|));
 	
 test bool shouldGiveErrorWhenThisFieldAsAssignableIsUndefined() = 
 	checkAssignable(fieldAccess(this(), "a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined", newEnv(|tmp:///|));
 	
 test bool shouldNotGiveErrorWhenThisFieldAsAssignableIsDefined() = 
 	checkAssignable(fieldAccess(this(), "a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
@@ -47,25 +47,25 @@ test bool shouldNotGiveErrorWhenThisFieldAsAssignableIsDefined() =
 test bool shouldGiveErrorWhenThisFieldAsAssignableIsTargettingNonField() = 
 	checkAssignable(fieldAccess(this(), "a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		addDefinition(param(integer(), "a", emptyExpr()), newEnv(|tmp:///|))) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined in /User.g on line 20", 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined",
 		addDefinition(param(integer(), "a", emptyExpr()), newEnv(|tmp:///|)));
 	
 test bool shouldGiveErrorWhenArrayAccessAsAssignableIsUndefined() = 
 	checkAssignable(arrayAccess(variable("a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], integer(1))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		newEnv(|tmp:///|)) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot access unknown_type as array in /User.g on line 20", 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined in /User.g on line 20", newEnv(|tmp:///|)));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot access unknown_type as array",
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined", newEnv(|tmp:///|)));
 	
 test bool shouldGiveErrorWhenAssigningValueToNonAssignableExpression() = 
 	checkAssignable(string("a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		newEnv(|tmp:///|)) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot assign value to expression in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot assign value to expression", newEnv(|tmp:///|));
 	
 test bool shouldGiveErrorWhenAssigningWrongTypeOfValue() = 
 	checkStatement(assign(variable("a"), defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
 		addDefinition(param(string(), "a", emptyExpr()), newEnv(|tmp:///|))) ==
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Cannot assign value of type integer to a variable of type string in /User.g on line 20", 
+		"Cannot assign value of type integer to a variable of type string",
 		addDefinition(param(string(), "a", emptyExpr()), newEnv(|tmp:///|)));
 test bool shouldNotGiveErrorWhenAssigningEmptyListOnTypedList() = 
 	checkStatement(assign(variable("a"), defaultAssign(), expression(\list([])))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
@@ -86,7 +86,7 @@ test bool shouldGiveErrorWhenUsingWrongOperator() =
 	checkStatement(assign(variable("a"), productAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
 		addDefinition(param(string(), "a", emptyExpr()), newEnv(|tmp:///|))) ==
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Assignment operator not allowed in /User.g on line 20", 
+		"Assignment operator not allowed",
 		addDefinition(param(string(), "a", emptyExpr()), newEnv(|tmp:///|)));
 
 test bool shouldNotGiveErrorWhenTryingToPersistAnEntity() = 
@@ -108,7 +108,7 @@ test bool shouldGiveErrorWhenTryingToPersistANonEntity() =
 			setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 		)
 	) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Only entities can be persisted in /User.g on line 20", addImported(\import("User", namespace("Test"), "User"), addToAST(
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Only entities can be persisted", addImported(\import("User", namespace("Test"), "User"), addToAST(
 		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), 
 		setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 	));
@@ -133,7 +133,7 @@ test bool shouldGiveErrorWhenTryingToFlushANonEntity() =
 		)
 	) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Only entities can be flushed in /User.g on line 20", addImported(\import("User", namespace("Test"), "User"), addToAST(
+		"Only entities can be flushed", addImported(\import("User", namespace("Test"), "User"), addToAST(
 		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), 
 		setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 	));
@@ -158,7 +158,7 @@ test bool shouldGiveErrorWhenTryingToRemoveANonEntity() =
 		)
 	) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Only entities can be removed in /User.g on line 20", addImported(\import("User", namespace("Test"), "User"), addToAST(
+		"Only entities can be removed", addImported(\import("User", namespace("Test"), "User"), addToAST(
 		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), 
 		setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 	));
@@ -177,7 +177,7 @@ test bool shouldGiveErrorWhenDeclaringVariableWithWrongDefaultValueType() =
 	checkStatement(declare(integer(), variable("a"), expression(string("aaa")))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		voidValue(), emptyDecl(), newEnv(|tmp:///|)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Cannot assign string to variable a originally defined as integer in /User.g on line 20", newEnv(|tmp:///|));
+		"Cannot assign string to variable a originally defined as integer", newEnv(|tmp:///|));
 		
 test bool shouldNotGiveErrorWhenDeclaringVariableWithCorrectDefaultValueType() = 
 	checkStatement(declare(string(), variable("a"), expression(string("aaa")))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
@@ -188,7 +188,7 @@ test bool shouldGiveCannotTraverseErrorWhenUsingNonCollectionWithForeach() =
 	checkStatement(
 		foreach(string("ha"), emptyExpr(), variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
 		voidValue(), emptyDecl(), newEnv(|tmp:///|)) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot traverse string in /User.g on line 20", newEnv(|tmp:///|));
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot traverse string", newEnv(|tmp:///|));
 	
 test bool shouldGiveConditionShouldBeBooleanErrorWithForeach() = 
 	checkStatement(
@@ -196,7 +196,7 @@ test bool shouldGiveConditionShouldBeBooleanErrorWithForeach() =
 			emptyStmt(), [string("ha")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]]), 
 		voidValue(), emptyDecl(), newEnv(|tmp:///|)) ==
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Condition does not evaluate to boolean in /User.g on line 20", 
+		"Condition does not evaluate to boolean",
 		addDefinition(declare(integer(), variable("item"), emptyStmt()), newEnv(|tmp:///|)));
 		
 test bool shouldNotGiveConditionShouldBeBooleanErrorWithForeach() = 
@@ -210,7 +210,7 @@ test bool shouldGiveErrorWhenUsingValueForTraversingWhichIsAlreadyDefinedWithDif
 	checkStatement(
 		foreach(\list([string("s")]), emptyExpr(), variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
 		voidValue(), emptyDecl(), addDefinition(param(integer(), "item", emptyExpr()), newEnv(|tmp:///|))) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot use item as value in list traversing: already decleared and is not string in /User.g on line 20", 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot use item as value in list traversing: already decleared and is not string",
 		addDefinition(param(integer(), "item", emptyExpr()), newEnv(|tmp:///|)));
 	
 test bool shouldNotGiveErrorWhenUsingValueForTraversingWhichIsAlreadyDefinedWithSameType() = 
@@ -229,7 +229,7 @@ test bool shouldGiveErrorWhenUsingValueForTraversingWhichIsAlreadyDefinedWithDif
 	checkStatement(
 		foreach(\map((string("s"): string("b"))), emptyExpr(), variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
 		voidValue(), emptyDecl(), addDefinition(param(integer(), "item", emptyExpr()), newEnv(|tmp:///|))) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot use item as value in map traversing: already decleared and is not string in /User.g on line 20", 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot use item as value in map traversing: already decleared and is not string",
 		addDefinition(param(integer(), "item", emptyExpr()), newEnv(|tmp:///|)));
 	
 test bool shouldNotGiveErrorWhenUsingValueForTraversingWhichIsAlreadyDefinedWithSameTypeOnMap() = 
@@ -257,7 +257,7 @@ test bool shouldGiveErrorWhenUsingAlreadyDefinedKeyOnListTraversingAndItIsNotInt
 			variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
 		voidValue(), emptyDecl(), addDefinition(param(string(), "i", emptyExpr()), newEnv(|tmp:///|))) ==
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Cannot use i as key in list traversing: already decleared and it is not an integer in /User.g on line 20", 
+		"Cannot use i as key in list traversing: already decleared and it is not an integer",
 		addDefinition(declare(string(), variable("item"), emptyStmt()), 
 		addDefinition(param(string(), "i", emptyExpr()), newEnv(|tmp:///|))));
 
@@ -286,7 +286,7 @@ test bool shouldGiveErrorWhenUsingAlreadyDefinedKeyOnMapTraversingAndItIsNotMapD
 			variable("item")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], emptyStmt(), []), 
 		voidValue(), emptyDecl(), addDefinition(param(string(), "i", emptyExpr()), newEnv(|tmp:///|))) ==
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Cannot use i as key in map traversing: already decleared and it is not an integer in /User.g on line 20", 
+		"Cannot use i as key in map traversing: already decleared and it is not an integer",
 		addDefinition(declare(string(), variable("item"), emptyStmt()), 
 		addDefinition(param(string(), "i", emptyExpr()), newEnv(|tmp:///|))));
 
@@ -311,12 +311,12 @@ test bool shouldNotGiveErrorWhenUsingNotDefinedKeyOnMapTraversing() =
 test bool shouldGiveErrorWhenBreakingOutFromZeroLevel() = 
 	checkStatement(\break(0)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), newEnv(|tmp:///|)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Cannot break out from structure using level 0 in /User.g on line 20", newEnv(|tmp:///|));
+		"Cannot break out from structure using level 0", newEnv(|tmp:///|));
 
 test bool shouldGiveErrorWhenBreakingOutFromIllegalLevel() = 
 	checkStatement(\break(1)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), newEnv(|tmp:///|)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Cannot break out from structure using level 1 in /User.g on line 20", newEnv(|tmp:///|));
+		"Cannot break out from structure using level 1", newEnv(|tmp:///|));
 
 test bool shouldNotGiveErrorWhenBreakingOutFromExistingLevel() = 
 	checkStatement(\break(1), voidValue(), emptyDecl(), incrementControlLevel(newEnv(|tmp:///|))) == 
@@ -325,12 +325,12 @@ test bool shouldNotGiveErrorWhenBreakingOutFromExistingLevel() =
 test bool shouldGiveErrorWhenContinueOutFromZeroLevel() = 
 	checkStatement(\continue(0)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), newEnv(|tmp:///|)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Cannot continue from structure using level 0 in /User.g on line 20", newEnv(|tmp:///|));
+		"Cannot continue from structure using level 0", newEnv(|tmp:///|));
 
 test bool shouldGiveErrorWhenContinueOutFromIllegalLevel() = 
 	checkStatement(\continue(1)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), newEnv(|tmp:///|)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Cannot continue from structure using level 1 in /User.g on line 20", newEnv(|tmp:///|));
+		"Cannot continue from structure using level 1", newEnv(|tmp:///|));
 
 test bool shouldNotGiveErrorWhenContinueOutFromExistingLevel() = 
 	checkStatement(\continue(1), voidValue(), emptyDecl(), incrementControlLevel(newEnv(|tmp:///|))) == 

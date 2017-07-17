@@ -13,7 +13,7 @@ test bool shouldAddErrorWhenReturnIsNotAvailableOnSubroutineUsingCheckBody() =
 	], integer(), method(\public(), integer(), "test", [], [], emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 	entity("User", []), newEnv(|tmp:///|)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Return statement with value expected for method \'test\' in /User.g on line 20", 
+		"Return statement with value expected for method \'test\'",
 		newEnv(|tmp:///|));
 
 test bool shouldAddErrorWhenReturnIsNotAvailableOnSubroutine() = 
@@ -23,7 +23,7 @@ test bool shouldAddErrorWhenReturnIsNotAvailableOnSubroutine() =
 		]))
 	], method(\public(), integer(), "test", [], [], emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Return statement with value expected for method \'test\' in /User.g on line 20", 
+		"Return statement with value expected for method \'test\'",
 		newEnv(|tmp:///|));
 		
 test bool shouldNotAddErrorWhenReturnIsAvailableOnSubroutine() = 
