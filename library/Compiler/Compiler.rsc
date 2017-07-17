@@ -26,12 +26,9 @@ public void compile(loc projectPath, int listenerId) {
     TypeEnv typeEnv = checkAST(config, ast);
     
     if (hasErrors(typeEnv)) {
-    	for (<_, str msg> <- getErrors(typeEnv)) {
-    		respondWith(error(msg), listenerId);
-    	}
-    	
-    	for (str id <- typeEnv.definitions) {
-    		respondWith(info("<id>: <typeEnv.definitions[id]>"), listenerId);
+		respondWith(error("Cannot compile, errors detected:"), listenerId);
+    	for (<loc src, str msg> <- getErrors(typeEnv)) {
+    		respondWith(text("[<relative(src, config)><line(src)>] <msg>"), listenerId);
     	}
     	return;
     }
@@ -55,6 +52,9 @@ public void compile(loc projectPath, int listenerId) {
     
     createCompileLogFile(config, compiledFiles, listenerId);
 }
+
+private str line(loc src) = ":<src.begin.line>" when src.begin? && src.begin.line?;
+private str line(loc src) = "";
 
 private void cleanUpOld(Config config, int listenerId) {
 

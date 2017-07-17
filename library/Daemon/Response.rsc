@@ -9,6 +9,7 @@ data Response
 	= info(str message)
 	| error(str message)
 	| warning(str message)
+	| text(str message)
 	| end()
 	;
 	
@@ -36,6 +37,10 @@ public void respondWith(warning(str msg, loc at), int listenerId) {
 
 public void respondWith(info(str message), int listenerId) {
 	writeTo(listenerId, toJSON(object(("type": string("info"), "args": array([string(message)])))));
+}
+
+public void respondWith(text(str message), int listenerId) {
+	writeTo(listenerId, toJSON(object(("type": string("plain_text"), "args": array([string(message)])))));
 }
 
 public void respondWith(error(str message), int listenerId) {

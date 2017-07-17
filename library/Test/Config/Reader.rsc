@@ -46,28 +46,12 @@ test bool testGetFrameworkShouldThrowExceptionOnInvalidFramework() {
     return false;
 }
 
-test bool testGetFrameworkShouldThrowExceptionOnUnspecifiedFramework() {
-    try
-        getFramework(object(("glagol": object(()))));
-    catch InvalidFramework("Framework not specified"): return true;
-    
-    return false;
-}
-
 test bool testGetORMShouldReturnDoctrine() = getORM(object(("glagol": object(("orm": string("doctrine")))))) == doctrine();
 
 test bool testGetORMShouldThrowExceptionOnInvalidORM() {
     try
         getORM(object(("glagol": object(("orm": string("propel"))))));
     catch InvalidORM("Invalid ORM \"propel\""): return true;
-    
-    return false;
-}
-
-test bool testGetORMShouldThrowExceptionOnUnspecifiedORM() {
-    try
-        getORM(object(("glagol": object(()))));
-    catch InvalidORM("ORM not specified"): return true;
     
     return false;
 }

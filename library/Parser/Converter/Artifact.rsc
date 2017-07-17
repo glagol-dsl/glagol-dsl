@@ -53,7 +53,7 @@ public str createControllerName(loc file) {
 	return name;
 }
 
-public Route convertRoute((Route) `/<{RoutePart "/"}* routes>`) = route([convertRoute(r) | r <- routes]);
+public Route convertRoute(ro: (Route) `/<{RoutePart "/"}* routes>`) = route([convertRoute(r) | r <- routes])[@src=ro@\loc];
 
 public Declaration convertArtifact(a: (Artifact) `<ControllerType controllerType>controller<Route r>{<Declaration* declarations>}`, ParseEnv env) = 
 	controller(

@@ -5,6 +5,7 @@ import Exceptions::ConfigExceptions;
 import lang::json::IO;
 import lang::json::ast::JSON;
 import List;
+import String;
 import IO;
 
 public str COMPOSER_FILE = "composer.json";
@@ -45,6 +46,8 @@ public Framework getFramework(JSON composer) = convertFramework(getProperty(comp
 public ORM getORM(Config config) = getORM(config.composer);
 public ORM getORM(JSON composer) = convertORM(getProperty(composer, null(), "glagol", "orm"));
 
+public str relative(loc src, Config config) = replaceFirst(src.path, config.projectPath.path, "");
+
 public loc getCompilePath(Config config) = config.projectPath + getProperty(config.composer, string("out"), "glagol", "paths", "out").s;
 public loc getSourcesPath(Config config) = config.projectPath + getProperty(config.composer, string("src"), "glagol", "paths", "src").s;
 public loc getVendorPath(Config config) = config.projectPath + getProperty(config.composer, string("vendor"), "config", "vendor-dir").s;
@@ -60,18 +63,16 @@ public JSON getProperty(object(map[str, JSON] properties), JSON \default, str ke
 
 private Framework convertFramework(string("laravel")) = laravel();
 
-private Framework convertFramework(null()) {
-    throw InvalidFramework("Framework not specified");
-}
+@doc="Default framework is laravel"
+private Framework convertFramework(null()) = laravel();
 
 private Framework convertFramework(string(str framework)) {
     throw InvalidFramework("Invalid framework \"<framework>\"");
 }
 
 private ORM convertORM(string("doctrine")) = doctrine();
-private ORM convertORM(null()) {
-    throw InvalidORM("ORM not specified");
-}
+@doc="Default ORM is doctrine"
+private ORM convertORM(null()) = doctrine();
 private ORM convertORM(string(str invalid)) {
     throw InvalidORM("Invalid ORM \"<invalid>\"");
 }

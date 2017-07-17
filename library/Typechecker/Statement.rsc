@@ -11,7 +11,7 @@ public TypeEnv checkStatements(list[Statement] stmts, t, subroutine, TypeEnv env
 	return env;
 }
 
-public TypeEnv checkStatement(r: \return(Expression expr), t, s, TypeEnv env) = checkReturn(lookupType(expr, env), t, r, env);
+public TypeEnv checkStatement(r: \return(Expression expr), t, s, TypeEnv env) = checkReturn(lookupType(expr, env), externalize(t, env), r, env);
 
 public TypeEnv checkStatement(emptyStmt(), _, _, TypeEnv env) = env;
 

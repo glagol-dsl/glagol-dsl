@@ -5,8 +5,7 @@ import Syntax::Abstract::Glagol;
 
 test bool parseControllerWithIndexActionWithoutParams() 
 {
-    str code 
-        = "namespace Testing
+    str code = "namespace Testing
         'json-api controller /profile {
         '    index {}
         '}
