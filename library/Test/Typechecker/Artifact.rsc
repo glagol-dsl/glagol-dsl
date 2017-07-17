@@ -79,7 +79,7 @@ test bool shouldNotGiveErrorsWhenVORedefiningImportedArtifactButUsingAlias() =
 
 test bool shouldGiveErrorsWhenRepositoryPointsToNotImportedEntity() = 
     checkArtifact(repository("User", [])[@src=|tmp:///UserRepository.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///UserRepository.g|)) == 
-    addError(|tmp:///UserRepository.g|(0, 0, <20, 20>, <30, 30>), "Entity \"User\" not imported in /UserRepository.g", newEnv(|tmp:///UserRepository.g|));
+    addError(|tmp:///UserRepository.g|(0, 0, <20, 20>, <30, 30>), "Entity \"User\" not imported in /UserRepository.g on line 20", newEnv(|tmp:///UserRepository.g|));
 
 test bool shouldNotGiveErrorsWhenRepositoryPointsToImportedEntity() = 
     checkArtifact(repository("User", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
@@ -103,8 +103,8 @@ test bool shouldGiveErrorsWhenRepositoryPointsToImportedNonEntity() =
 
 test bool shouldGiveErrorWhenControllerDoesNotFollowNamingConvention() = 
     checkArtifact(controller("Blah", jsonApi(), route([routePart("/")]), [])[@src=|tmp:///Blah.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///Blah.g|)) == 
-    addError(|tmp:///Blah.g|, 
-        "Controller does not follow the convetion \<Identifier\>Controller.g in /Blah.g", newEnv(|tmp:///Blah.g|));
+    addError(|tmp:///Blah.g|(0, 0, <20, 20>, <30, 30>), 
+        "Controller does not follow the convetion \<Identifier\>Controller.g in /Blah.g on line 20", newEnv(|tmp:///Blah.g|));
 
 test bool shouldNotGiveErrorWhenControllerFollowsNamingConvention() = 
     checkArtifact(controller("BlahController", jsonApi(), route([routePart("/")]), [])[@src=|tmp:///BlahController.g|(0, 0, <20, 20>, <30, 30>)], 

@@ -49,7 +49,7 @@ public TypeEnv decrementControlLevel(TypeEnv env) = env[controlLevel = env.contr
 public bool isControlLevelCorrect(int level, TypeEnv env) = env.controlLevel >= level;
 
 public TypeEnv addDefinition(p:property(_, GlagolID name, _), TypeEnv env) = 
-    addError(p@src, "Cannot redefine \"<name>\". Already defined in <p@src.path> on line <env.definitions[name].d@src.begin.line>.", env) 
+    addError(env.definitions[name].d, "Cannot redefine \"<name>\". Already defined", env)
     when name in env.definitions;
 
 public TypeEnv addDefinition(p:property(_, GlagolID name, _), TypeEnv env) = 
@@ -57,7 +57,7 @@ public TypeEnv addDefinition(p:property(_, GlagolID name, _), TypeEnv env) =
     when name notin env.definitions;
 
 public TypeEnv addDefinition(p:param(Type paramType, GlagolID name, Expression defaultValue), TypeEnv env) = 
-    addError(p@src, "Cannot redefine \"<name>\". Already defined in <p@src.path> on line <env.definitions[name].d@src.begin.line>.", env) 
+    addError(env.definitions[name].d, "Cannot redefine \"<name>\". Already defined", env)
     when name in env.definitions && param(_) := env.definitions[name];
     
 public TypeEnv addDefinition(p:param(Type paramType, GlagolID name, Expression defaultValue), TypeEnv env) =
@@ -68,8 +68,7 @@ public TypeEnv addDefinition(d:declare(Type varType, variable(GlagolID name), St
     when name notin env.definitions || (name in env.definitions && isField(env.definitions[name]));
 
 public TypeEnv addDefinition(d:declare(Type varType, variable(GlagolID name), Statement defaultValue), TypeEnv env) = 
-    addError(d@src, "Cannot decleare \"<name>\" in <d@src.path> on line <d@src.begin.line>. " + 
-    				"Already decleared in <d@src.path> on line <env.definitions[name].d@src.begin.line>.", env) 
+    addError(env.definitions[name].d, "Cannot redecleare \"<name>\"", env) 
     when name in env.definitions && field(_) !:= env.definitions[name];
 
 public bool isDefined(variable(GlagolID name), TypeEnv env) = name in env.definitions;
@@ -78,8 +77,11 @@ public bool isDefined(fieldAccess(this(), str field), TypeEnv env) = field in en
 public bool isDefined(Expression expr, TypeEnv env) = false;
 
 public TypeEnv addError(loc src, str message, TypeEnv env) = env[errors = env.errors + <src, message>];
+public TypeEnv addError(element, str message, TypeEnv env) = 
+	env[errors = env.errors + <element@src, "<message> in <element@src.path> on line <element@src.begin.line>">];
 
 public TypeEnv addErrors(list[tuple[loc, str]] errors, TypeEnv env) = (env | addError(src, message, it) | <loc src, str message> <- errors);
+public TypeEnv addErrors(list[tuple[node, str]] errors, TypeEnv env) = (env | addError(element, message, it) | <element, str message> <- errors);
 
 public bool hasErrors(TypeEnv env) = size(env.errors) > 0;
 public list[Error] getErrors(TypeEnv env) = env.errors;

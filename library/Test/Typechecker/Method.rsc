@@ -14,7 +14,7 @@ test bool shouldGiveDuplicatedSignatureErrorWhenMethodsDuplicate() =
 		]), newEnv(|tmp:///|)) ==
 	addError(
 		|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Method test in /User.g has a duplicating signature (originally defined on line 20)", 
+		"Method test has been defined more than once with a duplicating signature in /User.g on line 20", 
 		newEnv(|tmp:///|)
 	);
 
@@ -27,7 +27,7 @@ test bool shouldGiveConflictingAccessErrorWhenMethodsDuplicate() =
 		]), newEnv(|tmp:///|)) ==
 	addError(
 		|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Method test in /User.g is defined more than once with different access modifiers (defined as private on line 20)", 
+		"Method test is defined more than once with different access modifiers in /User.g on line 20", 
 		newEnv(|tmp:///|)
 	);
 
@@ -40,6 +40,6 @@ test bool shouldGiveConflictingReturnTypeErrorWhenMethodsDuplicate() =
 		]), newEnv(|tmp:///|)) ==
 	addError(
 		|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Method test in /User.g is defined more than once with different return types (returns integer on line 20)", 
+		"Method test is defined more than once with different return types in /User.g on line 20", 
 		newEnv(|tmp:///|)
 	);

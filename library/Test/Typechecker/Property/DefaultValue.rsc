@@ -79,21 +79,21 @@ test bool shouldGiveErrorOnListOfVariables() =
 	checkDefaultValue(\list([
 		variable("das")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]
 	]), newEnv(|tmp:///User.g|)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+	addError(variable("das")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		notAllowed(variable("das")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]), newEnv(|tmp:///User.g|));
 	
 test bool shouldGiveErrorOnMapOfVariablesAsKeys() = 
 	checkDefaultValue(\map((
 		variable("das")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]: integer(2)
 	)), newEnv(|tmp:///User.g|)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+	addError(variable("das")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		notAllowed(variable("das")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]), newEnv(|tmp:///User.g|));
 		
 test bool shouldGiveErrorOnMapOfVariablesAsItems() = 
 	checkDefaultValue(\map((
 		integer(2): variable("das")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]
 	)), newEnv(|tmp:///User.g|)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+	addError(variable("das")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		notAllowed(variable("das")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]), newEnv(|tmp:///User.g|));
 
 

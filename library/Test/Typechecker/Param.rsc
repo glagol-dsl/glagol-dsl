@@ -14,7 +14,7 @@ test bool shouldGiveDeclareErrorWhenDuplicatingParamsExist() =
 	], newEnv(|tmp:///|)) == 
 	addDefinition(
 		param(integer(), "test1", emptyExpr())[@src=|tmp:///User.g|(0, 0, <25, 25>, <30, 30>)],
-		addError(|tmp:///User.g|(0, 0, <25, 25>, <30, 30>), "Cannot redefine \"test1\". Already defined in /User.g on line 25.", newEnv(|tmp:///|))
+		addError(|tmp:///User.g|(0, 0, <25, 25>, <30, 30>), "Cannot redefine \"test1\". Already defined in /User.g on line 25", newEnv(|tmp:///|))
 	);
 
 test bool shouldGiveDeclareErrorWhenDuplicatingParamsExistUsingDefaultValues() = 
@@ -24,7 +24,7 @@ test bool shouldGiveDeclareErrorWhenDuplicatingParamsExistUsingDefaultValues() =
 	], newEnv(|tmp:///|)) == 
 	addDefinition(
 		param(integer(), "test1", emptyExpr())[@src=|tmp:///User.g|(0, 0, <25, 25>, <30, 30>)],
-		addError(|tmp:///User.g|(0, 0, <25, 25>, <30, 30>), "Cannot redefine \"test1\". Already defined in /User.g on line 25.", newEnv(|tmp:///|))
+		addError(|tmp:///User.g|(0, 0, <25, 25>, <30, 30>), "Cannot redefine \"test1\". Already defined in /User.g on line 25", newEnv(|tmp:///|))
 	);
 
 test bool shouldGiveTypeMismatchErrorWhenMismatchingTypesOnParams() = 

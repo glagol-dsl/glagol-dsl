@@ -11,23 +11,21 @@ import Syntax::Abstract::Glagol::Helpers;
 import List;
 
 public TypeEnv checkMethod(c: constructor(_, _, _), Declaration parent, TypeEnv env) = 
-	addError(c@src, "Constructor in <c@src.path> has a duplicating signature (originally defined on line <c@src.begin.line>)", env)
+	addError(c, "Constructor has duplicating signature", env)
 	when hasDuplicates(c, parent.declarations);
 
 public TypeEnv checkMethod(m: method(_, _, GlagolID name, _, _, _), Declaration parent, TypeEnv env) = 
-	addError(m@src, "Method <name> in <m@src.path> has a duplicating signature (originally defined on line <m@src.begin.line>)", env)
+	addError(m, "Method <name> has been defined more than once with a duplicating signature", env)
 	when hasDuplicates(m, parent.declarations);
 
 public TypeEnv checkMethod(m: method(\mod, _, GlagolID name, _, _, _), Declaration parent, TypeEnv env) = 
-	addError(m@src, 
-		"Method <name> in <m@src.path> is defined more than once with " + 
-		"different access modifiers (defined as <toString(\mod)> on line <m@src.begin.line>)", env)
+	addError(m,
+		"Method <name> is defined more than once with different access modifiers", env)
 	when isDefinedWithDifferentAccessModifier(m, parent.declarations);
 
 public TypeEnv checkMethod(m: method(_, t, GlagolID name, _, _, _), Declaration parent, TypeEnv env) = 
-	addError(m@src, 
-		"Method <name> in <m@src.path> is defined more than once with " + 
-		"different return types (returns <toString(t)> on line <m@src.begin.line>)", env)
+	addError(m,
+		"Method <name> is defined more than once with different return types", env)
 	when isDefinedWithDifferentReturnTypes(m, parent.declarations);
 
 public TypeEnv checkMethod(m: method(_, Type t, _, list[Declaration] params, list[Statement] body, Expression guard), Declaration parent, TypeEnv env) =

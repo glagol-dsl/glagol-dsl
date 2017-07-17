@@ -19,7 +19,7 @@ public TypeEnv checkExpressions(list[Expression] exprs, TypeEnv env) = (env | ch
 public TypeEnv checkExpressions(map[Expression, Expression] exprs, TypeEnv env) = 
 	(env | checkExpression(exprs[expr], checkExpression(expr, it)) | expr <- exprs);
 
-public TypeEnv checkList(l, \list(unknownType()), TypeEnv env) = addError(l@src, "Cannot unveil list type in <l@src.path> on line <l@src.begin.line>", env);
+public TypeEnv checkList(l, \list(unknownType()), TypeEnv env) = addError(l, "Cannot unveil list type", env);
 public TypeEnv checkList(l, \list(_), TypeEnv env) = env;
 	
 public TypeEnv checkExpression(\map(map[Expression, Expression] items), TypeEnv env) = env when size(items) == 0;
@@ -28,13 +28,13 @@ public TypeEnv checkExpression(m: \map(map[Expression, Expression] items), TypeE
 	checkMap(m, lookupType(m, env), checkExpressions(items, env));
 
 public TypeEnv checkMap(m, \map(unknownType(), unknownType()), TypeEnv env) = 
-	addError(m@src,  "Cannot unveil map key and value types in <m@src.path> on line <m@src.begin.line>", env);
+	addError(m,  "Cannot unveil map key and value types", env);
 	
 public TypeEnv checkMap(m, \map(unknownType(), _), TypeEnv env) = 
-	addError(m@src,  "Cannot unveil map key type in <m@src.path> on line <m@src.begin.line>", env);
+	addError(m,  "Cannot unveil map key type", env);
 	
 public TypeEnv checkMap(m, \map(_, unknownType()), TypeEnv env) = 
-	addError(m@src,  "Cannot unveil map value type in <m@src.path> on line <m@src.begin.line>", env);
+	addError(m,  "Cannot unveil map value type", env);
 	
 public TypeEnv checkMap(m, \map(_, _), TypeEnv env) = env;
 
@@ -49,19 +49,19 @@ public TypeEnv checkExpression(f: fieldAccess(_, _), TypeEnv env) = checkIsVaria
 public TypeEnv checkExpression(a: arrayAccess(_, _), TypeEnv env) = checkArrayAccess(a, env);
 
 public TypeEnv checkIsVariableDefined(expr: fieldAccess(str name), TypeEnv env) = 
-	addError(expr@src, "\'<expr.name>\' is undefined in <expr@src.path> on line <expr@src.begin.line>", env)
+	addError(expr, "\'<expr.name>\' is undefined", env)
 	when !hasLocalProperty(name, env);
 	
 public TypeEnv checkIsVariableDefined(expr: fieldAccess(str name), TypeEnv env) = env;
 	
 public TypeEnv checkIsVariableDefined(expr: fieldAccess(this(), str name), TypeEnv env) = 
-	addError(expr@src, "\'<expr.name>\' is undefined in <expr@src.path> on line <expr@src.begin.line>", env)
+	addError(expr, "\'<expr.name>\' is undefined", env)
 	when !hasLocalProperty(name, env);
 	
 public TypeEnv checkIsVariableDefined(expr: fieldAccess(this(), str name), TypeEnv env) = env;
 
 public TypeEnv checkIsVariableDefined(Expression expr, TypeEnv env) = 
-	addError(expr@src, "\'<expr.name>\' is undefined in <expr@src.path> on line <expr@src.begin.line>", env)
+	addError(expr, "\'<expr.name>\' is undefined", env)
 	when !isDefined(expr, env);
 
 public TypeEnv checkIsVariableDefined(Expression, TypeEnv env) = env;
@@ -72,26 +72,26 @@ public TypeEnv checkArrayAccess(a: arrayAccess(Expression variable, Expression a
 public TypeEnv checkArrayAccess(\map(Type key, Type v), Type indexKeyType, _, TypeEnv env) = env when key == indexKeyType;
 
 public TypeEnv checkArrayAccess(\map(Type key, Type v), Type indexKeyType, a, TypeEnv env) = 
-	addError(a@src, 
-		"Map key type is <toString(key)>, cannot access using <toString(indexKeyType)> in <a@src.path> on line <a@src.begin.line>", env)
+	addError(a,
+		"Map key type is <toString(key)>, cannot access using <toString(indexKeyType)>", env)
 	when key != indexKeyType;
 	
 public TypeEnv checkArrayAccess(\list(Type \type), integer(), _, TypeEnv env) = env;
 
 public TypeEnv checkArrayAccess(\list(Type \type), Type indexKeyType, a, TypeEnv env) = 
-	addError(a@src, 
-		"List cannot be accessed using <toString(indexKeyType)>, only integers allowed in <a@src.path> on line <a@src.begin.line>", env)
+	addError(a,
+		"List cannot be accessed using <toString(indexKeyType)>, only integers allowed", env)
 	when integer() != indexKeyType;
 
 public TypeEnv checkArrayAccess(Type t, Type indexKeyType, a, TypeEnv env) = 
-	addError(a@src, "Cannot access <toString(t)> as array in <a@src.path> on line <a@src.begin.line>", env);
+	addError(a, "Cannot access <toString(t)> as array", env);
 
 public TypeEnv checkIndexKey(Expression key, TypeEnv env) = checkIndexKey(lookupType(key, env), key, checkExpression(key, env));
 
 public TypeEnv checkIndexKey(unknownType(), key, TypeEnv env) = 
-	addError(key@src, "Type of array index key used cannot be determined in <key@src.path> on line <key@src.begin.line>", env);
+	addError(key, "Type of array index key used cannot be determined", env);
 public TypeEnv checkIndexKey(voidValue(), key, TypeEnv env) = 
-	addError(key@src, "Void cannot be used as array index key in <key@src.path> on line <key@src.begin.line>", env);
+	addError(key, "Void cannot be used as array index key", env);
 	
 public TypeEnv checkIndexKey(Type t, key, TypeEnv env) = env;
 
@@ -105,18 +105,17 @@ public TypeEnv checkBinaryMath(e, Expression lhs, Expression rhs, TypeEnv env) =
 	checkExpression(rhs, checkExpression(lhs, checkBinaryMath(e, lookupType(lhs, env), lookupType(rhs, env), env)));
 
 public TypeEnv checkBinaryMath(e, unknownType(), _, env) = 
-	addError(e@src, "Cannot apply <stringify(e)> on unknown type in <e@src.path> on line <e@src.begin.line>", env);
+	addError(e, "Cannot apply <stringify(e)> on unknown type", env);
 	
 public TypeEnv checkBinaryMath(e, _, unknownType(), env) = 
-	addError(e@src, "Cannot apply <stringify(e)> on unknown type in <e@src.path> on line <e@src.begin.line>", env);
+	addError(e, "Cannot apply <stringify(e)> on unknown type", env);
 	
 public TypeEnv checkBinaryMath(e, integer(), integer(), env) = env;
 public TypeEnv checkBinaryMath(e, integer(), float(), env) = env;
 public TypeEnv checkBinaryMath(e, float(), float(), env) = env;
 public TypeEnv checkBinaryMath(e, float(), integer(), env) = env;
 public TypeEnv checkBinaryMath(e, Type lhs, Type rhs, env) = 
-	addError(e@src, "Cannot apply <stringify(e)> on <toString(lhs)> and <toString(rhs)> " + 
-					"in <e@src.path> on line <e@src.begin.line>", env);
+	addError(e, "Cannot apply <stringify(e)> on <toString(lhs)> and <toString(rhs)>", env);
 
 private str stringify(product(_, _)) = "multiplication";
 private str stringify(remainder(_, _)) = "remainder";
@@ -141,7 +140,7 @@ public TypeEnv checkComparison(e, float(), float(), TypeEnv env) = env;
 public TypeEnv checkComparison(equals(_, _), Type l, Type r, TypeEnv env) = env when l == r;
 public TypeEnv checkComparison(nonEquals(_, _), Type l, Type r, TypeEnv env) = env when l == r;
 public TypeEnv checkComparison(e, Type l, Type r, TypeEnv env) = 
-	addError(e@src, "Cannot compare <toString(l)> and <toString(r)> in <e@src.path> on line <e@src.begin.line>", env);
+	addError(e, "Cannot compare <toString(l)> and <toString(r)>", env);
 
 public TypeEnv checkExpression(e: and(Expression lhs, Expression rhs), TypeEnv env) = 
 	checkExpression(rhs, checkExpression(lhs, checkBinaryLogic(e, lookupType(lhs, env), lookupType(rhs, env), env)));
@@ -151,7 +150,7 @@ public TypeEnv checkExpression(e: or(Expression lhs, Expression rhs), TypeEnv en
 
 public TypeEnv checkBinaryLogic(e, boolean(), boolean(), TypeEnv env) = env;
 public TypeEnv checkBinaryLogic(e, Type l, Type r, TypeEnv env) = 
-	addError(e@src, "Cannot apply logical operation on <toString(l)> and <toString(r)> in <e@src.path> on line <e@src.begin.line>", env);
+	addError(e, "Cannot apply logical operation on <toString(l)> and <toString(r)>", env);
 
 public TypeEnv checkExpression(e: negative(Expression expr), TypeEnv env) = 
 	checkExpression(expr, checkUnaryMath(e, lookupType(expr, env), env));
@@ -161,7 +160,7 @@ public TypeEnv checkExpression(e: positive(Expression expr), TypeEnv env) =
 public TypeEnv checkUnaryMath(Expression, float(), TypeEnv env) = env;
 public TypeEnv checkUnaryMath(Expression, integer(), TypeEnv env) = env;
 public TypeEnv checkUnaryMath(n, Type t, TypeEnv env) = 
-	addError(n@src, "Cannot apply <stringify(n)> on <toString(t)> in <n@src.path> on line <n@src.begin.line>", env);
+	addError(n, "Cannot apply <stringify(n)> on <toString(t)>", env);
 
 private str stringify(negative(_)) = "minus";
 private str stringify(positive(_)) = "plus";
@@ -177,30 +176,30 @@ public TypeEnv checkIfThenElse(e, \map(_, _), \map(voidValue(), voidValue()), Ty
 public TypeEnv checkIfThenElse(e, \map(voidValue(), voidValue()), \map(_, _), TypeEnv env) = env;
 public TypeEnv checkIfThenElse(e, Type leftType, Type rightType, TypeEnv env) = env when leftType == rightType;
 public TypeEnv checkIfThenElse(e, Type leftType, Type rightType, TypeEnv env) = 
-	addError(e@src, "Ternary cannot return different types in <e@src.path> on line <e@src.begin.line>", env) 
+	addError(e, "Ternary cannot return different types", env)
 	when leftType != rightType;
 
 public TypeEnv checkCondition(Expression condition, TypeEnv env) = checkIsBoolean(lookupType(condition, env), condition, checkExpression(condition, env));
 
 public TypeEnv checkIsBoolean(boolean(), _, TypeEnv env) = env;
 public TypeEnv checkIsBoolean(_, c, TypeEnv env) = 
-	addError(c@src, "Condition does not evaluate to boolean in <c@src.path> on line <c@src.begin.line>", env);
+	addError(c, "Condition does not evaluate to boolean", env);
 	
 public TypeEnv checkExpression(n: new(l: local(str name), list[Expression] args), TypeEnv env) = 
 	checkExpressions(args, checkNewArtifact(n, l, env));
 	
 public TypeEnv checkNewArtifact(n, l: local(str name), TypeEnv env) = 
-	addError(n@src, "Artifact <name> used but not imported in <n@src.path> on line <n@src.begin.line>", env)
+	addError(n, "Artifact <name> used but not imported", env)
 	when !hasLocalArtifact(name, env);
 	
 public TypeEnv checkNewArtifact(n, local(str name), TypeEnv env) = checkNewArtifact(n, getFullNameOfLocalArtifact(name, env), env);
 	
 public TypeEnv checkNewArtifact(n, e: external(str localName, Declaration namespace, str originalName), TypeEnv env) = 
-	addError(n@src, "Cannot find artifact <stringify(e)> used in <n@src.path> on line <n@src.begin.line>", env)
+	addError(n, "Cannot find artifact <stringify(e)> used", env)
 	when !isInAST(toNamespace(e), env);
 	
 public TypeEnv checkNewArtifact(n, e: external(str localName, Declaration namespace, str originalName), TypeEnv env) = 
-	addError(n@src, "Cannot instantiate artifact <stringify(e)>: only entities and value objects can be instantiated in <n@src.path> on line <n@src.begin.line>", env)
+	addError(n, "Cannot instantiate artifact <stringify(e)>: only entities and value objects can be instantiated", env)
 	when isInAST(toNamespace(e), env) && !(isEntity(toNamespace(e), env) || isValueObject(toNamespace(e), env));
 	
 public TypeEnv checkNewArtifact(n, e: external(str localName, Declaration namespace, str originalName), TypeEnv env) = env;
@@ -212,8 +211,8 @@ public TypeEnv checkExpression(i: invoke(str m, list[Expression] params), TypeEn
 	checkInvoke(i, toSignature(params, env), env);
 
 public TypeEnv checkInvoke(i: invoke(str m, list[Expression] params), list[Type] signature, TypeEnv env) = 
-	addError(i@src, 
-		"Call to an undefined method <m>(<toString(signature,  ", ")>) in <i@src.path> on line <i@src.begin.line>", env)
+	addError(i,
+		"Call to an undefined method <m>(<toString(signature,  ", ")>)", env)
 	when !hasMethod(m, signature, env);
 	
 public TypeEnv checkInvoke(i: invoke(str m, list[Expression] params), list[Type] signature, TypeEnv env) = env;
@@ -242,14 +241,14 @@ public TypeEnv checkInvoke(self(), i: invoke(Expression prev, str m, list[Expres
 	checkInvoke(invoke(m, params)[@src=i@src], signature, env);
 
 public TypeEnv checkInvoke(unknownType(), i: invoke(Expression prev, str m, list[Expression] params), list[Type] signature, TypeEnv env) =
-	addError(i@src, 
-		"Cannot call method <m>(<toString(signature,  ", ")>) on unknown type in <i@src.path> on line <i@src.begin.line>", 
+	addError(i,
+		"Cannot call method <m>(<toString(signature,  ", ")>) on unknown type",
 		checkExpression(prev, env)
 	);
 	
 public TypeEnv checkInvoke(Type prevType, i: invoke(Expression prev, str m, list[Expression] params), list[Type] signature, TypeEnv env) =
-	addError(i@src, 
-		"Cannot call method <m>(<toString(signature,  ", ")>) on <toString(prevType)> in <i@src.path> on line <i@src.begin.line>", 
+	addError(i,
+		"Cannot call method <m>(<toString(signature,  ", ")>) on <toString(prevType)>",
 		checkExpression(prev, env)
 	) when (artifact(_) !:= prevType && repository(_) !:= prevType);
 	

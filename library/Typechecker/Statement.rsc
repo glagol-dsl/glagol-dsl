@@ -16,7 +16,7 @@ public TypeEnv checkStatement(r: \return(Expression expr), t, s, TypeEnv env) = 
 public TypeEnv checkStatement(emptyStmt(), _, _, TypeEnv env) = env;
 
 public TypeEnv checkReturn(Type actualType, Type expectedType, Statement r, TypeEnv env) = 
-	addError(r@src, "Returning <toString(actualType)>, <toString(expectedType)> expected in <r@src.path> on line <r@src.begin.line>", env)
+	addError(r, "Returning <toString(actualType)>, <toString(expectedType)> expected", env)
 	when actualType != expectedType;
 	
 public TypeEnv checkReturn(Type actualType, Type expectedType, Statement r, TypeEnv env) = env;
@@ -34,13 +34,13 @@ public TypeEnv checkAssignType(Statement s, \list(_), \list(voidValue()), TypeEn
 public TypeEnv checkAssignType(Statement s, \map(_, _), \map(voidValue(), voidValue()), TypeEnv env) = env;
 	
 public TypeEnv checkAssignType(Statement s, Type expectedType, Type actualType, TypeEnv env) =
-	addError(s@src, 
+	addError(s,
 		"Cannot assign value of type <toString(actualType)> to a variable of type " + 
-		"<toString(expectedType)> in <s@src.path> on line <s@src.begin.line>", env)
+		"<toString(expectedType)>", env)
 	when expectedType != actualType;
 
 public TypeEnv checkAssignType(a: assign(assignable, operator, val), Type expectedType, Type actualType, TypeEnv env) = 
-	addError(a@src, "Assignment operator not allowed in <a@src.path> on line <a@src.begin.line>", env)
+	addError(a, "Assignment operator not allowed", env)
 	when !isOperatorAllowed(expectedType, operator);
 
 public TypeEnv checkAssignType(Statement s, Type expectedType, Type actualType, TypeEnv env) = env;
@@ -56,7 +56,7 @@ public TypeEnv checkAssignable(v: variable(_), TypeEnv env) = checkExpression(v,
 public TypeEnv checkAssignable(f: fieldAccess(_), TypeEnv env) = checkExpression(f, env);
 public TypeEnv checkAssignable(f: fieldAccess(_, _), TypeEnv env) = checkExpression(f, env);
 public TypeEnv checkAssignable(a: arrayAccess(_, _), TypeEnv env) = checkExpression(a, env);
-public TypeEnv checkAssignable(e, TypeEnv env) = addError(e@src, "Cannot assign value to expression in <e@src.path> on line <e@src.begin.line>", env);
+public TypeEnv checkAssignable(e, TypeEnv env) = addError(e, "Cannot assign value to expression", env);
 
 public TypeEnv checkConditions(list[Expression] conditions, TypeEnv env) = (env | checkCondition(c, it) | c <- conditions);
 
@@ -67,10 +67,10 @@ public TypeEnv checkStatement(p: remove(Expression expr), _, _, TypeEnv env) = c
 
 public TypeEnv checkORMFunction(a: artifact(Name name), p, env) = env when isEntity(a, env);
 public TypeEnv checkORMFunction(_, p, env) = 
-	addError(p@src, "Only entities can be <stringify(p)> in <p@src.path> on line <p@src.begin.line>", env);
+	addError(p, "Only entities can be <stringify(p)>", env);
 
 public TypeEnv checkStatement(d: declare(_, Expression varName, _), _,  _, TypeEnv env) = 
-	addError(d@src, "Cannot resolve variable name in <d@src.path> on line <d@src.begin.line>", env) 
+	addError(d, "Cannot resolve variable name", env)
 	when variable(_) !:= varName;
 
 public TypeEnv checkStatement(d: declare(Type varType, variable(GlagolID name), Statement defaultValue), t, s, TypeEnv env) = 
@@ -80,9 +80,8 @@ public TypeEnv checkDeclareType(\list(_), \list(voidValue()), GlagolID name, d, 
 public TypeEnv checkDeclareType(\map(_, _), \map(voidValue(), voidValue()), GlagolID name, d, TypeEnv env) = addDefinition(d, env);
 
 public TypeEnv checkDeclareType(Type expectedType, Type actualType, GlagolID name, d, TypeEnv env) = 
-	addError(d@src, 
-		"Cannot assign <toString(actualType)> to variable <name> originally defined as <toString(expectedType)> " + 
-		"in <d@src.path> on line <d@src.begin.line>", env)
+	addError(d,
+		"Cannot assign <toString(actualType)> to variable <name> originally defined as <toString(expectedType)>", env)
 	when expectedType != actualType;
 	
 public TypeEnv checkDeclareType(Type expectedType, Type actualType, GlagolID name, d, TypeEnv env) = addDefinition(d, env);
@@ -110,11 +109,10 @@ public TypeEnv checkForeachTypes(m: \map(_, _), Expression key, Expression var, 
 	checkIsVarCompatibleWithCollection(m, var, checkIsKeyCompatibleWithCollection(m, key, env));
 	
 public TypeEnv checkForeachTypes(Type t, Expression key, Expression var, TypeEnv env) = 
-	addError(var@src, "Cannot traverse <toString(t)> in <var@src.path> on line <var@src.begin.line>", env);
+	addError(var, "Cannot traverse <toString(t)>", env);
 
 public TypeEnv checkIsVarCompatibleWithCollection(\list(Type t), v: variable(name), TypeEnv env) = 
-	addError(v@src, "Cannot use <name> as value in list traversing: already decleared and is not <toString(t)> " +
-					"in <v@src.path> on line <v@src.begin.line>", env)
+	addError(v, "Cannot use <name> as value in list traversing: already decleared and is not <toString(t)>", env)
 	when isDefined(v, env) && lookupType(v, env) != t;
 
 public TypeEnv checkIsVarCompatibleWithCollection(\list(Type t), v: variable(name), TypeEnv env) = 
@@ -124,8 +122,7 @@ public TypeEnv checkIsVarCompatibleWithCollection(\list(Type t), v: variable(nam
 	addDefinition(declare(t, v, emptyStmt())[@src=v@src], env);
 	
 public TypeEnv checkIsVarCompatibleWithCollection(\map(_, Type t), v: variable(name), TypeEnv env) = 
-	addError(v@src, "Cannot use <name> as value in map traversing: already decleared and is not <toString(t)> " +
-					"in <v@src.path> on line <v@src.begin.line>", env)
+	addError(v, "Cannot use <name> as value in map traversing: already decleared and is not <toString(t)>", env)
 	when isDefined(v, env) && lookupType(v, env) != t;
 
 public TypeEnv checkIsVarCompatibleWithCollection(\map(_, Type t), v: variable(name), TypeEnv env) = 
@@ -136,8 +133,7 @@ public TypeEnv checkIsVarCompatibleWithCollection(\map(_, Type t), v: variable(n
 
 public TypeEnv checkIsKeyCompatibleWithCollection(\list(_), emptyExpr(), TypeEnv env) = env;
 public TypeEnv checkIsKeyCompatibleWithCollection(\list(_), v: variable(name), TypeEnv env) = 
-	addError(v@src, "Cannot use <name> as key in list traversing: already decleared and it is not an integer " +
-					"in <v@src.path> on line <v@src.begin.line>", env) 
+	addError(v, "Cannot use <name> as key in list traversing: already decleared and it is not an integer", env) 
 	when isDefined(v, env) && lookupType(v, env) != integer();
 	
 public TypeEnv checkIsKeyCompatibleWithCollection(\list(_), v: variable(name), TypeEnv env) = 
@@ -148,8 +144,7 @@ public TypeEnv checkIsKeyCompatibleWithCollection(\list(_), v: variable(name), T
 	
 public TypeEnv checkIsKeyCompatibleWithCollection(\map(_, _), emptyExpr(), TypeEnv env) = env;
 public TypeEnv checkIsKeyCompatibleWithCollection(\map(Type key, _), v: variable(name), TypeEnv env) = 
-	addError(v@src, "Cannot use <name> as key in map traversing: already decleared and it is not an <toString(key)> " +
-					"in <v@src.path> on line <v@src.begin.line>", env) 
+	addError(v, "Cannot use <name> as key in map traversing: already decleared and it is not an <toString(key)>", env) 
 	when isDefined(v, env) && lookupType(v, env) != key;
 
 public TypeEnv checkIsKeyCompatibleWithCollection(\map(Type key, _), v: variable(name), TypeEnv env) = 
@@ -161,19 +156,19 @@ public TypeEnv checkIsKeyCompatibleWithCollection(\map(Type key, _), v: variable
 public TypeEnv checkIsKeyCompatibleWithCollection(_, _, TypeEnv env) = env;
 
 public TypeEnv checkStatement(b: \break(0), t, s, TypeEnv env) = 
-	addError(b@src, "Cannot break out from structure using level 0 in <b@src.path> on line <b@src.begin.line>", env);
+	addError(b, "Cannot break out from structure using level 0", env);
 	
 public TypeEnv checkStatement(b: \break(int level), t, s, TypeEnv env) = 
-	addError(b@src, "Cannot break out from structure using level <level> in <b@src.path> on line <b@src.begin.line>", env)
+	addError(b, "Cannot break out from structure using level <level>", env)
 	when !isControlLevelCorrect(level, env);
 	
 public TypeEnv checkStatement(b: \break(int level), t, s, TypeEnv env) = env;
 
 public TypeEnv checkStatement(c: \continue(0), t, s, TypeEnv env) = 
-	addError(c@src, "Cannot continue from structure using level 0 in <c@src.path> on line <c@src.begin.line>", env);
+	addError(c, "Cannot continue from structure using level 0", env);
 	
 public TypeEnv checkStatement(c: \continue(int level), t, s, TypeEnv env) = 
-	addError(c@src, "Cannot continue from structure using level <level> in <c@src.path> on line <c@src.begin.line>", env)
+	addError(c, "Cannot continue from structure using level <level>", env)
 	when !isControlLevelCorrect(level, env);
 	
 public TypeEnv checkStatement(c: \continue(int level), t, s, TypeEnv env) = env;

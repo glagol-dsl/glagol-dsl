@@ -16,8 +16,7 @@ public TypeEnv checkBody(list[Statement] body, Type t, Declaration subroutine, D
 
 
 public TypeEnv checkReturnStmtAvailability(list[Statement] body, Declaration subroutine, TypeEnv env) = 
-	addError(subroutine@src, "Return statement with value expected in <subroutine@src.path> for method \'<subroutine.name>\'" + 
-								" defined on line <subroutine@src.begin.line>", env)
+	addError(subroutine, "Return statement with value expected for method \'<subroutine.name>\'", env)
 	when !hasReturn(body);
 
 public TypeEnv checkReturnStmtAvailability(list[Statement] body, Declaration subroutine, TypeEnv env) = env;
