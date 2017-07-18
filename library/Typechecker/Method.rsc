@@ -10,6 +10,15 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import List;
 
+public TypeEnv checkMethod(c: constructor(_, _, _), repository(_, _), TypeEnv env) =
+	addError(c, "Constructors are disabled for repositories", env);
+
+public TypeEnv checkMethod(c: constructor(_, _, _), util(_, _), TypeEnv env) =
+	addError(c, "Constructors are disabled for utilities/services", env);
+
+public TypeEnv checkMethod(c: constructor(_, _, _), controller(_, _, _, _), TypeEnv env) =
+	addError(c, "Constructors are disabled for controllers", env);
+
 public TypeEnv checkMethod(c: constructor(list[Declaration] params, list[Statement] body, Expression guard), Declaration parent, TypeEnv env) =
 	checkBody(body, voidValue(), c, parent, checkGuard(guard, checkParams(params, checkDuplicates(c, parent.declarations, env))));
 
