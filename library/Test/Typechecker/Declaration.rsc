@@ -28,3 +28,15 @@ test bool checkDeclarationsShouldNotGiveErrorsWhenNoDuplicatingEntityPropertyDef
         addDefinition(property(integer()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], "count", emptyExpr()), 
         addDefinition(property(integer(), "id", emptyExpr()), newEnv(|tmp:///User.g|)));
 }
+
+test bool shouldNotGiveErrorsOnDuplicatingParamListsWithDifferentGuards() = 
+	checkDeclarations([
+			method(\private(), voidValue(), "test", [param(integer(), "i", emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], [], boolean(true))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
+			method(\private(), voidValue(), "test", [param(integer(), "i", emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], [], boolean(false))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]
+		],
+		entity("User", [
+			method(\private(), voidValue(), "test", [param(integer(), "i", emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], [], boolean(true))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
+			method(\private(), voidValue(), "test", [param(integer(), "i", emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], [], boolean(false))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]
+		]), newEnv(|tmp:///|)
+	) ==
+	newEnv(|tmp:///|);

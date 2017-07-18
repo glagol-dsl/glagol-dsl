@@ -26,7 +26,7 @@ public TypeEnv checkArtifact(c:controller(GlagolID name, ControllerType controll
 private TypeEnv checkControllerFileName(c:controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations), TypeEnv env) = 
     addError(c, "Controller does not follow the convetion \<Identifier\>Controller.g", env)
     when /^[A-Z][A-Za-z]+?Controller$/ !:= replaceLast(c@src.file, ".<c@src.extension>", "");
-    
+
 private TypeEnv checkControllerFileName(c:controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations), TypeEnv env) = 
     env when /^[A-Z][A-Za-z]+?Controller$/ := replaceLast(c@src.file, ".<c@src.extension>", "");
 

@@ -7,7 +7,7 @@ import Syntax::Abstract::Glagol;
 
 test bool shouldGiveDuplicatedSignatureErrorWhenMethodsDuplicate() =
 	checkMethod(
-		method(\private(), integer(), "test", [], [], emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+		method(\private(), integer(), "test", [], [\return(integer(5))], emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		entity("User", [
 			method(\private(), integer(), "test", [], [], emptyExpr()),
 			method(\private(), integer(), "test", [], [], emptyExpr())
@@ -20,7 +20,7 @@ test bool shouldGiveDuplicatedSignatureErrorWhenMethodsDuplicate() =
 
 test bool shouldGiveConflictingAccessErrorWhenMethodsDuplicate() =
 	checkMethod(
-		method(\private(), integer(), "test", [], [], emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+		method(\private(), integer(), "test", [], [\return(integer(3))], emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		entity("User", [
 			method(\private(), integer(), "test", [], [], emptyExpr()),
 			method(\public(), integer(), "test", [], [], integer(2))
@@ -33,9 +33,9 @@ test bool shouldGiveConflictingAccessErrorWhenMethodsDuplicate() =
 
 test bool shouldGiveConflictingReturnTypeErrorWhenMethodsDuplicate() =
 	checkMethod(
-		method(\public(), integer(), "test", [], [], emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+		method(\public(), integer(), "test", [], [\return(integer(3))], emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		entity("User", [
-			method(\public(), integer(), "test", [], [], emptyExpr()),
+			method(\public(), integer(), "test", [], [], integer(3)),
 			method(\public(), string(), "test", [], [], integer(2))
 		]), newEnv(|tmp:///|)) ==
 	addError(

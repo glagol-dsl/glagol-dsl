@@ -48,6 +48,12 @@ public TypeEnv incrementControlLevel(TypeEnv env) = env[controlLevel = env.contr
 public TypeEnv decrementControlLevel(TypeEnv env) = env[controlLevel = env.controlLevel - 1];
 public bool isControlLevelCorrect(int level, TypeEnv env) = env.controlLevel >= level;
 
+public TypeEnv resetLocalDefinitions(TypeEnv env) = 
+	env[definitions = nonLocalDefinitions(env)]; 
+
+public map[GlagolID, Definition] nonLocalDefinitions(TypeEnv env) = 
+	(d : env.definitions[d] | d <- env.definitions, param(_) !:= env.definitions[d] && localVar(_) !:= env.definitions[d]);
+
 public TypeEnv addDefinition(p:property(_, GlagolID name, _), TypeEnv env) = 
     addError(env.definitions[name].d, "Cannot redefine \"<name>\". Already defined", env)
     when name in env.definitions;
