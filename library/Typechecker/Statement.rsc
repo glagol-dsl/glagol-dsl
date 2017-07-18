@@ -6,11 +6,10 @@ import Typechecker::Expression;
 import Typechecker::Type;
 import Syntax::Abstract::Glagol;
 
-public TypeEnv checkStatements(list[Statement] stmts, t, subroutine, TypeEnv env) {
-	for (stmt <- stmts) env = checkStatement(stmt, t, subroutine, env);
-	return env;
-}
+public TypeEnv checkStatements(list[Statement] stmts, t, subroutine, TypeEnv env) = 
+	(env | checkStatement(stmt, t, subroutine, it) | stmt <- stmts);
 
+public TypeEnv checkStatement(r: \return(emptyExpr()), t, s, TypeEnv env) = checkReturn(voidValue(), externalize(t, env), r, env);
 public TypeEnv checkStatement(r: \return(Expression expr), t, s, TypeEnv env) = checkReturn(lookupType(expr, env), externalize(t, env), r, env);
 
 public TypeEnv checkStatement(emptyStmt(), _, _, TypeEnv env) = env;

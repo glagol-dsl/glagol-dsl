@@ -5,6 +5,12 @@ import Typechecker::Env;
 import Typechecker::Errors;
 import Syntax::Abstract::Glagol;
 
+test bool shouldNotGiveErrorWhenReturnVoidAndMethodTypeIsVoid() = 
+	checkStatement(
+		\return(emptyExpr()), 
+		voidValue(), 
+		method(\public(), string(), "test", [], [], emptyExpr()), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+
 test bool shouldGiveErrorWhenReturnValueTypeDoesNotMatchMethodReturnType() = 
 	checkStatement(
 		\return(integer(1))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
