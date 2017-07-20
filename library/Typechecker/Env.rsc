@@ -128,6 +128,9 @@ public TypeEnv setContext(Declaration ctx, TypeEnv env) = env[context = ctx];
 public Declaration getContext(TypeEnv env) = env.context;
 public TypeEnv clearContext(TypeEnv env) = setContext(emptyDecl(), env);
 
+public Declaration getArtifact(\module(_, _, Declaration artifact)) = artifact;
+public Declaration getArtifact(a: emptyDecl()) = a;
+
 public Declaration getNamespace(TypeEnv env) = env.context.namespace;
 
 public bool hasLocalArtifact(str name, TypeEnv env) = hasLocalArtifact(name, getContext(env), env);

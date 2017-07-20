@@ -21,6 +21,9 @@ public bool isConstructor(_) = false;
 public bool isEntity(entity(_, _)) = true;
 public bool isEntity(_) = false;
 
+public bool isValueObject(valueObject(_, _)) = true;
+public bool isValueObject(_) = false;
+
 public bool isRepository(repository(_, _)) = true;
 public bool isRepository(_) = false;
 
