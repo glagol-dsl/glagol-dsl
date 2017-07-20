@@ -51,13 +51,13 @@ public TypeEnv checkExpression(a: arrayAccess(_, _), TypeEnv env) = checkArrayAc
 public TypeEnv checkIsVariableDefined(expr: fieldAccess(str name), TypeEnv env) = 
 	addError(expr, "\'<expr.name>\' is undefined", env)
 	when !hasLocalProperty(name, env);
-	
+
 public TypeEnv checkIsVariableDefined(expr: fieldAccess(str name), TypeEnv env) = env;
-	
+
 public TypeEnv checkIsVariableDefined(expr: fieldAccess(this(), str name), TypeEnv env) = 
 	addError(expr, "\'<expr.name>\' is undefined", env)
 	when !hasLocalProperty(name, env);
-	
+
 public TypeEnv checkIsVariableDefined(expr: fieldAccess(this(), str name), TypeEnv env) = env;
 
 public TypeEnv checkIsVariableDefined(Expression expr, TypeEnv env) = 
@@ -186,8 +186,14 @@ public TypeEnv checkIsBoolean(_, c, TypeEnv env) =
 	addError(c, "Condition does not evaluate to boolean", env);
 	
 public TypeEnv checkExpression(n: new(l: local(str name), list[Expression] args), TypeEnv env) = 
-	checkExpressions(args, checkNewArtifact(n, l, env));
-	
+	checkConstructor(n, checkExpressions(args, checkNewArtifact(n, l, env)));
+
+public TypeEnv checkConstructor(n: new(local(str name), list[Expression] args), TypeEnv env) = 
+	addError(n, "Cannot match constructor <name>(<toString(toSignature(args, env), ", ")>)", env)
+	when hasLocalArtifact(name, env) && !hasConstructor(toSignature(args, env), findModule(externalize(n, env), env), env);
+
+public TypeEnv checkConstructor(n: new(local(str name), list[Expression] args), TypeEnv env) = env;
+
 public TypeEnv checkNewArtifact(n, l: local(str name), TypeEnv env) = 
 	addError(n, "Artifact <name> used but not imported", env)
 	when !hasLocalArtifact(name, env);
@@ -211,16 +217,20 @@ public TypeEnv checkExpression(i: invoke(str m, list[Expression] params), TypeEn
 	checkInvoke(i, toSignature(params, env), env);
 
 public TypeEnv checkInvoke(i: invoke(str m, list[Expression] params), list[Type] signature, TypeEnv env) = 
-	addError(i,
-		"Call to an undefined method <m>(<toString(signature,  ", ")>)", env)
+	addError(i, "Call to an undefined method <m>(<toString(signature,  ", ")>)", env)
 	when !hasMethod(m, signature, env);
-	
+
 public TypeEnv checkInvoke(i: invoke(str m, list[Expression] params), list[Type] signature, TypeEnv env) = env;
 
 public bool hasMethod(str name, list[Type] signature, TypeEnv env) = 
 	(false | true | method(Modifier access, _, name, params, _, _) <- getMethods(getContext(env)), 
 		isSignatureMatching(signature, params, env) && isMethodAccessible(access, getDimension(env)));
-	
+
+public bool hasConstructor([], Declaration m, TypeEnv env) = true when size(getConstructors(m)) == 0;
+
+public bool hasConstructor(list[Type] signature, Declaration m, TypeEnv env) = 
+	(false | true | constructor(list[Declaration] params, _, _) <- getConstructors(m), isSignatureMatching(signature, params, env));
+
 public bool isMethodAccessible(Modifier, 0) = true;
 public bool isMethodAccessible(\public(), int i) = true when i > 0;
 public bool isMethodAccessible(\private(), int i) = false when i > 0;

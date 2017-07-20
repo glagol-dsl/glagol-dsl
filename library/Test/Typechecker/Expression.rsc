@@ -29,6 +29,39 @@ test bool shouldGiveErrorWhenInvokingLocalPrivateMethodUsingWrongSignature() =
 		])), newEnv(|tmp:///|)
 	));
 	
+test bool shouldGiveErrorWhenCannotMatchConstructor() = 
+	checkExpression(new(local("User"), [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+			addImported(\import("User", namespace("Example"), "User"), setContext(
+				\module(namespace("Example"), [], entity("User", [
+					constructor([param(integer(), "t", emptyExpr())], [], emptyExpr())
+				])),
+				addToAST(file(|tmp:///|, \module(namespace("Example"), [], entity("User", [
+					constructor([param(integer(), "t", emptyExpr())], [], emptyExpr())
+				]))), newEnv(|tmp:///|))
+			)
+	)) == addError(|tmp:///User.g|(0,0,<20,20>,<30,30>),"Cannot match constructor User()", 
+		addImported(\import("User", namespace("Example"), "User"), setContext(
+			\module(namespace("Example"), [], entity("User", [
+				constructor([param(integer(), "t", emptyExpr())], [], emptyExpr())
+			])),
+			addToAST(file(|tmp:///|, \module(namespace("Example"), [], entity("User", [
+				constructor([param(integer(), "t", emptyExpr())], [], emptyExpr())
+			]))), newEnv(|tmp:///|))
+		)
+	));
+	
+test bool shouldNotGiveErrorWhenCanMatchConstructorWithOneDefaultValue() = 
+	!hasErrors(checkExpression(new(local("User"), [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+			addImported(\import("User", namespace("Example"), "User"), setContext(
+				\module(namespace("Example"), [], entity("User", [
+					constructor([param(integer(), "t", integer(3))], [], emptyExpr())
+				])),
+				addToAST(file(|tmp:///|, \module(namespace("Example"), [], entity("User", [
+					constructor([param(integer(), "t", integer(3))], [], emptyExpr())
+				]))), newEnv(|tmp:///|))
+			)
+	)));
+	
 test bool shouldNotGiveErrorWhenInvokingLocalPublicMethod() = 
 	checkExpression(invoke("myString", []), setContext(
 		\module(namespace("Test"), [], entity("User", [

@@ -48,8 +48,7 @@ public TypeEnv incrementControlLevel(TypeEnv env) = env[controlLevel = env.contr
 public TypeEnv decrementControlLevel(TypeEnv env) = env[controlLevel = env.controlLevel - 1];
 public bool isControlLevelCorrect(int level, TypeEnv env) = env.controlLevel >= level;
 
-public TypeEnv resetLocalDefinitions(TypeEnv env) = 
-	env[definitions = nonLocalDefinitions(env)]; 
+public TypeEnv copyDefinitions(TypeEnv origin, TypeEnv env) = origin[definitions = env.definitions]; 
 
 public map[GlagolID, Definition] nonLocalDefinitions(TypeEnv env) = 
 	(d : env.definitions[d] | d <- env.definitions, param(_) !:= env.definitions[d] && localVar(_) !:= env.definitions[d]);
@@ -140,12 +139,14 @@ public Name getFullNameOfLocalArtifact(str name, TypeEnv env) = external(name, g
 public Declaration getContextNamespace(TypeEnv env) = getContextNamespace(getContext(env));
 public Declaration getContextNamespace(\module(Declaration namespace, _, _)) = namespace;
 
+public Expression externalize(new(local(str name), args), TypeEnv env) = new(getFullNameOfLocalArtifact(name, env), args);
 public Type externalize(artifact(local(str name)), TypeEnv env) = artifact(getFullNameOfLocalArtifact(name, env)) when hasLocalArtifact(name, env);
 public Type externalize(artifact(local(str name)), TypeEnv env) = unknownType() when !hasLocalArtifact(name, env);
 public Type externalize(repository(local(str name)), TypeEnv env) = repository(getFullNameOfLocalArtifact(name, env)) when hasLocalArtifact(name, env);
 public Type externalize(repository(local(str name)), TypeEnv env) = unknownType() when !hasLocalArtifact(name, env);
 public Type externalize(Type t, TypeEnv env) = t;
 
+public Declaration findModule(new(Name name, _), TypeEnv env) = findModule(toNamespace(name), env);
 public Declaration findModule(artifact(Name name), TypeEnv env) = findModule(toNamespace(name), env);
 public Declaration findModule(repository(external(str name, Declaration ns, str original)), TypeEnv env) = 
 	head([m | file(_, m: \module(ns, _, repository(original, _))) <- env.ast]);

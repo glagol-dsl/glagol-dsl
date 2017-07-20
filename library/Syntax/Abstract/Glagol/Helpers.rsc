@@ -33,11 +33,10 @@ public bool isIfThenElse(_) = false;
 public bool isEmpty(emptyExpr()) = true;
 public bool isEmpty(_) = false;
 
-public bool hasConstructors(list[Declaration] declarations) = 
-	size([d | d <- declarations, isConstructor(d)]) > 0;
+public bool hasConstructors(list[Declaration] declarations) = size([d | d <- declarations, isConstructor(d)]) > 0;
 
-public list[Declaration] getConstructors(list[Declaration] declarations) = 
-	[ d | d <- declarations, isConstructor(d)];
+public list[Declaration] getConstructors(list[Declaration] declarations) = [d | d <- declarations, isConstructor(d)];
+public list[Declaration] getConstructors(\module(_, _, Declaration artifact)) = getConstructors(artifact.declarations);
 
 private list[Declaration] getMethodsByName(list[Declaration] declarations, str name) = 
 	[ d | d <- declarations,
