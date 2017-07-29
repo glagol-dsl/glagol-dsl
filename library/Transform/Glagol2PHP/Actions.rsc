@@ -23,12 +23,13 @@ public PhpClassItem toPhpClassItem(a: action(str name, list[Declaration] params,
     	@phpAnnotations=toPhpAnnotations(a, env)
     ];
 
+@todo="Tests missing for this one"
 private list[PhpParam] toActionParams(list[Declaration] params, _) {
     list[PhpParam] phpParams;
     
     phpParams = for (p <- params) {
         if (hasAnnotation(p, "autofind")) {
-            append toPhpParam(param(integer(), "id"));
+            append toPhpParam(param(integer(), "id", emptyExpr()));
         } else if (!hasAnnotation(p, "autofill")) {
             append toPhpParam(p);
         }

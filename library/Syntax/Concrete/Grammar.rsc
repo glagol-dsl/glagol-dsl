@@ -134,6 +134,7 @@ syntax DefaultValue
     | float : DeciFloatNumeral number
     | booleanLiteral : Boolean boolean
     | \list : "[" {DefaultValue ","}* items "]" list
+    | \map: "{" {MapPair ","}* items "}"
     | getInstance: "get" InstanceType
     | newInstance: "new" InstanceType "(" {Expression ","}* args ")"
     ;

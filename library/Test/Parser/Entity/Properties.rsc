@@ -3,17 +3,19 @@ module Test::Parser::Entity::Properties
 import Parser::ParseAST;
 import Syntax::Abstract::Glagol;
 
-test bool testShouldParseEntityWithValues()
+test bool testShouldParseEntityWithProperties()
 {
     str code = "namespace Example
                'entity User {
                '    int id;
                '    Date addedOn;
+               '	{int, string} aMap = {1: \"asd\"};
                '}";
                
     list[Declaration] expectedValues = [
         property(integer(), "id", emptyExpr()),
-        property(artifact(local("Date")), "addedOn", emptyExpr())
+        property(artifact(local("Date")), "addedOn", emptyExpr()),
+        property(\map(integer(), string()), "aMap", \map((integer(1): string("asd"))))
     ];
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", expectedValues));

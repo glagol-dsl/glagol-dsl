@@ -97,7 +97,11 @@ public Expression convertExpression(a: (DefaultValue) `get <InstanceType t>`, Pa
     
 public Expression convertExpression(a: (DefaultValue) `new <ArtifactName name>(<{Expression ","}* args>)`, ParseEnv env)
     = new(createName("<name>", env)[@src=name@\loc], [convertExpression(arg, env) | arg <- args])[@src=a@\loc];
-    
+
+public Expression convertExpression(a: (DefaultValue) `{<{MapPair ","}* pairs>}`, ParseEnv env) = \map(
+    ( key: v | p <- pairs, <Expression key, Expression v> := convertMapPair(p, env) )
+)[@src=a@\loc];
+
 public Type convertInstanceType(a: (InstanceType) `<Type t>`, ParseEnv env) = convertType(t, env)[@src=a@\loc];
 public Type convertInstanceType(a: (InstanceType) `selfie`, ParseEnv env) = selfie()[@src=a@\loc];
     
