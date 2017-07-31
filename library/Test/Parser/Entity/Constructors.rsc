@@ -138,38 +138,6 @@ test bool shouldParseConstructWithoutParams()
     ]));
 }
 
-test bool shouldParseConstructWithoutBody()
-{
-    str code 
-        = "namespace Example
-          'entity User {
-          '    User();
-          '}
-          '";
-    
-    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([], [], emptyExpr())
-    ]));
-}
-
-test bool shouldParseConstructWithoutBodyWithParams()
-{
-    str code 
-        = "namespace Example
-          'entity User {
-          '    User(int param, float param2 = 0.55, bool param3 = true);
-          '}
-          '";
-    
-    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([
-            param(integer(), "param", emptyExpr()),
-            param(float(), "param2", float(0.55)),
-            param(boolean(), "param3", boolean(true))
-        ], [], emptyExpr())
-    ]));
-}
-
 test bool shouldParseConstructWithWhen()
 {
     str code 

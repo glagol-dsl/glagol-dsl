@@ -90,7 +90,6 @@ syntax Property
 
 syntax Constructor
     = ArtifactName "(" {AbstractParameter ","}* parameters ")" "{" Statement* body "}" (When when ";")?
-    | ArtifactName "(" {AbstractParameter ","}* parameters ")" When? when ";"
     ;
 
 syntax Method
