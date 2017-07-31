@@ -86,6 +86,7 @@ data Type
     | selfie()
     | self()
     | unknownType()
+    | \any()
     ;
 
 data Name

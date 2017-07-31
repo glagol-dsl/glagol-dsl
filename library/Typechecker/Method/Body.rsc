@@ -11,10 +11,12 @@ import List;
 public TypeEnv checkBody(list[Statement] body, t: voidValue(), Declaration subroutine, Declaration artifact, TypeEnv env) = 
 	checkStatements(body, t, subroutine, env);
 	
+public TypeEnv checkBody(list[Statement] body, t: \any(), Declaration subroutine, Declaration artifact, TypeEnv env) = 
+	checkStatements(body, t, subroutine, env);
+
 public TypeEnv checkBody(list[Statement] body, Type t, Declaration subroutine, Declaration artifact, TypeEnv env) = 
 	checkStatements(body, t, subroutine, checkReturnStmtAvailability(body, subroutine, env));
-
-
+	
 public TypeEnv checkReturnStmtAvailability(list[Statement] body, Declaration subroutine, TypeEnv env) = 
 	addError(subroutine, "Return statement with value expected for method \'<subroutine.name>\'", env)
 	when !hasReturn(body);
@@ -30,6 +32,3 @@ public bool hasReturnInBranches([]) = false;
 public bool hasReturnInBranches(list[Statement] branches) = (false | it ? true : hasReturn(branch) | branch <- branches);
 
 public list[Statement] getBranches(list[Statement] body) = [stmt | stmt <- body, isIfThenElse(stmt)];
-
-
-

@@ -39,3 +39,24 @@ test bool shouldNotGiveErrorsOnDuplicatingParamListsWithDifferentGuards() =
 			method(\private(), voidValue(), "test", [param(integer(), "i", emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], [], boolean(false))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]
 		]), newEnv(|tmp:///|)
 	));
+	
+test bool shouldNotGiveErrorsWhenUsingRelationsOnEntities() = 
+	!hasErrors(checkDeclarations([relation(\one(), many(), "User", "users")], entity("Customer", []), newEnv()));
+
+test bool shouldGiveErrorsWhenUsingRelationsOnAValueObject() = 
+	checkDeclarations([relation(\one(), many(), "User", "users")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], valueObject("Money", []), newEnv()) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Relations are only permitted in entities", newEnv());
+
+test bool shouldGiveErrorWhenUsingActionOnNonController() = 
+	checkDeclarations([action("index", [], [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], valueObject("Money", []), newEnv()) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Actions are only permitted in controllers", newEnv());
+	
+test bool shouldGiveErrorWhenUsingActionOnController() = 
+	!hasErrors(checkDeclarations([action("index", [], [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], 
+		controller("User", jsonApi(), route([]), []), newEnv()));
+
+test bool shouldNotGiveErrorWhenActionIsNotDuplicated() = 
+	!hasErrors(checkDeclarations([
+		action("index", [], [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
+		action("show", [], [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]
+	], controller("User", jsonApi(), route([]), []), newEnv()));

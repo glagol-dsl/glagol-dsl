@@ -8,6 +8,7 @@ import Typechecker::Method::Guard;
 import Typechecker::Method::Body;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
+
 import List;
 
 public TypeEnv checkMethod(c: constructor(_, _, _), repository(_, _), TypeEnv env) =
@@ -31,10 +32,17 @@ public TypeEnv checkMethod(m: method(_, Type t, _, list[Declaration] params, lis
 						checkDuplicates(m, parent.declarations, env)
 	)))));
 
+public TypeEnv checkAction(a: action(GlagolID name, list[Declaration] params, list[Statement] body), Declaration d, TypeEnv env) = 
+	checkBody(body, \any(), a, d, checkParams(params, checkDuplicates(a, d.declarations, env)));
+
 public TypeEnv checkDuplicates(m: method(_, _, GlagolID name, _, _, _), list[Declaration] declarations, TypeEnv env) = 
 	addError(m, "Method <name> has been defined more than once with a duplicating signature", env)
 	when hasDuplicates(m, declarations);
 	
+public TypeEnv checkDuplicates(a: action(GlagolID name, _, _), list[Declaration] declarations, TypeEnv env) = 
+	addError(a, "Action <name> has been defined more than once", env)
+	when hasDuplicates(a, declarations);
+
 public TypeEnv checkDuplicates(c: constructor(_, _, _), list[Declaration] declarations, TypeEnv env) = 
 	addError(c, "Constructor has duplicating signature", env)
 	when hasDuplicates(c, declarations);
@@ -60,6 +68,9 @@ private bool hasDuplicates(method(_, _, n, p, _, g), list[Declaration] declarati
 	
 private bool hasDuplicates(constructor(p, _, g), list[Declaration] declarations) = 
 	size([d | d: constructor(p, _, g) <- declarations]) > 1;
+	
+private bool hasDuplicates(action(GlagolID name, _, _), list[Declaration] declarations) = 
+	size([d | d: action(name, _, _) <- declarations]) > 1;
 
 private bool isDefinedWithDifferentAccessModifier(method(originalMod, _, n, _, _, _), list[Declaration] declarations) =
 	size([d | d: method(modifier, _, n, _, _, _) <- declarations, modifier != originalMod]) > 0;
