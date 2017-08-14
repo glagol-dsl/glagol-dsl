@@ -1,5 +1,0 @@
-#!/bin/sh
-BASEDIR=$(dirname "$0")
-cd $BASEDIR
-cd ../../src
-../support/bin/rascalu Tests

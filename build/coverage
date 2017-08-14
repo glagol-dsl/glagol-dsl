@@ -1,0 +1,5 @@
+#!/bin/sh
+BASEDIR=$(dirname "$0")
+cd $BASEDIR
+cd ../library
+../bin/rascalu Coverage $@

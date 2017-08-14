@@ -1,0 +1,62 @@
+module Test::Typechecker::Declaration
+
+import Typechecker::Declaration;
+import Typechecker::Env;
+import Syntax::Abstract::Glagol;
+
+test bool checkDeclarationsShouldGiveErrorsWhenDuplicatingEntityPropertyDefinitions() {
+    Declaration e = entity("User", [
+        property(integer()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], "id", emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
+        property(integer()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], "id", emptyExpr())[@src=|tmp:///User.g|(0, 0, <25, 25>, <30, 30>)]
+    ])[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)];
+    
+    return
+        checkDeclarations(e.declarations, e, newEnv(|tmp:///User.g|)) == 
+        addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+                "Cannot redefine \"id\". Already defined",
+        addDefinition(property(integer()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], "id", emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///User.g|)));
+}
+
+test bool checkDeclarationsShouldNotGiveErrorsWhenNoDuplicatingEntityPropertyDefinitions() {
+    Declaration e = entity("User", [
+        property(integer()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], "id", emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
+        property(integer()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], "count", emptyExpr())[@src=|tmp:///User.g|(0, 0, <25, 25>, <30, 30>)]
+    ])[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)];
+    
+    return
+        checkDeclarations(e.declarations, e, newEnv(|tmp:///User.g|)) == 
+        addDefinition(property(integer()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], "count", emptyExpr()), 
+        addDefinition(property(integer(), "id", emptyExpr()), newEnv(|tmp:///User.g|)));
+}
+
+test bool shouldNotGiveErrorsOnDuplicatingParamListsWithDifferentGuards() = 
+	!hasErrors(checkDeclarations([
+			method(\private(), voidValue(), "test", [param(integer(), "i", emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], [], boolean(true))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
+			method(\private(), voidValue(), "test", [param(integer(), "i", emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], [], boolean(false))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]
+		],
+		entity("User", [
+			method(\private(), voidValue(), "test", [param(integer(), "i", emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], [], boolean(true))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
+			method(\private(), voidValue(), "test", [param(integer(), "i", emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], [], boolean(false))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]
+		]), newEnv(|tmp:///|)
+	));
+	
+test bool shouldNotGiveErrorsWhenUsingRelationsOnEntities() = 
+	!hasErrors(checkDeclarations([relation(\one(), many(), "User", "users")], entity("Customer", []), newEnv()));
+
+test bool shouldGiveErrorsWhenUsingRelationsOnAValueObject() = 
+	checkDeclarations([relation(\one(), many(), "User", "users")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], valueObject("Money", []), newEnv()) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Relations are only permitted in entities", newEnv());
+
+test bool shouldGiveErrorWhenUsingActionOnNonController() = 
+	checkDeclarations([action("index", [], [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], valueObject("Money", []), newEnv()) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Actions are only permitted in controllers", newEnv());
+	
+test bool shouldGiveErrorWhenUsingActionOnController() = 
+	!hasErrors(checkDeclarations([action("index", [], [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], 
+		controller("User", jsonApi(), route([]), []), newEnv()));
+
+test bool shouldNotGiveErrorWhenActionIsNotDuplicated() = 
+	!hasErrors(checkDeclarations([
+		action("index", [], [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
+		action("show", [], [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]
+	], controller("User", jsonApi(), route([]), []), newEnv()));

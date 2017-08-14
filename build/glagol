@@ -1,0 +1,9 @@
+#!/bin/bash
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+BASEDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+java -Xmx2G -Xss32m -jar "$BASEDIR/../target/glagol-dsl.jar" $@
