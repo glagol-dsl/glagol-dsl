@@ -111,25 +111,23 @@ public TypeEnv checkStatement(d: declare(Type varType, variable(GlagolID name), 
 	checkType(varType, s, addDefinition(d, env));
 
 public TypeEnv checkStatement(d: declare(Type varType, variable(GlagolID name), Statement defaultValue), t, s, TypeEnv env) = 
-	checkStatement(defaultValue, t, s, checkDeclareType(varType, lookupType(defaultValue, env), name, d, env));
+	checkStatement(defaultValue, t, s, checkDeclareType(varType, lookupType(defaultValue, env), name, d, addDefinition(d, env)));
 
-public TypeEnv checkDeclareType(\list(_), \list(voidValue()), GlagolID name, d, TypeEnv env) = addDefinition(d, env);
-public TypeEnv checkDeclareType(\map(_, _), \map(voidValue(), voidValue()), GlagolID name, d, TypeEnv env) = addDefinition(d, env);
-public TypeEnv checkDeclareType(artifact(_), self(), GlagolID name, d, TypeEnv env) = addDefinition(d, env);
-public TypeEnv checkDeclareType(repository(_), self(), GlagolID name, d, TypeEnv env) = addDefinition(d, env);
+public TypeEnv checkDeclareType(\list(_), \list(voidValue()), GlagolID name, d, TypeEnv env) = env;
+public TypeEnv checkDeclareType(\map(_, _), \map(voidValue(), voidValue()), GlagolID name, d, TypeEnv env) = env;
+public TypeEnv checkDeclareType(artifact(_), self(), GlagolID name, d, TypeEnv env) = env;
+public TypeEnv checkDeclareType(repository(_), self(), GlagolID name, d, TypeEnv env) = env;
 
 public TypeEnv checkDeclareType(Type expectedType, Type actualType, GlagolID name, d, TypeEnv env) = 
 	addError(d,
 		"Cannot assign <toString(actualType)> to variable <name> originally defined as <toString(expectedType)>", env)
 	when expectedType != actualType;
 	
-public TypeEnv checkDeclareType(Type expectedType, Type actualType, GlagolID name, d, TypeEnv env) = addDefinition(d, env);
+public TypeEnv checkDeclareType(Type expectedType, Type actualType, GlagolID name, d, TypeEnv env) = env;
 
 public Type lookupType(expression(Expression expr), TypeEnv env) = lookupType(expr, env);
 public Type lookupType(assign(_, _, Statement \value), TypeEnv env) = lookupType(\value, env);
 public Type lookupType(Statement, TypeEnv env) = unknownType();
-	
-public TypeEnv checkStatement(d: declare(_, _, _), _, _, TypeEnv env) = addDefinition(d, env);
 
 private str stringify(persist(Expression expr)) = "persisted";
 private str stringify(flush(Expression expr)) = "flushed";

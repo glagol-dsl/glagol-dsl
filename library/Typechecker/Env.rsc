@@ -62,7 +62,7 @@ public TypeEnv addDefinition(p:property(_, GlagolID name, _), TypeEnv env) =
     when name notin env.definitions;
 
 public TypeEnv addDefinition(p:param(Type paramType, GlagolID name, Expression defaultValue), TypeEnv env) = 
-    addError(env.definitions[name].d, "Cannot redefine \"<name>\". Already defined", env)
+    addError(enclosedNode(env.definitions[name]), "Cannot redefine \"<name>\". Already defined", env)
     when name in env.definitions && param(_) := env.definitions[name];
     
 public TypeEnv addDefinition(p:param(Type paramType, GlagolID name, Expression defaultValue), TypeEnv env) =
@@ -73,8 +73,13 @@ public TypeEnv addDefinition(d:declare(Type varType, variable(GlagolID name), St
     when name notin env.definitions || (name in env.definitions && isField(env.definitions[name]));
 
 public TypeEnv addDefinition(d:declare(Type varType, variable(GlagolID name), Statement defaultValue), TypeEnv env) = 
-    addError(env.definitions[name].d, "Cannot redecleare \"<name>\"", env) 
+    addError(enclosedNode(env.definitions[name]), "Cannot redecleare \"<name>\"", env) 
     when name in env.definitions && field(_) !:= env.definitions[name];
+
+private Declaration enclosedNode(field(Declaration d)) = d;
+private Declaration enclosedNode(param(Declaration d)) = d;
+private Declaration enclosedNode(method(Declaration d)) = d;
+private Statement   enclosedNode(localVar(Statement stmt)) = stmt;
 
 public bool isDefined(variable(GlagolID name), TypeEnv env) = name in env.definitions;
 public bool isDefined(fieldAccess(str field), TypeEnv env) = field in env.definitions;

@@ -196,12 +196,13 @@ test bool shouldGiveErrorWhenDeclaringVariableWithWrongDefaultValueType() =
 	checkStatement(declare(integer(), variable("a"), expression(string("aaa")))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		voidValue(), emptyDecl(), newEnv(|tmp:///|)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
-		"Cannot assign string to variable a originally defined as integer", newEnv(|tmp:///|));
+		"Cannot assign string to variable a originally defined as integer", 
+		addDefinition(declare(integer(), variable("a"), expression(string("aaa")))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)));
 		
 test bool shouldNotGiveErrorWhenDeclaringVariableWithCorrectDefaultValueType() = 
 	checkStatement(declare(string(), variable("a"), expression(string("aaa")))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		voidValue(), emptyDecl(), newEnv(|tmp:///|)) == 
-	addDefinition(declare(string(), variable("a"), expression(string("aaa"))), newEnv(|tmp:///|));
+	addDefinition(declare(string(), variable("a"), expression(string("aaa")))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|));
 	
 test bool shouldGiveCannotTraverseErrorWhenUsingNonCollectionWithForeach() = 
 	checkStatement(
