@@ -93,6 +93,10 @@ public bool hasErrors(TypeEnv env) = size(env.errors) > 0;
 public list[Error] getErrors(TypeEnv env) = env.errors;
 
 public TypeEnv addImported(i: \import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = env[imported = env.imported + (as: i)];
+public TypeEnv addImported(\module(ns, _, Declaration a), TypeEnv env) = addImported(\import(a.name, ns, a.name), env);
+public TypeEnv addImported(emptyDecl(), TypeEnv env) = env;
+
+public bool isImported(repository(GlagolID name, list[Declaration] declarations), TypeEnv env) = name in env.imported;
 
 public bool isImported(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
 	(false | true | i <- range(env.imported), i.artifactName == name && i.namespace == namespace);

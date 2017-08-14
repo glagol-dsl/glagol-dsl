@@ -34,10 +34,10 @@ private TypeEnv checkRedefine(Declaration decl, TypeEnv env) =
 	addError(decl, "Cannot redefine \"<decl.name>\"", env)
 	when decl.name in env.imported;
 
-private TypeEnv checkRedefine(Declaration decl, TypeEnv env) = env when decl.name notin env.imported;
+private TypeEnv checkRedefine(Declaration decl, TypeEnv env) = addImported(getContext(env), env);
 
 private TypeEnv checkRepositoryEntity(r:repository(GlagolID name, list[Declaration] declarations), TypeEnv env) =
-    addError(r, notImported(r), env) when name notin env.imported;
+    addError(r, notImported(r), env) when !isImported(r, env);
 
 private TypeEnv checkRepositoryEntity(r:repository(GlagolID name, list[Declaration] declarations), TypeEnv env) =
     addError(r, notEntity(r), env)

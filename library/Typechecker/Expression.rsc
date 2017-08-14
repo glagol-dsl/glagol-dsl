@@ -278,6 +278,7 @@ public TypeEnv checkInvoke(Type prevType, i: invoke(Expression prev, str m, list
 	));
 	
 public TypeEnv checkExpression(emptyExpr(), TypeEnv env) = env;
+public TypeEnv checkExpression(this(), TypeEnv env) = env;
 
 @doc="Empty expression is always unknown type"
 public Type lookupType(emptyExpr(), _) = unknownType();

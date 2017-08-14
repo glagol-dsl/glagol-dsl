@@ -98,6 +98,9 @@ public TypeEnv checkStatement(d: declare(_, Expression varName, _), _,  _, TypeE
 	addError(d, "Cannot resolve variable name", env)
 	when variable(_) !:= varName;
 
+public TypeEnv checkStatement(d: declare(Type varType, variable(GlagolID name), emptyStmt()), t, s, TypeEnv env) = 
+	checkType(varType, s, addDefinition(d, env));
+
 public TypeEnv checkStatement(d: declare(Type varType, variable(GlagolID name), Statement defaultValue), t, s, TypeEnv env) = 
 	checkStatement(defaultValue, t, s, checkDeclareType(varType, lookupType(defaultValue, env), name, d, env));
 
