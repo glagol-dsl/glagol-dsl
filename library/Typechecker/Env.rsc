@@ -156,11 +156,14 @@ public Name getFullNameOfLocalArtifact(str name, TypeEnv env) = external(name, g
 public Declaration getContextNamespace(TypeEnv env) = getContextNamespace(getContext(env));
 public Declaration getContextNamespace(\module(Declaration namespace, _, _)) = namespace;
 
-public Expression externalize(new(local(str name), args), TypeEnv env) = new(getFullNameOfLocalArtifact(name, env), args);
-public Type externalize(artifact(local(str name)), TypeEnv env) = artifact(getFullNameOfLocalArtifact(name, env)) when hasLocalArtifact(name, env);
-public Type externalize(artifact(local(str name)), TypeEnv env) = unknownType() when !hasLocalArtifact(name, env);
-public Type externalize(repository(local(str name)), TypeEnv env) = repository(getFullNameOfLocalArtifact(name, env)) when hasLocalArtifact(name, env);
-public Type externalize(repository(local(str name)), TypeEnv env) = unknownType() when !hasLocalArtifact(name, env);
+public Expression externalize(n: new(local(str name), args), TypeEnv env) = n[artifact = getFullNameOfLocalArtifact(name, env)];
+public Expression externalize(n: new(_, args), TypeEnv env) = n;
+public Type externalize(a: artifact(local(str name)), TypeEnv env) = a[name = getFullNameOfLocalArtifact(name, env)] when hasLocalArtifact(name, env);
+public Type externalize(a: artifact(local(str name)), TypeEnv env) = unknownType() when !hasLocalArtifact(name, env);
+public Type externalize(r: repository(local(str name)), TypeEnv env) = r[name = getFullNameOfLocalArtifact(name, env)] when hasLocalArtifact(name, env);
+public Type externalize(r: repository(local(str name)), TypeEnv env) = unknownType() when !hasLocalArtifact(name, env);
+public Type externalize(l: \list(Type t), TypeEnv env) = l[\type = externalize(t, env)];
+public Type externalize(m: \map(Type k, Type v), TypeEnv env) = m[key = externalize(k, env)][v = externalize(v, env)];
 public Type externalize(Type t, TypeEnv env) = t;
 
 public Declaration findModule(new(Name name, _), TypeEnv env) = findModule(toNamespace(name), env);

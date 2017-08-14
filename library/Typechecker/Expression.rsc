@@ -61,12 +61,12 @@ public TypeEnv checkIsVariableDefined(expr: fieldAccess(this(), str name), TypeE
 
 public TypeEnv checkIsVariableDefined(expr: fieldAccess(this(), str name), TypeEnv env) = env;
 public TypeEnv checkIsVariableDefined(expr: fieldAccess(Expression prev, str name), TypeEnv env) = 
-	checkFieldAccess(externalize(lookupType(prev, env), env), fieldAccess(name), env);
+	checkFieldAccess(externalize(lookupType(prev, env), env), prev, fieldAccess(name), env);
 
-public TypeEnv checkFieldAccess(self(), f: fieldAccess(str field), TypeEnv env) = checkIsVariableDefined(f, env);
-public TypeEnv checkFieldAccess(artifact(name), fieldAccess(str field), TypeEnv env) = env when isSelf(name, env);
-public TypeEnv checkFieldAccess(repository(name), fieldAccess(str field), TypeEnv env) = env when isSelf(name, env);
-public TypeEnv checkFieldAccess(Expression expr, fieldAccess(str field), TypeEnv env) = addError(expr, "\'<expr.name>\' is undefined", env);
+public TypeEnv checkFieldAccess(self(), prev, f: fieldAccess(str field), TypeEnv env) = checkIsVariableDefined(f, env);
+public TypeEnv checkFieldAccess(artifact(name), prev, fieldAccess(str field), TypeEnv env) = env when isSelf(name, env);
+public TypeEnv checkFieldAccess(repository(name), prev, fieldAccess(str field), TypeEnv env) = env when isSelf(name, env);
+public TypeEnv checkFieldAccess(Type t, Expression prev, f: fieldAccess(str field), TypeEnv env) = addError(prev, "\'<field>\' is undefined", env);
 
 public TypeEnv checkIsVariableDefined(Expression expr, TypeEnv env) = 
 	addError(expr, "\'<expr.name>\' is undefined", env)
@@ -193,14 +193,14 @@ public TypeEnv checkIsBoolean(boolean(), _, TypeEnv env) = env;
 public TypeEnv checkIsBoolean(_, c, TypeEnv env) = 
 	addError(c, "Condition does not evaluate to boolean", env);
 	
-public TypeEnv checkExpression(n: new(l: local(str name), list[Expression] args), TypeEnv env) = 
-	checkConstructor(n, checkExpressions(args, checkNewArtifact(n, l, env)));
+public TypeEnv checkExpression(n: new(Name name, list[Expression] args), TypeEnv env) = 
+	checkConstructor(n, checkExpressions(args, checkNewArtifact(n, name, env)));
 
-public TypeEnv checkConstructor(n: new(local(str name), list[Expression] args), TypeEnv env) = 
-	addError(n, "Cannot match constructor <name>(<toString(toSignature(args, env), ", ")>)", env)
-	when hasLocalArtifact(name, env) && !hasConstructor(toSignature(args, env), findModule(externalize(n, env), env), env);
+public TypeEnv checkConstructor(n: new(Name name, list[Expression] args), TypeEnv env) = 
+	addError(n, "Cannot match constructor <name.localName>(<toString(toSignature(args, env), ", ")>)", env)
+	when hasLocalArtifact(name.localName, env) && !hasConstructor(toSignature(args, env), findModule(externalize(n, env), env), env);
 
-public TypeEnv checkConstructor(n: new(local(str name), list[Expression] args), TypeEnv env) = env;
+public TypeEnv checkConstructor(n: new(Name name, list[Expression] args), TypeEnv env) = env;
 
 public TypeEnv checkNewArtifact(n, l: local(str name), TypeEnv env) = 
 	addError(n, "Artifact <name> used but not imported", env)

@@ -19,7 +19,11 @@ public TypeEnv checkStatement(emptyStmt(), _, _, TypeEnv env) = env;
 
 public TypeEnv checkReturn(Type actualType, Type expectedType, Statement r, TypeEnv env) = 
 	addError(r, "Returning <toString(actualType)>, <toString(expectedType)> expected", env)
-	when actualType != expectedType;
+	when !isCompatibleForReturn(externalize(actualType, env), externalize(expectedType, env));
+	
+private bool isCompatibleForReturn(\list(voidValue()), \list(_)) = true;
+private bool isCompatibleForReturn(\map(voidValue(), voidValue()), \map(_, _)) = true;
+private bool isCompatibleForReturn(Type actualType, Type expectedType) = actualType == expectedType;
 	
 public TypeEnv checkReturn(Type actualType, Type expectedType, Statement r, TypeEnv env) = env;
 
@@ -86,13 +90,18 @@ public TypeEnv checkAssignable(e, TypeEnv env) = addError(e, "Cannot assign valu
 public TypeEnv checkConditions(list[Expression] conditions, TypeEnv env) = (env | checkCondition(c, it) | c <- conditions);
 
 public TypeEnv checkStatement(emptyStmt(), _, _, TypeEnv env) = env;
-public TypeEnv checkStatement(p: persist(Expression expr), _, _, TypeEnv env) = checkORMFunction(lookupType(expr, env), p, env);
-public TypeEnv checkStatement(p: flush(Expression expr), _, _, TypeEnv env) = checkORMFunction(lookupType(expr, env), p, env);
-public TypeEnv checkStatement(p: remove(Expression expr), _, _, TypeEnv env) = checkORMFunction(lookupType(expr, env), p, env);
+public TypeEnv checkStatement(p: persist(Expression expr), _, _, TypeEnv env) = checkORMFunction(p, env);
+public TypeEnv checkStatement(p: flush(Expression expr), _, _, TypeEnv env) = checkORMFunction(p, env);
+public TypeEnv checkStatement(p: remove(Expression expr), _, _, TypeEnv env) = checkORMFunction(p, env);
 
-public TypeEnv checkORMFunction(a: artifact(Name name), p, env) = env when isEntity(a, env);
-public TypeEnv checkORMFunction(_, p, env) = 
-	addError(p, "Only entities can be <stringify(p)>", env);
+public TypeEnv checkORMFunction(Statement p, env) = checkIsContextARepository(getContext(env), p, env) when emptyExpr() := p.expr;
+public TypeEnv checkORMFunction(Statement p, env) = checkIsContextARepository(getContext(env), p, checkIsSubjectAnEntity(lookupType(p.expr, env), p, env));
+
+public TypeEnv checkIsSubjectAnEntity(t: artifact(_), p, env) = env when isEntity(t, env);
+public TypeEnv checkIsSubjectAnEntity(_, p, env) = addError(p, "Only entities can be <stringify(p)>", env);
+
+public TypeEnv checkIsContextARepository(\module(_, _, repository(_, _)), p, TypeEnv env) = env;
+public TypeEnv checkIsContextARepository(c, p, TypeEnv env) = addError(p, "Entities can only be <stringify(p)> from within a repository", env);
 
 public TypeEnv checkStatement(d: declare(_, Expression varName, _), _,  _, TypeEnv env) = 
 	addError(d, "Cannot resolve variable name", env)

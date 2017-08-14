@@ -28,4 +28,3 @@ public TypeEnv checkTypeMismatch(\map(voidValue(), voidValue()), \map(_, _), Typ
 public TypeEnv checkTypeMismatch(Type valueType, Type \type, TypeEnv env) = env when valueType == \type;
 public TypeEnv checkTypeMismatch(Type valueType, Type \type, TypeEnv env) =
     addError(\type@src, typeMismatch(\type, valueType), env);
-

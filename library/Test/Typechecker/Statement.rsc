@@ -170,6 +170,18 @@ test bool shouldGiveErrorWhenTryingToRemoveANonEntity() =
 		setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 	));
 
+test bool shouldGiveErrorWhenTryingToRemoveAnEntityFromANonRepository() = 
+	checkStatement(remove(new(local("User"), []))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
+		addImported(\import("User", namespace("Test"), "User"), addToAST(
+			file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", []))), 
+			setContext(\module(namespace("Test"), [], util("User", [])), newEnv(|tmp:///|)))
+		)
+	) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Entities can only be removed from within a repository", addImported(\import("User", namespace("Test"), "User"), addToAST(
+		file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", []))), 
+		setContext(\module(namespace("Test"), [], util("User", [])), newEnv(|tmp:///|)))
+	));
+
 test bool shouldNotGiveErrorWhenDeclaringVariableOfTypeListWithVoidListAsDefaultValue() = 
 	checkStatement(declare(\list(integer()), variable("a"), expression(\list([]))), 
 		voidValue(), emptyDecl(), newEnv(|tmp:///|)) == 
