@@ -6,6 +6,8 @@ import Typechecker::Expression;
 import Typechecker::Type;
 import Syntax::Abstract::Glagol;
 
+import IO;
+
 public TypeEnv checkStatements(list[Statement] stmts, t, subroutine, TypeEnv env) = 
 	(env | checkStatement(stmt, t, subroutine, it) | stmt <- stmts);
 
@@ -26,12 +28,35 @@ public TypeEnv checkStatement(expression(expr), t, s, env) = checkExpression(exp
 public TypeEnv checkStatement(ifThen(condition, then), t, s, env) = checkStatement(then, t, s, checkCondition(condition, env));
 public TypeEnv checkStatement(ifThenElse(condition, then, \else), t, s, env) = 
 	checkStatement(\else, t, s, checkStatement(then, t, s, checkCondition(condition, env)));
+	
+public TypeEnv checkStatement(a: assign(fieldAccess(this(), GlagolID name), _, _), t, subroutine, TypeEnv env) = 
+	addError(a, "Value objects are immutable. You can only assign property values from the constructor", env)
+	when isValueObject(env) && constructor(_, _, _) !:= subroutine && hasLocalProperty(name, env);
+	
+public TypeEnv checkStatement(a: assign(fieldAccess(Expression prev, GlagolID name), _, _), t, subroutine, TypeEnv env) = 
+	addError(a, "Value objects are immutable. You can only assign property values from the constructor", env)
+	when isValueObject(env) && constructor(_, _, _) !:= subroutine && sameAs(externalize(lookupType(prev, env), env), contextAsType(env), env);
+
+public bool sameAs(Type: repository(Name first), Type: repository(Name second), TypeEnv env) = sameAs(first, second);
+public bool sameAs(Type: artifact(Name first), Type: artifact(Name second), TypeEnv env) = sameAs(first, second);
+
+public bool sameAs(external(_, Declaration namespace, str originalName), external(_, Declaration namespaceT, str originalNameT)) =
+	namespace == namespaceT && originalName == originalNameT;
+	
+public bool sameAs(Name first, Name second) = false;
+public bool sameAs(Type first, Type second, TypeEnv env) = false;
+	
+public TypeEnv checkStatement(a: assign(variable(GlagolID name), _, _), t, subroutine, TypeEnv env) = 
+	addError(a, "Value objects are immutable. You can only assign property values from the constructor", env)
+	when isValueObject(env) && constructor(_, _, _) !:= subroutine && isField(name, env);
 
 public TypeEnv checkStatement(a: assign(assignable, operator, val), t, s, env) = 
 	checkAssignType(a, lookupType(assignable, env), lookupType(val, env), checkAssignable(assignable, checkStatement(val, t, s, env)));
 
 public TypeEnv checkAssignType(Statement s, \list(_), \list(voidValue()), TypeEnv env) = env;
 public TypeEnv checkAssignType(Statement s, \map(_, _), \map(voidValue(), voidValue()), TypeEnv env) = env;
+public TypeEnv checkAssignType(Statement s, artifact(_), self(), TypeEnv env) = env;
+public TypeEnv checkAssignType(Statement s, repository(_), self(), TypeEnv env) = env;
 	
 public TypeEnv checkAssignType(Statement s, Type expectedType, Type actualType, TypeEnv env) =
 	addError(s,
@@ -78,6 +103,8 @@ public TypeEnv checkStatement(d: declare(Type varType, variable(GlagolID name), 
 
 public TypeEnv checkDeclareType(\list(_), \list(voidValue()), GlagolID name, d, TypeEnv env) = addDefinition(d, env);
 public TypeEnv checkDeclareType(\map(_, _), \map(voidValue(), voidValue()), GlagolID name, d, TypeEnv env) = addDefinition(d, env);
+public TypeEnv checkDeclareType(artifact(_), self(), GlagolID name, d, TypeEnv env) = addDefinition(d, env);
+public TypeEnv checkDeclareType(repository(_), self(), GlagolID name, d, TypeEnv env) = addDefinition(d, env);
 
 public TypeEnv checkDeclareType(Type expectedType, Type actualType, GlagolID name, d, TypeEnv env) = 
 	addError(d,

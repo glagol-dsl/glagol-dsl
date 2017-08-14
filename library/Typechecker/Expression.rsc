@@ -7,6 +7,7 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import Typechecker::Type::Compatibility;
 
+import IO;
 import List;
 import Map;
 import Set;
@@ -59,6 +60,13 @@ public TypeEnv checkIsVariableDefined(expr: fieldAccess(this(), str name), TypeE
 	when !hasLocalProperty(name, env);
 
 public TypeEnv checkIsVariableDefined(expr: fieldAccess(this(), str name), TypeEnv env) = env;
+public TypeEnv checkIsVariableDefined(expr: fieldAccess(Expression prev, str name), TypeEnv env) = 
+	checkFieldAccess(externalize(lookupType(prev, env), env), fieldAccess(name), env);
+
+public TypeEnv checkFieldAccess(self(), f: fieldAccess(str field), TypeEnv env) = checkIsVariableDefined(f, env);
+public TypeEnv checkFieldAccess(artifact(name), fieldAccess(str field), TypeEnv env) = env when isSelf(name, env);
+public TypeEnv checkFieldAccess(repository(name), fieldAccess(str field), TypeEnv env) = env when isSelf(name, env);
+public TypeEnv checkFieldAccess(Expression expr, fieldAccess(str field), TypeEnv env) = addError(expr, "\'<expr.name>\' is undefined", env);
 
 public TypeEnv checkIsVariableDefined(Expression expr, TypeEnv env) = 
 	addError(expr, "\'<expr.name>\' is undefined", env)
@@ -449,11 +457,19 @@ public Type lookupType(f: fieldAccess(str field), TypeEnv env) =
 public Type lookupType(f: fieldAccess(str field), TypeEnv env) = unknownType();
 
 public Type lookupType(f: fieldAccess(this(), str field), TypeEnv env) = lookupType(fieldAccess(field), env);
+
 public Type lookupType(f: fieldAccess(Expression prev, str field), TypeEnv env) = 
-	lookupType(lookupType(prev, env), fieldAccess(field), env);
+	lookupType(externalize(lookupType(prev, env), env), fieldAccess(field), env);
 	
 public Type lookupType(self(), f: fieldAccess(str field), TypeEnv env) = lookupType(f, env);
-public Type lookupType(_, f: fieldAccess(str field), TypeEnv env) = unknownType();
+public Type lookupType(artifact(name), f: fieldAccess(str field), TypeEnv env) = lookupType(f, env) when isSelf(name, env);
+public Type lookupType(repository(name), f: fieldAccess(str field), TypeEnv env) = lookupType(f, env) when isSelf(name, env);
+public Type lookupType(Type, f: fieldAccess(str field), TypeEnv env) = unknownType();
+
+
+private bool isSelf(local(str name), TypeEnv env) = getContext(env).artifact.name == name;
+private bool isSelf(external(str name, ns, str original), TypeEnv env) = 
+	getContext(env).artifact.name == original && ns == getContext(env).namespace;
 
 public Type lookupType(relation(_, \one(), name, _), fieldAccess(str field), TypeEnv env) = 
 	externalize(artifact(local(name)), env) when hasLocalArtifact(name, env);

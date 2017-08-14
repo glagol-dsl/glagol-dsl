@@ -69,31 +69,32 @@ test bool shouldGiveErrorWhenAssigningValueToNonAssignableExpression() =
 	
 test bool shouldGiveErrorWhenAssigningWrongTypeOfValue() = 
 	checkStatement(assign(variable("a"), defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
-		addDefinition(param(string(), "a", emptyExpr()), newEnv(|tmp:///|))) ==
+		addDefinition(param(string(), "a", emptyExpr()), setContext(\module(namespace("Test"), [], emptyDecl()), newEnv(|tmp:///|)))) ==
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
 		"Cannot assign value of type integer to a variable of type string",
-		addDefinition(param(string(), "a", emptyExpr()), newEnv(|tmp:///|)));
+		addDefinition(param(string(), "a", emptyExpr()), setContext(\module(namespace("Test"), [], emptyDecl()), newEnv(|tmp:///|))));
+		
 test bool shouldNotGiveErrorWhenAssigningEmptyListOnTypedList() = 
 	checkStatement(assign(variable("a"), defaultAssign(), expression(\list([])))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
-		addDefinition(param(\list(integer()), "a", emptyExpr()), newEnv(|tmp:///|))) ==
-	addDefinition(param(\list(integer()), "a", emptyExpr()), newEnv(|tmp:///|));
+		addDefinition(param(\list(integer()), "a", emptyExpr()), setContext(\module(namespace("Test"), [], emptyDecl()), newEnv(|tmp:///|)))) ==
+	addDefinition(param(\list(integer()), "a", emptyExpr()), setContext(\module(namespace("Test"), [], emptyDecl()), newEnv(|tmp:///|)));
 		
 test bool shouldNotGiveErrorWhenAssigningEmptyMapOnTypedMap() = 
 	checkStatement(assign(variable("a"), defaultAssign(), expression(\map(())))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
-		addDefinition(param(\map(string(), integer()), "a", emptyExpr()), newEnv(|tmp:///|))) ==
-	addDefinition(param(\map(string(), integer()), "a", emptyExpr()), newEnv(|tmp:///|));
+		addDefinition(param(\map(string(), integer()), "a", emptyExpr()), setContext(\module(namespace("Test"), [], emptyDecl()), newEnv(|tmp:///|)))) ==
+	addDefinition(param(\map(string(), integer()), "a", emptyExpr()), setContext(\module(namespace("Test"), [], emptyDecl()), newEnv(|tmp:///|)));
 		
 test bool shouldNotGiveErrorWhenAssigningCorrectTypeOfValue() = 
 	checkStatement(assign(variable("a"), defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
-		addDefinition(param(integer(), "a", emptyExpr()), newEnv(|tmp:///|))) ==
-	addDefinition(param(integer(), "a", emptyExpr()), newEnv(|tmp:///|));
+		addDefinition(param(integer(), "a", emptyExpr()), setContext(\module(namespace("Test"), [], emptyDecl()), newEnv(|tmp:///|)))) ==
+	addDefinition(param(integer(), "a", emptyExpr()), setContext(\module(namespace("Test"), [], emptyDecl()), newEnv(|tmp:///|)));
 		
 test bool shouldGiveErrorWhenUsingWrongOperator() = 
 	checkStatement(assign(variable("a"), productAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
-		addDefinition(param(string(), "a", emptyExpr()), newEnv(|tmp:///|))) ==
+		setContext(\module(namespace("Test"), [], emptyDecl()), addDefinition(param(string(), "a", emptyExpr()), newEnv(|tmp:///|)))) ==
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
 		"Assignment operator not allowed",
-		addDefinition(param(string(), "a", emptyExpr()), newEnv(|tmp:///|)));
+		addDefinition(param(string(), "a", emptyExpr()), setContext(\module(namespace("Test"), [], emptyDecl()), newEnv(|tmp:///|))));
 
 test bool shouldNotGiveErrorWhenTryingToPersistAnEntity() = 
 	checkStatement(persist(new(local("User"), []))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
@@ -341,3 +342,78 @@ test bool shouldGiveErrorWhenContinueOutFromIllegalLevel() =
 test bool shouldNotGiveErrorWhenContinueOutFromExistingLevel() = 
 	checkStatement(\continue(1), voidValue(), emptyDecl(), incrementControlLevel(newEnv(|tmp:///|))) == 
 	incrementControlLevel(newEnv(|tmp:///|));
+
+test bool shouldGiveErrorWhenTryingToAssignValueOnAFieldOnNonConstructorInVO() = 
+	checkStatement(assign(variable("a"), defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
+		method(\private(), \any(), "aMethod", [], [], emptyExpr()), addDefinition(property(integer(), "a", emptyExpr()), 
+			setContext(\module(namespace("Test"), [], valueObject("User", [])), newEnv()))) == 
+	addError(|tmp:///User.g|(0,0,<20,20>,<30,30>), "Value objects are immutable. You can only assign property values from the constructor", 
+		addDefinition(property(integer(), "a", emptyExpr()), 
+			setContext(\module(namespace("Test"), [], valueObject("User", [])), newEnv())));
+			
+test bool shouldNotGiveErrorWhenTryingToAssignValueOnAFieldOnNonConstructorInNonVO() = 
+	!hasErrors(checkStatement(assign(variable("a"), defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
+		method(\private(), \any(), "aMethod", [], [], emptyExpr()), addDefinition(property(integer(), "a", emptyExpr()), 
+			setContext(\module(namespace("Test"), [], entity("User", [])), newEnv()))));
+			
+test bool shouldGiveErrorWhenTryingToAssignValueOnThisFieldOnNonConstructorInVO() = 
+	checkStatement(assign(fieldAccess(this(), "a"), defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
+		method(\public(), voidValue(), "setSomething", [], [], emptyExpr()), addDefinition(property(integer(), "a", emptyExpr()), 
+			setContext(\module(namespace("Test"), [], valueObject("User", [property(integer(), "a", emptyExpr())])), newEnv()))) == 
+	addError(|tmp:///User.g|(0,0,<20,20>,<30,30>), "Value objects are immutable. You can only assign property values from the constructor", 
+		addDefinition(property(integer(), "a", emptyExpr()), 
+			setContext(\module(namespace("Test"), [], valueObject("User", [property(integer(), "a", emptyExpr())])), newEnv())));
+
+test bool shouldNotGiveErrorWhenTryingToAssignValueOnThisFieldOnNonConstructorInNonVO() = 
+	!hasErrors(checkStatement(assign(fieldAccess(this(), "a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
+		method(\private(), \any(), "aMethod", [], [], emptyExpr()), addDefinition(property(integer(), "a", emptyExpr()), 
+			setContext(\module(namespace("Test"), [], entity("User", [property(integer(), "a", emptyExpr())])), newEnv()))));
+
+test bool shouldGiveErrorWhenAssigningValueThroughATemporaryVariableFromANonConstructorInVO() = 
+	checkStatement(assign(fieldAccess(variable("m"), "a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
+		method(\public(), voidValue(), "aMethod", [], [], emptyExpr()), addToAST(
+			\module(namespace("Test"), [], valueObject("Money", [])),
+			addDefinition(property(integer(), "a", emptyExpr()), addDefinition(
+				declare(artifact(external("Money", namespace("Test"), "Money")), variable("m"), emptyStmt()), 
+				setContext(\module(namespace("Test"), [], valueObject("Money", [])), newEnv()))))) ==
+	addError(|tmp:///User.g|(0,0,<20,20>,<30,30>),"Value objects are immutable. You can only assign property values from the constructor", 
+		addToAST(
+			\module(namespace("Test"), [], valueObject("Money", [])),
+			addDefinition(property(integer(), "a", emptyExpr()), addDefinition(
+				declare(artifact(external("Money", namespace("Test"), "Money")), variable("m"), emptyStmt()), 
+				setContext(\module(namespace("Test"), [], valueObject("Money", [])), newEnv())))));
+
+test bool shouldNotGiveErrorWhenAssigningValueThroughATemporaryVariableFromAConstructorInVO() = 
+	!hasErrors(checkStatement(assign(fieldAccess(variable("m"), "a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
+		constructor([], [], emptyExpr()), addToAST(
+			\module(namespace("Test"), [], valueObject("Money", [
+				property(integer(), "a", emptyExpr())
+			])),
+			addDefinition(property(integer(), "a", emptyExpr()), addDefinition(
+				declare(artifact(external("Money", namespace("Test"), "Money")), variable("m"), emptyStmt()), 
+				setContext(\module(namespace("Test"), [], valueObject("Money", [
+					property(integer(), "a", emptyExpr())
+				])), newEnv()))))));
+			
+test bool shouldGiveErrorWhenTryingToAssignRepositoryOnThisFieldOnNonConstructorInVO() {
+
+	Statement assignment = assign(
+		fieldAccess(this(), "users"), defaultAssign(), expression(variable("users")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)])
+	)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)];
+
+	Declaration parameter = param(repository(external("User", namespace("Test"), "User")), "users", emptyExpr());
+
+	Declaration m = method(\public(), voidValue(), "setUsers", [parameter], [assignment], emptyExpr());
+	
+	Declaration prop = property(repository(external("User", namespace("Test"), "User")), "users", emptyExpr());
+	
+	TypeEnv env = setContext(\module(namespace("Test"), [], valueObject("User", [prop, m])), addToAST([
+		file(|tmp:///User.g|, \module(namespace("Test"), [], repository("User", []))),
+		file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("User", [prop, m])))
+	], addDefinition(parameter, addDefinition(prop, newEnv()))));
+	
+	return checkStatement(assignment, \any(), m, env) == 
+		addError(|tmp:///User.g|(0,0,<20,20>,<30,30>), "Value objects are immutable. You can only assign property values from the constructor", env);
+}
+
+

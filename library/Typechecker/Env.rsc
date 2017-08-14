@@ -81,6 +81,8 @@ public bool isDefined(fieldAccess(str field), TypeEnv env) = field in env.defini
 public bool isDefined(fieldAccess(this(), str field), TypeEnv env) = field in env.definitions && isField(env.definitions[field]);
 public bool isDefined(Expression expr, TypeEnv env) = false;
 
+public bool isField(GlagolID name, TypeEnv env) = name in env.definitions && field(_) := env.definitions[name];
+
 public TypeEnv addError(loc src, str message, TypeEnv env) = env[errors = env.errors + <src, message>];
 public TypeEnv addError(element, str message, TypeEnv env) = addError(element@src, message, env);
 
@@ -109,6 +111,7 @@ public bool isEntity(i:\import(GlagolID name, Declaration namespace, GlagolID as
 public bool isEntity(a: artifact(e: external(_, _, _)), TypeEnv env) = isEntity(toNamespace(e), env);
 public bool isEntity(a: artifact(local(_)), TypeEnv env) = isEntity(externalize(a, env), env);
     
+public bool isValueObject(TypeEnv env) = isValueObject(getContext(env).artifact);
 public bool isValueObject(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
     [valueObject(_, _)] := findArtifact(i, env);
     
@@ -120,6 +123,13 @@ public bool isUtil(artifact(Name name), TypeEnv env) =
 
 public bool isField(field(_)) = true;
 public bool isField(_) = false;
+
+public Type contextAsType(TypeEnv env) = contextAsType(getContext(env));
+public Type contextAsType(\module(ns, _, repository(name, _))) = repository(external(name, ns, name));
+public Type contextAsType(\module(ns, _, entity(name, _))) = artifact(external(name, ns, name));
+public Type contextAsType(\module(ns, _, valueObject(name, _))) = artifact(external(name, ns, name));
+public Type contextAsType(\module(ns, _, util(name, _))) = artifact(external(name, ns, name));
+public Type contextAsType(\module(ns, _, Declaration)) = unknownType();
 
 public TypeEnv addToAST(Declaration file, TypeEnv env) = env[ast = env.ast + file];
 public TypeEnv addToAST(list[Declaration] files, TypeEnv env) = env[ast = env.ast + files];
