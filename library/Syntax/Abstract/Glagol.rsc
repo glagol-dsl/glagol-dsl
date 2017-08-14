@@ -71,6 +71,7 @@ data Expression
     | fieldAccess(Expression prev, str name)
     | emptyExpr()
     | this()
+    | cast(Type \type, Expression expr)
     ;
 
 data Type

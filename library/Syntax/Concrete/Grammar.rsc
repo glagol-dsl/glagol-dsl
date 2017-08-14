@@ -173,6 +173,7 @@ syntax Expression
     | invoke: Expression prev "." MemberName method "(" {Expression ","}* args ")"
     | fieldAccess: Expression prev "." MemberName field
     | this: "this"
+    | "(" Type type ")" Expression expr
     > left ( product: Expression lhs "*" () !>> "*" Expression rhs
            | remainder: Expression lhs "%" Expression rhs
            | division: Expression lhs "/" Expression rhs

@@ -138,6 +138,9 @@ public Expression convertExpression(a: (Expression) `{<{MapPair ","}* pairs>}`, 
 private tuple[Expression key, Expression \value] convertMapPair((MapPair) `<Expression key>:<Expression v>`, ParseEnv env)
     = <convertExpression(key, env), convertExpression(v, env)>;
 
+public Expression convertExpression(a: (Expression) `(<Type t>)<Expression expr>`, ParseEnv env) = 
+	cast(convertType(t, env), convertExpression(expr, env))[@src=a@\loc];
+
 private bool isValidForAccessChain((Expression) `<MemberName varName>`) = true;
 private bool isValidForAccessChain((Expression) `this`) = true;
 private bool isValidForAccessChain((Expression) `<MemberName method>(<{Expression ","}* args>)`) = true;
