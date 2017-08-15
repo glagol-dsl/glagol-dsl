@@ -80,6 +80,8 @@ test bool shouldTransformToBinaryOrOp() = toPhpExpr(or(integer(3), float(4.5))) 
 test bool shouldTransformToUnaryMinusOp() = toPhpExpr(negative(float(4.5))) == phpUnaryOperation(phpScalar(phpFloat(4.5)), phpUnaryMinus());
 test bool shouldTransformToUnaryPlusOp() = toPhpExpr(positive(float(4.5))) == phpUnaryOperation(phpScalar(phpFloat(4.5)), phpUnaryPlus());
 
+test bool shouldTransformToTypeCast() = toPhpExpr(cast(string(), integer(3))) == phpCast(phpString(), phpScalar(phpInteger(3)));
+
 test bool shouldTransformToLocalMethodCall() = 
     toPhpExpr(invoke("doSomething", [float(4.3), integer(34)])) ==
     phpMethodCall(phpVar(phpName(phpName("this"))), phpName(phpName("doSomething")), [

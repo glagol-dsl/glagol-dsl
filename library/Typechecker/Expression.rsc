@@ -279,7 +279,7 @@ public TypeEnv checkInvoke(Type prevType, i: invoke(Expression prev, str m, list
 	
 public TypeEnv checkExpression(emptyExpr(), TypeEnv env) = env;
 public TypeEnv checkExpression(this(), TypeEnv env) = env;
-public TypeEnv checkExpression(cast(Type t, Expression expr), TypeEnv env) = checkCast(t, lookupType(expr, env), env);
+public TypeEnv checkExpression(cast(Type t, Expression expr), TypeEnv env) = checkCast(t, lookupType(expr, env), checkExpression(expr, env));
 
 public TypeEnv checkCast(string(), string(), TypeEnv env) = env;
 public TypeEnv checkCast(string(), integer(), TypeEnv env) = env;

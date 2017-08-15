@@ -7,7 +7,7 @@ import lang::json::ast::JSON;
 import IO;
 import String;
 import Parser::ParseCode;
-import Ambiguity;
+import analysis::grammars::Ambiguity;
 import Message;
 import Daemon::Socket::Sockets;
 import Exceptions::ParserExceptions;
