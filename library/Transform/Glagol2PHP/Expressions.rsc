@@ -51,6 +51,13 @@ public PhpExpr toPhpExpr(nonEquals(Expression lhs, Expression rhs)) = phpBinaryO
 public PhpExpr toPhpExpr(and(Expression lhs, Expression rhs)) = phpBinaryOperation(toPhpExpr(lhs), toPhpExpr(rhs), phpLogicalAnd());
 public PhpExpr toPhpExpr(or(Expression lhs, Expression rhs)) = phpBinaryOperation(toPhpExpr(lhs), toPhpExpr(rhs), phpLogicalOr());
 
+public PhpExpr toPhpExpr(cast(Type t, Expression expr)) = phpCast(toPhpCastType(t), toPhpExpr(expr));
+
+public PhpCastType toPhpCastType(string()) = phpString();
+public PhpCastType toPhpCastType(float()) = phpFloat();
+public PhpCastType toPhpCastType(integer()) = phpInt();
+public PhpCastType toPhpCastType(boolean()) = phpBool();
+
 // Unary operations
 public PhpExpr toPhpExpr(negative(Expression e)) = phpUnaryOperation(toPhpExpr(e), phpUnaryMinus());
 public PhpExpr toPhpExpr(positive(Expression e)) = phpUnaryOperation(toPhpExpr(e), phpUnaryPlus());
