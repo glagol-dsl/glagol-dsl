@@ -255,6 +255,54 @@ test bool testMethodInvokeUsingThis()
     ]));
 }
 
+test bool testScalarTypeCast()
+{
+    str code = "namespace Example
+               'entity User {
+               '    void methodInvoke() {
+               '        (string) a;
+               '    }
+               '}";
+    
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
+        method(\public(), voidValue(), "methodInvoke", [], [
+            expression(cast(string(), variable("a")))
+          ], emptyExpr())
+    ]));
+}
+
+test bool testArtifactTypeCast()
+{
+    str code = "namespace Example
+               'entity User {
+               '    void methodInvoke() {
+               '        (Money) a;
+               '    }
+               '}";
+    
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
+        method(\public(), voidValue(), "methodInvoke", [], [
+            expression(cast(artifact(local("Money")), variable("a")))
+          ], emptyExpr())
+    ]));
+}
+
+test bool testRepositoryTypeCast()
+{
+    str code = "namespace Example
+               'entity User {
+               '    void methodInvoke() {
+               '        (repository\<Money\>) a;
+               '    }
+               '}";
+    
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
+        method(\public(), voidValue(), "methodInvoke", [], [
+            expression(cast(repository(local("Money")), variable("a")))
+          ], emptyExpr())
+    ]));
+}
+
 test bool shouldFailWhenUsingWrongExpressionsForChainedAccess()
 {
     str code = "namespace Example

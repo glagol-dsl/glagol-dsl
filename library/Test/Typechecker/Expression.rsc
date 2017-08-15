@@ -820,3 +820,53 @@ test bool shouldReturnUnknownTypeOnAccessingRemoteField() =
 		addToAST(file(|tmp:///|, \module(namespace("Test"), [], entity("User", []))), newEnv(|tmp:///|))
 	));
 
+test bool shouldReturnStringWhenTypeCastingAStringToString() = string() == lookupType(cast(string(), string("dadsa")), newEnv());
+test bool shouldReturnStringWhenTypeCastingAIntegerToString() = string() == lookupType(cast(string(), integer(123)), newEnv());
+test bool shouldReturnStringWhenTypeCastingAFloatToString() = string() == lookupType(cast(string(), float(123.45)), newEnv());
+test bool shouldReturnStringWhenTypeCastingABoolToString() = string() == lookupType(cast(string(), boolean(true)), newEnv());
+test bool shouldReturnUnknownTypeWhenTypeCastingAnUnknownToString() = unknownType() == lookupType(cast(string(), get(string())), newEnv());
+
+test bool shouldReturnIntegerWhenTypeCastingAStringToInteger() = integer() == lookupType(cast(integer(), string("dadsa")), newEnv());
+test bool shouldReturnIntegerWhenTypeCastingAIntegerToInteger() = integer() == lookupType(cast(integer(), integer(123)), newEnv());
+test bool shouldReturnIntegerWhenTypeCastingAFloatToInteger() = integer() == lookupType(cast(integer(), float(123.45)), newEnv());
+test bool shouldReturnIntegerWhenTypeCastingABoolToInteger() = integer() == lookupType(cast(integer(), boolean(true)), newEnv());
+test bool shouldReturnUnknownTypeWhenTypeCastingAnUnknownToInteger() = unknownType() == lookupType(cast(integer(), get(string())), newEnv());
+
+test bool shouldReturnFloatWhenTypeCastingAStringToFloat() = float() == lookupType(cast(float(), string("dadsa")), newEnv());
+test bool shouldReturnFloatWhenTypeCastingAIntegerToFloat() = float() == lookupType(cast(float(), integer(123)), newEnv());
+test bool shouldReturnFloatWhenTypeCastingAFloatToFloat() = float() == lookupType(cast(float(), float(123.45)), newEnv());
+test bool shouldReturnFloatWhenTypeCastingABoolToFloat() = float() == lookupType(cast(float(), boolean(true)), newEnv());
+test bool shouldReturnUnknownTypeWhenTypeCastingAnUnknownToFloat() = unknownType() == lookupType(cast(float(), get(string())), newEnv());
+
+test bool shouldReturnBoolWhenTypeCastingAStringToBool() = boolean() == lookupType(cast(boolean(), string("dadsa")), newEnv());
+test bool shouldReturnBoolWhenTypeCastingAIntegerToBool() = boolean() == lookupType(cast(boolean(), integer(123)), newEnv());
+test bool shouldReturnBoolWhenTypeCastingAFloatToBool() = boolean() == lookupType(cast(boolean(), float(123.45)), newEnv());
+test bool shouldReturnBoolWhenTypeCastingABoolToBool() = boolean() == lookupType(cast(boolean(), boolean(true)), newEnv());
+test bool shouldReturnUnknownTypeWhenTypeCastingAnUnknownToBool() = unknownType() == lookupType(cast(boolean(), get(string())), newEnv());
+
+test bool shouldNotGiveErrorOnStringTypeCastToString() = !hasErrors(checkExpression(cast(string(), string("dadsa")), newEnv()));
+test bool shouldNotGiveErrorOnIntegerTypeCastToString() = !hasErrors(checkExpression(cast(string(), integer(123)), newEnv()));
+test bool shouldNotGiveErrorOnFloatTypeCastToString() = !hasErrors(checkExpression(cast(string(), float(12.453)), newEnv()));
+test bool shouldNotGiveErrorOnBoolTypeCastToString() = !hasErrors(checkExpression(cast(string(), boolean(true)), newEnv()));
+
+test bool shouldNotGiveErrorOnStringTypeCastToInteger() = !hasErrors(checkExpression(cast(integer(), string("dadsa")), newEnv()));
+test bool shouldNotGiveErrorOnIntegerTypeCastToInteger() = !hasErrors(checkExpression(cast(integer(), integer(123)), newEnv()));
+test bool shouldNotGiveErrorOnFloatTypeCastToInteger() = !hasErrors(checkExpression(cast(integer(), float(12.453)), newEnv()));
+test bool shouldNotGiveErrorOnBoolTypeCastToInteger() = !hasErrors(checkExpression(cast(integer(), boolean(true)), newEnv()));
+
+test bool shouldNotGiveErrorOnStringTypeCastToFloat() = !hasErrors(checkExpression(cast(float(), string("dadsa")), newEnv()));
+test bool shouldNotGiveErrorOnIntegerTypeCastToFloat() = !hasErrors(checkExpression(cast(float(), integer(123)), newEnv()));
+test bool shouldNotGiveErrorOnFloatTypeCastToFloat() = !hasErrors(checkExpression(cast(float(), float(12.453)), newEnv()));
+test bool shouldNotGiveErrorOnBoolTypeCastToFloat() = !hasErrors(checkExpression(cast(float(), boolean(true)), newEnv()));
+
+test bool shouldNotGiveErrorOnStringTypeCastToBool() = !hasErrors(checkExpression(cast(boolean(), string("dadsa")), newEnv()));
+test bool shouldNotGiveErrorOnIntegerTypeCastToBool() = !hasErrors(checkExpression(cast(boolean(), integer(123)), newEnv()));
+test bool shouldNotGiveErrorOnFloatTypeCastToBool() = !hasErrors(checkExpression(cast(boolean(), float(12.453)), newEnv()));
+test bool shouldNotGiveErrorOnBoolTypeCastToBool() = !hasErrors(checkExpression(cast(boolean(), boolean(true)), newEnv()));
+
+test bool shouldGiveErrorWhenTypeCastingUnsupportedToString() = 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Type casting string[] to string is not supported", newEnv()) == 
+	checkExpression(cast(string()[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \list([string("dassd")])), newEnv());
+
+
+
