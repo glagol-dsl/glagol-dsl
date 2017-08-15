@@ -279,6 +279,30 @@ public TypeEnv checkInvoke(Type prevType, i: invoke(Expression prev, str m, list
 	
 public TypeEnv checkExpression(emptyExpr(), TypeEnv env) = env;
 public TypeEnv checkExpression(this(), TypeEnv env) = env;
+public TypeEnv checkExpression(cast(Type t, Expression expr), TypeEnv env) = checkCast(t, lookupType(expr, env), env);
+
+public TypeEnv checkCast(string(), string(), TypeEnv env) = env;
+public TypeEnv checkCast(string(), integer(), TypeEnv env) = env;
+public TypeEnv checkCast(string(), float(), TypeEnv env) = env;
+public TypeEnv checkCast(string(), boolean(), TypeEnv env) = env;
+
+public TypeEnv checkCast(integer(), string(), TypeEnv env) = env;
+public TypeEnv checkCast(integer(), integer(), TypeEnv env) = env;
+public TypeEnv checkCast(integer(), float(), TypeEnv env) = env;
+public TypeEnv checkCast(integer(), boolean(), TypeEnv env) = env;
+
+public TypeEnv checkCast(float(), string(), TypeEnv env) = env;
+public TypeEnv checkCast(float(), integer(), TypeEnv env) = env;
+public TypeEnv checkCast(float(), float(), TypeEnv env) = env;
+public TypeEnv checkCast(float(), boolean(), TypeEnv env) = env;
+
+public TypeEnv checkCast(boolean(), string(), TypeEnv env) = env;
+public TypeEnv checkCast(boolean(), integer(), TypeEnv env) = env;
+public TypeEnv checkCast(boolean(), float(), TypeEnv env) = env;
+public TypeEnv checkCast(boolean(), boolean(), TypeEnv env) = env;
+
+public TypeEnv checkCast(Type cast, Type actual, TypeEnv env) = 
+	addError(cast, "Type casting <toString(actual)> to <toString(cast)> is not supported", env);
 
 @doc="Empty expression is always unknown type"
 public Type lookupType(emptyExpr(), _) = unknownType();
@@ -467,6 +491,29 @@ public Type lookupType(artifact(name), f: fieldAccess(str field), TypeEnv env) =
 public Type lookupType(repository(name), f: fieldAccess(str field), TypeEnv env) = lookupType(f, env) when isSelf(name, env);
 public Type lookupType(Type, f: fieldAccess(str field), TypeEnv env) = unknownType();
 
+public Type lookupType(cast(Type t, Expression expr), TypeEnv env) = lookupCastType(t, lookupType(expr, env), env);
+
+public Type lookupCastType(string(), string(), TypeEnv env) = string();
+public Type lookupCastType(string(), integer(), TypeEnv env) = string();
+public Type lookupCastType(string(), float(), TypeEnv env) = string();
+public Type lookupCastType(string(), boolean(), TypeEnv env) = string();
+
+public Type lookupCastType(integer(), string(), TypeEnv env) = integer();
+public Type lookupCastType(integer(), integer(), TypeEnv env) = integer();
+public Type lookupCastType(integer(), float(), TypeEnv env) = integer();
+public Type lookupCastType(integer(), boolean(), TypeEnv env) = integer();
+
+public Type lookupCastType(float(), string(), TypeEnv env) = float();
+public Type lookupCastType(float(), integer(), TypeEnv env) = float();
+public Type lookupCastType(float(), float(), TypeEnv env) = float();
+public Type lookupCastType(float(), boolean(), TypeEnv env) = float();
+
+public Type lookupCastType(boolean(), string(), TypeEnv env) = boolean();
+public Type lookupCastType(boolean(), integer(), TypeEnv env) = boolean();
+public Type lookupCastType(boolean(), float(), TypeEnv env) = boolean();
+public Type lookupCastType(boolean(), boolean(), TypeEnv env) = boolean();
+
+public Type lookupCastType(Type t, Type a, TypeEnv env) = unknownType();
 
 private bool isSelf(local(str name), TypeEnv env) = getContext(env).artifact.name == name;
 private bool isSelf(external(str name, ns, str original), TypeEnv env) = 
