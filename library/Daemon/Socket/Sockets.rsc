@@ -25,6 +25,3 @@ public java str readFrom(int listenerId);
 
 @javaClass{org.glagol.socket.Sockets}
 public java void writeTo(int listenerId, str msg);
-
-@javaClass{org.glagol.socket.Sockets}
-public java void writeToAsASCII(int listenerId, str msg);

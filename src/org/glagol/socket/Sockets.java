@@ -7,10 +7,14 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 
 import io.usethesource.vallang.*;
 import org.rascalmpl.interpreter.utils.RuntimeExceptionFactory;
+
+import static java.util.Base64.getDecoder;
 
 public class Sockets {
 	private static HashMap<IInteger, ServerSocket> serverSockets = new HashMap<IInteger, ServerSocket>();
@@ -87,17 +91,14 @@ public class Sockets {
 		}
 		
 		try {
-			BufferedReader in = null;
+			BufferedReader in;
 			if (socketReaders.containsKey(socketId)) {
 				in = socketReaders.get(socketId);
 			} else {
 				throw RuntimeExceptionFactory.illegalArgument(socketId, null, null);
 			}
-			StringBuffer line = new StringBuffer();
-			while (in.ready()) {
-				line.append((char)in.read());
-			}
-			return vf.string(line.toString());
+			String line = in.readLine();
+			return vf.string(new String(getDecoder().decode(line.getBytes())));
 		} catch (IOException e) {
 			throw RuntimeExceptionFactory.javaException(e, null, null);
 		}
@@ -114,19 +115,7 @@ public class Sockets {
 		} else {
 			throw RuntimeExceptionFactory.illegalArgument(socketId, null, null);
 		}
-		out.println(msg.getValue());
-	}
-
-	public void writeToAsASCII(IInteger socketId, IString msg) {
-		if (!clientSockets.containsKey(socketId)) {
-			throw RuntimeExceptionFactory.illegalArgument(socketId, null, null);
-		}
-		
-		try {
-			clientSockets.get(socketId).getOutputStream().write(msg.getValue().getBytes("ASCII"));
-		} catch (IOException ioe) {
-			throw RuntimeExceptionFactory.javaException(ioe, null, null);
-		}
+		out.println(Base64.getEncoder().encodeToString(msg.getValue().getBytes()));
 	}
 
 }
