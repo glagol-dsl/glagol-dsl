@@ -14,7 +14,7 @@ import Exceptions::ParserExceptions;
 import Exceptions::ConfigExceptions;
 import Exceptions::TransformExceptions;
 
-private alias Command = tuple[str command, loc path];
+private alias Command = tuple[str command, loc path, list[loc] sources];
 
 public int main(list[str] args) {
 
@@ -75,12 +75,14 @@ private void controller(str inputStream, int listenerId) {
 private void dispatch(Command command, int listenerId) {
     switch (command.command) {
         case "compile":
-            compile(command.path, listenerId);
+            compile(command.path, command.sources, listenerId);
     }
 }
 
 private Command decodeJSON(str inputStream) {
     JSON json = fromJSON(#JSON, inputStream);
     
-    return <json.properties["command"].s, |file:///| + json.properties["path"].s>;
+    return <json.properties["command"].s, |file:///| + json.properties["path"].s, [
+    	|file:///| + v.s | v <- json.properties["files"].values
+    ]>;
 }

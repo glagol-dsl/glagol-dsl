@@ -16,38 +16,34 @@ import ValueIO;
 
 private str COMPILE_LOG = ".glagol_compile_log";
 
-public void compile(loc projectPath, int listenerId) {
+public void compile(loc projectPath, list[loc] sources, int listenerId) {
 	Config config = loadConfig(projectPath);
 	
-    list[Declaration] ast = parseMultiple(
-        findAllSourceFiles(getSourcesPath(config)) + findAllSourceFiles(getVendorPath(config))
-    );
+    list[Declaration] ast = parseMultiple(sources);
     
     TypeEnv typeEnv = checkAST(config, ast);
     
     if (hasErrors(typeEnv)) {
-		respondWith(error("Cannot compile, errors detected:"), listenerId);
+		respondWith(error("Cannot compile, errors found:"), listenerId);
     	for (<loc src, str msg> <- getErrors(typeEnv)) {
     		respondWith(text("[<relative(src, config)><line(src)>] <msg>"), listenerId);
     	}
     	return;
     }
     
-	cleanUpOld(config, listenerId);
+    respondWith(clean(getCompilePath(config) + COMPILE_LOG), listenerId);
     
     list[loc] compiledFiles = [];
     
     for (l <- ast, out := toPHPScript(<getFramework(config), getORM(config)>, l.\module, ast), str outputFile <- out) {
-    	compiledFiles += createSourceFile(outputFile, toCode(out[outputFile]), config);
-    	respondWith(info("Compiled source file <outputFile>"), listenerId);
+    	compiledFiles += createSourceFile(outputFile, toCode(out[outputFile]), config, listenerId);
     }
     
     map[loc, str] envFiles = generateEnvFiles(config, ast);
     
     for (f <- envFiles) {
-    	writeFile(f, envFiles[f]);
+    	respondWith(writeRemoteFile(f, envFiles[f]), listenerId);
     	compiledFiles += f;
-    	respondWith(info("Created source file <f.path>"), listenerId);
     }
     
     createCompileLogFile(config, compiledFiles, listenerId);
@@ -56,30 +52,15 @@ public void compile(loc projectPath, int listenerId) {
 private str line(loc src) = ":<src.begin.line>" when src.begin? && src.begin.line?;
 private str line(loc src) = "";
 
-private void cleanUpOld(Config config, int listenerId) {
-
-	loc logFile = getCompilePath(config) + COMPILE_LOG;
-
-	if (!exists(logFile)) {
-		return;
-	}
-	
-	for (loc file <- readBinaryValueFile(#list[loc], logFile), exists(file)) {
-		remove(file);
-		respondWith(warning("Removed existing compiled file <file.path>"), listenerId);
-	}
-}
-
 private loc createCompileLogFile(Config config, list[loc] compiledFiles, int listenerId) {
 	loc logFile = getCompilePath(config) + COMPILE_LOG;
-	writeBinaryValueFile(logFile, compiledFiles);
-	respondWith(info("Compile log put in <logFile.path>"), listenerId);
+	respondWith(writeRemoteLogFile(logFile, compiledFiles), listenerId);
 	return logFile;
 }
 
-private loc createSourceFile(str outputFile, str code, Config config) {
+private loc createSourceFile(str outputFile, str code, Config config, int listenerId) {
 	loc file = getCompilePath(config) + "src" + outputFile;
-	writeFile(file, code);
+	respondWith(writeRemoteFile(file, code), listenerId);
 	
 	return file;
 }
