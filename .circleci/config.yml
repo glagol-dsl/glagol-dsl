@@ -1,0 +1,35 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: yoangrigorov/glagol-dsl-builds:latest
+    working_directory: ~/repo
+    environment:
+      RASCAL_JAR: /usr/local/src/rascal-shell-unstable.jar
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "pom.xml" }}
+          - v1-dependencies-
+      - run: mkdir /usr/local/src/
+      - run: mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+      - run: mvn versions:set -DgenerateBackupPoms=false -DnewVersion=${CIRCLE_TAG}-SNAPSHOT
+      - run: build/get_rascal
+      - run: build/build
+      - run: mvn clean package
+      - run: build/glagol test
+      - run: if [[ ! -z ${CIRCLE_TAG} ]]; then github-release release --user bulgariaphp --repo glagol-dsl --tag ${CIRCLE_TAG} --name "${CIRCLE_TAG}" --description "Release ${CIRCLE_TAG}"; fi
+      - run: if [[ ! -z ${CIRCLE_TAG} ]]; then github-release upload --user bulgariaphp --repo glagol-dsl --tag ${CIRCLE_TAG} --name "glagol-dsl-server-${CIRCLE_TAG}.jar" --file target/glagol-dsl.jar; fi
+workflows:
+  version: 2
+  build-workflow:
+    jobs:
+      - build:
+          filters:
+            tags:
+              ignore: /^ignore-.*/
