@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 # This program is only used for the Travis CI builds.
 # Tests are build and ran using the Rascal REPL
 RASCAL_DIR=`dirname ${RASCAL_JAR}`
