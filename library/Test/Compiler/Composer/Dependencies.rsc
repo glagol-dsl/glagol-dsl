@@ -9,11 +9,12 @@ import Config::Reader;
 test bool shouldCreateComposerDependenciesUsingLaravelAndDoctrine() = 
     setDependencies(object(()), newConfig()) == 
     object(("require":object((
-        "laravel/framework":string("^5.3"),
+        "laravel/lumen-framework":string("5.4.*"),
+        "vlucas/phpdotenv": string("~2.2"),
         "bulgaria-php/glagol-bridge-laravel":string("^0.1"),
         "bulgaria-php/glagol-php-overriding":string("^0.1"),
         "php":string("^7.1"),
-        "laravel-doctrine/orm":string("1.2.*"),
+        "laravel-doctrine/orm":string("^1.3"),
         "bulgaria-php/glagol-php-ds":string("^0.1")
       ))));
 

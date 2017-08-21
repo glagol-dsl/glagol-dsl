@@ -11,20 +11,15 @@ test bool shouldGenerateEnvFilesForLaravelAndDoctrine() =
     domain(generateEnvFiles(newConfig(), [])) ==
     {
       |file:///config/app.php|,
-      |file:///bootstrap/autoload.php|,
       |file:///config/doctrine.php|,
-      |file:///public/web.config|,
       |file:///bootstrap/cache/.gitignore|,
       |file:///bootstrap/app.php|,
       |file:///server.php|,
-      |file:///config/compile.php|,
       |file:///config/database.php|,
       |file:///public/.htaccess|,
       |file:///artisan|,
       |file:///routes/console.php|,
-      |file:///config/view.php|,
       |file:///routes/api.php|,
-      |file:///config/cache.php|,
       |file:///public/index.php|,
       |file:///composer.json|
     };
@@ -38,20 +33,15 @@ test bool shouldGenerateEnvFilesForLaravelAndDoctrineAndHavingARepository() =
     ])) ==
     {
       |file:///config/app.php|,
-      |file:///bootstrap/autoload.php|,
       |file:///config/doctrine.php|,
-      |file:///public/web.config|,
       |file:///bootstrap/cache/.gitignore|,
       |file:///bootstrap/app.php|,
       |file:///server.php|,
-      |file:///config/compile.php|,
       |file:///config/database.php|,
       |file:///public/.htaccess|,
       |file:///artisan|,
       |file:///routes/console.php|,
-      |file:///config/view.php|,
       |file:///routes/api.php|,
-      |file:///config/cache.php|,
       |file:///public/index.php|,
       |file:///composer.json|,
       |file:///app/Provider/UserRepositoryProvider.php|

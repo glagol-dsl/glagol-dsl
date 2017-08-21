@@ -10,21 +10,16 @@ import Map;
 test bool shouldGenerateLaravelFrameworkEnvFiles() =
     domain(generateFrameworkFiles(laravel(), newConfig(), [])) == {
       |file:///config/app.php|,
-      |file:///bootstrap/autoload.php|,
       |file:///config/doctrine.php|,
-      |file:///public/web.config|,
       |file:///bootstrap/cache/.gitignore|,
       |file:///bootstrap/app.php|,
       |file:///server.php|,
-      |file:///config/compile.php|,
       |file:///config/database.php|,
       |file:///public/index.php|,
       |file:///public/.htaccess|,
       |file:///artisan|,
       |file:///routes/console.php|,
-      |file:///config/view.php|,
-      |file:///routes/api.php|,
-      |file:///config/cache.php|
+      |file:///routes/api.php|
     };
     
 test bool shouldGenerateLaravelFrameworkEnvFilesWithRepositoryProviders() =
@@ -34,20 +29,15 @@ test bool shouldGenerateLaravelFrameworkEnvFilesWithRepositoryProviders() =
         ], repository("User", [])))
     ])) == {
       |file:///config/app.php|,
-      |file:///bootstrap/autoload.php|,
       |file:///config/doctrine.php|,
-      |file:///public/web.config|,
       |file:///bootstrap/cache/.gitignore|,
       |file:///bootstrap/app.php|,
       |file:///server.php|,
-      |file:///config/compile.php|,
       |file:///config/database.php|,
       |file:///public/index.php|,
       |file:///public/.htaccess|,
       |file:///artisan|,
       |file:///routes/console.php|,
-      |file:///config/view.php|,
       |file:///routes/api.php|,
-      |file:///config/cache.php|,
       |file:///app/Provider/UserRepositoryProvider.php|
     };

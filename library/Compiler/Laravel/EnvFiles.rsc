@@ -4,14 +4,9 @@ import Config::Config;
 import Config::Reader;
 import Compiler::PHP::Compiler;
 import Compiler::Laravel::Bootstrap::App;
-import Compiler::Laravel::Bootstrap::Autoload;
 import Compiler::Laravel::Public::Index;
 import Compiler::Laravel::Public::Htaccess;
-import Compiler::Laravel::Public::WebConfig;
 import Compiler::Laravel::Config::App;
-import Compiler::Laravel::Config::Compile;
-import Compiler::Laravel::Config::Cache;
-import Compiler::Laravel::Config::View;
 import Compiler::Laravel::Config::Doctrine;
 import Compiler::Laravel::Config::Database;
 import Compiler::Laravel::Routes::Api;
@@ -26,16 +21,11 @@ import IO;
 
 public map[loc, str] generateFrameworkFiles(laravel(), Config config, list[Declaration] ast) = (
 	|file:///| + "bootstrap/app.php": createAppFile(),
-    |file:///| + "bootstrap/autoload.php": createAutoloadFile(),
     |file:///| + "bootstrap/cache/.gitignore": "",
 	|file:///| + "public/index.php": createIndexFile(),
 	|file:///| + "public/.htaccess": createHtaccess(),
-    |file:///| + "public/web.config": createWebConfig(),
     |file:///| + "artisan": createArtisan(),
     |file:///| + "config/app.php": createAppConfig(config, ast),
-    |file:///| + "config/cache.php": createCacheConfig(),
-    |file:///| + "config/compile.php": createCompileConfig(),
-    |file:///| + "config/view.php": createViewConfig(),
     |file:///| + "config/doctrine.php": createDoctrineConfig(),
     |file:///| + "config/database.php": createDatabaseConfig(),
     |file:///| + "routes/api.php": createRoutesApi(ast),

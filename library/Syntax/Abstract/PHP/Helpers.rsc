@@ -9,3 +9,5 @@ public PhpStmt phpDeclareStrict() = phpDeclare([phpDeclaration("strict_types", p
 public PhpExpr phpNew(str name, list[PhpActualParameter] parameters) = phpNew(phpName(phpName(name)), parameters);
 
 public PhpExpr phpCall(str name, list[PhpActualParameter] parameters) = phpCall(phpName(phpName(name)), parameters);
+
+public PhpParam phpParam(str paramName) = phpParam(paramName, phpNoExpr(), phpNoName(), false, false);

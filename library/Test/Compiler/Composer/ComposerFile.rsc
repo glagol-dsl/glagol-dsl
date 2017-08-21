@@ -10,11 +10,12 @@ test bool shouldCreateComposerFileUsingLaravelAndDoctrine() =
     generateComposerFile(newConfig(), []) == 
     "{" + 
         "\"require\":{" + 
-            "\"laravel/framework\":\"^5.3\"," + 
+        	"\"vlucas/phpdotenv\":\"~2.2\"," +
+            "\"laravel/lumen-framework\":\"5.4.*\"," + 
             "\"bulgaria-php/glagol-bridge-laravel\":\"^0.1\"," + 
             "\"bulgaria-php/glagol-php-overriding\":\"^0.1\"," + 
             "\"php\":\"^7.1\"," + 
-            "\"laravel-doctrine/orm\":\"1.2.*\"," + 
+            "\"laravel-doctrine/orm\":\"^1.3\"," + 
             "\"bulgaria-php/glagol-php-ds\":\"^0.1\"" + 
         "}," + 
         "\"autoload\":{" + 
@@ -30,11 +31,12 @@ test bool shouldCreateComposerFileUsingLaravelAndDoctrineWithNamespaceAutoload()
     ]) == 
     "{" + 
         "\"require\":{" + 
-            "\"laravel/framework\":\"^5.3\"," + 
+        	"\"vlucas/phpdotenv\":\"~2.2\"," +
+            "\"laravel/lumen-framework\":\"5.4.*\"," + 
             "\"bulgaria-php/glagol-bridge-laravel\":\"^0.1\"," + 
             "\"bulgaria-php/glagol-php-overriding\":\"^0.1\"," + 
             "\"php\":\"^7.1\"," + 
-            "\"laravel-doctrine/orm\":\"1.2.*\"," + 
+            "\"laravel-doctrine/orm\":\"^1.3\"," + 
             "\"bulgaria-php/glagol-php-ds\":\"^0.1\"" + 
         "}," + 
         "\"autoload\":{" + 

@@ -10,19 +10,7 @@ test bool shouldCreateLaravelApiRoutes() =
         file(|temp:///|, \module(namespace("Test"), [], controller("UserController", jsonApi(), route([
             routePart("users")
         ]), [])))
-    ]) == toCode(phpScript([phpExprstmt(phpStaticCall(
-        phpName(phpName("Route")),
-        phpName(phpName("resource")),
-        [
-          phpActualParameter(
-            phpScalar(phpString("/users")),
-            false),
-          phpActualParameter(
-            phpFetchClassConst(
-              phpName(phpName("Test\\UserController")),
-              "class"),
-            false)
-        ]))]));
+    ]) == toCode(phpScript([]));
 
 test bool shouldCreateTwoLaravelApiRoutes() = 
     createRoutesApi([
@@ -32,29 +20,4 @@ test bool shouldCreateTwoLaravelApiRoutes() =
         file(|temp:///|, \module(namespace("Test"), [], controller("ArticleController", jsonApi(), route([
             routePart("articles")
         ]), [])))
-    ]) == toCode(phpScript([phpExprstmt(phpStaticCall(
-        phpName(phpName("Route")),
-        phpName(phpName("resource")),
-        [
-          phpActualParameter(
-            phpScalar(phpString("/users")),
-            false),
-          phpActualParameter(
-            phpFetchClassConst(
-              phpName(phpName("Test\\UserController")),
-              "class"),
-            false)
-        ])),
-        phpExprstmt(phpStaticCall(
-        phpName(phpName("Route")),
-        phpName(phpName("resource")),
-        [
-          phpActualParameter(
-            phpScalar(phpString("/articles")),
-            false),
-          phpActualParameter(
-            phpFetchClassConst(
-              phpName(phpName("Test\\ArticleController")),
-              "class"),
-            false)
-        ]))]));
+    ]) == toCode(phpScript([]));

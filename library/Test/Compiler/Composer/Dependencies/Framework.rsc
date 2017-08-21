@@ -7,6 +7,7 @@ import Config::Config;
 
 test bool shouldGetFrameworkDependenciesForLaravel() = 
     getFrameworkDependencies(laravel()) == (
-        "laravel/framework": string("^5.3"),
+        "vlucas/phpdotenv": string("~2.2"),
+        "laravel/lumen-framework": string("5.4.*"),
         "bulgaria-php/glagol-bridge-laravel": string("^0.1")
     );
