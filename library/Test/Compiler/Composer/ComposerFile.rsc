@@ -4,9 +4,10 @@ import Compiler::Composer::ComposerFile;
 import Syntax::Abstract::Glagol;
 import lang::json::ast::JSON;
 import Config::Config;
+import Config::Reader;
 
 test bool shouldCreateComposerFileUsingLaravelAndDoctrine() = 
-    generateComposerFile(<object(("glagol": object(("framework": string("laravel"), "orm": string("doctrine"))))), |temp:///|>, []) == 
+    generateComposerFile(newConfig(), []) == 
     "{" + 
         "\"require\":{" + 
             "\"laravel/framework\":\"^5.3\"," + 
@@ -24,7 +25,7 @@ test bool shouldCreateComposerFileUsingLaravelAndDoctrine() =
     "}";
 
 test bool shouldCreateComposerFileUsingLaravelAndDoctrineWithNamespaceAutoload() = 
-    generateComposerFile(<object(("glagol": object(("framework": string("laravel"), "orm": string("doctrine"))))), |temp:///|>, [
+    generateComposerFile(newConfig(), [
         file(|temp:///|, \module(namespace("Test"), [], repository("User", [])))
     ]) == 
     "{" + 

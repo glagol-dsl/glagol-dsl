@@ -14,10 +14,8 @@ import Typechecker::Env;
 import IO;
 import ValueIO;
 
-private str COMPILE_LOG = ".glagol_compile_log";
-
-public void compile(loc projectPath, list[loc] sources, int listenerId) {
-	Config config = loadConfig(projectPath);
+public void compile(map[loc, str] sources, int listenerId) {
+	Config config = newConfig();
 	
     list[Declaration] ast = parseMultiple(sources);
     
@@ -26,12 +24,12 @@ public void compile(loc projectPath, list[loc] sources, int listenerId) {
     if (hasErrors(typeEnv)) {
 		respondWith(error("Cannot compile, errors found:"), listenerId);
     	for (<loc src, str msg> <- getErrors(typeEnv)) {
-    		respondWith(text("[<relative(src, config)><line(src)>] <msg>"), listenerId);
+    		respondWith(text("[<src.path><line(src)>] <msg>"), listenerId);
     	}
     	return;
     }
     
-    respondWith(clean(getCompilePath(config) + COMPILE_LOG), listenerId);
+    respondWith(clean(), listenerId);
     
     list[loc] compiledFiles = [];
     
@@ -46,31 +44,21 @@ public void compile(loc projectPath, list[loc] sources, int listenerId) {
     	compiledFiles += f;
     }
     
-    createCompileLogFile(config, compiledFiles, listenerId);
+    createCompileLogFile(compiledFiles, listenerId);
+    
+    respondWith(info("Successfully compiled glagol project"), listenerId);
 }
 
 private str line(loc src) = ":<src.begin.line>" when src.begin? && src.begin.line?;
 private str line(loc src) = "";
 
-private loc createCompileLogFile(Config config, list[loc] compiledFiles, int listenerId) {
-	loc logFile = getCompilePath(config) + COMPILE_LOG;
-	respondWith(writeRemoteLogFile(logFile, compiledFiles), listenerId);
-	return logFile;
+private void createCompileLogFile(list[loc] compiledFiles, int listenerId) {
+	respondWith(writeRemoteLogFile(compiledFiles), listenerId);
 }
 
 private loc createSourceFile(str outputFile, str code, Config config, int listenerId) {
-	loc file = getCompilePath(config) + "src" + outputFile;
+	loc file = |file:///| + "src" + outputFile;
 	respondWith(writeRemoteFile(file, code), listenerId);
 	
 	return file;
-}
-
-private list[loc] findAllSourceFiles(loc projectPath) {
-    list[loc] sourceFiles = [path | path <- projectPath.ls, !isDirectory(path), path.extension == "g"];
-
-    for (path <- projectPath.ls, isDirectory(path)) {
-        sourceFiles += findAllSourceFiles(path);
-    }
-    
-    return sourceFiles;
 }

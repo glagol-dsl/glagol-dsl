@@ -14,7 +14,6 @@ import Compiler::Laravel::Config::Cache;
 import Compiler::Laravel::Config::View;
 import Compiler::Laravel::Config::Doctrine;
 import Compiler::Laravel::Config::Database;
-import Compiler::Laravel::Config::EnvFile;
 import Compiler::Laravel::Routes::Api;
 import Compiler::Laravel::Routes::Console;
 import Compiler::Laravel::Server;
@@ -26,30 +25,29 @@ import Syntax::Abstract::PHP::Helpers;
 import IO;
 
 public map[loc, str] generateFrameworkFiles(laravel(), Config config, list[Declaration] ast) = (
-	getCompilePath(config) + "bootstrap/app.php": createAppFile(),
-    getCompilePath(config) + "bootstrap/autoload.php": createAutoloadFile(),
-    getCompilePath(config) + "bootstrap/cache/.gitignore": "",
-	getCompilePath(config) + "public/index.php": createIndexFile(),
-	getCompilePath(config) + "public/.htaccess": createHtaccess(),
-    getCompilePath(config) + "public/web.config": createWebConfig(),
-    getCompilePath(config) + "artisan": createArtisan(),
-    getCompilePath(config) + "config/app.php": createAppConfig(config, ast),
-    getCompilePath(config) + "config/cache.php": createCacheConfig(),
-    getCompilePath(config) + "config/compile.php": createCompileConfig(),
-    getCompilePath(config) + "config/view.php": createViewConfig(),
-    getCompilePath(config) + "config/doctrine.php": createDoctrineConfig(),
-    getCompilePath(config) + "config/database.php": createDatabaseConfig(),
-    getCompilePath(config) + "routes/api.php": createRoutesApi(ast),
-    getCompilePath(config) + "routes/console.php": createRoutesConsole(),
-    getCompilePath(config) + "server.php": createServerFile(),
-    getCompilePath(config) + ".env": createEnvFile(config)
+	|file:///| + "bootstrap/app.php": createAppFile(),
+    |file:///| + "bootstrap/autoload.php": createAutoloadFile(),
+    |file:///| + "bootstrap/cache/.gitignore": "",
+	|file:///| + "public/index.php": createIndexFile(),
+	|file:///| + "public/.htaccess": createHtaccess(),
+    |file:///| + "public/web.config": createWebConfig(),
+    |file:///| + "artisan": createArtisan(),
+    |file:///| + "config/app.php": createAppConfig(config, ast),
+    |file:///| + "config/cache.php": createCacheConfig(),
+    |file:///| + "config/compile.php": createCompileConfig(),
+    |file:///| + "config/view.php": createViewConfig(),
+    |file:///| + "config/doctrine.php": createDoctrineConfig(),
+    |file:///| + "config/database.php": createDatabaseConfig(),
+    |file:///| + "routes/api.php": createRoutesApi(ast),
+    |file:///| + "routes/console.php": createRoutesConsole(),
+    |file:///| + "server.php": createServerFile()
 ) + getRepositoryProviders(getORM(config), config, ast);
 
 private list[Declaration] getRepositories(list[Declaration] ast) = 
     [e | file(_, e: \module(_, _, repository(_, _))) <- ast];
 
 private map[loc, str] getRepositoryProviders(doctrine(), Config config, list[Declaration] ast) = 
-    (getCompilePath(config) + "app/Provider/<e.artifact.name>RepositoryProvider.php": createProvider(doctrine(), e) | e <- getRepositories(ast));
+    (|file:///| + "app/Provider/<e.artifact.name>RepositoryProvider.php": createProvider(doctrine(), e) | e <- getRepositories(ast));
 
 private str createProvider(doctrine(), m: \module(ns, _, repository(str name, list[Declaration] declarations))) = 
     toCode(phpScript([

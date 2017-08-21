@@ -10,7 +10,7 @@ import lang::json::ast::JSON;
 public JSON setAutoloading(object(map[str, JSON] properties), Config config, list[Declaration] ast) = object(merge(properties, (
     "autoload": object((
         "psr-4": object((
-            "<n>\\": string("<getSourcesPath(config).file>/<n>/") |  n <- namespaces(ast)
+            "<n>\\": string("src/<n>/") |  n <- namespaces(ast)
         ) + frameworkSpecificAutoload(getFramework(config)))
     ))
 )));

@@ -5,9 +5,10 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Compiler::PHP::Compiler;
 import lang::json::ast::JSON;
+import Config::Reader;
 
 test bool shouldGenerateLaravelAppConfig() = 
-    createAppConfig(<object(("glagol": object(("orm": string("doctrine"))))), |temp:///|>, []) == 
+    createAppConfig(newConfig(), []) == 
     toCode(phpScript([phpReturn(phpSomeExpr(phpArray([
             phpArrayElement(
               phpSomeExpr(phpScalar(phpString("providers"))),
@@ -460,7 +461,7 @@ test bool shouldGenerateLaravelAppConfig() =
           ])))]));
 
 test bool shouldGenerateLaravelAppConfigHavingRepositoryProviders() = 
-    createAppConfig(<object(("glagol": object(("orm": string("doctrine"))))), |temp:///|>, [
+    createAppConfig(newConfig(), [
         file(|temp:///|, \module(namespace("Test"), [
             \import("User", namespace("Test"), "User")
         ], repository("User", [])))

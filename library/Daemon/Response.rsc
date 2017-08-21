@@ -10,10 +10,9 @@ data Response
 	| error(str message)
 	| warning(str message)
 	| text(str message)
-	| clean(loc file)
+	| clean()
 	| writeRemoteFile(loc file, str contents)
-	| writeRemoteLogFile(loc file, list[loc] files)
-	| deleteRemoteFile(loc file)
+	| writeRemoteLogFile(list[loc] files)
 	| end()
 	;
 	
@@ -55,16 +54,16 @@ public void respondWith(warning(str message), int listenerId) {
 	writeTo(listenerId, toJSON(object(("type": string("warning"), "message": string(message)))));
 }
 
-public void respondWith(clean(loc file), int listenerId) {
-	writeTo(listenerId, toJSON(object(("type": string("clean"), "file": string(file.path)))));
+public void respondWith(clean(), int listenerId) {
+	writeTo(listenerId, toJSON(object(("type": string("clean")))));
 }
 
 public void respondWith(writeRemoteFile(loc file, str contents), int listenerId) {
 	writeTo(listenerId, toJSON(object(("type": string("create"), "file": string(file.path), "contents": string(contents)))));
 }
 
-public void respondWith(writeRemoteLogFile(loc file, list[loc] files), int listenerId) {
-	writeTo(listenerId, toJSON(object(("type": string("create_log"), "file": string(file.path), "files": array([
+public void respondWith(writeRemoteLogFile(list[loc] files), int listenerId) {
+	writeTo(listenerId, toJSON(object(("type": string("create_log"), "files": array([
 		string(f.path) | f <- files
 	])))));
 }

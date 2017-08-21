@@ -4,9 +4,10 @@ import Compiler::Composer::Dependencies;
 import Syntax::Abstract::Glagol;
 import lang::json::ast::JSON;
 import Config::Config;
+import Config::Reader;
 
 test bool shouldCreateComposerDependenciesUsingLaravelAndDoctrine() = 
-    setDependencies(object(()), <object(("glagol": object(("framework": string("laravel"), "orm": string("doctrine"))))), |temp:///|>) == 
+    setDependencies(object(()), newConfig()) == 
     object(("require":object((
         "laravel/framework":string("^5.3"),
         "bulgaria-php/glagol-bridge-laravel":string("^0.1"),

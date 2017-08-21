@@ -20,7 +20,7 @@ Runs typecheck on Glagol file:
 public TypeEnv checkFile(Config config, f:file(loc src, m:\module(ns, list[Declaration] imports, Declaration artifact)), TypeEnv env) = 
     checkArtifact(artifact,
     	setContext(m, checkImports(
-    	   imports, checkLocVsModule(getSourcesPath(config), f, setLocation(src, env))
+    	   imports, checkLocVsModule(|file:///src|, f, setLocation(src, env))
     	))
 	);
 
