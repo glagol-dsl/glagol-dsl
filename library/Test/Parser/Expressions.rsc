@@ -234,7 +234,7 @@ test bool testMethodInvokeChainedToAVariable()
             expression(invoke(variable("eee"), "methodInvoke", [])),
             expression(invoke(invoke(variable("eee"), "nested", [\list([string("string")])]), "methodInvoke", [])),
             expression(invoke(fieldAccess(fieldAccess(variable("eee"), "blah"), "blah2"), "methodInvoke", [])),
-            expression(invoke(new(local("MyClass"), []), "methodInvoke", []))
+            expression(invoke(\bracket(new(local("MyClass"), [])), "methodInvoke", []))
           ], emptyExpr())
     ]));
 }

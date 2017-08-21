@@ -250,8 +250,13 @@ public Expression convertExpression(a: (Expression) `<Expression prev>.<MemberNa
         throw IllegalObjectOperator("Invalid expression followed by object operator", a@\loc);
     }
     
-    return invoke(convertExpression(prev, env), "<method>", [convertExpression(arg, env) | arg <- args])[@src=a@\loc];
+    return invoke(convertExpression(true, prev, env), "<method>", [convertExpression(arg, env) | arg <- args])[@src=a@\loc];
 }
+
+public Expression convertExpression(brackets: true, e: (Expression) `new <ArtifactName name>(<{Expression ","}* args>)`, ParseEnv env) = 
+	\bracket(convertExpression(e, env))[@src = e@\loc];
+	
+public Expression convertExpression(brackets: true, e, ParseEnv env) = convertExpression(e, env);
 
 public Expression convertExpression(a: (Expression) `<Expression prev>.<MemberName field>`, ParseEnv env) {
 
@@ -259,7 +264,7 @@ public Expression convertExpression(a: (Expression) `<Expression prev>.<MemberNa
         throw IllegalObjectOperator("Invalid expression followed by object operator", a@\loc);
     }
 
-    return fieldAccess(convertExpression(prev, env), "<field>")[@src=a@\loc];
+    return fieldAccess(convertExpression(true, prev, env), "<field>")[@src=a@\loc];
 }
 
 public Expression convertExpression(a: (Expression) `{<{MapPair ","}* pairs>}`, ParseEnv env) = \map(
