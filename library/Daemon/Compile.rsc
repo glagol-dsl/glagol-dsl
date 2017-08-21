@@ -13,6 +13,7 @@ import Daemon::Socket::Sockets;
 import Exceptions::ParserExceptions;
 import Exceptions::ConfigExceptions;
 import Exceptions::TransformExceptions;
+import Utils::SystemEnv;
 
 private data Command = compileCmd(map[loc, str] sources);
 

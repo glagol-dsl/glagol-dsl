@@ -9,7 +9,7 @@ import java.util.*;
 public class GlagolShell {
 
     private static final String DEFAULT_PORT = "51151";
-    private static final String ENV_KEY_GLAGOL_PORT = "GLAGOL_PORT";
+    private static final String ENV_KEY_GLAGOL_PORT = "GLAGOL_DSL_PORT";
 
     private static final Map<String, String> commandToModule = new HashMap<String, String>() {{
         put("daemon", "Daemon::Compile");
