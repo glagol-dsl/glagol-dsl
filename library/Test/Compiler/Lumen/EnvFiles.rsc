@@ -9,7 +9,6 @@ import Map;
 
 test bool shouldGenerateLumenFrameworkEnvFiles() =
     domain(generateFrameworkFiles(lumen(), newConfig(), [])) == {
-      |file:///config/app.php|,
       |file:///config/doctrine.php|,
       |file:///bootstrap/cache/.gitignore|,
       |file:///bootstrap/app.php|,
@@ -28,7 +27,6 @@ test bool shouldGenerateLumenFrameworkEnvFilesWithRepositoryProviders() =
             \import("User", namespace("Test"), "User")
         ], repository("User", [])))
     ])) == {
-      |file:///config/app.php|,
       |file:///config/doctrine.php|,
       |file:///bootstrap/cache/.gitignore|,
       |file:///bootstrap/app.php|,

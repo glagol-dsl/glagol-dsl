@@ -13,6 +13,11 @@ import Config::Config;
 
 public PhpStmt toPhpClassDef(r: repository(str name, list[Declaration] declarations), env: <Framework f, doctrine()>)
     = phpClassDef(phpClass("<name>Repository", {}, phpSomeName(phpName("EntityRepository")), [], 
-    		toPhpClassItems(declarations, env, r))[
+    		toPhpClassItems(withoutFinders(declarations), env, r))[
         @phpAnnotations=toPhpAnnotations(r, env)
     ]);
+
+private list[Declaration] withoutFinders(list[Declaration] declarations) = 
+	[d | d <- declarations, 
+		method(\public(), artifact(_), "find", _, _, emptyExpr()) !:= d, 
+		method(\public(), \list(_), "findAll", _, _, emptyExpr()) !:= d];

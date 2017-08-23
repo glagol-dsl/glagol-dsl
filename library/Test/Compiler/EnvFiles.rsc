@@ -10,7 +10,6 @@ import Map;
 test bool shouldGenerateEnvFilesForLumenAndDoctrine() =
     domain(generateEnvFiles(newConfig(), [])) ==
     {
-      |file:///config/app.php|,
       |file:///config/doctrine.php|,
       |file:///bootstrap/cache/.gitignore|,
       |file:///bootstrap/app.php|,
@@ -32,7 +31,6 @@ test bool shouldGenerateEnvFilesForLumenAndDoctrineAndHavingARepository() =
         file(|file:///|, \module(namespace("Test"), [], entity("User", [])))
     ])) ==
     {
-      |file:///config/app.php|,
       |file:///config/doctrine.php|,
       |file:///bootstrap/cache/.gitignore|,
       |file:///bootstrap/app.php|,

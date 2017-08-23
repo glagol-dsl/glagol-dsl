@@ -310,7 +310,11 @@ test bool testPersistStatementOnRepository() {
         repository("User", [
             method(\public(), voidValue(), "blah", [], [
                 persist(variable("a"))
-            ], emptyExpr())
+            ], emptyExpr()),
+			method(\public(), artifact(local("User")), "find", [
+				param(integer(), "id", emptyExpr())
+			], [\return(new(local("User"), []))], emptyExpr()),
+			method(\public(), \list(artifact(local("User"))), "findAll", [], [\return(\list([]))], emptyExpr())
     ]));
 }
 
@@ -332,7 +336,11 @@ test bool testFlushStatementOnRepository() {
                 persist(variable("a")),
                 flush(variable("a")),
                 flush(emptyExpr())
-            ], emptyExpr())
+            ], emptyExpr()),
+			method(\public(), artifact(local("User")), "find", [
+				param(integer(), "id", emptyExpr())
+			], [\return(new(local("User"), []))], emptyExpr()),
+			method(\public(), \list(artifact(local("User"))), "findAll", [], [\return(\list([]))], emptyExpr())
     ]));
 }
 
@@ -350,6 +358,10 @@ test bool testRemoveStatementOnRepository() {
         repository("User", [
             method(\public(), voidValue(), "blah", [], [
                 remove(variable("a"))
-            ], emptyExpr())
+            ], emptyExpr()),
+			method(\public(), artifact(local("User")), "find", [
+				param(integer(), "id", emptyExpr())
+			], [\return(new(local("User"), []))], emptyExpr()),
+			method(\public(), \list(artifact(local("User"))), "findAll", [], [\return(\list([]))], emptyExpr())
     ]));
 }

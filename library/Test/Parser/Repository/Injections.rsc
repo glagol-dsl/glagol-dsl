@@ -21,6 +21,10 @@ test bool shouldParseInjections()
         \import("User", namespace("Example"), "User")
     ], repository("User", [
         property(artifact(external("EntityManager", namespace("Glagol", namespace("ORM")), "EntityManager")), "em",
-        	get(artifact(external("EntityManager", namespace("Glagol", namespace("ORM")), "EntityManager"))))
+        	get(artifact(external("EntityManager", namespace("Glagol", namespace("ORM")), "EntityManager")))),
+		method(\public(), artifact(local("User")), "find", [
+			param(integer(), "id", emptyExpr())
+		], [\return(new(local("User"), []))], emptyExpr()),
+		method(\public(), \list(artifact(local("User"))), "findAll", [], [\return(\list([]))], emptyExpr())
     ]));
 }

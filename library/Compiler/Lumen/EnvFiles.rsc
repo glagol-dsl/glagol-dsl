@@ -6,7 +6,6 @@ import Compiler::PHP::Compiler;
 import Compiler::Lumen::Bootstrap::App;
 import Compiler::Lumen::Public::Index;
 import Compiler::Lumen::Public::Htaccess;
-import Compiler::Lumen::Config::App;
 import Compiler::Lumen::Config::Doctrine;
 import Compiler::Lumen::Config::Database;
 import Compiler::Lumen::Routes::Api;
@@ -20,12 +19,11 @@ import Syntax::Abstract::PHP::Helpers;
 import IO;
 
 public map[loc, str] generateFrameworkFiles(lumen(), Config config, list[Declaration] ast) = (
-	|file:///| + "bootstrap/app.php": createAppFile(),
+	|file:///| + "bootstrap/app.php": createAppFile(getORM(config), ast),
     |file:///| + "bootstrap/cache/.gitignore": "",
 	|file:///| + "public/index.php": createIndexFile(),
 	|file:///| + "public/.htaccess": createHtaccess(),
     |file:///| + "artisan": createArtisan(),
-    |file:///| + "config/app.php": createAppConfig(config, ast),
     |file:///| + "config/doctrine.php": createDoctrineConfig(),
     |file:///| + "config/database.php": createDatabaseConfig(),
     |file:///| + "routes/api.php": createRoutesApi(ast),

@@ -1,10 +1,12 @@
 module Compiler::Lumen::Bootstrap::App
 
+import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Syntax::Abstract::PHP::Helpers;
 import Compiler::PHP::Compiler;
+import Config::Config;
 
-public str createAppFile() = toCode(phpScript([
+public str createAppFile(ORM orm, list[Declaration] ast) = toCode(phpScript([
 	phpExprstmt(phpInclude(phpBinaryOperation(phpScalar(phpDirConstant()), phpScalar(phpString("/../vendor/autoload.php")), phpConcat()), phpRequire())),
 	phpExprstmt(phpAssign(phpVar("app"), phpNew(phpName(phpName("\\Laravel\\Lumen\\Application")), [
 		phpActualParameter(phpCall(phpName(phpName("realpath")), [
@@ -20,9 +22,11 @@ public str createAppFile() = toCode(phpScript([
 	phpExprstmt(
 		phpMethodCall(phpVar("app"), phpName(phpName("singleton")), [
 			phpActualParameter(phpFetchClassConst(phpName(phpName("\\Illuminate\\Contracts\\Debug\\ExceptionHandler")), "class"), false),
-			phpActualParameter(phpFetchClassConst(phpName(phpName("\\Laravel\\Lumen\\Exceptions\\Handler")), "class"), false)
+			phpActualParameter(phpFetchClassConst(phpName(phpName("\\Glagol\\Bridge\\Lumen\\Exceptions\\Handler")), "class"), false)
 		])
-	),
+	)] + 
+	getORMProviders(orm, ast) +
+	[
 	phpExprstmt(
 		phpMethodCall(phpVar("app"), phpName(phpName("configure")), [
 			phpActualParameter(phpScalar(phpString("app")), false)
@@ -48,3 +52,15 @@ public str createAppFile() = toCode(phpScript([
 	),
 	phpReturn(phpSomeExpr(phpVar("app")))
 ]));
+
+private list[PhpStmt] getORMProviders(doctrine(), list[Declaration] ast) = [
+    phpExprstmt(
+		phpMethodCall(phpVar("app"), phpName(phpName("register")), [
+			phpActualParameter(phpFetchClassConst(phpName(phpName("\\LaravelDoctrine\\ORM\\DoctrineServiceProvider")), "class"), false)
+		])
+	)
+] + [phpExprstmt(
+		phpMethodCall(phpVar("app"), phpName(phpName("register")), [
+			phpActualParameter(phpFetchClassConst(phpName(phpName("\\App\\Provider\\<name>RepositoryProvider")), "class"), false)
+		])
+	) | file(_, \module(_, _, repository(str name, _))) <- ast];
