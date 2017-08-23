@@ -12,7 +12,7 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Config::Config;
 
-public PhpStmt toPhpClassDef(c: controller(str name, jsonApi(), Route r, list[Declaration] declarations), env: <f: laravel(), ORM orm>)
+public PhpStmt toPhpClassDef(c: controller(str name, jsonApi(), Route r, list[Declaration] declarations), env: <f: lumen(), ORM orm>)
     = phpClassDef(phpClass(name, {}, phpSomeName(phpName("AbstractController")), [], toPhpClassItems(declarations, <f, orm>, c))[
         @phpAnnotations=toPhpAnnotations(c, env)
     ]);

@@ -1,7 +1,7 @@
 module Compiler::EnvFiles
 
 import Compiler::Composer::ComposerFile;
-import Compiler::Laravel::EnvFiles;
+import Compiler::Lumen::EnvFiles;
 import Syntax::Abstract::Glagol;
 import Config::Config;
 import Config::Reader;

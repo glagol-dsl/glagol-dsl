@@ -15,7 +15,7 @@ public JSON setAutoloading(object(map[str, JSON] properties), Config config, lis
     ))
 )));
 
-private map[str, JSON] frameworkSpecificAutoload(laravel()) = ("App\\": string("app/"));
+private map[str, JSON] frameworkSpecificAutoload(lumen()) = ("App\\": string("app/"));
 private default map[str, JSON] frameworkSpecificAutoload(_) = ();
 
 private set[str] namespaces(list[Declaration] ast) = 

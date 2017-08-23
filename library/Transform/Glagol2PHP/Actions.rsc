@@ -10,7 +10,7 @@ import Transform::Glagol2PHP::Statements;
 import Transform::Glagol2PHP::Params;
 import String;
 
-public PhpClassItem toPhpClassItem(a: action(str name, list[Declaration] params, list[Statement] body), env: <f: laravel(), ORM orm>)
+public PhpClassItem toPhpClassItem(a: action(str name, list[Declaration] params, list[Statement] body), env: <f: lumen(), ORM orm>)
     = phpMethod(
         name, 
         {phpPublic()}, 

@@ -20,7 +20,7 @@ private list[Declaration] extractImports(
         [\import("JsonSerializeTrait", 
             namespace("Glagol", 
                 namespace("Bridge", 
-                    namespace("Laravel", 
+                    namespace("Lumen",
                         namespace("Entity")))), "JsonSerializeTrait")] +
         [\import("HydrateTrait", 
             namespace("Glagol", 
@@ -38,11 +38,11 @@ private list[Declaration] extractImports(
 private list[Declaration] extractImports(
     m: \module(Declaration ns, list[Declaration] imports, a: controller(_, _, _, list[Declaration] declarations)), 
     list[Declaration] ast, 
-    env: <laravel(), orm>) =
+    env: <lumen(), orm>) =
         [\import("Controller", 
             namespace("Glagol", 
                 namespace("Bridge", 
-                    namespace("Laravel", 
+                    namespace("Lumen",
                         namespace("Http", 
                             namespace("Controllers"))))), "AbstractController")] +
         commonImports(m, ast, env);

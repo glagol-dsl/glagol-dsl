@@ -3,7 +3,7 @@ module Config::Config
 data Framework
     = zend()
     | anyFramework()
-    | laravel()
+    | lumen()
 // TODO    | symfony()
     ;
 

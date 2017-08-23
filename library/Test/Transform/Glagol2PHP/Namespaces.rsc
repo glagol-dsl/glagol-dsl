@@ -13,7 +13,7 @@ test bool shouldTransformToAPhpNamespace() =
 	  [
 	    phpUse({
             phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM"))),
-            phpUse(phpName("Glagol\\Bridge\\Laravel\\Entity\\JsonSerializeTrait"), phpNoName()),
+            phpUse(phpName("Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait"), phpNoName()),
             phpUse(phpName("Glagol\\Helper\\Entity\\HydrateTrait"), phpNoName())
         }),
 	    phpClassDef(phpClass(
@@ -46,7 +46,7 @@ test bool shouldTransformSimpleEntityToPhpScriptUsingDoctrine()
                 phpUse(phpName("Currency\\Value\\Money"), phpNoName()),
                 phpUse(phpName("Currency\\Value\\Currency"), phpSomeName(phpName("CurrencyVB"))),
                 phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM"))),
-                phpUse(phpName("Glagol\\Bridge\\Laravel\\Entity\\JsonSerializeTrait"), phpNoName()),
+                phpUse(phpName("Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait"), phpNoName()),
                 phpUse(phpName("Glagol\\Helper\\Entity\\HydrateTrait"), phpNoName())
             }),
             phpClassDef(phpClass(
@@ -72,7 +72,7 @@ test bool shouldTransformSimpleAnnotatedEntityToPhpScriptUsingDoctrine()
                 phpUse(phpName("Currency\\Value\\Money"), phpNoName()),
                 phpUse(phpName("Currency\\Value\\Currency"), phpSomeName(phpName("CurrencyVB"))),
                 phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM"))),
-                phpUse(phpName("Glagol\\Bridge\\Laravel\\Entity\\JsonSerializeTrait"), phpNoName()),
+                phpUse(phpName("Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait"), phpNoName()),
                 phpUse(phpName("Glagol\\Helper\\Entity\\HydrateTrait"), phpNoName())
             }),
             phpClassDef(phpClass(

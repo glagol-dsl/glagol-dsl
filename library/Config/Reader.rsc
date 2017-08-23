@@ -13,7 +13,7 @@ alias Config = tuple[
 	ORM orm
 ];
 
-public Config newConfig() = <laravel(), doctrine()>;
+public Config newConfig() = <lumen(), doctrine()>;
 
 public Framework getFramework(Config config) = config.framework;
 public ORM getORM(Config config) = config.orm;
