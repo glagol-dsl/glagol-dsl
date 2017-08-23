@@ -4,22 +4,6 @@ import Parser::ParseAST;
 import Syntax::Abstract::Glagol;
 import IO;
 
-test bool shouldThrowExceptionWhenEntityNotImported()
-{
-    str code 
-        = "namespace Example
-          '
-          'import Glagol::ORM::EntityManager;
-          '
-          'repository for User {
-          '}";
-    
-    try parseModule(code);
-    catch EntityNotImported("Repository cannot attach to entity \'User\': entity not imported", _): return true;
-    
-    return false;
-}
-
 test bool shouldParseEmptyRepository()
 {
     str code 

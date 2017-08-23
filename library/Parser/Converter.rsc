@@ -43,13 +43,8 @@ public Declaration convertAnnotatedArtifact(a: (AnnotatedArtifact) `<Annotation*
 public Declaration convertArtifact(a: (Artifact) `entity <ArtifactName name> {<Declaration* declarations>}`, ParseEnv env) = 
 	entity("<name>", [convertDeclaration(d, "<name>", "entity", env) | d <- declarations])[@src=a@\loc];
 
-public Declaration convertArtifact(a: (Artifact) `repository for <ArtifactName name> {<Declaration* declarations>}`, ParseEnv env) {
-	if (!isImported("<name>", env)) {
-		throw EntityNotImported("Repository cannot attach to entity \'<name>\': entity not imported", a@\loc);
-	}
-	
-    return repository("<name>", [convertDeclaration(d, "<name>", "repository", env) | d <- declarations])[@src=a@\loc];
-}
+public Declaration convertArtifact(a: (Artifact) `repository for <ArtifactName name> {<Declaration* declarations>}`, ParseEnv env) =
+	repository("<name>", [convertDeclaration(d, "<name>", "repository", env) | d <- declarations])[@src=a@\loc];
 
 public Declaration convertArtifact(a: (Artifact) `value <ArtifactName name> {<Declaration* declarations>}`, ParseEnv env) = 
 	valueObject("<name>", [convertDeclaration(d, "<name>", "value", env) | d <- declarations])[@src=a@\loc];

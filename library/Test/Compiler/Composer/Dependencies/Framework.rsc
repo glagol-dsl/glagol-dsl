@@ -9,5 +9,5 @@ test bool shouldGetFrameworkDependenciesForLaravel() =
     getFrameworkDependencies(laravel()) == (
         "vlucas/phpdotenv": string("~2.2"),
         "laravel/lumen-framework": string("5.4.*"),
-        "bulgaria-php/glagol-bridge-laravel": string("^0.1")
+        "bulgaria-php/glagol-bridge-lumen": string("^0.1")
     );

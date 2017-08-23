@@ -16,25 +16,7 @@ test bool shouldGenerateLaravelAppConfig() =
                   phpArrayElement(
                     phpNoExpr(),
                     phpFetchClassConst(
-                      phpName(phpName("Glagol\\Bridge\\Laravel\\Providers\\RouteServiceProvider")),
-                      "class"),
-                    false),
-                  phpArrayElement(
-                    phpNoExpr(),
-                    phpFetchClassConst(
                       phpName(phpName("LaravelDoctrine\\ORM\\DoctrineServiceProvider")),
-                      "class"),
-                    false)
-                ]),
-              false),
-            phpArrayElement(
-              phpSomeExpr(phpScalar(phpString("aliases"))),
-              phpArray([
-                  
-                  phpArrayElement(
-                    phpSomeExpr(phpScalar(phpString("Route"))),
-                    phpFetchClassConst(
-                      phpName(phpName("Illuminate\\Support\\Facades\\Route")),
                       "class"),
                     false)
                 ]),
@@ -54,12 +36,6 @@ test bool shouldGenerateLaravelAppConfigHavingRepositoryProviders() =
                   phpArrayElement(
                     phpNoExpr(),
                     phpFetchClassConst(
-                      phpName(phpName("Glagol\\Bridge\\Laravel\\Providers\\RouteServiceProvider")),
-                      "class"),
-                    false),
-                  phpArrayElement(
-                    phpNoExpr(),
-                    phpFetchClassConst(
                       phpName(phpName("LaravelDoctrine\\ORM\\DoctrineServiceProvider")),
                       "class"),
                     false),
@@ -67,18 +43,6 @@ test bool shouldGenerateLaravelAppConfigHavingRepositoryProviders() =
                     phpNoExpr(),
                     phpFetchClassConst(
                       phpName(phpName("App\\Provider\\UserRepositoryProvider")),
-                      "class"),
-                    false)
-                ]),
-              false),
-            phpArrayElement(
-              phpSomeExpr(phpScalar(phpString("aliases"))),
-              phpArray([
-                  
-                  phpArrayElement(
-                    phpSomeExpr(phpScalar(phpString("Route"))),
-                    phpFetchClassConst(
-                      phpName(phpName("Illuminate\\Support\\Facades\\Route")),
                       "class"),
                     false)
                 ]),

@@ -7,5 +7,5 @@ import lang::json::ast::JSON;
 public map[str, JSON] getFrameworkDependencies(laravel()) = (
 	"laravel/lumen-framework": string("5.4.*"),
 	"vlucas/phpdotenv": string("~2.2"),
-	"bulgaria-php/glagol-bridge-laravel": string("^0.1")
+	"bulgaria-php/glagol-bridge-lumen": string("^0.1")
 );

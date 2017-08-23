@@ -12,12 +12,7 @@ public str createAppConfig(Config config, list[Declaration] ast) =
 
 private PhpScript createAppConfigAST(Config config, list[Declaration] ast) =
     phpScript([phpReturn(phpSomeExpr(toPhpConf(array((
-        "providers": array([
-            class("Glagol\\Bridge\\Laravel\\Providers\\RouteServiceProvider")
-        ] + getORMProviders(getORM(config), ast)),
-        "aliases": array((
-            "Route": class("Illuminate\\Support\\Facades\\Route")
-        ))
+        "providers": array(getORMProviders(getORM(config), ast))
     )))))]);
 
 private list[Conf] getORMProviders(doctrine(), list[Declaration] ast) = [
