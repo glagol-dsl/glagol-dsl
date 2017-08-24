@@ -101,12 +101,18 @@ public TypeEnv addImported(i: \import(GlagolID name, Declaration namespace, Glag
 public TypeEnv addImported(\module(ns, _, Declaration a), TypeEnv env) = addImported(\import(a.name, ns, a.name), env);
 public TypeEnv addImported(emptyDecl(), TypeEnv env) = env;
 
-public bool isImported(repository(GlagolID name, list[Declaration] declarations), TypeEnv env) = name in env.imported;
+public Declaration lookupImported(Name name, TypeEnv env) = lookupImported(name.localName, env);
+public Declaration lookupImported(GlagolID name, TypeEnv env) = env.imported[name] when name in env.imported;
+public Declaration lookupImported(GlagolID name, TypeEnv env) = localArtifactAsImport(name, env) when hasLocalArtifact(name, env);
+
+public bool isImported(repository(GlagolID name, list[Declaration] declarations), TypeEnv env) = 
+	name in env.imported || hasLocalArtifact(name, env);
 
 public bool isImported(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
 	(false | true | i <- range(env.imported), i.artifactName == name && i.namespace == namespace);
 	
 public bool isImported(artifact(Name name), TypeEnv env) = name.localName in env.imported;
+public bool isImported(Name name, TypeEnv env) = name.localName in env.imported || hasLocalArtifact(name.localName, env);
 
 public bool isInAST(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
     (false | true | file(_, \module(Declaration ns, _, artifact)) <- env.ast, artifact.name == name && ns == namespace);
@@ -156,6 +162,7 @@ public bool hasLocalArtifact(str name, TypeEnv env) = hasLocalArtifact(name, get
 public bool hasLocalArtifact(str name, emptyDecl(), TypeEnv env) = false;
 public bool hasLocalArtifact(str name, Declaration d, TypeEnv env) = isInAST(\import(name, getContextNamespace(d), name), env);
 
+public Declaration localArtifactAsImport(str name, TypeEnv env) = \import(name, getContextNamespace(getContext(env)), name);
 public Name getFullNameOfLocalArtifact(str name, TypeEnv env) = external(name, getContextNamespace(env), name);
 
 public Declaration getContextNamespace(TypeEnv env) = getContextNamespace(getContext(env));

@@ -22,28 +22,35 @@ public TypeEnv checkType(\list(Type \type), Declaration d, TypeEnv env) = checkT
 public TypeEnv checkType(\map(Type key, Type v), Declaration d, TypeEnv env) = checkType(key, d, checkType(v, d, env));
 
 // TODO replace .localName with isImported() function call
+
+public TypeEnv checkType(a:artifact(Name name), Declaration d, TypeEnv env) = 
+	env when hasLocalArtifact(name.localName, env);
+
 public TypeEnv checkType(a:artifact(Name name), Declaration d, TypeEnv env) =
-    addError(a, notImported(a), env) when name.localName notin env.imported;
+    addError(a, notImported(a), env) when !isImported(name, env);
 
 public TypeEnv checkType(a:artifact(Name name), p: property(_, _, get(selfie())), TypeEnv env) = 
-	env when name.localName in env.imported && isUtil(env.imported[name.localName], env);
+	env when isImported(name, env) && isUtil(lookupImported(name, env), env);
 	
 public TypeEnv checkType(a:artifact(Name name), p: property(_, _, get(selfie())), TypeEnv env) = 
 	addError(p, "Get selfie cannot be applied for type other than repositories and utils/services", env)
-	when name.localName in env.imported && !isUtil(env.imported[name.localName], env);
+	when isImported(name, env) && !isUtil(lookupImported(name, env), env);
 	
 public TypeEnv checkType(a:artifact(Name name), Declaration d, TypeEnv env) = 
-	env when name.localName in env.imported;
+	env when isImported(name, env);
+	
+public TypeEnv checkType(r:repository(Name name), Declaration d, TypeEnv env) =
+    env when hasLocalArtifact(name.localName, env);
 
 public TypeEnv checkType(r:repository(Name name), Declaration d, TypeEnv env) =
-    addError(r, notImported(r), env) when name.localName notin env.imported;
+    addError(r, notImported(r), env) when !isImported(name, env);
     
 public TypeEnv checkType(r:repository(Name name), Declaration d, TypeEnv env) =
     addError(r, notEntity(r), env)
-    when name.localName in env.imported && !isEntity(env.imported[name.localName], env);
+    when isImported(name, env) && !isEntity(lookupImported(name, env), env);
 
 public TypeEnv checkType(r:repository(Name name), Declaration d, TypeEnv env) =
-    env when name.localName in env.imported && isEntity(env.imported[name.localName], env);
+    env when isImported(name, env) && isEntity(lookupImported(name, env), env);
 
 public TypeEnv checkType(_, p: property(_, _, get(selfie())), TypeEnv env) = 
 	addError(p, "Get selfie cannot be applied for type other than repositories and utils/services", env);

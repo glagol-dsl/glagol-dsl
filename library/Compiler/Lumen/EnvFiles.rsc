@@ -80,5 +80,5 @@ private str getTargetEntityWithNamespace(\module(Declaration ns, list[Declaratio
         return "\\" + namespaceToString(namespace, "\\") + "\\<realName>";
     }
     
-    throw "Cannot find entity <name> used in <name>Repository";
+    return "\\" + namespaceToString(ns, "\\") + "\\<name>";
 }

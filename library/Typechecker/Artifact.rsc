@@ -39,9 +39,9 @@ private TypeEnv checkRedefine(Declaration decl, TypeEnv env) = addImported(getCo
 private TypeEnv checkRepositoryEntity(r:repository(GlagolID name, list[Declaration] declarations), TypeEnv env) =
     addError(r, notImported(r), env) when !isImported(r, env);
 
+// TODO 
 private TypeEnv checkRepositoryEntity(r:repository(GlagolID name, list[Declaration] declarations), TypeEnv env) =
     addError(r, notEntity(r), env)
-    when name in env.imported && !isEntity(env.imported[name], env);
+    when isImported(r, env) && !isEntity(lookupImported(name, env), env);
 
-private TypeEnv checkRepositoryEntity(r:repository(GlagolID name, list[Declaration] declarations), TypeEnv env) =
-    env when name in env.imported && isEntity(env.imported[name], env);
+private TypeEnv checkRepositoryEntity(r:repository(GlagolID name, list[Declaration] declarations), TypeEnv env) = env;

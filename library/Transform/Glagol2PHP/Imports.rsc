@@ -89,6 +89,10 @@ private list[Declaration] findRepositoryDependencies(\module(Declaration ns, lis
 						repoImports += \import("<iName>Repository", rNs, "<iName>Repository");
 						repositoryFound = true;
 					}
+					case \module(iNs, _, repository(iName, _)): {
+						repoImports += \import("<iName>Repository", iNs, "<iName>Repository");
+						repositoryFound = true;
+					}
 				}
 				importEntity = i;
 			}
