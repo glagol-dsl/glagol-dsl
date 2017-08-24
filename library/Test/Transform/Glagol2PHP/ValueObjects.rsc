@@ -10,17 +10,17 @@ test bool shouldTransformToValueObjectPhpClassDefStmt() =
 	toPhpClassDef(valueObject("Money", [
 		property(string(), "a property", emptyExpr())
 	]), <anyFramework(), anyORM()>) ==
-	phpClassDef(phpClass("Money", {}, phpNoName(), [], [
+	phpClassDef(phpClass("Money", {}, phpNoName(), [phpName("\\JsonSerializable")], [
 		phpProperty(
         {phpPrivate()},
-        [phpProperty(
+        [phpTraitUse([phpName("\\Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait")], []), phpProperty(
             "a property",
             phpNoExpr())])
 	]));
 
 test bool shouldTransformAnnotatedValueObjectToValueObjectPhpClassDefStmt() = 
 	toPhpClassDef(valueObject("Money", [])[@annotations=[]], <anyFramework(), anyORM()>) ==
-	phpClassDef(phpClass("Money", {}, phpNoName(), [], [])) &&
+	phpClassDef(phpClass("Money", {}, phpNoName(), [phpName("\\JsonSerializable")], [phpTraitUse([phpName("\\Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait")], [])])) &&
 	toPhpClassDef(valueObject("Money", [])[@annotations=[annotation("doc", [annotationVal("This is a doc")])]], <anyFramework(), anyORM()>).classDef@phpAnnotations ==
 		{phpAnnotation("doc", phpAnnotationVal("This is a doc"))};
 
