@@ -162,7 +162,7 @@ public bool hasLocalArtifact(str name, TypeEnv env) = hasLocalArtifact(name, get
 public bool hasLocalArtifact(str name, emptyDecl(), TypeEnv env) = false;
 public bool hasLocalArtifact(str name, Declaration d, TypeEnv env) = isInAST(\import(name, getContextNamespace(d), name), env);
 
-public Declaration localArtifactAsImport(str name, TypeEnv env) = \import(name, getContextNamespace(getContext(env)), name);
+public Declaration localArtifactAsImport(str name, TypeEnv env) = \import(name, getContextNamespace(env), name);
 public Name getFullNameOfLocalArtifact(str name, TypeEnv env) = external(name, getContextNamespace(env), name);
 
 public Declaration getContextNamespace(TypeEnv env) = getContextNamespace(getContext(env));
@@ -183,9 +183,11 @@ public Declaration findModule(artifact(Name name), TypeEnv env) = findModule(toN
 public Declaration findModule(repository(external(str name, Declaration ns, str original)), TypeEnv env) = 
 	head([m | file(_, m: \module(ns, _, repository(original, _))) <- env.ast]);
 	
-public Declaration findModule(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
-	head([m | file(_, m: \module(Declaration ns, _, artifact)) <- env.ast, !isRepository(artifact) && !isController(artifact) && artifact.name == name && ns == namespace]);
-
+public Declaration findModule(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) {
+	findings = [m | file(_, m: \module(Declaration ns, _, artifact)) <- env.ast, !isRepository(artifact) && !isController(artifact) && artifact.name == name && ns == namespace];
+	
+	return size(findings) > 0 ? head(findings) : emptyDecl();
+}
 public bool hasModule(artifact(Name name), TypeEnv env) = size(findArtifact(toNamespace(name), env)) > 0;
 public bool hasModule(repository(external(str name, Declaration ns, str original)), TypeEnv env) = 
 	(false | true | file(_, m: \module(ns, _, repository(original, _))) <- env.ast);

@@ -20,7 +20,7 @@ public void compile(map[loc, str] sources, int listenerId) {
     list[Declaration] ast = parseMultiple(sources);
     
     TypeEnv typeEnv = checkAST(config, ast);
-    
+	
     if (hasErrors(typeEnv)) {
 		respondWith(error("Cannot compile, errors found:"), listenerId);
     	for (<loc src, str msg> <- getErrors(typeEnv)) {

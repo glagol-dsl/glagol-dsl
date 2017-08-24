@@ -12,7 +12,7 @@ public TypeEnv checkDefaultValue(g:get(_), TypeEnv env) =
 
 @doc="Typecheck unimported usages of artifacts"
 public TypeEnv checkDefaultValue(g:get(a:artifact(Name name)), TypeEnv env) =
-    addError(printlnExp("first", g), notImported(a), env) when !isImported(name, env);
+    addError(g, notImported(a), env) when !isImported(name, env);
     
 @doc="Success only: typecheck imported usages of artifacts"
 public TypeEnv checkDefaultValue(g:get(a:artifact(Name name)), TypeEnv env) =

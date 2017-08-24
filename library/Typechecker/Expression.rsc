@@ -234,6 +234,7 @@ public bool hasMethod(str name, list[Type] signature, TypeEnv env) =
 	(false | true | method(Modifier access, _, name, params, _, _) <- getMethods(getContext(env)), 
 		isSignatureMatching(signature, params, env) && isMethodAccessible(access, getDimension(env)));
 
+public bool hasConstructor(_, emptyDecl(), TypeEnv env) = false;
 public bool hasConstructor([], Declaration m, TypeEnv env) = true when size(getConstructors(m)) == 0;
 
 public bool hasConstructor(list[Type] signature, Declaration m, TypeEnv env) = 
