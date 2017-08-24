@@ -12,6 +12,8 @@ import Syntax::Abstract::PHP;
 import Config::Config;
 
 public PhpStmt toPhpClassDef(v: valueObject(str name, list[Declaration] declarations), env: <Framework f, ORM orm>)
-    = phpClassDef(phpClass(name, {}, phpNoName(), [], toPhpClassItems(declarations, env, v))[
+    = phpClassDef(phpClass(name, {}, phpNoName(), [phpName("\\JsonSerializable")], [
+    	phpTraitUse([phpName("\\Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait")], [])
+    ] + toPhpClassItems(declarations, env, v))[
         @phpAnnotations=toPhpAnnotations(v, env)
     ]);
