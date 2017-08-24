@@ -11,9 +11,10 @@ test bool shouldTransformToValueObjectPhpClassDefStmt() =
 		property(string(), "a property", emptyExpr())
 	]), <anyFramework(), anyORM()>) ==
 	phpClassDef(phpClass("Money", {}, phpNoName(), [phpName("\\JsonSerializable")], [
+		phpTraitUse([phpName("\\Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait")], []),
 		phpProperty(
         {phpPrivate()},
-        [phpTraitUse([phpName("\\Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait")], []), phpProperty(
+        [phpProperty(
             "a property",
             phpNoExpr())])
 	]));
