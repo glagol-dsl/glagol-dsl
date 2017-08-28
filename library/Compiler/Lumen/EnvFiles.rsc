@@ -35,12 +35,13 @@ private list[Declaration] getRepositories(list[Declaration] ast) =
     [e | file(_, e: \module(_, _, repository(_, _))) <- ast];
 
 private map[loc, str] getRepositoryProviders(doctrine(), Config config, list[Declaration] ast) = 
-    (|file:///| + "app/Provider/<e.artifact.name>RepositoryProvider.php": createProvider(doctrine(), e) | e <- getRepositories(ast));
+    (|file:///| + "app/Provider/<namespaceToString(ns, "/")>/<name>RepositoryProvider.php": 
+    	createProvider(doctrine(), e) | e: \module(ns, _, repository(str name, _)) <- getRepositories(ast));
 
 private str createProvider(doctrine(), m: \module(ns, _, repository(str name, list[Declaration] declarations))) = 
     toCode(phpScript([
         phpNamespace(
-            phpSomeName(phpName("App\\Provider")),
+            phpSomeName(phpName("App\\Provider\\<namespaceToString(ns, "\\")>")),
             [
                 phpUse({
                     phpUse(phpName("Illuminate\\Support\\ServiceProvider"), phpNoName()),

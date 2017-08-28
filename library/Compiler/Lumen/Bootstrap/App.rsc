@@ -1,6 +1,7 @@
 module Compiler::Lumen::Bootstrap::App
 
 import Syntax::Abstract::Glagol;
+import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
 import Syntax::Abstract::PHP::Helpers;
 import Compiler::PHP::Compiler;
@@ -61,6 +62,6 @@ private list[PhpStmt] getORMProviders(doctrine(), list[Declaration] ast) = [
 	)
 ] + [phpExprstmt(
 		phpMethodCall(phpVar("app"), phpName(phpName("register")), [
-			phpActualParameter(phpFetchClassConst(phpName(phpName("\\App\\Provider\\<name>RepositoryProvider")), "class"), false)
+			phpActualParameter(phpFetchClassConst(phpName(phpName("\\App\\Provider\\<namespaceToString(ns,  "\\")>\\<name>RepositoryProvider")), "class"), false)
 		])
-	) | file(_, \module(_, _, repository(str name, _))) <- ast];
+	) | file(_, \module(ns, _, repository(str name, _))) <- ast];

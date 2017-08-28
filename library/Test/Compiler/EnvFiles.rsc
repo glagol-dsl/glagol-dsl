@@ -42,5 +42,5 @@ test bool shouldGenerateEnvFilesForLumenAndDoctrineAndHavingARepository() =
       |file:///routes/api.php|,
       |file:///public/index.php|,
       |file:///composer.json|,
-      |file:///app/Provider/UserRepositoryProvider.php|
+      |file:///app/Provider/Test/UserRepositoryProvider.php|
     };
