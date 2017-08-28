@@ -37,5 +37,5 @@ test bool shouldGenerateLumenFrameworkEnvFilesWithRepositoryProviders() =
       |file:///artisan|,
       |file:///routes/console.php|,
       |file:///routes/api.php|,
-      |file:///app/Provider/UserRepositoryProvider.php|
+      |file:///app/Provider/Test/UserRepositoryProvider.php|
     };
