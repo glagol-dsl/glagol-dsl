@@ -54,7 +54,10 @@ test bool shouldNotGiveErrorsWhenUtilRedefiningImportedArtifactButUsingAlias() =
     	newEnv(|tmp:///User.g|)));
     
 test bool shouldGiveErrorsWhenVORedefiningImportedArtifact() = 
-	checkArtifact(valueObject("User", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+	checkArtifact(valueObject("User", [
+    	constructor([param(string(), "test", emptyExpr())], [], emptyExpr()),
+    	method(\public(), string(), "toDatabaseValue", [], [\return(string(""))], emptyExpr())
+	])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
     addImported(\import("User", namespace("Test"), "User")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
     	addToAST(
     	file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", [])[@src=|tmp:///User.g|(0, 0, <10, 20>, <30, 30>)])),
@@ -68,14 +71,62 @@ test bool shouldGiveErrorsWhenVORedefiningImportedArtifact() =
 	);
 
 test bool shouldNotGiveErrorsWhenVORedefiningImportedArtifactButUsingAlias() = 
-    checkArtifact(valueObject("User", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+    !hasErrors(checkArtifact(valueObject("User", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
     addImported(\import("User", namespace("Test"), "UserEntity"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
-    	newEnv(|tmp:///User.g|)))) == addImported(\import("User", namespace("Test"), "UserEntity"),
+    	newEnv(|tmp:///User.g|)))));
+    	
+test bool shouldGiveErrorWhenToDatabaseValueMethodReturnsVoid() = 
+    checkArtifact(valueObject("User", [
+    	method(\public(), voidValue(), "toDatabaseValue", [], [\return(emptyExpr())], emptyExpr())
+	])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+    addImported(\import("User", namespace("Test"), "UserEntity"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
-    	newEnv(|tmp:///User.g|)));
+    	newEnv(|tmp:///User.g|)))) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+    	"toDatabaseValue() cannot return void", 
+    	addImported(\import("User", namespace("Test"), "UserEntity"),
+    addToAST(
+    	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
+    	newEnv(|tmp:///User.g|))));
+    	
+test bool shouldGiveErrorWhenHasToDatabaseValueMethodButNoMatchingConstructor() = 
+    checkArtifact(valueObject("User", [
+    	constructor([param(integer(), "test", emptyExpr())], [], emptyExpr()),
+    	method(\public(), string(), "toDatabaseValue", [], [\return(string(""))], emptyExpr())
+	])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+    addImported(\import("User", namespace("Test"), "UserEntity"),
+    addToAST(
+    	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
+    	newEnv(|tmp:///User.g|)))) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
+    	"Value object should implement a constructor matching User(string)", 
+    	addImported(\import("User", namespace("Test"), "UserEntity"),
+    addToAST(
+    	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
+    	newEnv(|tmp:///User.g|))));
+    	
+test bool shouldNotGiveErrorWhenHasToDatabaseValueMethodWithMatchingConstructor() = 
+    !hasErrors(checkArtifact(valueObject("User", [
+    	constructor([param(string(), "test", emptyExpr())], [], emptyExpr()),
+    	method(\public(), string(), "toDatabaseValue", [], [\return(string(""))], emptyExpr())
+	])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+    addImported(\import("User", namespace("Test"), "UserEntity"),
+    addToAST(
+    	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
+    	newEnv(|tmp:///User.g|)))));
+    	
+test bool shouldNotGiveErrorWhenHasToDatabaseValueMethodWithMatchingConstructorHavingDefaultParams() = 
+    !hasErrors(checkArtifact(valueObject("User", [
+    	constructor([param(string(), "test", emptyExpr())], [], emptyExpr()),
+    	method(\public(), string(), "toDatabaseValue", [], [\return(string(""))], emptyExpr())
+	])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+    addImported(\import("User", namespace("Test"), "UserEntity"),
+    addToAST(
+    	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
+    	newEnv(|tmp:///User.g|)))));
 
 test bool shouldGiveErrorsWhenRepositoryPointsToNotImportedEntity() = 
     checkArtifact(repository("User", [])[@src=|tmp:///UserRepository.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///UserRepository.g|)) == 

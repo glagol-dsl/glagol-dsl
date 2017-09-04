@@ -20,7 +20,7 @@ import String;
 
 public map[loc, str] generateFrameworkFiles(lumen(), Config config, list[Declaration] ast) = (
 	|file:///| + "bootstrap/app.php": createAppFile(getORM(config), ast),
-    |file:///| + "bootstrap/cache/.gitignore": "",
+    |file:///| + "bootstrap/cache/.gitignore": "*.php",
 	|file:///| + "public/index.php": createIndexFile(),
 	|file:///| + "public/.htaccess": createHtaccess(),
     |file:///| + "artisan": createArtisan(),
@@ -45,13 +45,14 @@ private str lookupSqlDeclarationGetter(float()) = "getDecimalTypeDeclarationSQL"
 private str lookupSqlDeclarationGetter(boolean()) = "getBooleanTypeDeclarationSQL"; 
 private str lookupSqlDeclarationGetter(_) = "getJsonTypeDeclarationSQL";
 
-private str createType(m: \module(ns, _, v: valueObject(str name, declarations)), dbValMethod: method(_, Type t, _, _, _, _)) = toCode(
+private str createType(m: \module(ns, _, v: valueObject(str name, declarations)), Declaration dbValMethod) = toCode(
 	phpScript([
 		phpDeclareStrict(),
         phpNamespace(
             phpSomeName(phpName("App\\Types")),
             [
                 phpUse({
+                    phpUse(phpName("Doctrine\\Instantiator\\Instantiator"), phpNoName()),
                     phpUse(phpName("Doctrine\\DBAL\\Types\\Type"), phpNoName()),
                     phpUse(phpName("Doctrine\\DBAL\\Platforms\\AbstractPlatform"), phpNoName()),
                     phpUse(phpName(namespaceToString(ns, "\\") + "\\<name>"), phpNoName())
@@ -62,6 +63,18 @@ private str createType(m: \module(ns, _, v: valueObject(str name, declarations))
                     	phpParam("value", phpNoExpr(), phpNoName(), false, false),
                     	phpParam("platform", phpNoExpr(), phpSomeName(phpName("AbstractPlatform")), false, false)
                     ], [
+                    	phpIf(phpUnaryOperation(phpCall(phpName(phpName("method_exists")), [
+                    		phpActualParameter(phpVar("value"), false),
+                    		phpActualParameter(phpScalar(phpString("toDatabaseValue")), false)
+                    	]), phpBooleanNot()), [
+                    		phpReturn(phpSomeExpr(
+								phpMethodCall(phpBracket(phpSomeExpr(phpNew(phpName(phpName("Instantiator")), []))), 
+									phpName(phpName("instantiate")), [phpActualParameter(
+										phpFetchClassConst(phpName(phpName(name)), "class"), false)
+									]
+								)
+							))
+                    	], [], phpNoElse()),
                     	phpReturn(phpSomeExpr(phpNew(phpName(phpName(name)), [
                 				phpActualParameter(phpVar(phpName(phpName("value"))), false)
                     	])))
@@ -70,8 +83,14 @@ private str createType(m: \module(ns, _, v: valueObject(str name, declarations))
                     	phpParam("value", phpNoExpr(), phpNoName(), false, false),
                     	phpParam("platform", phpNoExpr(), phpSomeName(phpName("AbstractPlatform")), false, false)
                     ], [
+                    	phpIf(phpUnaryOperation(phpCall(phpName(phpName("method_exists")), [
+                    		phpActualParameter(phpVar("value"), false),
+                    		phpActualParameter(phpScalar(phpString("toDatabaseValue")), false)
+                    	]), phpBooleanNot()), [
+                    		phpReturn(phpSomeExpr(phpScalar(phpNull())))
+                    	], [], phpNoElse()),
                     	phpReturn(phpSomeExpr(phpMethodCall(phpVar(phpName(phpName("value"))), phpName(phpName("toDatabaseValue")), [])))
-                    ], makeOptional(toPhpReturnType(t))),
+                    ], phpNoName()),
                     phpMethod("getName", {phpPublic()}, false, [], [
                     	phpReturn(phpSomeExpr(phpFetchClassConst(phpName(phpName("self")), "TYPE_NAME")))
                     ], phpSomeName(phpName("string"))),

@@ -47,6 +47,7 @@ public str toCode(phpUnaryOperation(PhpExpr operand, phpPreDec()), int i) = "--<
 public str toCode(phpUnaryOperation(PhpExpr operand, phpPostDec()), int i) = "<toCode(operand, i)>--";
 public str toCode(phpUnaryOperation(PhpExpr operand, phpUnaryPlus()), int i) = "+<toCode(operand, i)>";
 public str toCode(phpUnaryOperation(PhpExpr operand, phpUnaryMinus()), int i) = "-<toCode(operand, i)>";
+public str toCode(phpUnaryOperation(PhpExpr operand, phpBooleanNot()), int i) = "!<toCode(operand, i)>";
 public str toCode(phpActualParameter(PhpExpr expr, bool byRef), int i) = "<ref(byRef)><toCode(expr, i)>";
 
 public str toCode(phpActualParameter(PhpExpr expr, bool byRef, bool isVariadic), int i) = 
