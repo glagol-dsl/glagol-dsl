@@ -15,12 +15,17 @@ public data Conf
     | string(str val)
     | integer(int ival)
     | class(str className)
+    | class(str className, str field)
     | array(list[Conf] l)
-    | array(map[str, Conf] m);
+    | array(map[str, Conf] m)
+    | array(map[Conf, Conf] ma);
 
 
 public PhpExpr toPhpConf(array(map[str, Conf] m)) = 
     phpArray([phpArrayElement(phpSomeExpr(phpScalar(phpString(k))), toPhpConf(m[k]), false) | k <- m]);
+    
+public PhpExpr toPhpConf(array(map[Conf, Conf] m)) = 
+    phpArray([phpArrayElement(phpSomeExpr(toPhpConf(k)), toPhpConf(m[k]), false) | k <- m]);
     
 public PhpExpr toPhpConf(env(str name, str \default)) = phpCall("env", [
     phpActualParameter(phpScalar(phpString(name)), false),
@@ -48,5 +53,6 @@ public PhpExpr toPhpConf(string(str val)) = phpScalar(phpString(val));
 public PhpExpr toPhpConf(integer(int val)) = phpScalar(phpInteger(val));
 public PhpExpr toPhpConf(boolean(bool bval)) = phpScalar(phpBoolean(bval));
 public PhpExpr toPhpConf(\null()) = phpScalar(phpNull());
-public PhpExpr toPhpConf(class(str className)) = phpFetchClassConst(phpName(phpName(className)), "class");
+public PhpExpr toPhpConf(class(str className)) = toPhpConf(class(className, "class"));
+public PhpExpr toPhpConf(class(str className, str field)) = phpFetchClassConst(phpName(phpName(className)), field);
 public PhpExpr toPhpConf(array(list[Conf] l)) = phpArray([phpArrayElement(phpNoExpr(), toPhpConf(v), false) | v <- l]);

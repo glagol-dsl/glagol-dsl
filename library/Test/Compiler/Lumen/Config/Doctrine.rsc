@@ -6,7 +6,7 @@ import Compiler::Lumen::Config::Abstract;
 import Compiler::PHP::Compiler;
 
 test bool shouldCreateLumenDoctrineConfig() =
-    createDoctrineConfig() == toCode(phpScript([phpReturn(phpSomeExpr(toPhpConf(array((
+    createDoctrineConfig([]) == toCode(phpScript([phpReturn(phpSomeExpr(toPhpConf(array((
         "managers": array((
             "default": array((
                 "dev": env("APP_DEBUG"),
@@ -34,7 +34,7 @@ test bool shouldCreateLumenDoctrineConfig() =
         )),
         "extensions": array([]),
         "custom_types": array((
-            "json": class("LaravelDoctrine\\ORM\\Types\\Json")
+            string("json"): class("LaravelDoctrine\\ORM\\Types\\Json")
         )),
         "custom_datetime_functions": array([]),
         "custom_numeric_functions": array([]),

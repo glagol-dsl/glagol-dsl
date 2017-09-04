@@ -9,6 +9,7 @@ import Transform::Glagol2PHP::ClassItems;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
+import Syntax::Abstract::PHP::Helpers;
 import List;
 
 public PhpClassItem toPhpClassItem(d: method(modifier, returnType, name, params, body, emptyExpr()), env)
@@ -50,18 +51,6 @@ public PhpClassItem createMethod(list[Declaration] methods, env) =
     	@phpAnnotations={annotation | m <- methods, annotation <- toPhpAnnotations(m, env)}
     ]
     when size(methods) > 1;
-
-private PhpOptionName toPhpReturnType(voidValue()) = phpNoName();
-private PhpOptionName toPhpReturnType(integer()) = phpSomeName(phpName("int"));
-private PhpOptionName toPhpReturnType(string()) = phpSomeName(phpName("string"));
-private PhpOptionName toPhpReturnType(boolean()) = phpSomeName(phpName("bool"));
-private PhpOptionName toPhpReturnType(float()) = phpSomeName(phpName("float"));
-private PhpOptionName toPhpReturnType(\list(_)) = phpSomeName(phpName("Vector"));
-private PhpOptionName toPhpReturnType(\map(_,_)) = phpSomeName(phpName("Map"));
-private PhpOptionName toPhpReturnType(artifact(Name name)) = phpSomeName(phpName(extractName(name)));
-private PhpOptionName toPhpReturnType(repository(Name name)) = phpSomeName(phpName(extractName(name) + "Repository"));
-
-
 
 private PhpModifier toPhpModifier(\public()) = phpPublic();
 private PhpModifier toPhpModifier(\private()) = phpPrivate();

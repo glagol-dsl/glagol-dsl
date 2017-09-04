@@ -103,3 +103,4 @@ public str extractName(local(str localName)) = localName;
 
 public str toString(\public()) = "public";
 public str toString(\private()) = "private";
+
