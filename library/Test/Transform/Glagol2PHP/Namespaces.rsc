@@ -131,38 +131,3 @@ test bool shouldTransformSimpleAnnotatedWithValueEntityToPhpScriptUsingDoctrine(
                   phpAnnotation("var", phpAnnotationVal("integer"))
            };
 }
-test bool shouldTransformEntityWithRelationsToPhpScriptUsingDoctrine() {
-    map[str, PhpScript] asts = toPHPScript(<zend(), doctrine()>, \module(namespace("User", namespace("Entity")), [
-        \import("Money", namespace("Currency", namespace("Value")), "Money"),
-        \import("Currency", namespace("Currency", namespace("Value")), "CurrencyVB")
-    ], entity("Customer", [
-        property(integer(), "id", emptyExpr())[@annotations=[
-            annotation("id", []),
-            annotation("field", [
-                annotationMap((
-                    "name": annotationVal("customer_id"),
-                    "type": annotationVal(integer()),
-                    "length": annotationVal(11),
-                    "unique": annotationVal(true),
-                    "options": annotationVal(annotationMap((
-                        "comment": annotationVal("This is the primary key")
-                    ))),
-                    "scale": annotationVal(12.35)
-                ))
-            ])
-        ]],
-        relation(\one(), \one(), "Language", "userLang")
-    ])[@annotations=[annotation("table", [annotationVal("customers")])]]), []);
-    
-    PhpScript ast = asts["User/Entity/Customer.php"];
-    
-    return ast.body[1].body[1].classDef.members[2]@phpAnnotations == {
-                  phpAnnotation(
-                    "ORM\\OneToOne",
-                    phpAnnotationVal((
-                        "targetEntity": phpAnnotationVal("Language")
-                    ))), phpAnnotation("var", phpAnnotationVal("Language"))
-           } && ast.body[1].body[1].classDef.members[2] == phpProperty(
-               {phpPrivate()}, [phpProperty("userLang", phpNoExpr())]
-           );
-}

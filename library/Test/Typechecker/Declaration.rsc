@@ -40,13 +40,6 @@ test bool shouldNotGiveErrorsOnDuplicatingParamListsWithDifferentGuards() =
 		]), newEnv(|tmp:///|)
 	));
 	
-test bool shouldNotGiveErrorsWhenUsingRelationsOnEntities() = 
-	!hasErrors(checkDeclarations([relation(\one(), many(), "User", "users")], entity("Customer", []), newEnv()));
-
-test bool shouldGiveErrorsWhenUsingRelationsOnAValueObject() = 
-	checkDeclarations([relation(\one(), many(), "User", "users")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], valueObject("Money", []), newEnv()) ==
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Relations are only permitted in entities", newEnv());
-
 test bool shouldGiveErrorWhenUsingActionOnNonController() = 
 	checkDeclarations([action("index", [], [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], valueObject("Money", []), newEnv()) ==
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Actions are only permitted in controllers", newEnv());

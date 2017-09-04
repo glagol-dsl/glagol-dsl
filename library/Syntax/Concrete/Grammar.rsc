@@ -74,16 +74,11 @@ syntax Declaration
     | Annotation+ annotations Property property
     | Constructor constructor
     | Annotation+ annotations Constructor constructor
-    | Relation relation
-    | Annotation+ annotations Relation relation
     | Method method
     | Annotation+ annotations Method method
     | Action action
     | Annotation+ annotations Action action
     ;
-
-syntax Relation
-    = "relation" RelationDir l ":" RelationDir r ArtifactName entity "as" MemberName alias ";";
 
 syntax Property 
     = Type type MemberName name AssignDefaultValue? ";";
@@ -127,6 +122,7 @@ syntax AssignDefaultValue
     = "=" DefaultValue defaultValue
     ;
 
+// TODO deprecate - just use expression. Typechecker will disallow illegal input
 syntax DefaultValue
     = stringLiteral : StringQuoted string
     | integer : DecimalIntegerLiteral number

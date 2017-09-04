@@ -17,7 +17,6 @@ data Declaration
     | util(GlagolID name, list[Declaration] declarations)
     | controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations)
     | action(GlagolID name, list[Declaration] params, list[Statement] body)
-    | relation(RelationDir l, RelationDir r, GlagolID name, GlagolID as)
     | constructor(list[Declaration] params, list[Statement] body, Expression when)
     | method(Modifier modifier, Type returnType, GlagolID name, list[Declaration] params, list[Statement] body, Expression when)
     | param(Type paramType, GlagolID name, Expression defaultValue)
@@ -31,11 +30,6 @@ data Route
 	| routePart(str name)
 	| routeVar(str name)
 	;
-
-data RelationDir
-    = \one()
-    | many()
-    ;
 
 data Expression
     = integer(int intValue)
@@ -100,13 +94,6 @@ data Modifier
     | \private()
     ;
 
-data AccessProperty
-    = read()
-    | \set()
-    | add()
-    | clear()
-    ;
-
 data Statement
     = block(list[Statement] stmts)
     | expression(Expression expr)
@@ -152,11 +139,9 @@ public anno loc ControllerType@src;
 public anno loc Route@src;
 public anno loc AssignOperator@src;
 public anno loc Statement@src; 
-public anno loc AccessProperty@src; 
 public anno loc Modifier@src; 
 public anno loc Type@src; 
 public anno loc Name@src; 
 public anno loc Expression@src; 
-public anno loc Annotation@src; 
-public anno loc RelationDir@src; 
+public anno loc Annotation@src;
 public anno loc Declaration@src;

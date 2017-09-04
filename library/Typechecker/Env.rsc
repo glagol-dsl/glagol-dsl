@@ -210,20 +210,3 @@ public Declaration findLocalProperty(GlagolID name, TypeEnv env) {
 
 	throw "Property not found";
 }
-
-public bool hasLocalRelation(GlagolID name, TypeEnv env) {
-	visit (getContext(env)) {
-		case relation(_, _, _, name): 
-			return true;
-	}
-	return false;
-}
-
-public Declaration findLocalRelation(GlagolID name, TypeEnv env) {
-	visit (getContext(env)) {
-		case r: relation(_, _, _, name): 
-			return r;
-	}
-	
-	throw "Relation not found";
-}

@@ -15,7 +15,6 @@ keyword GlagolPreserved
     | "bool"
     | "boolean"
     | "string"
-    | "relation"
     | "true"
     | "false"
     | "when"

@@ -11,7 +11,6 @@ test bool shouldCreateAppFileContents() =
 	"$app-\>singleton(\\Illuminate\\Contracts\\Console\\Kernel::class, \\Laravel\\Lumen\\Console\\Kernel::class);\n" +
 	"$app-\>singleton(\\Illuminate\\Contracts\\Debug\\ExceptionHandler::class, \\Glagol\\Bridge\\Lumen\\Exceptions\\Handler::class);\n" +
 	"$app-\>register(\\LaravelDoctrine\\ORM\\DoctrineServiceProvider::class);\n" +
-	"$app-\>configure(\"app\");\n" + 
 	"$app-\>configure(\"database\");\n" + 
 	"$app-\>configure(\"doctrine\");\n" + 
 	"$app-\>group([\n    \n], " +

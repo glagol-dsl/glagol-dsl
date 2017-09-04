@@ -764,48 +764,6 @@ test bool shouldReturnIntegerOnAccessingIntegerLocalPropertyUsingThis() = intege
 	newEnv(|tmp:///|)
 ));
 
-test bool shouldReturnIntegerOnAccessingIntegerLocalOneOneRelation() = artifact(external("User", namespace("Test"), "User")) == 
-	lookupType(fieldAccess("prop"), setContext(
-		\module(namespace("Test"), [], entity("User", [
-			relation(\one(), \one(), "User", "prop")
-		])),
-		addToAST(file(|tmp:///|, \module(namespace("Test"), [], entity("User", [
-			relation(\one(), \one(), "User", "prop")
-		]))), newEnv(|tmp:///|))
-	));
-
-test bool shouldReturnIntegerOnAccessingIntegerLocalOneOneRelationUsingThis() = artifact(external("User", namespace("Test"), "User")) == 
-	lookupType(fieldAccess(this(), "prop"), setContext(
-		\module(namespace("Test"), [], entity("User", [
-			relation(\one(), \one(), "User", "prop")
-		])),
-		addToAST(file(|tmp:///|, \module(namespace("Test"), [], entity("User", [
-			relation(\one(), \one(), "User", "prop")
-		]))), newEnv(|tmp:///|))
-	));
-
-test bool shouldReturnIntegerOnAccessingIntegerLocalOneManyRelation() = 
-	\list(artifact(external("User", namespace("Test"), "User"))) == 
-	lookupType(fieldAccess("prop"), setContext(
-		\module(namespace("Test"), [], entity("User", [
-			relation(\one(), many(), "User", "prop")
-		])),
-		addToAST(file(|tmp:///|, \module(namespace("Test"), [], entity("User", [
-			relation(\one(), many(), "User", "prop")
-		]))), newEnv(|tmp:///|))
-	));
-
-test bool shouldReturnIntegerOnAccessingIntegerLocalOneManyRelationUsingThis() = 
-	\list(artifact(external("User", namespace("Test"), "User"))) == 
-	lookupType(fieldAccess(this(), "prop"), setContext(
-		\module(namespace("Test"), [], entity("User", [
-			relation(\one(), many(), "User", "prop")
-		])),
-		addToAST(file(|tmp:///|, \module(namespace("Test"), [], entity("User", [
-			relation(\one(), many(), "User", "prop")
-		]))), newEnv(|tmp:///|))
-	));
-
 test bool shouldReturnUnknownTypeOnAccessingUndefinedField() = 
 	unknownType() == 
 	lookupType(fieldAccess("prop"), setContext(

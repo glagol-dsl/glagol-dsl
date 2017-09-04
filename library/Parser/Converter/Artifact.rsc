@@ -4,7 +4,6 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Concrete::Grammar;
 import Parser::Converter::Declaration::Constructor;
-import Parser::Converter::Declaration::Relation;
 import Parser::Converter::Declaration::Method;
 import Parser::Converter::Annotation;
 

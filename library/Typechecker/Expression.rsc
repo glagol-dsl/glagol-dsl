@@ -477,9 +477,6 @@ public Type lookupType(Type prev, i: invoke(str m, params), TypeEnv) = unknownTy
 public Type lookupType(fieldAccess(str field), TypeEnv env) = 
 	externalize(findLocalProperty(field, env).valueType, env) when hasLocalProperty(field, env);
 	
-public Type lookupType(f: fieldAccess(str field), TypeEnv env) = 
-	lookupType(findLocalRelation(field, env), f, env) when hasLocalRelation(field, env);
-	
 public Type lookupType(f: fieldAccess(str field), TypeEnv env) = unknownType();
 
 public Type lookupType(f: fieldAccess(this(), str field), TypeEnv env) = lookupType(fieldAccess(field), env);
@@ -519,15 +516,6 @@ public Type lookupCastType(Type t, Type a, TypeEnv env) = unknownType();
 private bool isSelf(local(str name), TypeEnv env) = getContext(env).artifact.name == name;
 private bool isSelf(external(str name, ns, str original), TypeEnv env) = 
 	getContext(env).artifact.name == original && ns == getContext(env).namespace;
-
-public Type lookupType(relation(_, \one(), name, _), fieldAccess(str field), TypeEnv env) = 
-	externalize(artifact(local(name)), env) when hasLocalArtifact(name, env);
-	
-public Type lookupType(relation(_, \many(), name, _), fieldAccess(str field), TypeEnv env) = 
-	\list(externalize(artifact(local(name)), env)) when hasLocalArtifact(name, env);
-	
-public Type lookupType(Declaration relation, fieldAccess(str field), TypeEnv env) = 
-	unknownType();
 
 private Type lookupTernaryType(artifact(Name ifThen), artifact(Name \else)) = ifThen == \else ? artifact(ifThen) : unknownType();
 private Type lookupTernaryType(repository(Name ifThen), repository(Name \else)) = ifThen == \else ? repository(ifThen) : unknownType();

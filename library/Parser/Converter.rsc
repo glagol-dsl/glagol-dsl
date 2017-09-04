@@ -427,26 +427,6 @@ private tuple[str key, Annotation \value] convertAnnotationPair((AnnotationPair)
     = <"<key>", convertAnnotationValue(v, env)>;
 
 
-public RelationDir convertRelationDir(a: (RelationDir) `one`) = \one()[@src=a@\loc];
-public RelationDir convertRelationDir(a: (RelationDir) `many`) = many()[@src=a@\loc];
-
-
-// TODO enable only on entities
-public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations><Relation relation>`, _, str artifactType, ParseEnv env)
-    = convertRelation(relation, artifactType)[
-    	@annotations = convertAnnotations(annotations, env)
-    ][@src=a@\loc];
-
-public Declaration convertDeclaration(a: (Declaration) `<Relation relation>`, _, str artifactType, _) = convertRelation(relation, artifactType);
-
-public Declaration convertRelation(a: _, at: /^(?!entity).*$/) {
-	throw RelationNotAllowed("Relations only allowed on entities", a@\loc);
-}
-
-public Declaration convertRelation(a: (Relation) `relation <RelationDir l>:<RelationDir r><ArtifactName entity>as<MemberName as>;`, _) 
-    = relation(convertRelationDir(l), convertRelationDir(r), "<entity>", "<as>")[@src=a@\loc];
-
-
 public Type convertType(a: (Type) `int`, ParseEnv env) = integer()[@src=a@\loc];
 public Type convertType(a: (Type) `float`, ParseEnv env) = float()[@src=a@\loc];
 public Type convertType(a: (Type) `bool`, ParseEnv env) = boolean()[@src=a@\loc];

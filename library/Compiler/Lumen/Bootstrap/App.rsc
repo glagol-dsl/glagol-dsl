@@ -30,11 +30,6 @@ public str createAppFile(ORM orm, list[Declaration] ast) = toCode(phpScript([
 	[
 	phpExprstmt(
 		phpMethodCall(phpVar("app"), phpName(phpName("configure")), [
-			phpActualParameter(phpScalar(phpString("app")), false)
-		])
-	),
-	phpExprstmt(
-		phpMethodCall(phpVar("app"), phpName(phpName("configure")), [
 			phpActualParameter(phpScalar(phpString("database")), false)
 		])
 	),

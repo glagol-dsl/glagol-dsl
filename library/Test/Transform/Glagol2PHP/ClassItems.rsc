@@ -186,22 +186,4 @@ test bool shouldTransformMethodsWithOverridingToPhpClassItems() =
 		    ],
 		    phpNoName())
 	];
-
-test bool shouldTransformRelationsToPhpClassItems() = 
-	toPhpClassItems([
-		relation(\one(), \one(), "User", "owner")
-	], <anyFramework(), doctrine()>, entity("", [])) == 
-	[
-		phpProperty(
-		    {phpPrivate()},
-		    [phpProperty(
-		        "owner",
-		        phpNoExpr())])
-	] && toPhpClassItems([
-		relation(\one(), \one(), "User", "owner")
-	], <anyFramework(), doctrine()>, entity("", []))[0]@phpAnnotations == 
-	{
-		phpAnnotation("ORM\\OneToOne", phpAnnotationVal(("targetEntity":phpAnnotationVal("User")))),
-		phpAnnotation("var", phpAnnotationVal("User"))
-	};
 	

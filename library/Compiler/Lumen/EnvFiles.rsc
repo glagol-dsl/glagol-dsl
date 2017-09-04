@@ -29,14 +29,33 @@ public map[loc, str] generateFrameworkFiles(lumen(), Config config, list[Declara
     |file:///| + "routes/api.php": createRoutesApi(ast),
     |file:///| + "routes/console.php": createRoutesConsole(),
     |file:///| + "server.php": createServerFile()
-) + getRepositoryProviders(getORM(config), config, ast);
+) + getRepositoryProviders(getORM(config), config, ast) + getCustomTypes(ast, getORM(config));
 
-private list[Declaration] getRepositories(list[Declaration] ast) = 
-    [e | file(_, e: \module(_, _, repository(_, _))) <- ast];
+private map[loc, str] getCustomTypes(list[Declaration] ast, doctrine()) =
+	(|file:///| + "app/Types/<namespaceToString(ns)><name>Type.php": 
+    	createType(e) | \file(_, e: \module(ns, _, valueObject(str name, _))) <- ast);
+
+private str createType(m: \module(ns, _, valueObject(str name, _))) = toCode(
+	phpScript([
+        phpNamespace(
+            phpSomeName(phpName("App\\Types")),
+            [
+                phpUse({
+                    phpUse(phpName("Doctrine\\DBAL\\Types\\Type"), phpNoName()),
+                    phpUse(phpName("Doctrine\\DBAL\\Platforms\\AbstractPlatform"), phpNoName()),
+                    phpUse(phpName(namespaceToString(ns, "\\") + "\\<name>"), phpNoName())
+                }),
+                phpClassDef(phpClass("<name>Type", {}, phpSomeName(phpName("Type")), [], [
+                    //phpMethod("register", {phpPublic()}, false, [], [], phpNoName())
+                ]))
+            ]
+        )
+    ])
+);
 
 private map[loc, str] getRepositoryProviders(doctrine(), Config config, list[Declaration] ast) = 
     (|file:///| + "app/Provider/<namespaceToString(ns, "/")>/<name>RepositoryProvider.php": 
-    	createProvider(doctrine(), e) | e: \module(ns, _, repository(str name, _)) <- getRepositories(ast));
+    	createProvider(doctrine(), e) | \file(_, e: \module(ns, _, repository(str name, _))) <- ast);
 
 private str createProvider(doctrine(), m: \module(ns, _, repository(str name, list[Declaration] declarations))) = 
     toCode(phpScript([

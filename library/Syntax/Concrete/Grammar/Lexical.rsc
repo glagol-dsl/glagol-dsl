@@ -28,17 +28,6 @@ lexical AnnotationKey
     =  ([A-Z a-z _] !<< [A-Z _ a-z] [0-9 A-Z _ a-z]* !>> [0-9 A-Z _ a-z])
     ;
 
-lexical ArtifactType
-    = "entity" | "value" | "repository" | "collection" | "util" | "service";
-
-lexical AccessProperty
-    = "get" | "set" | "add" | "reset" | "clear" 
-    ;
-
-lexical RelationDir
-    = "one" | "many" 
-    ;
-
 lexical UnicodeEscape
     = utf16: "\\" [u] [0-9 A-F a-f] [0-9 A-F a-f] [0-9 A-F a-f] [0-9 A-F a-f]
     | utf32: "\\" [U] (("0" [0-9 A-F a-f]) | "10") [0-9 A-F a-f] [0-9 A-F a-f] [0-9 A-F a-f] [0-9 A-F a-f] // 24 bits

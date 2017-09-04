@@ -13,10 +13,6 @@ test bool testIsMethod() =
     isMethod(method(\public(), voidValue(), "test", [], [], emptyExpr())) &&
     !isMethod(property(integer(), "test", emptyExpr()));
 
-test bool testIsRelation() = 
-    isRelation(relation(\one(), \one(), "Language", "lang")) && 
-    !isRelation(property(integer(), "test", emptyExpr()));
-
 test bool testIsConstructor() = 
     isConstructor(constructor([], [], emptyExpr())) && 
     isConstructor(constructor([], [], boolean(true))) && 
@@ -43,16 +39,7 @@ test bool testCategorizeMethods() =
         method(\public(), voidValue(), "test", [param(integer(), "a", emptyExpr())], [], emptyExpr()), 
         method(\public(), voidValue(), "test", [param(string(), "b", emptyExpr())], [], emptyExpr())
     ]);
-
-test bool testGetRelations() = 
-    getRelations([
-    	relation(\one(), \one(), "Language", "lang2"), 
-    	relation(\one(), \one(), "Language", "lang1"), 
-    	property(integer(), "test", emptyExpr())]
-	) ==
-        [relation(\one(), \one(), "Language", "lang2"), relation(\one(), \one(), "Language", "lang1")] &&
-    getRelations([property(integer(), "test", emptyExpr()), method(\public(), voidValue(), "test", [param(integer(), "a", emptyExpr())], [], emptyExpr())]) == [];
-
+    
 test bool testHasOverriding() = 
     hasOverriding([
         method(\public(), voidValue(), "test", [param(integer(), "a", emptyExpr())], [], emptyExpr()), 
