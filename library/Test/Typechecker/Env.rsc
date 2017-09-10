@@ -71,16 +71,6 @@ test bool shouldNotGiveErrorWhenAddingNonDefinedPropertyToDefinitions() =
         "id": field(property(integer(), "id", emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)])
     ), (), [], [], emptyDecl(), 0, 0>;
 	
-test bool shouldAddMultipleErrorsToEnv() = 
-	addErrors([
-		<|tmp:///User.g|, "an error 1">,
-		<|tmp:///User.g|, "an error 2">
-	], newEnv(|tmp:///User.g|)) ==
-	<|tmp:///User.g|, (), (), [], [
-		<|tmp:///User.g|, "an error 1">,
-		<|tmp:///User.g|, "an error 2">
-	], emptyDecl(), 0, 0>;
-
 test bool shouldFindArtifact() =
 	findArtifact(\import("User", namespace("Test"), "User"), addToAST(file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))), newEnv(|tmp:///|))) 
 	== [entity("User", [])];

@@ -20,21 +20,21 @@ public TypeEnv checkExpressions(list[Expression] exprs, TypeEnv env) = (env | ch
 public TypeEnv checkExpressions(map[Expression, Expression] exprs, TypeEnv env) = 
 	(env | checkExpression(exprs[expr], checkExpression(expr, it)) | expr <- exprs);
 
-public TypeEnv checkList(l, \list(unknownType()), TypeEnv env) = addError(l, "Cannot unveil list type", env);
-public TypeEnv checkList(l, \list(_), TypeEnv env) = env;
+public TypeEnv checkList(Expression l, \list(unknownType()), TypeEnv env) = addError(l, "Cannot unveil list type", env);
+public TypeEnv checkList(Expression l, \list(Type t), TypeEnv env) = env;
 	
 public TypeEnv checkExpression(\map(map[Expression, Expression] items), TypeEnv env) = env when size(items) == 0;
 
 public TypeEnv checkExpression(m: \map(map[Expression, Expression] items), TypeEnv env) = 
 	checkMap(m, lookupType(m, env), checkExpressions(items, env));
 
-public TypeEnv checkMap(m, \map(unknownType(), unknownType()), TypeEnv env) = 
+public TypeEnv checkMap(Expression m, \map(unknownType(), unknownType()), TypeEnv env) = 
 	addError(m,  "Cannot unveil map key and value types", env);
 	
-public TypeEnv checkMap(m, \map(unknownType(), _), TypeEnv env) = 
+public TypeEnv checkMap(Expression m, \map(unknownType(), Type v), TypeEnv env) = 
 	addError(m,  "Cannot unveil map key type", env);
 	
-public TypeEnv checkMap(m, \map(_, unknownType()), TypeEnv env) = 
+public TypeEnv checkMap(Expression m, \map(Type k, unknownType()), TypeEnv env) = 
 	addError(m,  "Cannot unveil map value type", env);
 	
 public TypeEnv checkMap(m, \map(_, _), TypeEnv env) = env;
@@ -240,7 +240,7 @@ public bool hasConstructor([], Declaration m, TypeEnv env) = true when size(getC
 public bool hasConstructor(list[Type] signature, Declaration m, TypeEnv env) = 
 	(false | true | constructor(list[Declaration] params, _, _) <- getConstructors(m), isSignatureMatching(signature, params, env));
 
-public bool isMethodAccessible(Modifier, 0) = true;
+public bool isMethodAccessible(Modifier m, 0) = true;
 public bool isMethodAccessible(\public(), int i) = true when i > 0;
 public bool isMethodAccessible(\private(), int i) = false when i > 0;
 	
@@ -250,8 +250,8 @@ public bool isSignatureMatching(list[Type] signature, list[Declaration] params, 
 public bool haveDefaultValues(list[Declaration] params) = 
 	params == [p | p: param(_, _, Expression defaultValue) <- params, emptyExpr() != defaultValue];
 
-public list[Type] toSignature(list[Expression] params, TypeEnv env) = [lookupType(p, env) | p <- params];
-public list[Type] toSignature(list[Declaration] params, TypeEnv env) = [t | param(Type t, _, _) <- params];
+public list[Type] toSignature(list[Expression] params, TypeEnv env) = [externalize(lookupType(p, env), env) | p <- params];
+public list[Type] toSignature(list[Declaration] params, TypeEnv env) = [externalize(t, env) | param(Type t, _, _) <- params];
 
 public TypeEnv checkExpression(i: invoke(Expression prev, str m, list[Expression] params), TypeEnv env) = 
 	checkInvoke(lookupType(prev, env), i, toSignature(params, env), env);
@@ -274,7 +274,7 @@ public TypeEnv checkInvoke(Type prevType, i: invoke(Expression prev, str m, list
 public TypeEnv checkInvoke(Type prevType, i: invoke(Expression prev, str m, list[Expression] params), list[Type] signature, TypeEnv env) =
 	decrementDimension(setContext(getContext(env), 
 		checkInvoke(invoke(m, params)[@src=i@src], signature, 
-			incrementDimension(setContext(findModule(prevType, env), checkExpression(prev, env)))
+			incrementDimension(setContext(findModule(externalize(prevType, env), env), checkExpression(prev, env)))
 		)
 	));
 	

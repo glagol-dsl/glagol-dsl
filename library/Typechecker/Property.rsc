@@ -1,11 +1,11 @@
 module Typechecker::Property
 
+import Syntax::Abstract::Glagol;
 import Typechecker::Env;
 import Typechecker::Type;
 import Typechecker::Errors;
 import Typechecker::Expression;
 import Typechecker::Property::DefaultValue;
-import Syntax::Abstract::Glagol;
 
 @doc{
 Typecheck property:

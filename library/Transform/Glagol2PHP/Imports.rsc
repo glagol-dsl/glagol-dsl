@@ -74,31 +74,19 @@ private list[Declaration] findRepositoryDependencies(\module(Declaration ns, lis
 	list[Declaration] repoImports = [];
 
 	top-down visit (artifact) {
-		case r: repository(external(str name, _, _)): {
-			if (!isImported(name, imports)) {
-				// TODO specify location
-				throw ArtifactNotImported("Entity by the name of \'<name>\' is not imported", (r@src?) ? r@src : |tmp:///|);
-			}
-			
-			bool repositoryFound = false;
+		case r: repository(Name n): {
+			str name = n.localName;
 			Declaration importEntity;
 			
 			if ([L*, i: \import(str iName, Declaration iNs, name), R*] := imports) {
 				top-down visit (ast) {
 					case \module(Declaration rNs, [*LI, \import(iName, iNs, str rAs), RI*], repository(rAs, list[Declaration] rDs)): {
 						repoImports += \import("<iName>Repository", rNs, "<iName>Repository");
-						repositoryFound = true;
 					}
 					case \module(iNs, _, repository(iName, _)): {
 						repoImports += \import("<iName>Repository", iNs, "<iName>Repository");
-						repositoryFound = true;
 					}
 				}
-				importEntity = i;
-			}
-			
-			if (!repositoryFound) {
-				throw ArtifactNotDefined("Repository for \'<toString(importEntity)>\' not defined", (r@src?) ? r@src : |tmp:///|);
 			}
 		}
 	}

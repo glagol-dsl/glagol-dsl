@@ -62,15 +62,15 @@ private list[PhpStmt] createInitializers(list[Declaration] params, _) {
             stmts += phpExprstmt(
                 phpMethodCall(phpVar(p.name), phpName(phpName("_hydrate")), [
                     phpActualParameter(phpMethodCall(phpPropertyFetch(
-                        phpStaticCall(phpName(phpName("\\Request")), phpName(phpName("getFacadeRoot")), []), 
+                        phpCall(phpName(phpName("app")), [phpActualParameter(phpFetchClassConst(phpName(phpName("\\Illuminate\\Http\\Request")), "class"), false)]), 
                         phpName(phpName("request"))
                     ), phpName(phpName("all")), []), false)
                 ])
             );
-        else if (artifact(external(str artifactName, _, _)) := p.paramType)
+        else if (artifact(Name n) := p.paramType)
             stmts += [
                 phpExprstmt(phpAssign(phpVar("reflection"), phpNew(phpName(phpName("\\ReflectionClass")), [
-                    phpActualParameter(phpFetchClassConst(phpName(phpName(artifactName)), "class"), false)
+                    phpActualParameter(phpFetchClassConst(phpName(phpName(n.localName)), "class"), false)
                 ]))),
                 phpExprstmt(phpAssign(phpVar(p.name), phpMethodCall(phpVar("reflection"), phpName(phpName(
                     "newInstanceWithoutConstructor"
@@ -78,8 +78,8 @@ private list[PhpStmt] createInitializers(list[Declaration] params, _) {
                 phpExprstmt(
                     phpMethodCall(phpVar(p.name), phpName(phpName("_hydrate")), [
                         phpActualParameter(phpMethodCall(phpPropertyFetch(
-                            phpStaticCall(phpName(phpName("\\Request")), phpName(phpName("getFacadeRoot")), []), 
-                            phpName(phpName("request"))
+                            phpCall(phpName(phpName("app")), [phpActualParameter(phpFetchClassConst(phpName(phpName("\\Illuminate\\Http\\Request")), "class"), false)]), 
+                        	phpName(phpName("request"))
                         ), phpName(phpName("all")), []), false)
                     ])
                 )

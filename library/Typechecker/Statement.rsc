@@ -8,21 +8,20 @@ import Syntax::Abstract::Glagol;
 
 import IO;
 
-public TypeEnv checkStatements(list[Statement] stmts, t, subroutine, TypeEnv env) = 
+public TypeEnv checkStatements(list[Statement] stmts, Type t, Declaration subroutine, TypeEnv env) = 
 	(env | checkStatement(stmt, t, subroutine, it) | stmt <- stmts);
-
 public TypeEnv checkStatement(r: \return(Expression expr), \any(), action(_, _, _), TypeEnv env) = checkExpression(expr, env);
-public TypeEnv checkStatement(r: \return(emptyExpr()), t, s, TypeEnv env) = checkReturn(voidValue(), externalize(t, env), r, env);
-public TypeEnv checkStatement(r: \return(Expression expr), t, s, TypeEnv env) = checkReturn(lookupType(expr, env), externalize(t, env), r, checkExpression(expr, env));
+public TypeEnv checkStatement(r: \return(emptyExpr()), Type t, Declaration s, TypeEnv env) = checkReturn(voidValue(), externalize(t, env), r, env);
+public TypeEnv checkStatement(r: \return(Expression expr), Type t, Declaration s, TypeEnv env) = checkReturn(lookupType(expr, env), externalize(t, env), r, checkExpression(expr, env));
 
-public TypeEnv checkStatement(emptyStmt(), _, _, TypeEnv env) = env;
+public TypeEnv checkStatement(emptyStmt(), Type t, Declaration s, TypeEnv env) = env;
 
 public TypeEnv checkReturn(Type actualType, Type expectedType, Statement r, TypeEnv env) = 
 	addError(r, "Returning <toString(actualType)>, <toString(expectedType)> expected", env)
 	when !isCompatibleForReturn(externalize(actualType, env), externalize(expectedType, env));
 	
-private bool isCompatibleForReturn(\list(voidValue()), \list(_)) = true;
-private bool isCompatibleForReturn(\map(voidValue(), voidValue()), \map(_, _)) = true;
+private bool isCompatibleForReturn(\list(voidValue()), \list(Type t)) = true;
+private bool isCompatibleForReturn(\map(voidValue(), voidValue()), \map(Type l, Type r)) = true;
 private bool isCompatibleForReturn(Type actualType, Type expectedType) = actualType == expectedType;
 	
 public TypeEnv checkReturn(Type actualType, Type expectedType, Statement r, TypeEnv env) = env;
@@ -34,12 +33,16 @@ public TypeEnv checkStatement(ifThenElse(condition, then, \else), t, s, env) =
 	checkStatement(\else, t, s, checkStatement(then, t, s, checkCondition(condition, env)));
 	
 public TypeEnv checkStatement(a: assign(fieldAccess(this(), GlagolID name), _, _), t, subroutine, TypeEnv env) = 
-	addError(a, "Value objects are immutable. You can only assign property values from the constructor", env)
-	when isValueObject(env) && constructor(_, _, _) !:= subroutine && hasLocalProperty(name, env);
+	addError(a, "Value objects are immutable. You can only assign property values from the constructor or private methods", env)
+	when isValueObject(env) && !canVOSubroutineAssignProps(subroutine) && hasLocalProperty(name, env);
 	
 public TypeEnv checkStatement(a: assign(fieldAccess(Expression prev, GlagolID name), _, _), t, subroutine, TypeEnv env) = 
-	addError(a, "Value objects are immutable. You can only assign property values from the constructor", env)
-	when isValueObject(env) && constructor(_, _, _) !:= subroutine && sameAs(externalize(lookupType(prev, env), env), contextAsType(env), env);
+	addError(a, "Value objects are immutable. You can only assign property values from the constructor or private methods", env)
+	when isValueObject(env) && !canVOSubroutineAssignProps(subroutine) && sameAs(externalize(lookupType(prev, env), env), contextAsType(env), env);
+
+private bool canVOSubroutineAssignProps(constructor(_, _, _)) = true;
+private bool canVOSubroutineAssignProps(method(\private(), _, _, _, _, _)) = true;
+private bool canVOSubroutineAssignProps(_) = false;
 
 public bool sameAs(Type: repository(Name first), Type: repository(Name second), TypeEnv env) = sameAs(first, second);
 public bool sameAs(Type: artifact(Name first), Type: artifact(Name second), TypeEnv env) = sameAs(first, second);
@@ -51,11 +54,11 @@ public bool sameAs(Name first, Name second) = false;
 public bool sameAs(Type first, Type second, TypeEnv env) = false;
 	
 public TypeEnv checkStatement(a: assign(variable(GlagolID name), _, _), t, subroutine, TypeEnv env) = 
-	addError(a, "Value objects are immutable. You can only assign property values from the constructor", env)
-	when isValueObject(env) && constructor(_, _, _) !:= subroutine && isField(name, env);
+	addError(a, "Value objects are immutable. You can only assign property values from the constructor or private methods", env)
+	when isValueObject(env) && !canVOSubroutineAssignProps(subroutine) && isField(name, env);
 
 public TypeEnv checkStatement(a: assign(assignable, operator, val), t, s, env) = 
-	checkAssignType(a, lookupType(assignable, env), lookupType(val, env), checkAssignable(assignable, checkStatement(val, t, s, env)));
+	checkAssignType(a, externalize(lookupType(assignable, env), env), externalize(lookupType(val, env), env), checkAssignable(assignable, checkStatement(val, t, s, env)));
 
 public TypeEnv checkAssignType(Statement s, \list(_), \list(voidValue()), TypeEnv env) = env;
 public TypeEnv checkAssignType(Statement s, \map(_, _), \map(voidValue(), voidValue()), TypeEnv env) = env;
@@ -64,8 +67,7 @@ public TypeEnv checkAssignType(Statement s, repository(_), self(), TypeEnv env) 
 	
 public TypeEnv checkAssignType(Statement s, Type expectedType, Type actualType, TypeEnv env) =
 	addError(s,
-		"Cannot assign value of type <toString(actualType)> to a variable of type " + 
-		"<toString(expectedType)>", env)
+		"Cannot assign value of type <toString(actualType)> to a variable of type <toString(expectedType)>", env)
 	when expectedType != actualType;
 
 public TypeEnv checkAssignType(a: assign(assignable, operator, val), Type expectedType, Type actualType, TypeEnv env) = 

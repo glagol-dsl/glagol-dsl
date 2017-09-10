@@ -153,23 +153,6 @@ test bool shouldIncludeRepositoryWhenUsedWithAliases() =
     })]
     ;
     
-test bool shouldThrowExceptionWhenUsingRepositoryWithMissingDefinition() 
-{
-	try toPhpUses(\module(namespace("Example"), [
-    		\import("User", namespace("Example", namespace("Entity")), "User")
-    	], 
-        util("UserCreator", [
-            property(repository(external("User", namespace("Example", namespace("Entity")), "User")), "users", emptyExpr())
-        ])), [
-        	file(|tmp:///entity.g|, \module(namespace("Example", namespace("Entity")), [
-		    ], entity("User", [])))
-        ], 
-        <anyFramework(), anyORM()>);
-    catch ArtifactNotDefined("Repository for \'Example::Entity::User\' not defined", _): return true;
-    
-    return false;
-}
-    
 test bool shouldIncludeRepositoriesWhenUsed() =
     toPhpUses(\module(namespace("Example"), [
     		\import("User", namespace("Example", namespace("Entity")), "User"),
@@ -199,26 +182,3 @@ test bool shouldIncludeRepositoriesWhenUsed() =
     })]
     ;
     
-test bool shouldThrowExceptionWhenUsingRepositoriesWithMissingDefinition() 
-{
-	try toPhpUses(\module(namespace("Example"), [
-    		\import("User", namespace("Example", namespace("Entity")), "User"),
-    		\import("Customer", namespace("Example", namespace("Entity")), "Customer")
-    	], 
-        util("UserCreator", [
-            property(repository(external("User", namespace("Example", namespace("Entity")), "User")), "users", emptyExpr()),
-            property(repository(external("Customer", namespace("Example", namespace("Entity")), "Customer")), "customers", emptyExpr())
-        ])), [
-        	file(|tmp:///repo.g|, \module(namespace("Example", namespace("Repository")), [
-		        \import("User", namespace("Example", namespace("Entity")), "User")
-		    ], repository("User", []))),
-        	file(|tmp:///entity.g|, \module(namespace("Example", namespace("Entity")), [
-		    ], entity("User", []))),
-        	file(|tmp:///entity.g|, \module(namespace("Example", namespace("Entity")), [
-		    ], entity("Customer", [])))
-        ], 
-        <anyFramework(), anyORM()>);
-    catch ArtifactNotDefined("Repository for \'Example::Entity::Customer\' not defined", _): return true;
-    
-    return false;
-}

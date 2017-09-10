@@ -45,6 +45,13 @@ private str lookupSqlDeclarationGetter(float()) = "getDecimalTypeDeclarationSQL"
 private str lookupSqlDeclarationGetter(boolean()) = "getBooleanTypeDeclarationSQL"; 
 private str lookupSqlDeclarationGetter(_) = "getJsonTypeDeclarationSQL";
 
+private PhpCastType lookupCastType(method(_, integer(), _, _, _, _)) = phpInt();
+private PhpCastType lookupCastType(method(_, string(), _, _, _, _)) = phpString();
+private PhpCastType lookupCastType(method(_, float(), _, _, _, _)) = phpFloat();
+private PhpCastType lookupCastType(method(_, boolean(), _, _, _, _)) = phpBool();
+private PhpCastType lookupCastType(method(_, Type t, _, _, _, _)) = phpString();
+private PhpCastType lookupCastType(emptyDecl()) = phpString();
+
 private str createType(m: \module(ns, _, v: valueObject(str name, declarations)), Declaration dbValMethod) = toCode(
 	phpScript([
 		phpDeclareStrict(),
@@ -64,7 +71,7 @@ private str createType(m: \module(ns, _, v: valueObject(str name, declarations))
                     	phpParam("platform", phpNoExpr(), phpSomeName(phpName("AbstractPlatform")), false, false)
                     ], [
                     	phpIf(phpUnaryOperation(phpCall(phpName(phpName("method_exists")), [
-                    		phpActualParameter(phpVar("value"), false),
+                    		phpActualParameter(phpFetchClassConst(phpName(phpName(name)), "class"), false),
                     		phpActualParameter(phpScalar(phpString("toDatabaseValue")), false)
                     	]), phpBooleanNot()), [
                     		phpReturn(phpSomeExpr(
@@ -76,7 +83,7 @@ private str createType(m: \module(ns, _, v: valueObject(str name, declarations))
 							))
                     	], [], phpNoElse()),
                     	phpReturn(phpSomeExpr(phpNew(phpName(phpName(name)), [
-                				phpActualParameter(phpVar(phpName(phpName("value"))), false)
+            				phpActualParameter(phpCast(lookupCastType(dbValMethod), phpVar("value")), false)
                     	])))
                     ], phpSomeName(phpName(name))),
                     phpMethod("convertToDatabaseValue", {phpPublic()}, false, [

@@ -77,7 +77,8 @@ test bool checkImportsShouldReturnNotDefinedError() =
         \import("Customer", namespace("Test", namespace("Entity")), "Customer")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
         \import("CustomerService", namespace("Test", namespace("Service")), "CustomerService")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]
     ], addToAST(file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))), newEnv(|tmp:///|))) == 
-    addErrors([<|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Test::Entity::Customer is not defined">, <|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Test::Service::CustomerService is not defined">],
-	    addImported(\import("User", namespace("Test", namespace("Entity")), "UserEntity"),
-	    	addToAST(file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))), newEnv(|tmp:///|)))
-	);
+    addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Test::Service::CustomerService is not defined", 
+    	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Test::Entity::Customer is not defined", 
+    		addImported(\import("User", namespace("Test", namespace("Entity")), "UserEntity"),
+	    		addToAST(file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))), newEnv(|tmp:///|)))
+	));
