@@ -156,8 +156,8 @@ public TypeEnv checkExpression(e: and(Expression lhs, Expression rhs), TypeEnv e
 public TypeEnv checkExpression(e: or(Expression lhs, Expression rhs), TypeEnv env) = 
 	checkExpression(rhs, checkExpression(lhs, checkBinaryLogic(e, lookupType(lhs, env), lookupType(rhs, env), env)));
 
-public TypeEnv checkBinaryLogic(e, boolean(), boolean(), TypeEnv env) = env;
-public TypeEnv checkBinaryLogic(e, Type l, Type r, TypeEnv env) = 
+public TypeEnv checkBinaryLogic(Expression e, boolean(), boolean(), TypeEnv env) = env;
+public TypeEnv checkBinaryLogic(Expression e, Type l, Type r, TypeEnv env) = 
 	addError(e, "Cannot apply logical operation on <toString(l)> and <toString(r)>", env);
 
 public TypeEnv checkExpression(e: negative(Expression expr), TypeEnv env) = 

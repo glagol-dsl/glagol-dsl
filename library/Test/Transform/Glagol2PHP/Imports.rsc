@@ -1,5 +1,6 @@
 module Test::Transform::Glagol2PHP::Imports
 
+import Transform::Env;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Transform::Glagol2PHP::Imports;
@@ -13,7 +14,7 @@ test bool shouldConvertToPhpUsesOnDoctrineEntityAndOverriding() =
 			constructor([], [], emptyExpr()),
 			constructor([], [], emptyExpr())
 		])), [], 
-		<anyFramework(), doctrine()>) ==
+		newTransformEnv(anyFramework(), doctrine())) ==
 	[phpUse({
 		phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM"))),
 		phpUse(phpName("Glagol\\Overriding\\Overrider"), phpNoName()),
@@ -32,7 +33,7 @@ test bool shouldConvertToPhpUsesOnAnyORMEntityAndOverriding() =
 			constructor([], [], emptyExpr()),
 			constructor([], [], emptyExpr())
 		])), [],
-		<anyFramework(), anyORM()>) ==
+		newTransformEnv(anyFramework(), anyORM())) ==
 	[phpUse({
 		phpUse(phpName("Glagol\\Overriding\\Overrider"), phpNoName()),
 		phpUse(phpName("Glagol\\Overriding\\Parameter"), phpNoName()),
@@ -46,7 +47,7 @@ test bool shouldConvertToPhpUsesOnAnyORMEntityWithoutOverriding() =
 		entity("User", [
 			constructor([], [], emptyExpr())
 		])), [], 
-		<anyFramework(), anyORM()>) ==
+		newTransformEnv(anyFramework(), anyORM())) ==
 	[phpUse({
 		phpUse(phpName("Foo\\Bar\\Blah"), phpNoName())
 	})]
@@ -58,7 +59,7 @@ test bool shouldConvertToPhpUsesOnDoctrineEntityWithoutOverriding() =
         entity("User", [
             constructor([], [], emptyExpr())
         ])), [], 
-        <anyFramework(), doctrine()>) ==
+        newTransformEnv(anyFramework(), doctrine())) ==
     [phpUse({
         phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM"))),
         phpUse(phpName("Foo\\Bar\\Blah"), phpNoName()),
@@ -72,7 +73,7 @@ test bool shouldConvertToDsMapPhpUsesOnMapsAndMapTypes() =
         entity("User", [
             property(\map(integer(), string()), "prop", emptyExpr())
         ])), [], 
-        <anyFramework(), anyORM()>) ==
+        newTransformEnv(anyFramework(), anyORM())) ==
     [phpUse({
         phpUse(phpName("Ds\\Map"), phpNoName()),
         phpUse(phpName("Ds\\Pair"), phpNoName()),
@@ -84,7 +85,7 @@ test bool shouldConvertToDsMapPhpUsesOnMapsAndMapTypes() =
                 expression(\map(()))
             ], emptyExpr())
         ])), [], 
-        <anyFramework(), anyORM()>) ==
+        newTransformEnv(anyFramework(), anyORM())) ==
     [phpUse({
         phpUse(phpName("Ds\\Map"), phpNoName()),
         phpUse(phpName("Ds\\Pair"), phpNoName()),
@@ -97,7 +98,7 @@ test bool shouldConvertToDsMapPhpUsesOnListsAndListTypes() =
         entity("User", [
             property(\list(integer()), "prop", emptyExpr())
         ])), [], 
-        <anyFramework(), anyORM()>) ==
+        newTransformEnv(anyFramework(), anyORM())) ==
     [phpUse({
         phpUse(phpName("Ds\\Vector"), phpNoName())
     })] && 
@@ -107,7 +108,7 @@ test bool shouldConvertToDsMapPhpUsesOnListsAndListTypes() =
                 expression(\list([]))
             ], emptyExpr())
         ])), [], 
-        <anyFramework(), anyORM()>) ==
+        newTransformEnv(anyFramework(), anyORM())) ==
     [phpUse({
         phpUse(phpName("Ds\\Vector"), phpNoName())
     })]
@@ -126,7 +127,7 @@ test bool shouldIncludeRepositoryWhenUsed() =
         	file(|tmp:///entity.g|, \module(namespace("Example", namespace("Entity")), [
 		    ], entity("User", [])))
         ], 
-        <anyFramework(), anyORM()>) ==
+        newTransformEnv(anyFramework(), anyORM())) ==
     [phpUse({
         phpUse(phpName("Example\\Entity\\User"), phpNoName()),
         phpUse(phpName("Example\\Repository\\UserRepository"), phpNoName())
@@ -146,7 +147,7 @@ test bool shouldIncludeRepositoryWhenUsedWithAliases() =
         	file(|tmp:///entity.g|, \module(namespace("Example", namespace("Entity")), [
 		    ], entity("User", [])))
         ], 
-        <anyFramework(), anyORM()>) ==
+        newTransformEnv(anyFramework(), anyORM())) ==
     [phpUse({
         phpUse(phpName("Example\\Entity\\User"), phpSomeName(phpName("UserHa"))),
         phpUse(phpName("Example\\Repository\\UserRepository"), phpNoName())
@@ -173,7 +174,7 @@ test bool shouldIncludeRepositoriesWhenUsed() =
         	file(|tmp:///entity.g|, \module(namespace("Example", namespace("Entity")), [
 		    ], entity("Customer", [])))
         ], 
-        <anyFramework(), anyORM()>) ==
+        newTransformEnv(anyFramework(), anyORM())) ==
     [phpUse({
         phpUse(phpName("Example\\Entity\\User"), phpNoName()),
         phpUse(phpName("Example\\Repository\\UserRepository"), phpNoName()),

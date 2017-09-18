@@ -4,13 +4,14 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Config::Config;
 import Transform::Glagol2PHP::Entities;
+import Transform::Env;
 
 test bool shouldAddOverriderWithRulesWhenTransformingOverridedConstructors() = 
     toPhpClassDef(entity("User", [
         constructor([param(integer(), "a", emptyExpr())], [], emptyExpr()),
         constructor([param(string(), "b", emptyExpr())], [], emptyExpr()),
         constructor([param(float(), "c", emptyExpr())], [], equals(variable("c"), integer(7)))
-    ]), <zend(), doctrine()>) == 
+    ]), newTransformEnv()) ==
     phpClassDef(phpClass(
         "User", {}, phpNoName(), [phpName("\\JsonSerializable")], [
             phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], []),
@@ -52,7 +53,7 @@ test bool shouldAddOverriderWithWhenRulesWhenTransformingOverridedConstructors()
         constructor([param(integer(), "a", emptyExpr())], [], equals(variable("a"), integer(7))),
         constructor([param(integer(), "b", emptyExpr())], [], emptyExpr()),
         constructor([param(integer(), "c", emptyExpr())], [], greaterThan(variable("c"), integer(13)))
-    ]), <zend(), doctrine()>) == 
+    ]), newTransformEnv()) ==
     phpClassDef(phpClass(
         "User", {}, phpNoName(), [phpName("\\JsonSerializable")], [
             phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], []),

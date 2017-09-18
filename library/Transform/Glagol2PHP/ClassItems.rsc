@@ -1,5 +1,6 @@
 module Transform::Glagol2PHP::ClassItems
 
+import Transform::Env;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
@@ -14,7 +15,7 @@ import Transform::Glagol2PHP::Properties;
 import Transform::Glagol2PHP::Annotations;
 import Map;
 
-public list[PhpClassItem] toPhpClassItems(list[Declaration] declarations, env, context) =
+public list[PhpClassItem] toPhpClassItems(list[Declaration] declarations, TransformEnv env, context) =
 	[toPhpClassItem(ci, env, context) | ci <- declarations, isProperty(ci)] +
 	(hasDependencies(declarations) ? [createDIConstructor(getDIProperties(declarations), env)] : []) +
 	(hasConstructors(declarations) ? [createConstructor(getConstructors(declarations), env)] : []) +

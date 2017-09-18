@@ -4,13 +4,14 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Config::Config;
 import Transform::Glagol2PHP::Entities;
+import Transform::Env;
 
 test bool shouldAddOverriderWithRulesWhenTransformingOverridedMethods() = 
     toPhpClassDef(entity("User", [
         method(\public(), voidValue(), "test", [param(integer(), "a", emptyExpr())], [], emptyExpr()),
         method(\public(), voidValue(), "test", [param(string(), "b", emptyExpr())], [], emptyExpr()),
         method(\public(), voidValue(), "test", [param(float(), "c", emptyExpr())], [], equals(variable("c"), integer(7)))
-    ]), <zend(), doctrine()>) == 
+    ]), newTransformEnv()) ==
     phpClassDef(phpClass(
         "User", {}, phpNoName(), [phpName("\\JsonSerializable")], [
             phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], []),

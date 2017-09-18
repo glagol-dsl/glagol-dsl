@@ -1,5 +1,6 @@
 module Test::Transform::Glagol2PHP::Constructors::Dependencies
 
+import Transform::Env;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Config::Config;
@@ -9,7 +10,7 @@ test bool shouldCreateConstructorWhenUtilHasDependencies() =
     toPhpClassDef(util("UserCreator", [
         property(repository(local("User")), "users", get(repository(local("User")))),
         property(repository(local("Customer")), "customers", get(repository(local("Customer"))))
-    ]), <zend(), doctrine()>) == 
+    ]), newTransformEnv()) == 
     phpClassDef(phpClass(
         "UserCreator", {}, phpNoName(), [], [
         	phpProperty({phpPrivate()}, [phpProperty("users", phpNoExpr())]),

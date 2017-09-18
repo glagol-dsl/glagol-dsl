@@ -1,5 +1,6 @@
 module Test::Transform::Glagol2PHP::ClassItems
 
+import Transform::Env;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Transform::Glagol2PHP::ClassItems;
@@ -11,11 +12,11 @@ import Config::Config;
 
 test bool shouldAddPhpAnnotationsToPhpClassDef() = 
 	toPhpClassDef(entity("Bla", [])[@annotations=[annotation("doc", [annotationVal("a doc")])]], 
-		<anyFramework(), doctrine()>).classDef@phpAnnotations?;
+		newTransformEnv(anyFramework(), doctrine())).classDef@phpAnnotations?;
 
 test bool shouldAddAnnotationsToPhpClassItems() = 
 	toPhpClassItem(constructor([], [], emptyExpr())[@annotations=[annotation("Id", [])]], 
-		<anyFramework(), doctrine()>)@phpAnnotations?;
+		newTransformEnv(anyFramework(), doctrine()))@phpAnnotations?;
 
 test bool shouldTransformPropertiesToPhpClassItems() = 
 	toPhpClassItems([
@@ -23,7 +24,7 @@ test bool shouldTransformPropertiesToPhpClassItems() =
 		property(voidValue(), "prop2", emptyExpr()),
 		property(voidValue(), "prop3", emptyExpr()),
 		property(voidValue(), "prop4", emptyExpr())[@annotations=[]]
-	], <anyFramework(), anyORM()>, entity("", [])) == 
+	], newTransformEnv(anyFramework(), anyORM()), entity("", [])) ==
 	[
 		phpProperty({phpPrivate()}, [phpProperty("prop1", phpNoExpr())]),
 		phpProperty({phpPrivate()}, [phpProperty("prop2", phpNoExpr())]),
@@ -34,14 +35,14 @@ test bool shouldTransformPropertiesToPhpClassItems() =
 test bool shouldTransformConstructorsToPhpClassItems() = 
 	toPhpClassItems([
 		constructor([], [], emptyExpr())
-	], <anyFramework(), anyORM()>, entity("", [])) == 
+	], newTransformEnv(anyFramework(), anyORM()), entity("", [])) ==
 	[phpMethod("__construct", {phpPublic()}, false, [], [], phpNoName())];
 
 test bool shouldTransformOverridingConstructorsToPhpClassItems() = 
 	toPhpClassItems([
 		constructor([param(string(), "a", emptyExpr())], [], emptyExpr()),
 		constructor([param(integer(), "b", emptyExpr())], [], emptyExpr())
-	], <anyFramework(), anyORM()>, entity("", [])) == 
+	], newTransformEnv(anyFramework(), anyORM()), entity("", [])) ==
 	[phpMethod(
     "__construct",
     {phpPublic()},
@@ -116,7 +117,7 @@ test bool shouldTransformMethodsToPhpClassItems() =
 		method(\private(), voidValue(), "a", [], [], emptyExpr()),
 		method(\private(), voidValue(), "b", [], [], emptyExpr()),
 		method(\private(), voidValue(), "c", [], [], emptyExpr())
-	], <anyFramework(), anyORM()>, entity("", [])) == 
+	], newTransformEnv(anyFramework(), anyORM()), entity("", [])) ==
 	[
 		phpMethod("a", {phpPrivate()}, false, [], [], phpNoName())[@phpAnnotations={}],
 		phpMethod("b", {phpPrivate()}, false, [], [], phpNoName())[@phpAnnotations={}],
@@ -127,7 +128,7 @@ test bool shouldTransformMethodsWithOverridingToPhpClassItems() =
 	toPhpClassItems([
 		method(\private(), voidValue(), "a", [], [], emptyExpr()),
 		method(\private(), voidValue(), "a", [param(string(), "blah", emptyExpr())], [], emptyExpr())
-	], <anyFramework(), anyORM()>, util("", [])) == 
+	], newTransformEnv(anyFramework(), anyORM()), util("", [])) ==
 	[
 		phpMethod(
 		    "a",

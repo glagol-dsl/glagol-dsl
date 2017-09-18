@@ -1,5 +1,6 @@
 module Transform::Glagol2PHP::Annotations
 
+import Transform::Env;
 import Transform::Glagol2PHP::Doctrine::Annotations;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
@@ -18,7 +19,7 @@ public PhpAnnotation toPhpAnnotation(annotation(str annotationName, list[Annotat
 public default PhpAnnotation toPhpAnnotation(str name, list[Annotation] arguments, env, context) 
 	= toPhpAnnotation(arguments, env, context);
 
-public PhpAnnotation toPhpAnnotation("doc", list[Annotation] arguments, env: <Framework f, _>, context) 
+public PhpAnnotation toPhpAnnotation("doc", list[Annotation] arguments, TransformEnv env, context) 
 	= toPhpAnnotation(arguments[0], env, context);
 
 public PhpAnnotation toPhpAnnotation(list[Annotation] \list, env, context) 

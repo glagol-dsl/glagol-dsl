@@ -1,5 +1,6 @@
 module Transform::Glagol2PHP::Repositories
 
+import Transform::Env;
 import Transform::Glagol2PHP::Annotations;
 import Transform::Glagol2PHP::Common;
 import Transform::Glagol2PHP::Constructors;
@@ -11,7 +12,7 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Config::Config;
 
-public PhpStmt toPhpClassDef(r: repository(str name, list[Declaration] declarations), env: <Framework f, doctrine()>)
+public PhpStmt toPhpClassDef(r: repository(str name, list[Declaration] declarations), TransformEnv env)
     = phpClassDef(phpClass("<name>Repository", {}, phpSomeName(phpName("EntityRepository")), [], 
     		toPhpClassItems(withoutFinders(declarations), env, r))[
         @phpAnnotations=toPhpAnnotations(r, env)

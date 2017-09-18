@@ -8,9 +8,10 @@ import Syntax::Abstract::PHP::Helpers;
 import Config::Config;
 import Transform::Glagol2PHP::Statements;
 import Transform::Glagol2PHP::Params;
+import Transform::Env;
 import String;
 
-public PhpClassItem toPhpClassItem(a: action(str name, list[Declaration] params, list[Statement] body), env: <f: lumen(), ORM orm>)
+public PhpClassItem toPhpClassItem(a: action(str name, list[Declaration] params, list[Statement] body), TransformEnv env)
     = phpMethod(
         name, 
         {phpPublic()}, 
@@ -21,7 +22,7 @@ public PhpClassItem toPhpClassItem(a: action(str name, list[Declaration] params,
         phpNoName()
     )[
     	@phpAnnotations=toPhpAnnotations(a, env)
-    ];
+    ] when usesLumen(env);
 
 @todo="Tests missing for this one"
 private list[PhpParam] toActionParams(list[Declaration] params, _) {
