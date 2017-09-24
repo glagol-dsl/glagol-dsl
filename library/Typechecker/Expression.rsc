@@ -215,7 +215,7 @@ private str stringify(fullName(str localName, Declaration namespace, str origina
 	namespaceToString(namespace, "::") + "::<originalName>";
 
 public TypeEnv checkExpression(i: invoke(str m, list[Expression] params), TypeEnv env) = 
-	checkInvoke(i, toSignature(params, env), env);
+	checkInvoke(i, toSignature(params, env), checkExpressions(params, env));
 
 public TypeEnv checkInvoke(i: invoke(str m, list[Expression] params), list[Type] signature, TypeEnv env) = 
 	addError(i, "Call to an undefined method <m>(<toString(signature,  ", ")>)", env)
@@ -247,7 +247,7 @@ public list[Type] toSignature(list[Expression] params, TypeEnv env) = [lookupTyp
 public list[Type] toSignature(list[Declaration] params, TypeEnv env) = [t | param(Type t, _, _) <- params];
 
 public TypeEnv checkExpression(i: invoke(Expression prev, str m, list[Expression] params), TypeEnv env) = 
-	checkInvoke(lookupType(prev, env), i, toSignature(params, env), env);
+	checkInvoke(lookupType(prev, env), i, toSignature(params, env), checkExpressions(params, env));
 
 public TypeEnv checkInvoke(self(), i: invoke(Expression prev, str m, list[Expression] params), list[Type] signature, TypeEnv env) =
 	checkInvoke(invoke(m, params)[@src=i@src], signature, env);
