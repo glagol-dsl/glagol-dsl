@@ -5,33 +5,33 @@ import List;
 import IO;
 
 public bool isProperty(property(_, _, _)) = true;
-public default bool isProperty(_) = false;
+public default bool isProperty(value _) = false;
 
 public bool isPropertyWithDefaultValue(property(_, _, d)) = emptyExpr() !:= d;
 
-public bool isMethod(method(_, _, _, _, _, _)) = true;
-public bool isMethod(_) = false;
+public bool isMethod(method(Modifier modifier, Type returnType, GlagolID name, list[Declaration] params, list[Statement] body, Expression when)) = true;
+public default bool isMethod(value _) = false;
 
-public bool isConstructor(constructor(_, _, _)) = true;
-public bool isConstructor(_) = false;
+public bool isConstructor(constructor(list[Declaration] params, list[Statement] body, Expression when)) = true;
+public default bool isConstructor(value _) = false;
 
-public bool isEntity(entity(_, _)) = true;
-public bool isEntity(_) = false;
+public bool isEntity(entity(GlagolID name, list[Declaration] declarations)) = true;
+public default bool isEntity(value _) = false;
 
 public bool isValueObject(valueObject(_, _)) = true;
-public bool isValueObject(_) = false;
+public bool isValueObject(value _) = false;
 
 public bool isRepository(repository(_, _)) = true;
-public bool isRepository(_) = false;
+public bool isRepository(value _) = false;
 
 public bool isController(controller(_, _, _, _)) = true;
-public bool isController(_) = false;
+public bool isController(value _) = false;
 
 public bool isIfThenElse(ifThenElse(Expression condition, Statement then, Statement \else)) = true;
-public bool isIfThenElse(_) = false;
+public bool isIfThenElse(value _) = false;
 
 public bool isEmpty(emptyExpr()) = true;
-public bool isEmpty(_) = false;
+public bool isEmpty(value _) = false;
 
 public bool hasConstructors(list[Declaration] declarations) = size([d | d <- declarations, isConstructor(d)]) > 0;
 
@@ -68,8 +68,8 @@ public bool hasMapUsage(Declaration artifact) {
 
 public bool hasListUsage(Declaration artifact) { 
     top-down visit (artifact) {
-        case \list(_): return true;
-        case \list(_): return true;
+        case \list(Type t): return true;
+        case \list(list[Expression] values): return true;
     }
     return false;
 }
@@ -91,15 +91,14 @@ public bool hasAnnotation(Declaration n, str name) =
     (n@annotations?) ? (false | true | annotation(name, _) <- n@annotations) : false;
     
 public str namespaceToString(Declaration ns) = namespaceToString(ns, "");
-public str namespaceToString(namespace(str name), _) = name;
+public str namespaceToString(namespace(str name), str d) = name;
 public str namespaceToString(namespace(str name, Declaration subNamespace), str delimiter) = 
     name + delimiter + namespaceToString(subNamespace, delimiter);
 
-public Declaration toNamespace(external(str localName, Declaration namespace, str originalName)) =
+public Declaration toNamespace(fullName(str localName, Declaration namespace, str originalName)) =
 	\import(originalName, namespace, localName);
 
-public str extractName(external(str localName, Declaration namespace, str originalName)) = localName;
-public str extractName(local(str localName)) = localName;
+public str extractName(fullName(str localName, Declaration namespace, str originalName)) = localName;
 
 public str toString(\public()) = "public";
 public str toString(\private()) = "private";

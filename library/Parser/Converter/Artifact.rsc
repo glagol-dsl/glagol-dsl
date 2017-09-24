@@ -19,7 +19,7 @@ public Declaration convertArtifact(a: (Artifact) `entity <ArtifactName name> {<D
 	entity("<name>", [convertDeclaration(d, "<name>", "entity", env) | d <- declarations])[@src=a@\loc];
 
 public Declaration convertArtifact(a: (Artifact) `repository for <ArtifactName name> {<Declaration* declarations>}`, ParseEnv env) =
-	repository("<name>", [convertDeclaration(d, "<name>", "repository", env) | d <- declarations] + defaultRepositoryMethod("<name>", a@\loc))[@src=a@\loc];
+	repository("<name>", [convertDeclaration(d, "<name>", "repository", env) | d <- declarations] + defaultRepositoryMethod("<name>", a@\loc, env))[@src=a@\loc];
 
 public Declaration convertArtifact(a: (Artifact) `value <ArtifactName name> {<Declaration* declarations>}`, ParseEnv env) = 
 	valueObject("<name>", [convertDeclaration(d, "<name>", "value", env) | d <- declarations])[@src=a@\loc];
@@ -57,10 +57,10 @@ public Declaration convertArtifact(a: (Artifact) `<ControllerType controllerType
 		[convertDeclaration(d, "", "controller", env) | d <- declarations]
 	)[@src=a@\loc];
 
-private list[Declaration] defaultRepositoryMethod(str name, loc src) = [
-	method(\public()[@src=src], artifact(local(name)[@src=src])[@src=src], "find", [
+private list[Declaration] defaultRepositoryMethod(str name, loc src, ParseEnv env) = [
+	method(\public()[@src=src], artifact(createName(name, env)[@src=src])[@src=src], "find", [
 		param(integer()[@src=src], "id", emptyExpr()[@src=src])[@src=src]
-	], [\return(new(local(name)[@src=src], [])[@src=src])[@src=src]], emptyExpr()[@src=src])[@src=src],
-	method(\public()[@src=src], \list(artifact(local(name)[@src=src])[@src=src])[@src=src], "findAll", [], 
+	], [\return(new(createName(name, env)[@src=src], [])[@src=src])[@src=src]], emptyExpr()[@src=src])[@src=src],
+	method(\public()[@src=src], \list(artifact(createName(name, env)[@src=src])[@src=src])[@src=src], "findAll", [], 
 		[\return(\list([])[@src=src])[@src=src]], emptyExpr()[@src=src])[@src=src]
 ];

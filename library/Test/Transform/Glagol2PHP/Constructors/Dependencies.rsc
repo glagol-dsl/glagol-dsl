@@ -8,8 +8,8 @@ import Transform::Glagol2PHP::Utils;
 
 test bool shouldCreateConstructorWhenUtilHasDependencies() = 
     toPhpClassDef(util("UserCreator", [
-        property(repository(local("User")), "users", get(repository(local("User")))),
-        property(repository(local("Customer")), "customers", get(repository(local("Customer"))))
+        property(repository(fullName("User", namespace("Example"), "User")), "users", get(repository(fullName("User", namespace("Example"), "User")))),
+        property(repository(fullName("Customer", namespace("Example"), "Customer")), "customers", get(repository(fullName("Customer", namespace("Example"), "Customer"))))
     ]), newTransformEnv()) == 
     phpClassDef(phpClass(
         "UserCreator", {}, phpNoName(), [], [

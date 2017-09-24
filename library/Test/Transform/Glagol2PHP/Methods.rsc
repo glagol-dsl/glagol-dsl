@@ -39,11 +39,11 @@ test bool shouldTransformMethodWithMapReturnValue() =
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("Map")));
 
 test bool shouldTransformMethodWithArtifactReturnValue() =
-    toPhpClassItem(method(\public(), artifact(local("User")), "test", [], [], emptyExpr()), newTransformEnv()) ==
+    toPhpClassItem(method(\public(), artifact(fullName("User", namespace("Example"), "User")), "test", [], [], emptyExpr()), newTransformEnv()) ==
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("User")));
 
 test bool shouldTransformMethodWithRepositoryReturnValue() =
-    toPhpClassItem(method(\public(), repository(local("User")), "test", [], [], emptyExpr()), newTransformEnv()) ==
+    toPhpClassItem(method(\public(), repository(fullName("User", namespace("Example"), "User")), "test", [], [], emptyExpr()), newTransformEnv()) ==
     phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("UserRepository")));
 
 test bool shouldTransformMethodWithPrivateModifier() =

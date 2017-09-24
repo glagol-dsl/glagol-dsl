@@ -37,7 +37,7 @@ test bool shouldTransformToScalarListPhpExpr()
         ]), false)]);
 
 test bool shouldTransformToFetchLocalPropPhpExpr()
-    = toPhpExpr(get(artifact(local("SomeUtil"))))
+    = toPhpExpr(get(artifact(fullName("SomeUtil", namespace("Example"), "SomeUtil"))))
     == phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("_someUtil")));
     
 test bool shouldTransformToFetchArrayDim() = toPhpExpr(arrayAccess(variable("test"), integer(0))) == phpFetchArrayDim(phpVar(phpName(phpName("test"))), phpSomeExpr(phpScalar(phpInteger(0))));
@@ -60,9 +60,9 @@ test bool shouldTransformToBracket() = toPhpExpr(\bracket(variable("test"))) == 
 test bool shouldTransformToTernary() = toPhpExpr(ifThenElse(greaterThan(integer(3), float(4.5)), integer(3), integer(4))) 
     == phpTernary(phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpGt()), phpSomeExpr(phpScalar(phpInteger(3))), phpScalar(phpInteger(4)));
 
-test bool shouldTrasnformToNew() = toPhpExpr(new(local("MyUtil"), [])) == phpNew(phpName(phpName("MyUtil")), []);
+test bool shouldTrasnformToNew() = toPhpExpr(new(fullName("MyUtil", namespace("Example"), "MyUtil"), [])) == phpNew(phpName(phpName("MyUtil")), []);
 test bool shouldTrasnformToNewWithArguments()
-    = toPhpExpr(new(local("MyUtil"), [variable("bla")])) == phpNew(phpName(phpName("MyUtil")), [phpActualParameter(phpVar(phpName(phpName("bla"))), false)]);
+    = toPhpExpr(new(fullName("MyUtil", namespace("Example"), "MyUtil"), [variable("bla")])) == phpNew(phpName(phpName("MyUtil")), [phpActualParameter(phpVar(phpName(phpName("bla"))), false)]);
 
 test bool shouldTransformToBinaryProductOp() = toPhpExpr(product(integer(3), float(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpMul());
 test bool shouldTransformToBinaryModOp() = toPhpExpr(remainder(integer(3), float(4.5))) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpMod());

@@ -29,26 +29,26 @@ test bool shlouldNotGiveErrorsForListAndMapTypes() =
 	newEnv(|tmp:///User.g|);
 
 test bool shlouldGiveErrorWhenUsingNotImportedArtifact() =
-	checkType(artifact(local("Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
-		param(artifact(local("Date")), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
-	addError(|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "\"Date\" not imported, but used", newEnv(|tmp:///User.g|));
+	checkType(artifact(fullName("User", namespace("Test"), "User"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+		param(artifact(fullName("User", namespace("Test"), "User")), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
+	addError(|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "\"User\" not imported, but used", newEnv(|tmp:///User.g|));
 
 test bool shlouldNotGiveErrorWhenUsingImportedArtifact() =
-	checkType(artifact(local("Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
-		param(artifact(local("Date")), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
-	addImported(\import("Date", namespace("Test", namespace("Entity")), "Date"), newEnv(|tmp:///User.g|))) == 
-	addImported(\import("Date", namespace("Test", namespace("Entity")), "Date"), newEnv(|tmp:///User.g|));
+	checkType(artifact(fullName("Date", namespace("Test"), "Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+		param(artifact(fullName("Date", namespace("Test"), "Date")), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+	addImported(\import("Date", namespace("Test"), "Date"), newEnv(|tmp:///User.g|))) == 
+	addImported(\import("Date", namespace("Test"), "Date"), newEnv(|tmp:///User.g|));
 
 test bool shlouldGiveErrorWhenUsingRepositoryWithNotImportedEntity() =
-	checkType(repository(local("Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
-		param(repository(local("Date")), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
+	checkType(repository(fullName("Date", namespace("Test"), "Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+		param(repository(fullName("Date", namespace("Test"), "Date")), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
 	addError(|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "\"Date\" not imported, but used for a repository",
 		newEnv(|tmp:///User.g|)
 	);
 
 test bool shlouldGiveErrorWhenUsingRepositoryWithImportedArtifactButIsNotEntity() =
-	checkType(repository(local("Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
-		param(repository(local("Date")), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+	checkType(repository(fullName("Date", namespace("Test"), "Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+		param(repository(fullName("Date", namespace("Test"), "Date")), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
 		
 		addImported(\import("Date", namespace("Test"), "Date"),
 			addToAST(file(|tmp:///Date.g|, \module(namespace("Test"), [], util("Date", [])[@src=|tmp:///Date.g|(0, 0, <10, 10>, <20, 20>)])), newEnv(|tmp:///User.g|))
@@ -60,16 +60,16 @@ test bool shlouldGiveErrorWhenUsingRepositoryWithImportedArtifactButIsNotEntity(
 	));
 
 test bool shouldGiveErrorsWhenUsingSelfieForSomethingElseThanGettingPropertyInstance() = 
-	checkType(selfie()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], property(repository(local("User")), "users", emptyExpr()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)])[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
+	checkType(selfie()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], property(repository(fullName("User", namespace("Test"), "User")), "users", emptyExpr()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)])[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
 	addError(|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "Selfie cannot be used as property type", newEnv(|tmp:///User.g|));
 	
 test bool shouldGiveErrorsWhenUsingSelfieForSomethingElseThanGettingPropertyInstance2() = 
-	checkType(selfie()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], param(repository(local("User"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], "users", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
+	checkType(selfie()[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], param(repository(fullName("User", namespace("Test"), "User"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], "users", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)], newEnv(|tmp:///User.g|)) ==
 	addError(|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "Selfie cannot be used as property type", newEnv(|tmp:///User.g|));
 
 test bool shlouldGiveErrorWhenGettingSelfieOfNonUtilArtifact() =
-	checkType(artifact(local("Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
-		property(artifact(local("Date")), "prop", get(selfie()))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+	checkType(artifact(fullName("Date", namespace("Test"), "Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+		property(artifact(fullName("Date", namespace("Test"), "Date")), "prop", get(selfie()))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
 		
 		addImported(\import("Date", namespace("Test"), "Date"),
 			addToAST(file(|tmp:///Date.g|, \module(namespace("Test"), [], entity("Date", [])[@src=|tmp:///Date.g|(0, 0, <10, 10>, <20, 20>)])), newEnv(|tmp:///User.g|))
@@ -81,8 +81,8 @@ test bool shlouldGiveErrorWhenGettingSelfieOfNonUtilArtifact() =
 	));
 	
 test bool shlouldNotGiveErrorWhenGettingSelfieOfNonUtilArtifact() =
-	checkType(artifact(local("Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
-		property(artifact(local("Date")), "prop", get(selfie()))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+	checkType(artifact(fullName("Date", namespace("Test"), "Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+		property(artifact(fullName("Date", namespace("Test"), "Date")), "prop", get(selfie()))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
 		
 		addImported(\import("Date", namespace("Test"), "Date"),
 			addToAST(file(|tmp:///Date.g|, \module(namespace("Test"), [], util("Date", [])[@src=|tmp:///Date.g|(0, 0, <10, 10>, <20, 20>)])), newEnv(|tmp:///User.g|))
@@ -93,8 +93,8 @@ test bool shlouldNotGiveErrorWhenGettingSelfieOfNonUtilArtifact() =
 	);
 
 test bool shlouldNotGiveErrorWhenGettingSelfieOfRepository() =
-	checkType(repository(local("Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
-		property(repository(local("Date")), "prop", get(selfie()))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+	checkType(repository(fullName("Date", namespace("Test"), "Date"))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
+		property(repository(fullName("Date", namespace("Test"), "Date")), "prop", get(selfie()))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
 		addImported(\import("Date", namespace("Test"), "Date"),
 			addToAST(file(|tmp:///Date.g|, \module(namespace("Test"), [], entity("Date", [])[@src=|tmp:///Date.g|(0, 0, <10, 10>, <20, 20>)])), newEnv(|tmp:///User.g|))
 		)

@@ -158,7 +158,7 @@ test bool testNewInstance()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "newInstance", [], [
-            expression(new(local("DateTime"), []))
+            expression(new(fullName("DateTime", namespace("Example"), "DateTime"), []))
           ], emptyExpr())
     ]));
 }
@@ -174,7 +174,7 @@ test bool testNewInstanceWithArg()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "newInstance", [], [
-            expression(new(local("DateTime"), [string("now")]))
+            expression(new(fullName("DateTime", namespace("Example"), "DateTime"), [string("now")]))
           ], emptyExpr())
     ]));
 }
@@ -190,7 +190,7 @@ test bool testNewInstanceWithArgs()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "newInstance", [], [
-            expression(new(local("DateTime"), [string("now"), new(local("Money"), [
+            expression(new(fullName("DateTime", namespace("Example"), "DateTime"), [string("now"), new(fullName("Money", namespace("Example"), "Money"), [
                 integer(2300), string("USD")
             ])]))
           ], emptyExpr())
@@ -228,13 +228,13 @@ test bool testMethodInvokeChainedToAVariable()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "methodInvoke", [], [
-            declare(artifact(local("SomeEntity")), variable("eee"), expression(
-                new(local("SomeEntity"), [])
+            declare(artifact(fullName("SomeEntity", namespace("Example"), "SomeEntity")), variable("eee"), expression(
+                new(fullName("SomeEntity", namespace("Example"), "SomeEntity"), [])
             )),
             expression(invoke(variable("eee"), "methodInvoke", [])),
             expression(invoke(invoke(variable("eee"), "nested", [\list([string("string")])]), "methodInvoke", [])),
             expression(invoke(fieldAccess(fieldAccess(variable("eee"), "blah"), "blah2"), "methodInvoke", [])),
-            expression(invoke(\bracket(new(local("MyClass"), [])), "methodInvoke", []))
+            expression(invoke(\bracket(new(fullName("MyClass", namespace("Example"), "MyClass"), [])), "methodInvoke", []))
           ], emptyExpr())
     ]));
 }
@@ -282,7 +282,7 @@ test bool testArtifactTypeCast()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "methodInvoke", [], [
-            expression(cast(artifact(local("Money")), variable("a")))
+            expression(cast(artifact(fullName("Money", namespace("Example"), "Money")), variable("a")))
           ], emptyExpr())
     ]));
 }
@@ -298,7 +298,7 @@ test bool testRepositoryTypeCast()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "methodInvoke", [], [
-            expression(cast(repository(local("Money")), variable("a")))
+            expression(cast(repository(fullName("Money", namespace("Example"), "Money")), variable("a")))
           ], emptyExpr())
     ]));
 }

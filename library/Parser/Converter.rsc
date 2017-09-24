@@ -15,7 +15,8 @@ import Exceptions::ParserExceptions;
 
 public Declaration buildAST(a: (Module) `namespace <Namespace n><Import* imports><AnnotatedArtifact annotatedArtifact>`) {
 	list[Declaration] convertedImports = [convertImport(\import) | \import <- imports];
-    return \module(convertModuleNamespace(n), convertedImports, convertAnnotatedArtifact(annotatedArtifact, newParseEnv(convertedImports)))[@src=a@\loc];
+	Declaration ns = convertModuleNamespace(n);
+    return \module(ns, convertedImports, convertAnnotatedArtifact(annotatedArtifact, newParseEnv(convertedImports, ns)))[@src=a@\loc];
 }
 
 
@@ -44,7 +45,7 @@ public Declaration convertArtifact(a: (Artifact) `entity <ArtifactName name> {<D
 	entity("<name>", [convertDeclaration(d, "<name>", "entity", env) | d <- declarations])[@src=a@\loc];
 
 public Declaration convertArtifact(a: (Artifact) `repository for <ArtifactName name> {<Declaration* declarations>}`, ParseEnv env) =
-	repository("<name>", [convertDeclaration(d, "<name>", "repository", env) | d <- declarations] + defaultRepositoryMethod("<name>", a@\loc))[@src=a@\loc];
+	repository("<name>", [convertDeclaration(d, "<name>", "repository", env) | d <- declarations] + defaultRepositoryMethod("<name>", a@\loc, env))[@src=a@\loc];
 
 public Declaration convertArtifact(a: (Artifact) `value <ArtifactName name> {<Declaration* declarations>}`, ParseEnv env) = 
 	valueObject("<name>", [convertDeclaration(d, "<name>", "value", env) | d <- declarations])[@src=a@\loc];
@@ -82,11 +83,11 @@ public Declaration convertArtifact(a: (Artifact) `<ControllerType controllerType
 		[convertDeclaration(d, "", "controller", env) | d <- declarations]
 	)[@src=a@\loc];
 
-private list[Declaration] defaultRepositoryMethod(str name, loc src) = [
-	method(\public()[@src=src], artifact(local(name)[@src=src])[@src=src], "find", [
+private list[Declaration] defaultRepositoryMethod(str name, loc src, ParseEnv env) = [
+	method(\public()[@src=src], artifact(createName(name, env)[@src=src])[@src=src], "find", [
 		param(integer()[@src=src], "id", emptyExpr()[@src=src])[@src=src]
-	], [\return(new(local(name)[@src=src], [])[@src=src])[@src=src]], emptyExpr()[@src=src])[@src=src],
-	method(\public()[@src=src], \list(artifact(local(name)[@src=src])[@src=src])[@src=src], "findAll", [], 
+	], [\return(new(createName(name, env)[@src=src], [])[@src=src])[@src=src]], emptyExpr()[@src=src])[@src=src],
+	method(\public()[@src=src], \list(artifact(createName(name, env)[@src=src])[@src=src])[@src=src], "findAll", [], 
 		[\return(\list([])[@src=src])[@src=src]], emptyExpr()[@src=src])[@src=src]
 ];
 
@@ -513,9 +514,10 @@ public Expression convertAssignable(a: (Assignable) `<Expression prev>.<MemberNa
 
 
 public Name createName(str localName, ParseEnv env) = createName(localName, getImported(localName, env)) when isImported(localName, env);
-public Name createName(str localName, ParseEnv env) = local(localName) when !isImported(localName, env);
-public Name createName(str localName, \import(GlagolID originalName, Declaration namespace, _)) = external(localName, namespace, originalName);
 
+public Name createName(str localName, ParseEnv env) = fullName(localName, getNamespace(env), localName);
+
+public Name createName(str localName, \import(GlagolID originalName, Declaration namespace, _)) = fullName(localName, namespace, originalName);
 
 
 public Declaration convertDeclaration(d: (Declaration) `<Action action>`, _, a: /^(?!controller).*$/, _) {

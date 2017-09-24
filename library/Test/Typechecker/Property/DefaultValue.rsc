@@ -26,25 +26,25 @@ test bool shouldNotGiveErrorOnEmptyExpr() =
 	checkDefaultValue(emptyExpr(), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|);
 
 test bool shouldGiveNotImportedErrorOnGetArtifact() = 
-	checkDefaultValue(get(artifact(local("User"))
+	checkDefaultValue(get(artifact(fullName("User", namespace("Example"), "User"))
 		[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)]
 	)[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)], newEnv(|tmp:///Util.g|)) == 
 	addError(|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>), "\"User\" not imported, but used", newEnv(|tmp:///Util.g|));
 
 test bool shouldNotGiveNotImportedErrorOnGetArtifact() = 
-	checkDefaultValue(get(artifact(local("User"))
+	checkDefaultValue(get(artifact(fullName("User", namespace("Test", namespace("Entity")), "User"))
 		[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)]
 	)[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)], addImported(\import("User", namespace("Test", namespace("Entity")), "User"), newEnv(|tmp:///Util.g|))) == 
 	addImported(\import("User", namespace("Test", namespace("Entity")), "User"), newEnv(|tmp:///Util.g|));
 
 test bool shouldGiveNotImportedErrorOnGetRepository() = 
-	checkDefaultValue(get(repository(local("User"))
+	checkDefaultValue(get(repository(fullName("User", namespace("Test", namespace("Entity")), "User"))
 		[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)]
 	)[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)], newEnv(|tmp:///Util.g|)) == 
 	addError(|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>), "\"User\" not imported, but used for a repository", newEnv(|tmp:///Util.g|));
 
 test bool shouldGiveNotEntityErrorOnGetRepository() = 
-	checkDefaultValue(get(repository(local("User"))
+	checkDefaultValue(get(repository(fullName("User", namespace("Test"), "User"))
 		[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)]
 	)[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)], 
 	
@@ -53,7 +53,7 @@ test bool shouldGiveNotEntityErrorOnGetRepository() =
 		addImported(\import("User", namespace("Test"), "User"), addToAST(file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), newEnv(|tmp:///Util.g|))));
 
 test bool shouldNotGiveErrorOnGetRepository() = 
-	checkDefaultValue(get(repository(local("User"))
+	checkDefaultValue(get(repository(fullName("User", namespace("Test"), "User"))
 		[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)]
 	)[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)], 
 		addImported(\import("User", namespace("Test"), "User"),

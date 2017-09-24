@@ -119,7 +119,7 @@ test bool shouldIncludeRepositoryWhenUsed() =
     		\import("User", namespace("Example", namespace("Entity")), "User")
     	], 
         util("UserCreator", [
-            property(repository(external("User", namespace("Example"), "User")), "users", emptyExpr())
+            property(repository(fullName("User", namespace("Example"), "User")), "users", emptyExpr())
         ])), [
         	file(|tmp:///repo.g|, \module(namespace("Example", namespace("Repository")), [
 		        \import("User", namespace("Example", namespace("Entity")), "User")
@@ -139,7 +139,7 @@ test bool shouldIncludeRepositoryWhenUsedWithAliases() =
     		\import("User", namespace("Example", namespace("Entity")), "UserHa")
     	], 
         util("UserCreator", [
-            property(repository(external("UserHa", namespace("Example"), "User")), "users", emptyExpr())
+            property(repository(fullName("UserHa", namespace("Example"), "User")), "users", emptyExpr())
         ])), [
         	file(|tmp:///repo.g|, \module(namespace("Example", namespace("Repository")), [
 		        \import("User", namespace("Example", namespace("Entity")), "UserBla")
@@ -160,8 +160,8 @@ test bool shouldIncludeRepositoriesWhenUsed() =
     		\import("Customer", namespace("Example", namespace("Entity")), "Customer")
     	], 
         util("UserCreator", [
-            property(repository(external("User", namespace("Example", namespace("Entity")), "User")), "users", emptyExpr()),
-            property(repository(external("Customer", namespace("Example", namespace("Entity")), "Customer")), "customers", emptyExpr())
+            property(repository(fullName("User", namespace("Example", namespace("Entity")), "User")), "users", emptyExpr()),
+            property(repository(fullName("Customer", namespace("Example", namespace("Entity")), "Customer")), "customers", emptyExpr())
         ])), [
         	file(|tmp:///repo.g|, \module(namespace("Example", namespace("Repository")), [
 		        \import("User", namespace("Example", namespace("Entity")), "User")

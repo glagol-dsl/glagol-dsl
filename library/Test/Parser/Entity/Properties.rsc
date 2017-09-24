@@ -14,7 +14,7 @@ test bool testShouldParseEntityWithProperties()
                
     list[Declaration] expectedValues = [
         property(integer(), "id", emptyExpr()),
-        property(artifact(local("Date")), "addedOn", emptyExpr()),
+        property(artifact(fullName("Date", namespace("Example"), "Date")), "addedOn", emptyExpr()),
         property(\map(integer(), string()), "aMap", \map((integer(1): string("asd"))))
     ];
 
@@ -51,7 +51,7 @@ test bool testShouldParseEntityWithValuesAndAnnotations()
     	parseModule(code) == \module(namespace("Example"), [], entity("User", [
     	   property(float(), "id", emptyExpr()), 
            property(string(), "id", emptyExpr()), 
-           property(artifact(local("Weight")), "id", emptyExpr())
+           property(artifact(fullName("Weight", namespace("Example"), "Weight")), "id", emptyExpr())
 	   ])) &&
     	parseModule(code).artifact.declarations[0]@annotations == [
             annotation("column", [

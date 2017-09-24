@@ -124,13 +124,12 @@ public bool isInAST(\import(GlagolID name, Declaration namespace, GlagolID as), 
     (false | true | file(_, \module(Declaration ns, _, a)) <- env.ast, a.name == name && ns == namespace);
 
 public list[Declaration] findArtifact(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) =
-	[a | file(_, \module(Declaration ns, _, a)) <- env.ast, !isRepository(a) && !isController(a) && a.name == name && ns == namespace];
+	[a | file(_, \module(Declaration ns, _, Declaration a)) <- env.ast, !isRepository(a) && !isController(a) && a.name == name && ns == namespace];
 
 public bool isEntity(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
     [entity(_, _)] := findArtifact(i, env);
     
-public bool isEntity(a: artifact(e: external(_, _, _)), TypeEnv env) = isEntity(toNamespace(e), env);
-public bool isEntity(a: artifact(local(_)), TypeEnv env) = isEntity(externalize(a, env), env);
+public bool isEntity(a: artifact(e: fullName(_, _, _)), TypeEnv env) = isEntity(toNamespace(e), env);
     
 public bool isValueObject(TypeEnv env) = isValueObject(getContext(env).artifact);
 public bool isValueObject(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
@@ -146,10 +145,10 @@ public bool isField(field(_)) = true;
 public default bool isField(value v) = false;
 
 public Type contextAsType(TypeEnv env) = contextAsType(getContext(env));
-public Type contextAsType(\module(ns, _, repository(name, _))) = repository(external(name, ns, name));
-public Type contextAsType(\module(ns, _, entity(name, _))) = artifact(external(name, ns, name));
-public Type contextAsType(\module(ns, _, valueObject(name, _))) = artifact(external(name, ns, name));
-public Type contextAsType(\module(ns, _, util(name, _))) = artifact(external(name, ns, name));
+public Type contextAsType(\module(ns, _, repository(name, _))) = repository(fullName(name, ns, name));
+public Type contextAsType(\module(ns, _, entity(name, _))) = artifact(fullName(name, ns, name));
+public Type contextAsType(\module(ns, _, valueObject(name, _))) = artifact(fullName(name, ns, name));
+public Type contextAsType(\module(ns, _, util(name, _))) = artifact(fullName(name, ns, name));
 public Type contextAsType(\module(ns, _, Declaration)) = unknownType();
 
 public TypeEnv addToAST(Declaration file, TypeEnv env) = env[ast = env.ast + file];
@@ -169,24 +168,14 @@ public bool hasLocalArtifact(str name, emptyDecl(), TypeEnv env) = false;
 public bool hasLocalArtifact(str name, Declaration d, TypeEnv env) = isInAST(\import(name, getContextNamespace(d), name), env);
 
 public Declaration localArtifactAsImport(str name, TypeEnv env) = \import(name, getContextNamespace(env), name);
-public Name getFullNameOfLocalArtifact(str name, TypeEnv env) = external(name, getContextNamespace(env), name);
+public Name getFullNameOfLocalArtifact(str name, TypeEnv env) = fullName(name, getContextNamespace(env), name);
 
 public Declaration getContextNamespace(TypeEnv env) = getContextNamespace(getContext(env));
 public Declaration getContextNamespace(\module(Declaration namespace, _, _)) = namespace;
 
-public Expression externalize(n: new(local(str name), args), TypeEnv env) = n[artifact = getFullNameOfLocalArtifact(name, env)];
-public Expression externalize(n: new(_, args), TypeEnv env) = n;
-public Type externalize(a: artifact(local(str name)), TypeEnv env) = a[name = getFullNameOfLocalArtifact(name, env)] when hasLocalArtifact(name, env);
-public Type externalize(a: artifact(local(str name)), TypeEnv env) = unknownType() when !hasLocalArtifact(name, env);
-public Type externalize(r: repository(local(str name)), TypeEnv env) = r[name = getFullNameOfLocalArtifact(name, env)] when hasLocalArtifact(name, env);
-public Type externalize(r: repository(local(str name)), TypeEnv env) = unknownType() when !hasLocalArtifact(name, env);
-public Type externalize(l: \list(Type t), TypeEnv env) = l[\type = externalize(t, env)];
-public Type externalize(m: \map(Type k, Type v), TypeEnv env) = m[key = externalize(k, env)][v = externalize(v, env)];
-public Type externalize(Type t, TypeEnv env) = t;
-
 public Declaration findModule(new(Name name, _), TypeEnv env) = findModule(toNamespace(name), env);
 public Declaration findModule(artifact(Name name), TypeEnv env) = findModule(toNamespace(name), env);
-public Declaration findModule(repository(external(str name, Declaration ns, str original)), TypeEnv env) = 
+public Declaration findModule(repository(fullName(str name, Declaration ns, str original)), TypeEnv env) = 
 	head([m | file(_, m: \module(ns, _, repository(original, _))) <- env.ast]);
 	
 public Declaration findModule(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) {
@@ -195,7 +184,7 @@ public Declaration findModule(\import(GlagolID name, Declaration namespace, Glag
 	return size(findings) > 0 ? head(findings) : emptyDecl();
 }
 public bool hasModule(artifact(Name name), TypeEnv env) = size(findArtifact(toNamespace(name), env)) > 0;
-public bool hasModule(repository(external(str name, Declaration ns, str original)), TypeEnv env) = 
+public bool hasModule(repository(fullName(str name, Declaration ns, str original)), TypeEnv env) = 
 	(false | true | file(_, m: \module(ns, _, repository(original, _))) <- env.ast);
 public bool hasModule(Type _, TypeEnv env) = false;
 

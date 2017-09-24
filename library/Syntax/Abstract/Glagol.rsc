@@ -85,8 +85,7 @@ data Type
     ;
 
 data Name
-	= external(str localName, Declaration namespace, str originalName)
-	| local(str localName)
+	= fullName(str localName, Declaration namespace, str originalName)
 	;
 
 data Modifier
