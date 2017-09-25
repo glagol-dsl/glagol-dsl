@@ -44,3 +44,6 @@ public TransformEnv addDefinition(d:declare(Type varType, variable(GlagolID name
 
 public bool usesLumen(TransformEnv env) = env.framework == lumen();
 public bool usesDoctrine(TransformEnv env) = env.orm == doctrine();
+
+public bool isField(str name, TransformEnv env) = isField(env.definitions[name]) when name in env.definitions;
+public default bool isField(str name, TransformEnv env) = false;

@@ -27,7 +27,8 @@ public PhpExpr toPhpExpr(\map(map[Expression key, Expression \value] m), Transfo
 public PhpExpr toPhpExpr(get(artifact(Name name)), TransformEnv env)
     = phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("_<toLowerCaseFirstChar(name.localName)>")));
 
-public PhpExpr toPhpExpr(variable(GlagolID name), TransformEnv env) = phpVar(phpName(phpName(name)));
+public PhpExpr toPhpExpr(variable(GlagolID name), TransformEnv env) = 
+	isField(name, env) ? phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName(name))) : phpVar(phpName(phpName(name)));
 
 public PhpExpr toPhpExpr(ifThenElse(Expression condition, Expression ifThen, Expression \else), TransformEnv env) 
     = phpTernary(toPhpExpr(condition, env), phpSomeExpr(toPhpExpr(ifThen, env)), toPhpExpr(\else, env));
