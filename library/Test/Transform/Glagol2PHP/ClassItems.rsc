@@ -24,7 +24,7 @@ test bool shouldTransformPropertiesToPhpClassItems() =
 		property(voidValue(), "prop2", emptyExpr()),
 		property(voidValue(), "prop3", emptyExpr()),
 		property(voidValue(), "prop4", emptyExpr())[@annotations=[]]
-	], newTransformEnv(anyFramework(), anyORM()), entity("", [])) ==
+	], setContext(entity("", []), newTransformEnv(anyFramework(), anyORM()))) ==
 	[
 		phpProperty({phpPrivate()}, [phpProperty("prop1", phpNoExpr())]),
 		phpProperty({phpPrivate()}, [phpProperty("prop2", phpNoExpr())]),
@@ -35,14 +35,14 @@ test bool shouldTransformPropertiesToPhpClassItems() =
 test bool shouldTransformConstructorsToPhpClassItems() = 
 	toPhpClassItems([
 		constructor([], [], emptyExpr())
-	], newTransformEnv(anyFramework(), anyORM()), entity("", [])) ==
+	], setContext(entity("", []), newTransformEnv(anyFramework(), anyORM()))) ==
 	[phpMethod("__construct", {phpPublic()}, false, [], [], phpNoName())];
 
 test bool shouldTransformOverridingConstructorsToPhpClassItems() = 
 	toPhpClassItems([
 		constructor([param(string(), "a", emptyExpr())], [], emptyExpr()),
 		constructor([param(integer(), "b", emptyExpr())], [], emptyExpr())
-	], newTransformEnv(anyFramework(), anyORM()), entity("", [])) ==
+	], setContext(entity("", []), newTransformEnv(anyFramework(), anyORM()))) ==
 	[phpMethod(
     "__construct",
     {phpPublic()},
@@ -117,7 +117,7 @@ test bool shouldTransformMethodsToPhpClassItems() =
 		method(\private(), voidValue(), "a", [], [], emptyExpr()),
 		method(\private(), voidValue(), "b", [], [], emptyExpr()),
 		method(\private(), voidValue(), "c", [], [], emptyExpr())
-	], newTransformEnv(anyFramework(), anyORM()), entity("", [])) ==
+	], setContext(entity("", []), newTransformEnv(anyFramework(), anyORM()))) ==
 	[
 		phpMethod("a", {phpPrivate()}, false, [], [], phpNoName())[@phpAnnotations={}],
 		phpMethod("b", {phpPrivate()}, false, [], [], phpNoName())[@phpAnnotations={}],
@@ -128,7 +128,7 @@ test bool shouldTransformMethodsWithOverridingToPhpClassItems() =
 	toPhpClassItems([
 		method(\private(), voidValue(), "a", [], [], emptyExpr()),
 		method(\private(), voidValue(), "a", [param(string(), "blah", emptyExpr())], [], emptyExpr())
-	], newTransformEnv(anyFramework(), anyORM()), util("", [])) ==
+	], setContext(util("", []), newTransformEnv(anyFramework(), anyORM()))) ==
 	[
 		phpMethod(
 		    "a",

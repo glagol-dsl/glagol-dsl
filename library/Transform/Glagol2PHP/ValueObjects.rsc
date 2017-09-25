@@ -15,6 +15,6 @@ import Config::Config;
 public PhpStmt toPhpClassDef(v: valueObject(str name, list[Declaration] declarations), TransformEnv env)
     = phpClassDef(phpClass(name, {}, phpNoName(), [phpName("\\JsonSerializable")], [
     	phpTraitUse([phpName("\\Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait")], [])
-    ] + toPhpClassItems(declarations, env, v))[
+    ] + toPhpClassItems(declarations, env))[
         @phpAnnotations=toPhpAnnotations(v, env)
     ]);

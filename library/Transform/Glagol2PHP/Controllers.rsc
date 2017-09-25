@@ -14,6 +14,6 @@ import Syntax::Abstract::PHP;
 import Config::Config;
 
 public PhpStmt toPhpClassDef(c: controller(str name, jsonApi(), Route r, list[Declaration] declarations), TransformEnv env)
-    = phpClassDef(phpClass(name, {}, phpSomeName(phpName("AbstractController")), [], toPhpClassItems(declarations, env, c))[
+    = phpClassDef(phpClass(name, {}, phpSomeName(phpName("AbstractController")), [], toPhpClassItems(declarations, env))[
         @phpAnnotations=toPhpAnnotations(c, env)
     ]) when usesLumen(env);

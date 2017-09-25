@@ -14,7 +14,7 @@ import Config::Config;
 
 public PhpStmt toPhpClassDef(r: repository(str name, list[Declaration] declarations), TransformEnv env)
     = phpClassDef(phpClass("<name>Repository", {}, phpSomeName(phpName("EntityRepository")), [], 
-    		toPhpClassItems(withoutFinders(declarations), env, r))[
+    		toPhpClassItems(withoutFinders(declarations), env))[
         @phpAnnotations=toPhpAnnotations(r, env)
     ]);
 

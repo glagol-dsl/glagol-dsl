@@ -5,14 +5,7 @@ import Syntax::Abstract::Glagol::Helpers;
 import Map;
 import List;
 
-import IO;
-
-data Definition
-    = field(Declaration d)
-    | param(Declaration d)
-    | localVar(Statement stmt)
-    | method(Declaration d)
-    ;
+extend Syntax::Abstract::Glagol::Definitions;
 
 alias Error = tuple[loc src, str message];
 
@@ -86,8 +79,6 @@ public bool isDefined(fieldAccess(str field), TypeEnv env) = field in env.defini
 public bool isDefined(fieldAccess(this(), str field), TypeEnv env) = field in env.definitions && isField(env.definitions[field]);
 public bool isDefined(Expression expr, TypeEnv env) = false;
 
-public bool isField(GlagolID name, TypeEnv env) = name in env.definitions && field(_) := env.definitions[name];
-
 public TypeEnv addError(loc src, str message, TypeEnv env) = env[errors = env.errors + <src, message>];
 public TypeEnv addError(Declaration element, str message, TypeEnv env) = addError(element@src, message, env);
 public TypeEnv addError(Statement element, str message, TypeEnv env) = addError(element@src, message, env);
@@ -125,7 +116,7 @@ public bool isInAST(\import(GlagolID name, Declaration namespace, GlagolID as), 
 
 public list[Declaration] findArtifact(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) =
 	[a | file(_, \module(Declaration ns, _, Declaration a)) <- env.ast, !isRepository(a) && !isController(a) && a.name == name && ns == namespace];
-
+ 
 public bool isEntity(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
     [entity(_, _)] := findArtifact(i, env);
     
@@ -140,9 +131,6 @@ public bool isUtil(i:\import(GlagolID name, Declaration namespace, GlagolID as),
     
 public bool isUtil(artifact(Name name), TypeEnv env) =
 	[util(_, _)] := findArtifact(env.imported[name.localName], env);
-
-public bool isField(field(_)) = true;
-public default bool isField(value v) = false;
 
 public Type contextAsType(TypeEnv env) = contextAsType(getContext(env));
 public Type contextAsType(\module(ns, _, repository(name, _))) = repository(fullName(name, ns, name));
@@ -205,3 +193,5 @@ public Declaration findLocalProperty(GlagolID name, TypeEnv env) {
 
 	throw "Property not found";
 }
+
+public bool isField(GlagolID name, TypeEnv env) = name in env.definitions && field(_) := env.definitions[name];

@@ -15,10 +15,24 @@ import Transform::Glagol2PHP::Properties;
 import Transform::Glagol2PHP::Annotations;
 import Map;
 
-public list[PhpClassItem] toPhpClassItems(list[Declaration] declarations, TransformEnv env, context) =
-	[toPhpClassItem(ci, env, context) | ci <- declarations, isProperty(ci)] +
+public list[PhpClassItem] toPhpClassItems(list[Declaration] declarations, TransformEnv env) =
+	toPhpClassItems(declarations, [p | p <- declarations, isProperty(p)], env);
+
+private list[PhpClassItem] toPhpClassItems(list[Declaration] declarations, list[Declaration] properties, TransformEnv env) = 
+	transformProperties(properties, env) +
+	transformBehaviours(declarations, addDefinitions(properties, env));
+
+private list[PhpClassItem] transformBehaviours(list[Declaration] declarations, TransformEnv env) = 
+	transformConstructors(declarations, env) + 
+	transformMethods(declarations, env) + 
+	transformActions(declarations, env);
+
+private list[PhpClassItem] transformActions(list[Declaration] declarations, TransformEnv env) = [toPhpClassItem(a, env) | a <- getActions(declarations)];
+
+private list[PhpClassItem] transformMethods(list[Declaration] declarations, TransformEnv env) = [createMethod(m, env) | m <- range(categorizeMethods(declarations))];
+
+private list[PhpClassItem] transformProperties(list[Declaration] properties, TransformEnv env) = [toPhpClassItem(p, env) | p <- properties];
+
+private list[PhpClassItem] transformConstructors(list[Declaration] declarations, TransformEnv env) = 
 	(hasDependencies(declarations) ? [createDIConstructor(getDIProperties(declarations), env)] : []) +
-	(hasConstructors(declarations) ? [createConstructor(getConstructors(declarations), env)] : []) +
-	[createMethod(m, env) | m <- range(categorizeMethods(declarations))] +
-	[toPhpClassItem(a, env) | a <- getActions(declarations)]
-	;
+	(hasConstructors(declarations) ? [createConstructor(getConstructors(declarations), env)] : []);

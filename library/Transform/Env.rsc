@@ -1,19 +1,27 @@
 module Transform::Env
 
-import Typechecker::Env;
 import Config::Config;
 import Config::Reader;
 import Syntax::Abstract::Glagol;
+import Syntax::Abstract::Glagol::Definitions;
 
 alias TransformEnv = tuple[
 	Framework framework, 
 	ORM orm, 
-    map[GlagolID, Definition] definitions
+    map[GlagolID, Definition] definitions,
+    Declaration context
 ];
 
-public TransformEnv newTransformEnv(Config config) = <getFramework(config), getORM(config), ()>;
-public TransformEnv newTransformEnv() = <lumen(), doctrine(), ()>;
-public TransformEnv newTransformEnv(Framework f, ORM orm) = <f, orm, ()>;
+public TransformEnv newTransformEnv(Config config) = <getFramework(config), getORM(config), (), emptyDecl()>;
+public TransformEnv newTransformEnv() = <lumen(), doctrine(), (), emptyDecl()>;
+public TransformEnv newTransformEnv(Declaration context) = <lumen(), doctrine(), (), context>;
+public TransformEnv newTransformEnv(Framework f, ORM orm) = <f, orm, (), emptyDecl()>;
+
+public TransformEnv setContext(Declaration ctx, TransformEnv env) = env[context = ctx];
+
+public bool isInEntity(TransformEnv env) = entity(str name, list[Declaration] ds) := env.context;
+
+public TransformEnv addDefinitions(list[Declaration] properties, TransformEnv env) = (env | addDefinition(p, env) | p <- properties);
 
 public TransformEnv addDefinition(p:property(_, GlagolID name, _), TransformEnv env) = env when name in env.definitions;
 

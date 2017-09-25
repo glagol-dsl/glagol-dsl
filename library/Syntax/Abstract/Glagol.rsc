@@ -130,7 +130,7 @@ data Annotation
     | annotationVal(Type \typeValue)
     | annotationValPrimary()
     ;
-    
+
 public anno list[Annotation] node@annotations;
 public anno list[Annotation] Declaration@annotations;
 

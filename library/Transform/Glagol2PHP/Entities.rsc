@@ -16,6 +16,6 @@ import Config::Config;
 public PhpStmt toPhpClassDef(e: entity(str name, list[Declaration] declarations), TransformEnv env)
     = phpClassDef(phpClass(name, {}, phpNoName(), [phpName("\\JsonSerializable")], 
         [phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], [])] + 
-        toPhpClassItems(declarations, env, e))[
+        toPhpClassItems(declarations, env))[
         @phpAnnotations={phpAnnotation("ORM\\Entity")} + toPhpAnnotations(e, env)
     ]) when usesDoctrine(env);

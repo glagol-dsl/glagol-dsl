@@ -13,6 +13,6 @@ import Syntax::Abstract::PHP;
 import Config::Config;
 
 public PhpStmt toPhpClassDef(u: util(str name, list[Declaration] declarations), TransformEnv env)
-    = phpClassDef(phpClass(name, {}, phpNoName(), [], toPhpClassItems(declarations, env, u))[
+    = phpClassDef(phpClass(name, {}, phpNoName(), [], toPhpClassItems(declarations, env))[
         @phpAnnotations=toPhpAnnotations(u, env)
     ]);

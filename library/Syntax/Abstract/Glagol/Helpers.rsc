@@ -19,19 +19,19 @@ public bool isEntity(entity(GlagolID name, list[Declaration] declarations)) = tr
 public default bool isEntity(value _) = false;
 
 public bool isValueObject(valueObject(_, _)) = true;
-public bool isValueObject(value _) = false;
+public default bool isValueObject(value _) = false;
 
 public bool isRepository(repository(_, _)) = true;
-public bool isRepository(value _) = false;
+public default bool isRepository(value _) = false;
 
 public bool isController(controller(_, _, _, _)) = true;
-public bool isController(value _) = false;
+public default bool isController(value _) = false;
 
 public bool isIfThenElse(ifThenElse(Expression condition, Statement then, Statement \else)) = true;
-public bool isIfThenElse(value _) = false;
+public default bool isIfThenElse(value _) = false;
 
 public bool isEmpty(emptyExpr()) = true;
-public bool isEmpty(value _) = false;
+public default bool isEmpty(value _) = false;
 
 public bool hasConstructors(list[Declaration] declarations) = size([d | d <- declarations, isConstructor(d)]) > 0;
 
