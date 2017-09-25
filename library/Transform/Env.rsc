@@ -11,7 +11,7 @@ alias TransformEnv = tuple[
 	Framework framework, 
 	ORM orm, 
     map[GlagolID, Definition] definitions,
-    Declaration context,
+    Declaration context,	
     list[Declaration] ast
 ];
 
@@ -27,7 +27,7 @@ public Declaration getNamespace(TransformEnv env) = env.context.namespace;
 
 public bool isInEntity(TransformEnv env) = \module(Declaration ns, list[Declaration] imports, entity(str name, list[Declaration] ds)) := env.context;
 
-public TransformEnv addDefinitions(list[Declaration] properties, TransformEnv env) = (env | addDefinition(p, env) | p <- properties);
+public TransformEnv addDefinitions(list[Declaration] properties, TransformEnv env) = (env | addDefinition(p, it) | p <- properties);
 
 public TransformEnv addDefinition(p:property(_, GlagolID name, _), TransformEnv env) = env when name in env.definitions;
 
@@ -63,3 +63,18 @@ public bool isValueObject(artifact(fullName(str localName, Declaration ns, str o
 
 public default bool isValueObject(value _, TransformEnv env) = false;
 
+public bool isEntity(artifact(fullName(str localName, Declaration ns, str originalName)), TransformEnv env) {
+	top-down visit (env.ast) {
+		case entity(originalName, list[Declaration] ds): return true;
+	}
+	return false;
+}
+
+public default bool isEntity(value _, TransformEnv env) = false;
+
+public Declaration findRepository(artifact(fullName(str localName, Declaration ns, str originalName)), TransformEnv env) {
+	top-down visit (env.ast) {
+		case r: repository(originalName, list[Declaration] ds): return r;
+	}
+	return emptyDecl();
+}

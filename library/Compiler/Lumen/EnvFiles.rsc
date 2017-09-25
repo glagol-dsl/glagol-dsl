@@ -134,7 +134,7 @@ private str createProvider(doctrine(), m: \module(ns, _, repository(str name, li
                 }),
                 phpClassDef(phpClass("<name>RepositoryProvider", {}, phpSomeName(phpName("ServiceProvider")), [], [
                     phpMethod("register", {phpPublic()}, false, [], [
-                        phpExprstmt(phpMethodCall(phpPropertyFetch(phpVar("this"), phpName(phpName("app"))), phpName(phpName("bind")), [
+                        phpExprstmt(phpMethodCall(phpPropertyFetch(phpVar("this"), phpName(phpName("app"))), phpName(phpName("singleton")), [
                             phpActualParameter(phpFetchClassConst(phpName(phpName("<name>Repository")), "class"), false),
                             phpActualParameter(phpClosure([
                                 phpExprstmt(phpAssign(phpVar("em"), phpMethodCall(phpVar("app"), phpName(phpName("make")), [

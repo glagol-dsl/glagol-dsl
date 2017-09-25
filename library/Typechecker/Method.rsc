@@ -10,6 +10,7 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 
 import List;
+import IO;
 
 public TypeEnv checkMethod(c: constructor(_, _, _), repository(_, _), TypeEnv env) =
 	addError(c, "Constructors are disabled for repositories", env);
@@ -33,8 +34,26 @@ public TypeEnv checkMethod(m: method(_, Type t, _, list[Declaration] params, lis
 	)))));
 
 public TypeEnv checkAction(a: action(GlagolID name, list[Declaration] params, list[Statement] body), Declaration d, TypeEnv env) = 
-	checkBody(body, \any(), a, d, checkParams(params, checkDuplicates(a, d.declarations, env)));
+	checkBody(body, \any(), a, d, checkAnnotations(params, a, checkParams(params, checkDuplicates(a, d.declarations, env))));
 
+public TypeEnv checkAnnotations(list[Declaration] params, Declaration behavior, TypeEnv env) = 
+	(env | checkAnnotations(p@annotations, p, behavior, it) | p <- params);
+	
+public TypeEnv checkAnnotations(list[Annotation] annotations, Declaration param, Declaration behavior, TypeEnv env) = 
+	(env | checkAnnotation(a, param, behavior, it) | a <- annotations);
+
+public TypeEnv checkAnnotation(
+	a: annotation("autofind", list[Annotation] arguments), 
+	param(Type paramType, GlagolID paramName, Expression defaultValue), 
+	action(GlagolID name, list[Declaration] params, list[Statement] body), 
+	TypeEnv env) = addError(a, "Annotation @autofind can only be used on entities", env) when isImported(paramType, env) && !isEntity(paramType, env);
+	
+public TypeEnv checkAnnotation(
+	Annotation an, 
+	param(Type paramType, GlagolID paramName, Expression defaultValue), 
+	action(GlagolID name, list[Declaration] params, list[Statement] body), 
+	TypeEnv env) = env;
+	
 public TypeEnv checkDuplicates(m: method(_, _, GlagolID name, _, _, _), list[Declaration] declarations, TypeEnv env) = 
 	addError(m, "Method <name> has been defined more than once with a duplicating signature", env)
 	when hasDuplicates(m, declarations);

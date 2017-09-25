@@ -108,7 +108,7 @@ public bool isImported(repository(GlagolID name, list[Declaration] declarations)
 public bool isImported(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
 	(false | true | i <- range(env.imported), i.artifactName == name && i.namespace == namespace);
 	
-public bool isImported(artifact(Name name), TypeEnv env) = name.localName in env.imported;
+public bool isImported(artifact(Name name), TypeEnv env) = isImported(name, env);
 public bool isImported(Name name, TypeEnv env) = name.localName in env.imported || hasLocalArtifact(name.localName, env);
 
 public bool isInAST(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
