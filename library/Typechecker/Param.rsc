@@ -4,15 +4,16 @@ import Typechecker::Env;
 import Typechecker::Errors;
 import Typechecker::Type;
 import Typechecker::Expression;
+import Typechecker::Type;
 import Typechecker::Param::DefaultValue;
 import Syntax::Abstract::Glagol;
 
 public TypeEnv checkParams(list[Declaration] params, TypeEnv env) = (env | checkParam(p, it) | p <- params);
 
-public TypeEnv checkParam(p: param(Type paramType, GlagolID name, emptyExpr()), TypeEnv env) = addDefinition(p, env);
+public TypeEnv checkParam(p: param(Type paramType, GlagolID name, emptyExpr()), TypeEnv env) = addDefinition(p, checkType(paramType, p, env));
 	
 public TypeEnv checkParam(p: param(Type paramType, GlagolID name, Expression defaultValue), TypeEnv env)
-	= addDefinition(p, checkTypeMismatch(lookupType(defaultValue, env), paramType, checkDefaultValue(defaultValue, env)));
+	= addDefinition(p, checkTypeMismatch(lookupType(defaultValue, env), paramType, checkDefaultValue(defaultValue, checkType(paramType, p, env))));
 	
 private TypeEnv checkTypeMismatch(\list(voidValue()), \list(_), TypeEnv env) = env;
 private TypeEnv checkTypeMismatch(\map(voidValue(), voidValue()), \map(_, _), TypeEnv env) = env;

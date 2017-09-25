@@ -37,7 +37,7 @@ public TypeEnv checkAction(a: action(GlagolID name, list[Declaration] params, li
 	checkBody(body, \any(), a, d, checkAnnotations(params, a, checkParams(params, checkDuplicates(a, d.declarations, env))));
 
 public TypeEnv checkAnnotations(list[Declaration] params, Declaration behavior, TypeEnv env) = 
-	(env | checkAnnotations(p@annotations, p, behavior, it) | p <- params);
+	(env | (p@annotations?) ? checkAnnotations(p@annotations, p, behavior, it) : it | p <- params);
 	
 public TypeEnv checkAnnotations(list[Annotation] annotations, Declaration param, Declaration behavior, TypeEnv env) = 
 	(env | checkAnnotation(a, param, behavior, it) | a <- annotations);
