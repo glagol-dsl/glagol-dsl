@@ -178,10 +178,10 @@ public TypeEnv checkIsKeyCompatibleWithCollection(\list(Type l), v: variable(nam
 	addError(v, "Cannot use <name> as key in list traversing: already decleared and it is not an integer", env) 
 	when isDefined(v, env) && lookupType(v, env) != integer();
 	
-public TypeEnv checkIsKeyCompatibleWithCollection(\list(Type l), v: variable(name), TypeEnv env) = 
+public TypeEnv checkIsKeyCompatibleWithCollection(\list(Type l), v: variable(str name), TypeEnv env) = 
 	env when isDefined(v, env) && lookupType(v, env) == integer();
 	
-public TypeEnv checkIsKeyCompatibleWithCollection(\list(Type l), v: variable(name), TypeEnv env) = 
+public TypeEnv checkIsKeyCompatibleWithCollection(\list(Type l), v: variable(str name), TypeEnv env) = 
 	addDefinition(declare(integer(), v, emptyStmt())[@src=v@src], env);
 	
 public TypeEnv checkIsKeyCompatibleWithCollection(\map(Type key, Type v), emptyExpr(), TypeEnv env) = env;
@@ -189,10 +189,10 @@ public TypeEnv checkIsKeyCompatibleWithCollection(\map(Type key, Type val), v: v
 	addError(v, "Cannot use <name> as key in map traversing: already decleared and it is not an <toString(key)>", env) 
 	when isDefined(v, env) && lookupType(v, env) != key;
 
-public TypeEnv checkIsKeyCompatibleWithCollection(\map(Type key, _), v: variable(name), TypeEnv env) = 
+public TypeEnv checkIsKeyCompatibleWithCollection(\map(Type key, Type val), v: variable(name), TypeEnv env) = 
 	env when isDefined(v, env) && lookupType(v, env) == key;
 
-public TypeEnv checkIsKeyCompatibleWithCollection(\map(Type key, _), v: variable(name), TypeEnv env) = 
+public TypeEnv checkIsKeyCompatibleWithCollection(\map(Type key, Type val), v: variable(name), TypeEnv env) = 
 	addDefinition(declare(key, v, emptyStmt())[@src=v@src], env);
 
 public TypeEnv checkIsKeyCompatibleWithCollection(Type t, Expression e, TypeEnv env) = env;
