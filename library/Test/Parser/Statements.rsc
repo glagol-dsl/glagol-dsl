@@ -57,7 +57,7 @@ test bool testDeclarationsWithCustomTypes() {
         
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([], [
-            declare(artifact(local("DateTime")), variable("myDate"), emptyStmt())
+            declare(artifact(fullName("DateTime", namespace("Example"), "DateTime")), variable("myDate"), emptyStmt())
         ], emptyExpr())
     ]));
 }
@@ -271,7 +271,9 @@ test bool testForeachStatementWithCondition() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(\list(artifact(local("DateTime"))), "a", emptyExpr()), param(artifact(local("DateTime")), "now", emptyExpr())], [
+        constructor([
+        	param(\list(artifact(fullName("DateTime", namespace("Example"), "DateTime"))), "a", emptyExpr()), 
+        	param(artifact(fullName("DateTime", namespace("Example"), "DateTime")), "now", emptyExpr())], [
             foreach(variable("a"), emptyExpr(), variable("b"), emptyStmt(), [lessThan(variable("a"), variable("now"))])
         ], emptyExpr())
     ]));
@@ -288,7 +290,9 @@ test bool testForeachStatementWithContinue() {
         '}";
 
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        constructor([param(\list(artifact(local("DateTime"))), "a", emptyExpr()), param(artifact(local("DateTime")), "now", emptyExpr())], [
+        constructor([
+        	param(\list(artifact(fullName("DateTime", namespace("Example"), "DateTime"))), "a", emptyExpr()), 
+        	param(artifact(fullName("DateTime", namespace("Example"), "DateTime")), "now", emptyExpr())], [
             foreach(variable("a"), emptyExpr(), variable("b"), ifThen(
                 lessThan(variable("a"), variable("now")), \continue(1)
             ), [])
@@ -311,10 +315,10 @@ test bool testPersistStatementOnRepository() {
             method(\public(), voidValue(), "blah", [], [
                 persist(variable("a"))
             ], emptyExpr()),
-			method(\public(), artifact(local("User")), "find", [
+			method(\public(), artifact(fullName("User", namespace("Example"), "User")), "find", [
 				param(integer(), "id", emptyExpr())
-			], [\return(new(local("User"), []))], emptyExpr()),
-			method(\public(), \list(artifact(local("User"))), "findAll", [], [\return(\list([]))], emptyExpr())
+			], [\return(new(fullName("User", namespace("Example"), "User"), []))], emptyExpr()),
+			method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findAll", [], [\return(\list([]))], emptyExpr())
     ]));
 }
 
@@ -337,10 +341,10 @@ test bool testFlushStatementOnRepository() {
                 flush(variable("a")),
                 flush(emptyExpr())
             ], emptyExpr()),
-			method(\public(), artifact(local("User")), "find", [
+			method(\public(), artifact(fullName("User", namespace("Example"), "User")), "find", [
 				param(integer(), "id", emptyExpr())
-			], [\return(new(local("User"), []))], emptyExpr()),
-			method(\public(), \list(artifact(local("User"))), "findAll", [], [\return(\list([]))], emptyExpr())
+			], [\return(new(fullName("User", namespace("Example"), "User"), []))], emptyExpr()),
+			method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findAll", [], [\return(\list([]))], emptyExpr())
     ]));
 }
 
@@ -359,9 +363,9 @@ test bool testRemoveStatementOnRepository() {
             method(\public(), voidValue(), "blah", [], [
                 remove(variable("a"))
             ], emptyExpr()),
-			method(\public(), artifact(local("User")), "find", [
+			method(\public(), artifact(fullName("User", namespace("Example"), "User")), "find", [
 				param(integer(), "id", emptyExpr())
-			], [\return(new(local("User"), []))], emptyExpr()),
-			method(\public(), \list(artifact(local("User"))), "findAll", [], [\return(\list([]))], emptyExpr())
+			], [\return(new(fullName("User", namespace("Example"), "User"), []))], emptyExpr()),
+			method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findAll", [], [\return(\list([]))], emptyExpr())
     ]));
 }

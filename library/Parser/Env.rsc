@@ -3,11 +3,14 @@ module Parser::Env
 import Syntax::Abstract::Glagol;
 
 alias ParseEnv = tuple[
-	map[str, Declaration] imports
+	map[str, Declaration] imports,
+	Declaration currentNamespace
 ];
 
-public ParseEnv newParseEnv() = <()>;
-public ParseEnv newParseEnv(list[Declaration] imps) = <toMap(imps)>;
+public ParseEnv newParseEnv() = <(), emptyDecl()>;
+public ParseEnv newParseEnv(list[Declaration] imps, Declaration ns) = <toMap(imps), ns>;
+
+public Declaration getNamespace(ParseEnv env) = env.currentNamespace;
 
 private map[str, Declaration] toMap(list[Declaration] imps) = (as: i | i: \import(_, _, as) <- imps);
 

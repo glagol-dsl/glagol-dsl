@@ -1,10 +1,12 @@
 module Compiler::Lumen::Config::Doctrine
 
+import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
+import Syntax::Abstract::PHP::Helpers;
 import Compiler::Lumen::Config::Abstract;
 import Compiler::PHP::Compiler;
 
-public str createDoctrineConfig() = 
+public str createDoctrineConfig(list[Syntax::Abstract::Glagol::Declaration] ast) = 
     toCode(phpScript([phpReturn(phpSomeExpr(toPhpConf(array((
         "managers": array((
             "default": array((
@@ -32,9 +34,7 @@ public str createDoctrineConfig() =
             ))
         )),
         "extensions": array([]),
-        "custom_types": array((
-            "json": class("LaravelDoctrine\\ORM\\Types\\Json")
-        )),
+        "custom_types": array(createCustomTypesMapping(ast)),
         "custom_datetime_functions": array([]),
         "custom_numeric_functions": array([]),
         "custom_string_functions": array([]),
@@ -52,3 +52,11 @@ public str createDoctrineConfig() =
             "channel": string("database")
         ))
     )))))]));
+
+private map[Conf, Conf] createCustomTypesMapping(list[Syntax::Abstract::Glagol::Declaration] ast) = 
+	(string("json"): class("LaravelDoctrine\\ORM\\Types\\Json")) + 
+	(class("\\App\\Types\\<namespaceToString(ns)><name>Type", "TYPE_NAME"): class("\\App\\Types\\<namespaceToString(ns)><name>Type") |
+		Syntax::Abstract::Glagol::file(_, 
+			Syntax::Abstract::Glagol::\module(ns, _, 
+				Syntax::Abstract::Glagol::valueObject(str name, _))) <- ast);
+

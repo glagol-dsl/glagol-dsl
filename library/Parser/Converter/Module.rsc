@@ -7,5 +7,6 @@ import Parser::Env;
 
 public Declaration buildAST(a: (Module) `namespace <Namespace n><Import* imports><AnnotatedArtifact annotatedArtifact>`) {
 	list[Declaration] convertedImports = [convertImport(\import) | \import <- imports];
-    return \module(convertModuleNamespace(n), convertedImports, convertAnnotatedArtifact(annotatedArtifact, newParseEnv(convertedImports)))[@src=a@\loc];
+	Declaration ns = convertModuleNamespace(n);
+    return \module(ns, convertedImports, convertAnnotatedArtifact(annotatedArtifact, newParseEnv(convertedImports, ns)))[@src=a@\loc];
 }

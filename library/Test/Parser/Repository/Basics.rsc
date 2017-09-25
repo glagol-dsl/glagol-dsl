@@ -19,10 +19,10 @@ test bool shouldParseEmptyRepository()
         \import("EntityManager", namespace("Glagol", namespace("ORM")), "EntityManager"),
         \import("User", namespace("Example"), "User")
     ], repository("User", [
-			method(\public(), artifact(local("User")), "find", [
+			method(\public(), artifact(fullName("User", namespace("Example"), "User")), "find", [
 				param(integer(), "id", emptyExpr())
-			], [\return(new(local("User"), []))], emptyExpr()),
-			method(\public(), \list(artifact(local("User"))), "findAll", [], [\return(\list([]))], emptyExpr())]));
+			], [\return(new(fullName("User", namespace("Example"), "User"), []))], emptyExpr()),
+			method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findAll", [], [\return(\list([]))], emptyExpr())]));
 }
 
 test bool shouldNotAllowRepositoryConstructor()
@@ -54,14 +54,14 @@ test bool shouldParseRepositoryWithMethodAndAMap()
     return parseModule(code) == \module(namespace("Example"), [
         	\import("User", namespace("Example"), "User")
     	], repository("User", [
-        method(\public(), \list(artifact(external("User", namespace("Example"), "User"))), "findById", [
+        method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findById", [
             param(integer(), "id", emptyExpr())
         ], [\return(
             invoke("findOneBy", [\map((string("id"): variable("id")))])
         )], emptyExpr()),
-		method(\public(), artifact(local("User")), "find", [
+		method(\public(), artifact(fullName("User", namespace("Example"), "User")), "find", [
 			param(integer(), "id", emptyExpr())
-		], [\return(new(local("User"), []))], emptyExpr()),
-		method(\public(), \list(artifact(local("User"))), "findAll", [], [\return(\list([]))], emptyExpr())
+		], [\return(new(fullName("User", namespace("Example"), "User"), []))], emptyExpr()),
+		method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findAll", [], [\return(\list([]))], emptyExpr())
     ]));
 }

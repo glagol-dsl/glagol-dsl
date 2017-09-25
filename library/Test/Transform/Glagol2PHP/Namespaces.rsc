@@ -4,10 +4,11 @@ import Transform::Glagol2PHP::Namespaces;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Config::Config;
+import Transform::Env;
 
 test bool shouldTransformToAPhpNamespace() = 
 	toPhpNamespace(\module(namespace("Test", namespace("Entity", namespace("User"))), 
-		[], entity("User", [])), [], <anyFramework(), doctrine()>) == 
+		[], entity("User", [])), [], newTransformEnv()) == 
 	phpNamespace(
 	  phpSomeName(phpName("Test\\Entity\\User")),
 	  [
@@ -28,12 +29,12 @@ test bool shouldTransformToAPhpNamespace() =
                 ],
                 [])]))
 	  ]) && toPhpNamespace(\module(namespace("Test", namespace("Entity", namespace("User"))), 
-		[], entity("User", [])), [], <anyFramework(), doctrine()>).body[1].classDef@phpAnnotations == 
+		[], entity("User", [])), [], newTransformEnv()).body[1].classDef@phpAnnotations == 
 		{phpAnnotation("ORM\\Entity")};
 
 		
 test bool shouldTransformSimpleEntityToPhpScriptUsingDoctrine()
-    = toPHPScript(<zend(), doctrine()>, \module(namespace("User", namespace("Entity")), [
+    = toPHPScript(newTransformEnv(), \module(namespace("User", namespace("Entity")), [
         \import("Money", namespace("Currency", namespace("Value")), "Money"),
         \import("Currency", namespace("Currency", namespace("Value")), "CurrencyVB")
     ], entity("Customer", [
@@ -59,7 +60,7 @@ test bool shouldTransformSimpleEntityToPhpScriptUsingDoctrine()
     ]));
 
 test bool shouldTransformSimpleAnnotatedEntityToPhpScriptUsingDoctrine()
-    = toPHPScript(<zend(), doctrine()>, \module(namespace("User", namespace("Entity")), [
+    = toPHPScript(newTransformEnv(), \module(namespace("User", namespace("Entity")), [
         \import("Money", namespace("Currency", namespace("Value")), "Money"),
         \import("Currency", namespace("Currency", namespace("Value")), "CurrencyVB")
     ], entity("Customer", [
@@ -85,7 +86,7 @@ test bool shouldTransformSimpleAnnotatedEntityToPhpScriptUsingDoctrine()
     ]));
     
 test bool shouldTransformSimpleAnnotatedWithValueEntityToPhpScriptUsingDoctrine() {
-    map[str, PhpScript] asts = toPHPScript(<zend(), doctrine()>, \module(namespace("User", namespace("Entity")), [
+    map[str, PhpScript] asts = toPHPScript(newTransformEnv(), \module(namespace("User", namespace("Entity")), [
         \import("Money", namespace("Currency", namespace("Value")), "Money"),
         \import("Currency", namespace("Currency", namespace("Value")), "CurrencyVB")
     ], entity("Customer", [

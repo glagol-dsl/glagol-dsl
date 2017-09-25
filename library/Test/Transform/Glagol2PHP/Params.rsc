@@ -16,6 +16,6 @@ test bool shouldTransformParamWithDefaultFloatValueAndScalarType()
         phpParam("param1", phpSomeExpr(phpScalar(phpFloat(53.36))), phpSomeName(phpName("int")), false, false);
         
 test bool shouldTransformParamWithDefaultSelfieValueIntoNullDefaultValue()
-    = toPhpParam(param(artifact(local("SomeUtil")), "param1", get(selfie()))) ==
+    = toPhpParam(param(artifact(fullName("SomeUtil", namespace("Example"), "SomeUtil")), "param1", get(selfie()))) ==
         phpParam("param1", phpNoExpr(), phpSomeName(phpName("SomeUtil")), false, false);
     

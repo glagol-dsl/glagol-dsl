@@ -6,10 +6,10 @@ import Typechecker::Env;
 import Typechecker::Errors;
 
 test bool shouldNotGiveErrorsOnCheckTypeMismatchOfSelfieOnArtifact() = 
-	checkTypeMismatch(selfie(), artifact(local("UserService")), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+	checkTypeMismatch(selfie(), artifact(fullName("UserService", namespace("Test"), "UserService")), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
 
 test bool shouldNotGiveErrorsOnCheckTypeMismatchOfSelfieOnRepository() = 
-	checkTypeMismatch(selfie(), repository(local("User")), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
+	checkTypeMismatch(selfie(), repository(fullName("User", namespace("Test"), "User")), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
 
 test bool shouldNotGiveErrorsOnCheckTypeMismatchOfSameTypes() = 
 	checkTypeMismatch(integer(), integer(), newEnv(|tmp:///|)) == newEnv(|tmp:///|);

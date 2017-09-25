@@ -85,8 +85,7 @@ data Type
     ;
 
 data Name
-	= external(str localName, Declaration namespace, str originalName)
-	| local(str localName)
+	= fullName(str localName, Declaration namespace, str originalName)
 	;
 
 data Modifier
@@ -131,7 +130,7 @@ data Annotation
     | annotationVal(Type \typeValue)
     | annotationValPrimary()
     ;
-    
+
 public anno list[Annotation] node@annotations;
 public anno list[Annotation] Declaration@annotations;
 

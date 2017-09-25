@@ -1,5 +1,6 @@
 module Test::Transform::Glagol2PHP::Repositories
 
+import Transform::Env;
 import Transform::Glagol2PHP::ClassItems;
 import Transform::Glagol2PHP::Repositories;
 import Syntax::Abstract::Glagol;
@@ -9,7 +10,7 @@ import Config::Config;
 test bool shouldTransformToRepositoryPhpClassDefStmt() = 
 	toPhpClassDef(repository("User", [
 		property(string(), "a property", emptyExpr())
-	]), <anyFramework(), doctrine()>) ==
+	]), newTransformEnv(anyFramework(), doctrine())) ==
 	phpClassDef(phpClass("UserRepository", {}, phpSomeName(phpName("EntityRepository")), [], [
 		phpProperty(
         {phpPrivate()},
@@ -19,8 +20,8 @@ test bool shouldTransformToRepositoryPhpClassDefStmt() =
 	]));
 
 test bool shouldTransformAnnotatedRepositoryToRepositoryPhpClassDefStmt() = 
-	toPhpClassDef(repository("User", [])[@annotations=[]], <anyFramework(), doctrine()>) ==
+	toPhpClassDef(repository("User", [])[@annotations=[]], newTransformEnv(anyFramework(), doctrine())) ==
 	phpClassDef(phpClass("UserRepository", {}, phpSomeName(phpName("EntityRepository")), [], [])) &&
-	toPhpClassDef(repository("User", [])[@annotations=[annotation("doc", [annotationVal("This is a doc")])]], <anyFramework(), doctrine()>).classDef@phpAnnotations ==
+	toPhpClassDef(repository("User", [])[@annotations=[annotation("doc", [annotationVal("This is a doc")])]], newTransformEnv(anyFramework(), doctrine())).classDef@phpAnnotations ==
 		{phpAnnotation("doc", phpAnnotationVal("This is a doc"))};
 

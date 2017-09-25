@@ -8,20 +8,21 @@ import Syntax::Abstract::PHP::Helpers;
 import Config::Config;
 import Transform::Glagol2PHP::Statements;
 import Transform::Glagol2PHP::Params;
+import Transform::Env;
 import String;
 
-public PhpClassItem toPhpClassItem(a: action(str name, list[Declaration] params, list[Statement] body), env: <f: lumen(), ORM orm>)
+public PhpClassItem toPhpClassItem(a: action(str name, list[Declaration] params, list[Statement] body), TransformEnv env)
     = phpMethod(
         name, 
         {phpPublic()}, 
         false, 
         toActionParams(params, name), 
-        createInitializers(params, name) +
-        [toPhpStmt(stmt) | stmt <- body], 
+        createInitializers(params, name, env) +
+        [toPhpStmt(stmt, addDefinitions(params, env)) | stmt <- body], 
         phpNoName()
     )[
     	@phpAnnotations=toPhpAnnotations(a, env)
-    ];
+    ] when usesLumen(env);
 
 @todo="Tests missing for this one"
 private list[PhpParam] toActionParams(list[Declaration] params, _) {
@@ -29,7 +30,7 @@ private list[PhpParam] toActionParams(list[Declaration] params, _) {
     
     phpParams = for (p <- params) {
         if (hasAnnotation(p, "autofind")) {
-            append toPhpParam(param(integer(), "id", emptyExpr()));
+            append toPhpParam(param(integer(), "_<p.name>Id", emptyExpr()));
         } else if (!hasAnnotation(p, "autofill")) {
             append toPhpParam(p);
         }
@@ -37,22 +38,22 @@ private list[PhpParam] toActionParams(list[Declaration] params, _) {
     
     return phpParams;
 }
- 
-private list[PhpParam] toActionParams(list[Declaration] params, _) = [toPhpParam(p) | p <- params]; 
 
-private list[PhpStmt] createInitializers(list[Declaration] params, _) {
+private list[PhpStmt] createInitializers(list[Declaration] params, str _, TransformEnv env) {
 
     list[PhpStmt] stmts = [];
 
     bool hasAutofind = false;
 
-    for (p <- params, hasAnnotation(p, "autofind")) {
+    for (p <- params, hasAnnotation(p, "autofind"), isEntity(p.paramType, env)) {
         hasAutofind = true;
         stmts += phpExprstmt(
-            phpAssign(phpVar(p.name), phpMethodCall(phpPropertyFetch(phpVar("this"), phpName(phpName(
-                toLowerCase(p.name) + "s"
-            ))), phpName(phpName("find")), [
-                phpActualParameter(phpVar("id"), false)
+            phpAssign(phpVar(p.name), phpMethodCall(phpCall(phpName(phpName("app")), [
+            	phpActualParameter(phpFetchClassConst(phpName(phpName(
+            		toString(findRepository(p.paramType, env), env)
+            	)), "class"), false)
+            ]), phpName(phpName("find")), [
+                phpActualParameter(phpVar("_<p.name>Id"), false)
             ]))
         );
     }
@@ -62,15 +63,15 @@ private list[PhpStmt] createInitializers(list[Declaration] params, _) {
             stmts += phpExprstmt(
                 phpMethodCall(phpVar(p.name), phpName(phpName("_hydrate")), [
                     phpActualParameter(phpMethodCall(phpPropertyFetch(
-                        phpStaticCall(phpName(phpName("\\Request")), phpName(phpName("getFacadeRoot")), []), 
+                        phpCall(phpName(phpName("app")), [phpActualParameter(phpFetchClassConst(phpName(phpName("\\Illuminate\\Http\\Request")), "class"), false)]), 
                         phpName(phpName("request"))
                     ), phpName(phpName("all")), []), false)
                 ])
             );
-        else if (artifact(external(str artifactName, _, _)) := p.paramType)
+        else if (artifact(Name n) := p.paramType)
             stmts += [
                 phpExprstmt(phpAssign(phpVar("reflection"), phpNew(phpName(phpName("\\ReflectionClass")), [
-                    phpActualParameter(phpFetchClassConst(phpName(phpName(artifactName)), "class"), false)
+                    phpActualParameter(phpFetchClassConst(phpName(phpName(n.localName)), "class"), false)
                 ]))),
                 phpExprstmt(phpAssign(phpVar(p.name), phpMethodCall(phpVar("reflection"), phpName(phpName(
                     "newInstanceWithoutConstructor"
@@ -78,8 +79,8 @@ private list[PhpStmt] createInitializers(list[Declaration] params, _) {
                 phpExprstmt(
                     phpMethodCall(phpVar(p.name), phpName(phpName("_hydrate")), [
                         phpActualParameter(phpMethodCall(phpPropertyFetch(
-                            phpStaticCall(phpName(phpName("\\Request")), phpName(phpName("getFacadeRoot")), []), 
-                            phpName(phpName("request"))
+                            phpCall(phpName(phpName("app")), [phpActualParameter(phpFetchClassConst(phpName(phpName("\\Illuminate\\Http\\Request")), "class"), false)]), 
+                        	phpName(phpName("request"))
                         ), phpName(phpName("all")), []), false)
                     ])
                 )
@@ -88,3 +89,5 @@ private list[PhpStmt] createInitializers(list[Declaration] params, _) {
     
     return stmts;
 }
+
+private str toString(repository(str originalName, list[Declaration] ds), TransformEnv env) = "\\" + namespaceToString(getNamespace(env), "\\") + "\\<originalName>Repository";

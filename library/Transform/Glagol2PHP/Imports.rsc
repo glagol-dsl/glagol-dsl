@@ -6,8 +6,9 @@ import Syntax::Abstract::PHP;
 import Syntax::Abstract::Glagol::Helpers;
 import Exceptions::TransformExceptions;
 import Config::Config;
+import Transform::Env;
 
-public list[PhpStmt] toPhpUses(m: \module(Declaration namespace, list[Declaration] imports, Declaration artifact), list[Declaration] ast, env) =
+public list[PhpStmt] toPhpUses(m: \module(Declaration namespace, list[Declaration] imports, Declaration artifact), list[Declaration] ast, TransformEnv env) =
     [phpUse(
         {toPhpUse(i) | i <- imports + extractImports(m, ast, env)}
     )];
@@ -15,7 +16,7 @@ public list[PhpStmt] toPhpUses(m: \module(Declaration namespace, list[Declaratio
 private list[Declaration] extractImports(
 	m: \module(Declaration ns, list[Declaration] imports, a: entity(_, list[Declaration] ds)), 
 	list[Declaration] ast, 
-	env: <f, doctrine()>) =
+	TransformEnv env) =
 	    [\import("Mapping", namespace("Doctrine", namespace("ORM")), "ORM")] +
         [\import("JsonSerializeTrait", 
             namespace("Glagol", 
@@ -26,33 +27,33 @@ private list[Declaration] extractImports(
             namespace("Glagol", 
                 namespace("Helper", 
                     namespace("Entity"))), "HydrateTrait")] +
-	    commonImports(m, ast, env);
+	    commonImports(m, ast, env) when usesDoctrine(env);
     
 private list[Declaration] extractImports(
     m: \module(Declaration ns, list[Declaration] imports, a: repository(_, list[Declaration] ds)), 
     list[Declaration] ast, 
-    env: <f, doctrine()>) =
+    TransformEnv env) =
         [\import("EntityRepository", namespace("Doctrine", namespace("ORM")), "EntityRepository")] +
-        commonImports(m, ast, env);
+        commonImports(m, ast, env) when usesDoctrine(env);
     
 private list[Declaration] extractImports(
     m: \module(Declaration ns, list[Declaration] imports, a: controller(_, _, _, list[Declaration] declarations)), 
     list[Declaration] ast, 
-    env: <lumen(), orm>) =
+    TransformEnv env) =
         [\import("Controller", 
             namespace("Glagol", 
                 namespace("Bridge", 
                     namespace("Lumen",
                         namespace("Http", 
                             namespace("Controllers"))))), "AbstractController")] +
-        commonImports(m, ast, env);
+        commonImports(m, ast, env) when usesLumen(env);
 
 private default list[Declaration] extractImports(Declaration \module, list[Declaration] ast, env) = commonImports(\module, ast, env);
 
 private list[Declaration] commonImports(
 	m: \module(Declaration ns, list[Declaration] imports, Declaration artifact), 
 	list[Declaration] ast, 
-	env) =
+	TransformEnv env) =
 	    (hasOverriding(artifact.declarations) ? 
 	        [
 	        	\import("Overrider", namespace("Glagol", namespace("Overriding")), "Overrider"),
@@ -74,31 +75,19 @@ private list[Declaration] findRepositoryDependencies(\module(Declaration ns, lis
 	list[Declaration] repoImports = [];
 
 	top-down visit (artifact) {
-		case r: repository(external(str name, _, _)): {
-			if (!isImported(name, imports)) {
-				// TODO specify location
-				throw ArtifactNotImported("Entity by the name of \'<name>\' is not imported", (r@src?) ? r@src : |tmp:///|);
-			}
-			
-			bool repositoryFound = false;
+		case r: repository(Name n): {
+			str name = n.localName;
 			Declaration importEntity;
 			
 			if ([L*, i: \import(str iName, Declaration iNs, name), R*] := imports) {
 				top-down visit (ast) {
 					case \module(Declaration rNs, [*LI, \import(iName, iNs, str rAs), RI*], repository(rAs, list[Declaration] rDs)): {
 						repoImports += \import("<iName>Repository", rNs, "<iName>Repository");
-						repositoryFound = true;
 					}
 					case \module(iNs, _, repository(iName, _)): {
 						repoImports += \import("<iName>Repository", iNs, "<iName>Repository");
-						repositoryFound = true;
 					}
 				}
-				importEntity = i;
-			}
-			
-			if (!repositoryFound) {
-				throw ArtifactNotDefined("Repository for \'<toString(importEntity)>\' not defined", (r@src?) ? r@src : |tmp:///|);
 			}
 		}
 	}

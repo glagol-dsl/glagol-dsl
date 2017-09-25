@@ -1,5 +1,6 @@
 module Transform::Glagol2PHP::Properties
 
+import Transform::Env;
 import Transform::Glagol2PHP::Annotations;
 import Transform::Glagol2PHP::Expressions;
 import Syntax::Abstract::Glagol;
@@ -15,23 +16,33 @@ private str toString(\map(Type key, Type v)) = "Map";
 private str toString(artifact(Name name)) = name.localName;
 private str toString(repository(Name name)) = "<name.localName>Repository";
 
-public PhpClassItem toPhpClassItem(d: property(Type valueType, str name, emptyExpr()), env, context)
+public PhpClassItem toPhpClassItem(d: property(valueType: fullName(str localName, Declaration namespace, str originalName), str name, emptyExpr()), TransformEnv env)
     = phpProperty({phpPrivate()}, [phpProperty(name, phpNoExpr())])[
-    	@phpAnnotations=toPhpAnnotations(d, env, context) + {
+    	@phpAnnotations=toPhpAnnotations(d, env) + {
+    		phpAnnotation("var", phpAnnotationVal(toString(valueType))),
+    		phpAnnotation("column", (
+    			"type": phpAnnotationVal(phpString(toLowerCase(namespaceToString(getNamespace(env), "_") + "_" + originalName)))
+    		))
+    	}
+    ] when isValueObject(valueType, env);
+    
+public PhpClassItem toPhpClassItem(d: property(Type valueType, str name, emptyExpr()), TransformEnv env)
+    = phpProperty({phpPrivate()}, [phpProperty(name, phpNoExpr())])[
+    	@phpAnnotations=toPhpAnnotations(d, env) + {
     		phpAnnotation("var", phpAnnotationVal(toString(valueType)))
     	}
     ];
 
-public PhpClassItem toPhpClassItem(d: property(Type \valueType, str name, get(_)), env, context)
+public PhpClassItem toPhpClassItem(d: property(Type \valueType, str name, get(_)), TransformEnv env)
     = phpProperty({phpPrivate()}, [phpProperty(name, phpNoExpr())])[
-    	@phpAnnotations=toPhpAnnotations(d, env, context) + {
+    	@phpAnnotations=toPhpAnnotations(d, env) + {
     		phpAnnotation("var", phpAnnotationVal(toString(valueType)))
     	}
     ];
     
-public PhpClassItem toPhpClassItem(d: property(Type \valueType, str name, Expression defaultValue), env, context)
-    = phpProperty({phpPrivate()}, [phpProperty(name, phpSomeExpr(toPhpExpr(defaultValue)))])[
-    	@phpAnnotations=toPhpAnnotations(d, env, context) + {
+public PhpClassItem toPhpClassItem(d: property(Type \valueType, str name, Expression defaultValue), TransformEnv env)
+    = phpProperty({phpPrivate()}, [phpProperty(name, phpSomeExpr(toPhpExpr(defaultValue, env)))])[
+    	@phpAnnotations=toPhpAnnotations(d, env) + {
     		phpAnnotation("var", phpAnnotationVal(toString(valueType)))
     	}
     ];

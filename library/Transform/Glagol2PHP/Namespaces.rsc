@@ -13,15 +13,16 @@ import Transform::Glagol2PHP::ValueObjects;
 import Transform::Glagol2PHP::Controllers;
 import Transform::Glagol2PHP::ClassItems;
 import Config::Config;
+import Transform::Env;
 
-public PhpStmt toPhpNamespace(m: \module(Declaration namespace, list[Declaration] imports, Declaration artifact), list[Declaration] ast, env)
+public PhpStmt toPhpNamespace(m: \module(Declaration namespace, list[Declaration] imports, Declaration artifact), list[Declaration] ast, TransformEnv env)
     = phpNamespace(
         phpSomeName(phpName(namespaceToString(namespace, "\\"))),
-        toPhpUses(m, ast, env) + [toPhpClassDef(artifact, env)]
+        toPhpUses(m, ast, env) + [toPhpClassDef(artifact, setContext(m, env))]
     );
 
 public map[str, PhpScript] toPHPScript(
-	env: <Framework f, orm: doctrine()>, 
+	TransformEnv env, 
 	m: \module(Declaration namespace, list[Declaration] imports, Declaration artifact),
 	list[Declaration] ast) = 
 	(makeFilename(namespace, artifact): phpScript([phpDeclareStrict(), toPhpNamespace(m, ast, env)]));

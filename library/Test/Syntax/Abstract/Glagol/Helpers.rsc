@@ -87,15 +87,15 @@ test bool testIsImportedReturnsTrue() = isImported("User", [\import("Customer", 
 test bool testIsImportedReturnsFalse() = !isImported("User", [\import("Customer", namespace("Test"), "Customer"), \import("User", namespace("Test"), "Userr")]);
 
 test bool shouldCollectOnlyDIProperties() = getDIProperties([
-        property(repository(local("User")), "prop", get(repository(local("User")))),
-        property(repository(local("Customer")), "prop", emptyExpr()),
+        property(repository(fullName("User", namespace("Example"), "User")), "prop", get(repository(fullName("User", namespace("Example"), "User")))),
+        property(repository(fullName("Customer", namespace("Example"), "Customer")), "prop", emptyExpr()),
         constructor([], [
             expression(\map(()))
         ], emptyExpr())
-    ]) == [property(repository(local("User")), "prop", get(repository(local("User"))))];
+    ]) == [property(repository(fullName("User", namespace("Example"), "User")), "prop", get(repository(fullName("User", namespace("Example"), "User"))))];
     
 test bool shouldCollectOnlyDIProperties2() = getDIProperties([
-        property(repository(local("Customer")), "prop", emptyExpr()),
+        property(repository(fullName("Customer", namespace("Example"), "Customer")), "prop", emptyExpr()),
         constructor([], [
             expression(\map(()))
         ], emptyExpr())
@@ -103,12 +103,12 @@ test bool shouldCollectOnlyDIProperties2() = getDIProperties([
     
 test bool testHasDependencies() = 
 	!hasDependencies([
-        property(repository(local("Customer")), "prop", emptyExpr()),
+        property(repository(fullName("Customer", namespace("Example"), "Customer")), "prop", emptyExpr()),
         constructor([], [
             expression(\map(()))
         ], emptyExpr())
     ]) && hasDependencies([
-        property(repository(local("Customer")), "prop", get(repository(local("Customer")))),
+        property(repository(fullName("Customer", namespace("Example"), "Customer")), "prop", get(repository(fullName("Customer", namespace("Example"), "Customer")))),
         constructor([], [
             expression(\map(()))
         ], emptyExpr())
@@ -116,7 +116,7 @@ test bool testHasDependencies() =
 
 test bool testGetActions() = 
 	getActions([
-        property(repository(local("Customer")), "prop", emptyExpr()),
+        property(repository(fullName("Customer", namespace("Example"), "Customer")), "prop", emptyExpr()),
         action("index", [], [])
 	]) == [action("index", [], [])];
     

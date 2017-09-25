@@ -1,5 +1,6 @@
 module Test::Transform::Glagol2PHP::Imports
 
+import Transform::Env;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Transform::Glagol2PHP::Imports;
@@ -13,7 +14,7 @@ test bool shouldConvertToPhpUsesOnDoctrineEntityAndOverriding() =
 			constructor([], [], emptyExpr()),
 			constructor([], [], emptyExpr())
 		])), [], 
-		<anyFramework(), doctrine()>) ==
+		newTransformEnv(anyFramework(), doctrine())) ==
 	[phpUse({
 		phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM"))),
 		phpUse(phpName("Glagol\\Overriding\\Overrider"), phpNoName()),
@@ -32,7 +33,7 @@ test bool shouldConvertToPhpUsesOnAnyORMEntityAndOverriding() =
 			constructor([], [], emptyExpr()),
 			constructor([], [], emptyExpr())
 		])), [],
-		<anyFramework(), anyORM()>) ==
+		newTransformEnv(anyFramework(), anyORM())) ==
 	[phpUse({
 		phpUse(phpName("Glagol\\Overriding\\Overrider"), phpNoName()),
 		phpUse(phpName("Glagol\\Overriding\\Parameter"), phpNoName()),
@@ -46,7 +47,7 @@ test bool shouldConvertToPhpUsesOnAnyORMEntityWithoutOverriding() =
 		entity("User", [
 			constructor([], [], emptyExpr())
 		])), [], 
-		<anyFramework(), anyORM()>) ==
+		newTransformEnv(anyFramework(), anyORM())) ==
 	[phpUse({
 		phpUse(phpName("Foo\\Bar\\Blah"), phpNoName())
 	})]
@@ -58,7 +59,7 @@ test bool shouldConvertToPhpUsesOnDoctrineEntityWithoutOverriding() =
         entity("User", [
             constructor([], [], emptyExpr())
         ])), [], 
-        <anyFramework(), doctrine()>) ==
+        newTransformEnv(anyFramework(), doctrine())) ==
     [phpUse({
         phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM"))),
         phpUse(phpName("Foo\\Bar\\Blah"), phpNoName()),
@@ -72,7 +73,7 @@ test bool shouldConvertToDsMapPhpUsesOnMapsAndMapTypes() =
         entity("User", [
             property(\map(integer(), string()), "prop", emptyExpr())
         ])), [], 
-        <anyFramework(), anyORM()>) ==
+        newTransformEnv(anyFramework(), anyORM())) ==
     [phpUse({
         phpUse(phpName("Ds\\Map"), phpNoName()),
         phpUse(phpName("Ds\\Pair"), phpNoName()),
@@ -84,7 +85,7 @@ test bool shouldConvertToDsMapPhpUsesOnMapsAndMapTypes() =
                 expression(\map(()))
             ], emptyExpr())
         ])), [], 
-        <anyFramework(), anyORM()>) ==
+        newTransformEnv(anyFramework(), anyORM())) ==
     [phpUse({
         phpUse(phpName("Ds\\Map"), phpNoName()),
         phpUse(phpName("Ds\\Pair"), phpNoName()),
@@ -97,7 +98,7 @@ test bool shouldConvertToDsMapPhpUsesOnListsAndListTypes() =
         entity("User", [
             property(\list(integer()), "prop", emptyExpr())
         ])), [], 
-        <anyFramework(), anyORM()>) ==
+        newTransformEnv(anyFramework(), anyORM())) ==
     [phpUse({
         phpUse(phpName("Ds\\Vector"), phpNoName())
     })] && 
@@ -107,7 +108,7 @@ test bool shouldConvertToDsMapPhpUsesOnListsAndListTypes() =
                 expression(\list([]))
             ], emptyExpr())
         ])), [], 
-        <anyFramework(), anyORM()>) ==
+        newTransformEnv(anyFramework(), anyORM())) ==
     [phpUse({
         phpUse(phpName("Ds\\Vector"), phpNoName())
     })]
@@ -118,7 +119,7 @@ test bool shouldIncludeRepositoryWhenUsed() =
     		\import("User", namespace("Example", namespace("Entity")), "User")
     	], 
         util("UserCreator", [
-            property(repository(external("User", namespace("Example"), "User")), "users", emptyExpr())
+            property(repository(fullName("User", namespace("Example"), "User")), "users", emptyExpr())
         ])), [
         	file(|tmp:///repo.g|, \module(namespace("Example", namespace("Repository")), [
 		        \import("User", namespace("Example", namespace("Entity")), "User")
@@ -126,7 +127,7 @@ test bool shouldIncludeRepositoryWhenUsed() =
         	file(|tmp:///entity.g|, \module(namespace("Example", namespace("Entity")), [
 		    ], entity("User", [])))
         ], 
-        <anyFramework(), anyORM()>) ==
+        newTransformEnv(anyFramework(), anyORM())) ==
     [phpUse({
         phpUse(phpName("Example\\Entity\\User"), phpNoName()),
         phpUse(phpName("Example\\Repository\\UserRepository"), phpNoName())
@@ -138,7 +139,7 @@ test bool shouldIncludeRepositoryWhenUsedWithAliases() =
     		\import("User", namespace("Example", namespace("Entity")), "UserHa")
     	], 
         util("UserCreator", [
-            property(repository(external("UserHa", namespace("Example"), "User")), "users", emptyExpr())
+            property(repository(fullName("UserHa", namespace("Example"), "User")), "users", emptyExpr())
         ])), [
         	file(|tmp:///repo.g|, \module(namespace("Example", namespace("Repository")), [
 		        \import("User", namespace("Example", namespace("Entity")), "UserBla")
@@ -146,29 +147,12 @@ test bool shouldIncludeRepositoryWhenUsedWithAliases() =
         	file(|tmp:///entity.g|, \module(namespace("Example", namespace("Entity")), [
 		    ], entity("User", [])))
         ], 
-        <anyFramework(), anyORM()>) ==
+        newTransformEnv(anyFramework(), anyORM())) ==
     [phpUse({
         phpUse(phpName("Example\\Entity\\User"), phpSomeName(phpName("UserHa"))),
         phpUse(phpName("Example\\Repository\\UserRepository"), phpNoName())
     })]
     ;
-    
-test bool shouldThrowExceptionWhenUsingRepositoryWithMissingDefinition() 
-{
-	try toPhpUses(\module(namespace("Example"), [
-    		\import("User", namespace("Example", namespace("Entity")), "User")
-    	], 
-        util("UserCreator", [
-            property(repository(external("User", namespace("Example", namespace("Entity")), "User")), "users", emptyExpr())
-        ])), [
-        	file(|tmp:///entity.g|, \module(namespace("Example", namespace("Entity")), [
-		    ], entity("User", [])))
-        ], 
-        <anyFramework(), anyORM()>);
-    catch ArtifactNotDefined("Repository for \'Example::Entity::User\' not defined", _): return true;
-    
-    return false;
-}
     
 test bool shouldIncludeRepositoriesWhenUsed() =
     toPhpUses(\module(namespace("Example"), [
@@ -176,8 +160,8 @@ test bool shouldIncludeRepositoriesWhenUsed() =
     		\import("Customer", namespace("Example", namespace("Entity")), "Customer")
     	], 
         util("UserCreator", [
-            property(repository(external("User", namespace("Example", namespace("Entity")), "User")), "users", emptyExpr()),
-            property(repository(external("Customer", namespace("Example", namespace("Entity")), "Customer")), "customers", emptyExpr())
+            property(repository(fullName("User", namespace("Example", namespace("Entity")), "User")), "users", emptyExpr()),
+            property(repository(fullName("Customer", namespace("Example", namespace("Entity")), "Customer")), "customers", emptyExpr())
         ])), [
         	file(|tmp:///repo.g|, \module(namespace("Example", namespace("Repository")), [
 		        \import("User", namespace("Example", namespace("Entity")), "User")
@@ -190,7 +174,7 @@ test bool shouldIncludeRepositoriesWhenUsed() =
         	file(|tmp:///entity.g|, \module(namespace("Example", namespace("Entity")), [
 		    ], entity("Customer", [])))
         ], 
-        <anyFramework(), anyORM()>) ==
+        newTransformEnv(anyFramework(), anyORM())) ==
     [phpUse({
         phpUse(phpName("Example\\Entity\\User"), phpNoName()),
         phpUse(phpName("Example\\Repository\\UserRepository"), phpNoName()),
@@ -199,26 +183,3 @@ test bool shouldIncludeRepositoriesWhenUsed() =
     })]
     ;
     
-test bool shouldThrowExceptionWhenUsingRepositoriesWithMissingDefinition() 
-{
-	try toPhpUses(\module(namespace("Example"), [
-    		\import("User", namespace("Example", namespace("Entity")), "User"),
-    		\import("Customer", namespace("Example", namespace("Entity")), "Customer")
-    	], 
-        util("UserCreator", [
-            property(repository(external("User", namespace("Example", namespace("Entity")), "User")), "users", emptyExpr()),
-            property(repository(external("Customer", namespace("Example", namespace("Entity")), "Customer")), "customers", emptyExpr())
-        ])), [
-        	file(|tmp:///repo.g|, \module(namespace("Example", namespace("Repository")), [
-		        \import("User", namespace("Example", namespace("Entity")), "User")
-		    ], repository("User", []))),
-        	file(|tmp:///entity.g|, \module(namespace("Example", namespace("Entity")), [
-		    ], entity("User", []))),
-        	file(|tmp:///entity.g|, \module(namespace("Example", namespace("Entity")), [
-		    ], entity("Customer", [])))
-        ], 
-        <anyFramework(), anyORM()>);
-    catch ArtifactNotDefined("Repository for \'Example::Entity::Customer\' not defined", _): return true;
-    
-    return false;
-}

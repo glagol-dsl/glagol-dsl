@@ -1,5 +1,6 @@
 module Test::Transform::Glagol2PHP::Utils
 
+import Transform::Env;
 import Transform::Glagol2PHP::ClassItems;
 import Transform::Glagol2PHP::Utils;
 import Syntax::Abstract::Glagol;
@@ -9,7 +10,7 @@ import Config::Config;
 test bool shouldTransformToUtilPhpClassDefStmt() = 
 	toPhpClassDef(util("User", [
 		property(string(), "a property", emptyExpr())
-	]), <anyFramework(), anyORM()>) ==
+	]), newTransformEnv(anyFramework(), anyORM())) ==
 	phpClassDef(phpClass("User", {}, phpNoName(), [], [
 		phpProperty(
         {phpPrivate()},
@@ -19,8 +20,8 @@ test bool shouldTransformToUtilPhpClassDefStmt() =
 	]));
 
 test bool shouldTransformAnnotatedUtilToUtilPhpClassDefStmt() = 
-	toPhpClassDef(util("User", [])[@annotations=[]], <anyFramework(), anyORM()>) ==
+	toPhpClassDef(util("User", [])[@annotations=[]], newTransformEnv(anyFramework(), anyORM())) ==
 	phpClassDef(phpClass("User", {}, phpNoName(), [], [])) &&
-	toPhpClassDef(util("User", [])[@annotations=[annotation("doc", [annotationVal("This is a doc")])]], <anyFramework(), anyORM()>).classDef@phpAnnotations ==
+	toPhpClassDef(util("User", [])[@annotations=[annotation("doc", [annotationVal("This is a doc")])]], newTransformEnv(anyFramework(), anyORM())).classDef@phpAnnotations ==
 		{phpAnnotation("doc", phpAnnotationVal("This is a doc"))};
 

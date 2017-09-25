@@ -16,15 +16,15 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
 import Syntax::Abstract::PHP::Helpers;
-import IO;
+import String;
 
 public map[loc, str] generateFrameworkFiles(lumen(), Config config, list[Declaration] ast) = (
 	|file:///| + "bootstrap/app.php": createAppFile(getORM(config), ast),
-    |file:///| + "bootstrap/cache/.gitignore": "",
+    |file:///| + "bootstrap/cache/.gitignore": "*.php",
 	|file:///| + "public/index.php": createIndexFile(),
 	|file:///| + "public/.htaccess": createHtaccess(),
     |file:///| + "artisan": createArtisan(),
-    |file:///| + "config/doctrine.php": createDoctrineConfig(),
+    |file:///| + "config/doctrine.php": createDoctrineConfig(ast),
     |file:///| + "config/database.php": createDatabaseConfig(),
     |file:///| + "routes/api.php": createRoutesApi(ast),
     |file:///| + "routes/console.php": createRoutesConsole(),
@@ -33,20 +33,86 @@ public map[loc, str] generateFrameworkFiles(lumen(), Config config, list[Declara
 
 private map[loc, str] getCustomTypes(list[Declaration] ast, doctrine()) =
 	(|file:///| + "app/Types/<namespaceToString(ns)><name>Type.php": 
-    	createType(e) | \file(_, e: \module(ns, _, valueObject(str name, _))) <- ast);
+    	createType(e, findDbValueMethod(declarations)) | \file(_, e: \module(ns, _, valueObject(str name, declarations))) <- ast);
 
-private str createType(m: \module(ns, _, valueObject(str name, _))) = toCode(
+private Declaration findDbValueMethod(list[Declaration] methods) = 
+	(emptyDecl() | m | m: method(\public(), _, "toDatabaseValue", [], _, _) <- methods);
+
+private str lookupSqlDeclarationGetter(method(_, Type t, _, _, _, _)) = lookupSqlDeclarationGetter(t);
+private str lookupSqlDeclarationGetter(string()) = "getVarcharTypeDeclarationSQL";
+private str lookupSqlDeclarationGetter(integer()) = "getIntegerTypeDeclarationSQL"; 
+private str lookupSqlDeclarationGetter(float()) = "getDecimalTypeDeclarationSQL"; 
+private str lookupSqlDeclarationGetter(boolean()) = "getBooleanTypeDeclarationSQL"; 
+private str lookupSqlDeclarationGetter(_) = "getJsonTypeDeclarationSQL";
+
+private PhpCastType lookupCastType(method(_, integer(), _, _, _, _)) = phpInt();
+private PhpCastType lookupCastType(method(_, string(), _, _, _, _)) = phpString();
+private PhpCastType lookupCastType(method(_, float(), _, _, _, _)) = phpFloat();
+private PhpCastType lookupCastType(method(_, boolean(), _, _, _, _)) = phpBool();
+private PhpCastType lookupCastType(method(_, Type t, _, _, _, _)) = phpString();
+private PhpCastType lookupCastType(emptyDecl()) = phpString();
+
+private str createType(m: \module(ns, _, v: valueObject(str name, declarations)), Declaration dbValMethod) = toCode(
 	phpScript([
+		phpDeclareStrict(),
         phpNamespace(
             phpSomeName(phpName("App\\Types")),
             [
                 phpUse({
+                    phpUse(phpName("Doctrine\\Instantiator\\Instantiator"), phpNoName()),
                     phpUse(phpName("Doctrine\\DBAL\\Types\\Type"), phpNoName()),
                     phpUse(phpName("Doctrine\\DBAL\\Platforms\\AbstractPlatform"), phpNoName()),
                     phpUse(phpName(namespaceToString(ns, "\\") + "\\<name>"), phpNoName())
                 }),
-                phpClassDef(phpClass("<name>Type", {}, phpSomeName(phpName("Type")), [], [
-                    //phpMethod("register", {phpPublic()}, false, [], [], phpNoName())
+                phpClassDef(phpClass("<namespaceToString(ns)><name>Type", {}, phpSomeName(phpName("Type")), [], [
+                	phpConstCI([phpConst("TYPE_NAME", phpScalar(phpString(toLowerCase(namespaceToString(ns, "_") + "_<name>"))))]),
+                    phpMethod("convertToPHPValue", {phpPublic()}, false, [
+                    	phpParam("value", phpNoExpr(), phpNoName(), false, false),
+                    	phpParam("platform", phpNoExpr(), phpSomeName(phpName("AbstractPlatform")), false, false)
+                    ], [
+                    	phpIf(phpUnaryOperation(phpCall(phpName(phpName("method_exists")), [
+                    		phpActualParameter(phpFetchClassConst(phpName(phpName(name)), "class"), false),
+                    		phpActualParameter(phpScalar(phpString("toDatabaseValue")), false)
+                    	]), phpBooleanNot()), [
+                    		phpReturn(phpSomeExpr(
+								phpMethodCall(phpBracket(phpSomeExpr(phpNew(phpName(phpName("Instantiator")), []))), 
+									phpName(phpName("instantiate")), [phpActualParameter(
+										phpFetchClassConst(phpName(phpName(name)), "class"), false)
+									]
+								)
+							))
+                    	], [], phpNoElse()),
+                    	phpReturn(phpSomeExpr(phpNew(phpName(phpName(name)), [
+            				phpActualParameter(phpCast(lookupCastType(dbValMethod), phpVar("value")), false)
+                    	])))
+                    ], phpSomeName(phpName(name))),
+                    phpMethod("convertToDatabaseValue", {phpPublic()}, false, [
+                    	phpParam("value", phpNoExpr(), phpNoName(), false, false),
+                    	phpParam("platform", phpNoExpr(), phpSomeName(phpName("AbstractPlatform")), false, false)
+                    ], [
+                    	phpIf(phpUnaryOperation(phpCall(phpName(phpName("method_exists")), [
+                    		phpActualParameter(phpVar("value"), false),
+                    		phpActualParameter(phpScalar(phpString("toDatabaseValue")), false)
+                    	]), phpBooleanNot()), [
+                    		phpReturn(phpSomeExpr(phpScalar(phpNull())))
+                    	], [], phpNoElse()),
+                    	phpReturn(phpSomeExpr(phpMethodCall(phpVar(phpName(phpName("value"))), phpName(phpName("toDatabaseValue")), [])))
+                    ], phpNoName()),
+                    phpMethod("getName", {phpPublic()}, false, [], [
+                    	phpReturn(phpSomeExpr(phpFetchClassConst(phpName(phpName("self")), "TYPE_NAME")))
+                    ], phpSomeName(phpName("string"))),
+                    phpMethod("getSQLDeclaration", {phpPublic()}, false, [
+                    	phpParam("fieldDeclaration", phpNoExpr(), phpSomeName(phpName("array")), false, false),
+                    	phpParam("platform", phpNoExpr(), phpSomeName(phpName("AbstractPlatform")), false, false)
+                    ], [
+                    	phpReturn(phpSomeExpr(
+                    		phpMethodCall(phpVar(phpName(phpName("platform"))), phpName(phpName(
+                    			lookupSqlDeclarationGetter(dbValMethod)
+                			)), [
+                				phpActualParameter(phpVar(phpName(phpName("fieldDeclaration"))), false)
+                			])
+                    	))
+                    ], phpSomeName(phpName("string")))
                 ]))
             ]
         )
@@ -68,7 +134,7 @@ private str createProvider(doctrine(), m: \module(ns, _, repository(str name, li
                 }),
                 phpClassDef(phpClass("<name>RepositoryProvider", {}, phpSomeName(phpName("ServiceProvider")), [], [
                     phpMethod("register", {phpPublic()}, false, [], [
-                        phpExprstmt(phpMethodCall(phpPropertyFetch(phpVar("this"), phpName(phpName("app"))), phpName(phpName("bind")), [
+                        phpExprstmt(phpMethodCall(phpPropertyFetch(phpVar("this"), phpName(phpName("app"))), phpName(phpName("singleton")), [
                             phpActualParameter(phpFetchClassConst(phpName(phpName("<name>Repository")), "class"), false),
                             phpActualParameter(phpClosure([
                                 phpExprstmt(phpAssign(phpVar("em"), phpMethodCall(phpVar("app"), phpName(phpName("make")), [
