@@ -31,7 +31,7 @@ public PhpClassItem toPhpClassItem(d: property(Type \valueType, str name, get(_)
     ];
     
 public PhpClassItem toPhpClassItem(d: property(Type \valueType, str name, Expression defaultValue), TransformEnv env)
-    = phpProperty({phpPrivate()}, [phpProperty(name, phpSomeExpr(toPhpExpr(defaultValue)))])[
+    = phpProperty({phpPrivate()}, [phpProperty(name, phpSomeExpr(toPhpExpr(defaultValue, env)))])[
     	@phpAnnotations=toPhpAnnotations(d, env) + {
     		phpAnnotation("var", phpAnnotationVal(toString(valueType)))
     	}

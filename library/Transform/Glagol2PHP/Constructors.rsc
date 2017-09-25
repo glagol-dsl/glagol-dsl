@@ -1,5 +1,6 @@
 module Transform::Glagol2PHP::Constructors
 
+import Transform::Env;
 import Transform::Glagol2PHP::Annotations;
 import Transform::Glagol2PHP::Params;
 import Transform::Glagol2PHP::Expressions;
@@ -11,15 +12,15 @@ import Syntax::Abstract::PHP;
 import Syntax::Abstract::PHP::Helpers;
 import List;
 
-public PhpClassItem toPhpClassItem(d: constructor(list[Declaration] params, list[Statement] body, emptyExpr()), env) 
+public PhpClassItem toPhpClassItem(d: constructor(list[Declaration] params, list[Statement] body, emptyExpr()), TransformEnv env) 
     = phpMethod("__construct", {phpPublic()}, false, [toPhpParam(p) | p <- params], 
-    	[toPhpStmt(stmt) | stmt <- body], phpNoName())[
+    	[toPhpStmt(stmt, addDefinitions(params, env)) | stmt <- body], phpNoName())[
     	@phpAnnotations=toPhpAnnotations(d, env)
     ];
 
-public PhpClassItem toPhpClassItem(d: constructor(list[Declaration] params, list[Statement] body, Expression when), env) 
+public PhpClassItem toPhpClassItem(d: constructor(list[Declaration] params, list[Statement] body, Expression when), TransformEnv env) 
     = phpMethod("__construct", {phpPublic()}, false, [toPhpParam(p) | p <- params], [
-        phpIf(toPhpExpr(when), [toPhpStmt(stmt) | stmt <- body], [], phpNoElse())
+        phpIf(toPhpExpr(when, addDefinitions(params, env)), [toPhpStmt(stmt, addDefinitions(params, env)) | stmt <- body], [], phpNoElse())
     ], phpNoName())[
     	@phpAnnotations=toPhpAnnotations(d, env)
     ];
@@ -33,10 +34,10 @@ public list[Declaration] getConditionalConstructors(list[Declaration] declaratio
 public list[Declaration] getNonConditionalConstructors(list[Declaration] declarations)
     = [c | c <- declarations, constructor(_, _) !:= c];
 
-public PhpClassItem createConstructor(list[Declaration] declarations, env) = 
+public PhpClassItem createConstructor(list[Declaration] declarations, TransformEnv env) = 
     phpMethod("__construct", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)],
         [phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))] + 
-        [phpExprstmt(createOverrideRule(d)) | d <- declarations] +
+        [phpExprstmt(createOverrideRule(d, env)) | d <- declarations] +
         [phpNewLine()] +
         [phpExprstmt(phpMethodCall(phpVar("overrider"), phpName(phpName("execute")), [
             phpActualParameter(phpVar("args"), false, true)
@@ -46,10 +47,10 @@ public PhpClassItem createConstructor(list[Declaration] declarations, env) =
     ]
     when size(declarations) > 1;
 
-public PhpClassItem createConstructor(list[Declaration] declarations, env) = 
+public PhpClassItem createConstructor(list[Declaration] declarations, TransformEnv env) = 
 	toPhpClassItem(declarations[0], env) when size(declarations) == 1;
 
-public PhpClassItem createDIConstructor(list[Declaration] declarations, env) = 
+public PhpClassItem createDIConstructor(list[Declaration] declarations, TransformEnv env) = 
 	phpMethod("__construct", {phpPublic()}, false, 
 		[toPhpParam(param(valueType, name, emptyExpr())) | p: property(Type valueType, str name, get(_)) <- declarations],
 		[

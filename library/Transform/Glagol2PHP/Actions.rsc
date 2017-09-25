@@ -18,7 +18,7 @@ public PhpClassItem toPhpClassItem(a: action(str name, list[Declaration] params,
         false, 
         toActionParams(params, name), 
         createInitializers(params, name) +
-        [toPhpStmt(stmt) | stmt <- body], 
+        [toPhpStmt(stmt, addDefinitions(params, env)) | stmt <- body], 
         phpNoName()
     )[
     	@phpAnnotations=toPhpAnnotations(a, env)
