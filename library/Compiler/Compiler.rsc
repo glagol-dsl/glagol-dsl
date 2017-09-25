@@ -34,7 +34,7 @@ public void compile(map[loc, str] sources, int listenerId) {
     
     list[loc] compiledFiles = [];
     
-    for (l <- ast, out := toPHPScript(newTransformEnv(config), l.\module, ast), str outputFile <- out) {
+    for (l <- ast, out := toPHPScript(newTransformEnv(config, ast), l.\module, ast), str outputFile <- out) {
     	compiledFiles += createSourceFile(outputFile, toCode(out[outputFile]), config, listenerId);
     }
     

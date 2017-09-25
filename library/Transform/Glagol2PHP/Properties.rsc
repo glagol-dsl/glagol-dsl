@@ -16,6 +16,16 @@ private str toString(\map(Type key, Type v)) = "Map";
 private str toString(artifact(Name name)) = name.localName;
 private str toString(repository(Name name)) = "<name.localName>Repository";
 
+public PhpClassItem toPhpClassItem(d: property(valueType: fullName(str localName, Declaration namespace, str originalName), str name, emptyExpr()), TransformEnv env)
+    = phpProperty({phpPrivate()}, [phpProperty(name, phpNoExpr())])[
+    	@phpAnnotations=toPhpAnnotations(d, env) + {
+    		phpAnnotation("var", phpAnnotationVal(toString(valueType))),
+    		phpAnnotation("column", (
+    			"type": phpAnnotationVal(phpString(toLowerCase(namespaceToString(getNamespace(env), "_") + "_" + originalName)))
+    		))
+    	}
+    ] when isValueObject(valueType, env);
+    
 public PhpClassItem toPhpClassItem(d: property(Type valueType, str name, emptyExpr()), TransformEnv env)
     = phpProperty({phpPrivate()}, [phpProperty(name, phpNoExpr())])[
     	@phpAnnotations=toPhpAnnotations(d, env) + {

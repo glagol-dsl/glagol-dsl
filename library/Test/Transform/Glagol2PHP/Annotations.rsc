@@ -7,17 +7,17 @@ import Transform::Glagol2PHP::Annotations;
 import Transform::Env;
 
 test bool shouldTransformToTablePhpAnnotation() =
-    toPhpAnnotation(annotation("table", [annotationVal("adsdsa")]), newTransformEnv(entity("", []))) ==
+    toPhpAnnotation(annotation("table", [annotationVal("adsdsa")]), newTransformEnv(\module(namespace("Test"), [], entity("", [])))) ==
     phpAnnotation("ORM\\Table", phpAnnotationVal(("name":phpAnnotationVal("adsdsa")))) &&
-    toPhpAnnotation(annotation("table", [annotationVal("adsdsa")]), setContext(entity("", []), newTransformEnv(anyFramework(), anyORM()))) ==
+    toPhpAnnotation(annotation("table", [annotationVal("adsdsa")]), setContext(\module(namespace("Test"), [], entity("", [])), newTransformEnv(anyFramework(), anyORM()))) ==
     phpAnnotation("table", phpAnnotationVal([phpAnnotationVal("adsdsa")]));
     
 test bool shouldTransformDocToPhpAnnotation() =
-    toPhpAnnotation(annotation("doc", [annotationVal("This is a doc")]), newTransformEnv(entity("", []))) ==
+    toPhpAnnotation(annotation("doc", [annotationVal("This is a doc")]), newTransformEnv(\module(namespace("Test"), [], entity("", [])))) ==
     phpAnnotation("doc", phpAnnotationVal("This is a doc"));
    
 test bool shouldTransformDocToPhpAnnotationWithDiffEnv() =
-    toPhpAnnotation(annotation("doc", [annotationVal("This is a doc")]), setContext(entity("", []), newTransformEnv(anyFramework(), anyORM()))) ==
+    toPhpAnnotation(annotation("doc", [annotationVal("This is a doc")]), setContext(\module(namespace("Test"), [], entity("", [])), newTransformEnv(anyFramework(), anyORM()))) ==
     phpAnnotation("doc", phpAnnotationVal("This is a doc"));
 
 test bool shouldTransformToFieldPhpAnnotation() =
@@ -30,7 +30,7 @@ test bool shouldTransformToFieldPhpAnnotation() =
                         "comment": annotationVal("This is the primary key")
                     ))),
                     "scale": annotationVal(12.35)
-                ))]), newTransformEnv(entity("", []))) ==
+                ))]), newTransformEnv(\module(namespace("Test"), [], entity("", [])))) ==
     phpAnnotation("ORM\\Column",
         phpAnnotationVal((
             "name": phpAnnotationVal("customer_id"),
@@ -53,7 +53,7 @@ test bool shouldTransformToFieldPhpAnnotation2() =
                         "comment": annotationVal("This is the primary key")
                     ))),
                     "scale": annotationVal(12.35)
-                ))]), newTransformEnv(entity("", []))) ==
+                ))]), newTransformEnv(\module(namespace("Test"), [], entity("", [])))) ==
     phpAnnotation("ORM\\Column",
         phpAnnotationVal((
             "name": phpAnnotationVal("customer_id"),
