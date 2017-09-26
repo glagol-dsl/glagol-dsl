@@ -30,7 +30,7 @@ jobs:
           TAG="latest"
           if [[ ! -z ${CIRCLE_TAG} ]]; then TAG=${CIRCLE_TAG}; fi
           cp target/glagol-dsl.jar docker/glagol-dsl.jar
-          docker build -t glagol/server:${TAG} --build-arg jar= docker/
+          docker build -t glagol/server:${TAG} docker/
           docker login -u ${DOCKER_ID} -p ${DOCKER_SECRET}
           docker push glagol/server:${TAG}
 
