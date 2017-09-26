@@ -33,9 +33,7 @@ jobs:
           docker build -t glagol/server:${TAG} -t glagol/server:${TAG_MAJOR} docker/
           docker login -u ${DOCKER_ID} -p ${DOCKER_SECRET}
           docker push glagol/server:${TAG}
-          if [[ ! -z ${TAG_MAJOR} ]]; then
-            docker push glagol/server:${TAG_MAJOR}
-          fi
+          if [[ ! -z ${TAG_MAJOR} ]]; then docker push glagol/server:${TAG_MAJOR}; fi
 
 workflows:
   version: 2
