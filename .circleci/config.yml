@@ -27,7 +27,7 @@ jobs:
       - run: if [[ ! -z ${CIRCLE_TAG} ]]; then github-release release --user bulgariaphp --repo glagol-dsl --tag ${CIRCLE_TAG} --name "${CIRCLE_TAG}" --description "Release ${CIRCLE_TAG}"; fi
       - run: if [[ ! -z ${CIRCLE_TAG} ]]; then github-release upload --user bulgariaphp --repo glagol-dsl --tag ${CIRCLE_TAG} --name "glagol-dsl-server-${CIRCLE_TAG}.jar" --file target/glagol-dsl.jar; fi
       - run: |
-          TAG="latest"
+          TAG="dev-master"
           if [[ ! -z ${CIRCLE_TAG} ]]; then TAG=${CIRCLE_TAG}; fi
           cp target/glagol-dsl.jar docker/glagol-dsl.jar
           docker build -t glagol/server:${TAG} docker/
@@ -35,8 +35,9 @@ jobs:
           docker push glagol/server:${TAG}
           if [[ ! -z ${CIRCLE_TAG} ]]; then \
             TAG=${TAG:0:3}; \
-            docker build -t glagol/server:${TAG} docker/ ; \
-            docker push glagol/server:${TAG}; fi
+            docker build -t glagol/server:${TAG} -t glagol/server:latest docker/ ; \
+            docker push glagol/server:${TAG}; \
+            docker push glagol/server:latest; fi
 
 workflows:
   version: 2
