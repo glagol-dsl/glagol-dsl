@@ -8,6 +8,7 @@ jobs:
       RASCAL_JAR: /usr/local/src/rascal-shell-unstable.jar
     steps:
       - checkout
+      - setup_remote_docker
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "pom.xml" }}
