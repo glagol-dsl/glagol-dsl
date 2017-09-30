@@ -33,11 +33,11 @@ jobs:
             docker build -t glagol/server:${TAG} -t glagol/server:latest docker/
             docker login -u ${DOCKER_ID} -p ${DOCKER_SECRET}
             docker push glagol/server:${TAG}
-            docker push glagol/server:latest
             if [[ ! -z ${CIRCLE_TAG} ]]; then \
               TAG=${TAG:0:3}; \
               docker build -t glagol/server:${TAG} docker/ ; \
               docker push glagol/server:${TAG}; \
+              docker push glagol/server:latest; \
             fi
       - save_cache:
           paths:
