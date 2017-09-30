@@ -12,32 +12,37 @@ jobs:
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "pom.xml" }}
-          - v1-dependencies-
-      - run: mkdir /usr/local/src/
       - run: mvn dependency:go-offline
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
       - run: mvn versions:set -DgenerateBackupPoms=false -DnewVersion=${CIRCLE_TAG}-SNAPSHOT
+      - run: mkdir /usr/local/src/
       - run: build/get_rascal
       - run: build/build
       - run: mvn clean package
       - run: build/glagol test
-      - run: if [[ ! -z ${CIRCLE_TAG} ]]; then github-release release --user bulgariaphp --repo glagol-dsl --tag ${CIRCLE_TAG} --name "${CIRCLE_TAG}" --description "Release ${CIRCLE_TAG}"; fi
-      - run: if [[ ! -z ${CIRCLE_TAG} ]]; then github-release upload --user bulgariaphp --repo glagol-dsl --tag ${CIRCLE_TAG} --name "glagol-dsl-server-${CIRCLE_TAG}.jar" --file target/glagol-dsl.jar; fi
-      - run: |
-          TAG="dev-master"
-          if [[ ! -z ${CIRCLE_TAG} ]]; then TAG=${CIRCLE_TAG}; fi
-          cp target/glagol-dsl.jar docker/glagol-dsl.jar
-          docker build -t glagol/server:${TAG} docker/
-          docker login -u ${DOCKER_ID} -p ${DOCKER_SECRET}
-          docker push glagol/server:${TAG}
-          if [[ ! -z ${CIRCLE_TAG} ]]; then \
-            TAG=${TAG:0:3}; \
-            docker build -t glagol/server:${TAG} -t glagol/server:latest docker/ ; \
-            docker push glagol/server:${TAG}; \
-            docker push glagol/server:latest; fi
+      - run:
+          name: Making a GitHub Release
+          command: |
+            if [[ ! -z ${CIRCLE_TAG} ]]; then github-release release --user bulgariaphp --repo glagol-dsl --tag ${CIRCLE_TAG} --name "${CIRCLE_TAG}" --description "Release ${CIRCLE_TAG}"; fi; \
+            if [[ ! -z ${CIRCLE_TAG} ]]; then github-release upload --user bulgariaphp --repo glagol-dsl --tag ${CIRCLE_TAG} --name "glagol-dsl-server-${CIRCLE_TAG}.jar" --file target/glagol-dsl.jar; fi;
+      - run:
+          name: Publishing Docker Hub images
+          command: |
+            TAG="dev-master"
+            if [[ ! -z ${CIRCLE_TAG} ]]; then TAG=${CIRCLE_TAG}; fi
+            cp target/glagol-dsl.jar docker/glagol-dsl.jar
+            docker build -t glagol/server:${TAG} docker/
+            docker login -u ${DOCKER_ID} -p ${DOCKER_SECRET}
+            docker push glagol/server:${TAG}
+            if [[ ! -z ${CIRCLE_TAG} ]]; then \
+              TAG=${TAG:0:3}; \
+              docker build -t glagol/server:${TAG} -t glagol/server:latest docker/ ; \
+              docker push glagol/server:${TAG}; \
+              docker push glagol/server:latest; \
+            fi
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
 
 workflows:
   version: 2
