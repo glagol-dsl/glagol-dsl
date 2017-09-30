@@ -1,5 +1,5 @@
 # Glagol DSL
-[![CircleCI](https://circleci.com/gh/BulgariaPHP/glagol-dsl/tree/custom_types.svg?style=svg)](https://circleci.com/gh/BulgariaPHP/glagol-dsl/tree/custom_types)
+[![CircleCI](https://circleci.com/gh/BulgariaPHP/glagol-dsl/tree/master.svg?style=svg)](https://circleci.com/gh/BulgariaPHP/glagol-dsl/tree/master)
 
 A domain-specific language that utilizes Domain-Driven Design
 
