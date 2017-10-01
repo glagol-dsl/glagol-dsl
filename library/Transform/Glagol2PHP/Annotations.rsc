@@ -5,14 +5,15 @@ import Transform::Glagol2PHP::Doctrine::Annotations;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Config::Config;
+import Transform::OriginAnnotator;
 import List;
 import Map;
 
-public PhpAnnotation toPhpAnnotation(annotation(str annotationName, list[Annotation] arguments), TransformEnv env)
-    = phpAnnotation(toPhpAnnotationKey(annotationName, env)) when size(arguments) == 0;
+public PhpAnnotation toPhpAnnotation(a: annotation(str annotationName, list[Annotation] arguments), TransformEnv env)
+    = origin(phpAnnotation(toPhpAnnotationKey(annotationName, env)), a) when size(arguments) == 0;
 
-public PhpAnnotation toPhpAnnotation(annotation(str annotationName, list[Annotation] arguments), TransformEnv env)
-    = phpAnnotation(toPhpAnnotationKey(annotationName, env), toPhpAnnotation(annotationName, arguments, env)) 
+public PhpAnnotation toPhpAnnotation(a: annotation(str annotationName, list[Annotation] arguments), TransformEnv env)
+    = origin(phpAnnotation(toPhpAnnotationKey(annotationName, env), toPhpAnnotation(annotationName, arguments, env)), a)
     when size(arguments) > 0;
     
 public default PhpAnnotation toPhpAnnotation(str name, list[Annotation] arguments, TransformEnv env) 
@@ -22,17 +23,18 @@ public PhpAnnotation toPhpAnnotation("doc", list[Annotation] arguments, Transfor
 	= toPhpAnnotation(arguments[0], env);
 
 public PhpAnnotation toPhpAnnotation(list[Annotation] \list, TransformEnv env) 
-	= phpAnnotationVal([toPhpAnnotation(l, env) | l <- \list]);
+	= origin(phpAnnotationVal([toPhpAnnotation(l, env) | l <- \list]), \list[0]);
 
-public PhpAnnotation toPhpAnnotation(annotationMap(map[str, Annotation] settings), TransformEnv env) 
-	= phpAnnotationVal((s : toPhpAnnotation(settings[s], env) | s <- settings));
+public PhpAnnotation toPhpAnnotation(a: annotationMap(map[str, Annotation] settings), TransformEnv env) 
+	= origin(phpAnnotationVal((s : toPhpAnnotation(settings[s], env) | s <- settings)), a);
     
-public PhpAnnotation toPhpAnnotation(annotationVal(annotationMap(map[str, Annotation] \map)), TransformEnv env) = toPhpAnnotation(annotationMap(\map), env);
-public PhpAnnotation toPhpAnnotation(annotationVal(integer()), TransformEnv env) = phpAnnotationVal("integer");
-public PhpAnnotation toPhpAnnotation(annotationVal(string()), TransformEnv env) = phpAnnotationVal("string");
-public PhpAnnotation toPhpAnnotation(annotationVal(float()), TransformEnv env) = phpAnnotationVal("float");
-public PhpAnnotation toPhpAnnotation(annotationVal(boolean()), TransformEnv env) = phpAnnotationVal("boolean");
-public PhpAnnotation toPhpAnnotation(annotationVal(val), TransformEnv env) = phpAnnotationVal(val);
+public PhpAnnotation toPhpAnnotation(annotationVal(a: annotationMap(map[str, Annotation] \map)), TransformEnv env) = 
+	toPhpAnnotation(origin(annotationMap(\map), a), env);
+public PhpAnnotation toPhpAnnotation(a: annotationVal(integer()), TransformEnv env) = origin(phpAnnotationVal("integer"), a);
+public PhpAnnotation toPhpAnnotation(a: annotationVal(string()), TransformEnv env) = origin(phpAnnotationVal("string"), a);
+public PhpAnnotation toPhpAnnotation(a: annotationVal(float()), TransformEnv env) = origin(phpAnnotationVal("float"), a);
+public PhpAnnotation toPhpAnnotation(a: annotationVal(boolean()), TransformEnv env) = origin(phpAnnotationVal("boolean"), a);
+public PhpAnnotation toPhpAnnotation(a: annotationVal(val), TransformEnv env) = origin(phpAnnotationVal(val), a);
 
 public default str toPhpAnnotationKey(str annotation, TransformEnv env) = annotation;
 

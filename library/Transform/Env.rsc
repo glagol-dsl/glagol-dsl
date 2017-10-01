@@ -22,6 +22,7 @@ public TransformEnv newTransformEnv(Framework f, ORM orm) = <f, orm, (), emptyDe
 
 public TransformEnv setAST(list[Declaration] ds, TransformEnv env) = env[ast = ds];
 public TransformEnv setContext(Declaration ctx, TransformEnv env) = env[context = ctx];
+public Declaration getContext(TransformEnv env) = env.context;
 
 public Declaration getNamespace(TransformEnv env) = env.context.namespace;
 

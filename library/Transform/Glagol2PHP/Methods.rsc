@@ -1,6 +1,7 @@
 module Transform::Glagol2PHP::Methods
 
 import Transform::Env;
+import Transform::OriginAnnotator;
 import Transform::Glagol2PHP::Annotations;
 import Transform::Glagol2PHP::Statements;
 import Transform::Glagol2PHP::Expressions;
@@ -14,44 +15,40 @@ import Syntax::Abstract::PHP::Helpers;
 import List;
 
 public PhpClassItem toPhpClassItem(d: method(modifier, returnType, name, params, body, emptyExpr()), TransformEnv env)
-    = phpMethod(
+    = origin(phpMethod(
         name, 
         {toPhpModifier(modifier)}, 
         false, 
         [toPhpParam(p) | p <- params], 
         [toPhpStmt(stmt, addDefinitions(params, env)) | stmt <- body], 
         toPhpReturnType(returnType)
-    )[
-    	@phpAnnotations=toPhpAnnotations(d, env)
-    ];
+    )[@phpAnnotations=toPhpAnnotations(d, env)], d);
 
 public PhpClassItem toPhpClassItem(d: method(modifier, returnType, name, params, body, Expression when), TransformEnv env)
-    = phpMethod(
+    = origin(phpMethod(
         name,
         {toPhpModifier(modifier)}, 
         false, 
         [toPhpParam(p) | p <- params], 
-        [phpIf(toPhpExpr(when, addDefinitions(params, env)), [toPhpStmt(stmt, addDefinitions(params, env)) | stmt <- body], [], phpNoElse())], 
+        [origin(phpIf(toPhpExpr(when, addDefinitions(params, env)), [toPhpStmt(stmt, addDefinitions(params, env)) | stmt <- body], [], origin(phpNoElse(), when)), when)], 
         toPhpReturnType(returnType)
-    )[
-    	@phpAnnotations=toPhpAnnotations(d, env)
-    ];
+    )[@phpAnnotations=toPhpAnnotations(d, env)], d);
 
 public PhpClassItem createMethod(list[Declaration] methods, TransformEnv env)
     = toPhpClassItem(methods[0], env)
     when size(methods) == 1;
 
 public PhpClassItem createMethod(list[Declaration] methods, TransformEnv env) = 
-    phpMethod(methods[0].name, {toPhpModifier(methods[0].modifier)}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], 
+    origin(phpMethod(methods[0].name, {toPhpModifier(methods[0].modifier)}, false, [origin(phpParam("args", phpNoExpr(), phpNoName(), false, true), methods[0], true)], 
         [phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))] + 
-        [phpExprstmt(createOverrideRule(m, env)) | m <- methods] +
+        [origin(phpExprstmt(createOverrideRule(m, env)), m) | m <- methods] +
         [phpNewLine()] +
         [phpReturn(phpSomeExpr(phpMethodCall(phpVar(phpName(phpName("overrider"))), phpName(phpName("execute")), [
           phpActualParameter(phpVar(phpName(phpName("args"))), false, true)
         ])))], toPhpReturnType(methods[0].returnType))[
     	@phpAnnotations={annotation | m <- methods, annotation <- toPhpAnnotations(m, env)}
-    ]
+    ], methods[0])
     when size(methods) > 1;
 
-private PhpModifier toPhpModifier(\public()) = phpPublic();
-private PhpModifier toPhpModifier(\private()) = phpPrivate();
+private PhpModifier toPhpModifier(p: \public()) = origin(phpPublic(), p);
+private PhpModifier toPhpModifier(p: \private()) = origin(phpPrivate(), p);

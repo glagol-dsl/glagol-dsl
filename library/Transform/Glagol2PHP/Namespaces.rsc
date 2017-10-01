@@ -14,15 +14,16 @@ import Transform::Glagol2PHP::Controllers;
 import Transform::Glagol2PHP::ClassItems;
 import Config::Config;
 import Transform::Env;
+import Transform::OriginAnnotator;
 
 public PhpStmt toPhpNamespace(m: \module(Declaration namespace, list[Declaration] imports, Declaration artifact), list[Declaration] ast, TransformEnv env)
-    = phpNamespace(
-        phpSomeName(phpName(namespaceToString(namespace, "\\"))),
+    = origin(phpNamespace(
+        origin(phpSomeName(phpName(namespaceToString(namespace, "\\"))), namespace, true),
         toPhpUses(m, ast, env) + [toPhpClassDef(artifact, setContext(m, env))]
-    );
+    ), namespace);
 
 public map[str, PhpScript] toPHPScript(
 	TransformEnv env, 
 	m: \module(Declaration namespace, list[Declaration] imports, Declaration artifact),
 	list[Declaration] ast) = 
-	(makeFilename(namespace, artifact): phpScript([phpDeclareStrict(), toPhpNamespace(m, ast, env)]));
+	(makeFilename(namespace, artifact): origin(phpScript([origin(phpDeclareStrict(), m), toPhpNamespace(m, ast, env)]), m));
