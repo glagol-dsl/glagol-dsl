@@ -1,6 +1,7 @@
 module Compiler::Lumen::Routes::Api
 
 import Compiler::PHP::Compiler;
+import Compiler::PHP::Code;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
@@ -9,7 +10,7 @@ import Transform::Glagol2PHP::Common;
 import Utils::Glue;
 
 public str createRoutesApi(list[Declaration] ast) =
-    toCode(phpScript([phpExprstmt(toResourceRoute(ns, c, name)) | \module(ns, _, c) <- getControllerModules(ast), action(name, _, _) <- c.declarations]));
+    implode(toCode(phpScript([phpExprstmt(toResourceRoute(ns, c, name)) | \module(ns, _, c) <- getControllerModules(ast), action(name, _, _) <- c.declarations])));
     
 private PhpExpr toResourceRoute(Declaration ns, controller(str name, ControllerType controllerType, Route route, _), "index") =
     phpMethodCall(phpVar("app"), phpName(phpName("get")), [

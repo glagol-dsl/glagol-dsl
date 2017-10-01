@@ -6,13 +6,13 @@ import Utils::NewLine;
 import Utils::Glue;
 import Compiler::PHP::Uses;
 import Compiler::PHP::Statements;
+import Compiler::PHP::Code;
 import List;
 import Set;
 
-public str toCode(phpScript(list[PhpStmt] body)) = 
-	"\<?php" + nl() + glue([toCode(stmt, 0) | stmt <- body], nl()) + nl();
+public Code toCode(p: phpScript(list[PhpStmt] body)) = 
+	code("\<?php", p) + code(nl()) + glue([toCode(stmt, 0) | stmt <- body], code(nl())) + code(nl());
+// TODO add source map comment at the end
 
-public str toCode(phpNamespace(phpSomeName(phpName(str name)), list[PhpStmt] body), int i) =
-	"namespace <name>;" + nl() +
-	("" | it + toCode(stmt, i) | stmt <- body)
-	;
+public Code toCode(p: phpNamespace(phpSomeName(phpName(str name)), list[PhpStmt] body), int i) =
+	code("namespace <name>;", p) + code(nl()) + (code() | it + toCode(stmt, i) | stmt <- body);

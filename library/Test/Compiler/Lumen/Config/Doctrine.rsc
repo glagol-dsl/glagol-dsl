@@ -4,9 +4,10 @@ import Compiler::Lumen::Config::Doctrine;
 import Syntax::Abstract::PHP;
 import Compiler::Lumen::Config::Abstract;
 import Compiler::PHP::Compiler;
+import Compiler::PHP::Code;
 
 test bool shouldCreateLumenDoctrineConfig() =
-    createDoctrineConfig([]) == toCode(phpScript([phpReturn(phpSomeExpr(toPhpConf(array((
+    createDoctrineConfig([]) == implode(toCode(phpScript([phpReturn(phpSomeExpr(toPhpConf(array((
         "managers": array((
             "default": array((
                 "dev": env("APP_DEBUG"),
@@ -52,4 +53,4 @@ test bool shouldCreateLumenDoctrineConfig() =
         "notifications": array((
             "channel": string("database")
         ))
-    )))))]));
+    )))))])));

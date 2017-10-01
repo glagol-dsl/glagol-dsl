@@ -3,9 +3,10 @@ module Compiler::Lumen::Config::Database
 import Syntax::Abstract::PHP;
 import Compiler::Lumen::Config::Abstract;
 import Compiler::PHP::Compiler;
+import Compiler::PHP::Code;
 
 public str createDatabaseConfig() = 
-    toCode(phpScript([phpReturn(phpSomeExpr(toPhpConf(array((
+    implode(toCode(phpScript([phpReturn(phpSomeExpr(toPhpConf(array((
         "connections": array((
             "mysql": array((
                 "driver": string("mysql"),
@@ -21,5 +22,5 @@ public str createDatabaseConfig() =
                 "engine": null()
             ))
         ))
-    )))))]));
+    )))))])));
     

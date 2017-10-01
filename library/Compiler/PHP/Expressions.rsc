@@ -1,5 +1,6 @@
 module Compiler::PHP::Expressions
 
+import Compiler::PHP::Code;
 import Compiler::PHP::Operations;
 import Compiler::PHP::ByRef;
 import Utils::Glue;
@@ -12,110 +13,117 @@ import Compiler::PHP::IncludeType;
 import Syntax::Abstract::PHP;
 import List;
 
-public str toCode(phpScalar(phpClassConstant()), int i) = "__CLASS__";
-public str toCode(phpScalar(phpDirConstant()), int i) = "__DIR__";
-public str toCode(phpScalar(phpFileConstant()), int i) = "__FILE__";
-public str toCode(phpScalar(phpFuncConstant()), int i) = "__FUNCTION__";
-public str toCode(phpScalar(phpLineConstant()), int i) = "__LINE__";
-public str toCode(phpScalar(phpMethodConstant()), int i) = "__METHOD__";
-public str toCode(phpScalar(phpNamespaceConstant()), int i) = "__NAMESPACE__";
-public str toCode(phpScalar(phpTraitConstant()), int i) = "__TRAIT__";
-public str toCode(phpScalar(phpNull()), int i) = "null";
-public str toCode(phpScalar(phpFloat(real realVal)), int i) = "<realVal>";
-public str toCode(phpScalar(phpInteger(int intVal)), int i) = "<intVal>";
-public str toCode(phpScalar(phpString(str strVal)), int i) = "\"<strVal>\"";
-public str toCode(phpScalar(phpBoolean(true)), int i) = "true";
-public str toCode(phpScalar(phpBoolean(false)), int i) = "false";
-public str toCode(phpScalar(phpEncapsed(list[PhpExpr] exprs)), int i) = glue([toCode(expr, i) | expr <- exprs]);
-public str toCode(phpScalar(phpEncapsedStringPart(str strVal)), int i) = strVal;
-public str toCode(phpNoExpr(), int i) = "";
-public str toCode(phpExpr(PhpExpr expr), int i) = toCode(expr, i);
-public str toCode(phpName(phpName(str name)), int i) = name;
-public str toCode(phpSomeExpr(PhpExpr expr), int i) = toCode(expr, i);
-public str toCode(phpArray(list[PhpArrayElement] items), int l) = "[<nl()><s(l+1)><glue([toCode(item, l + 1) | item <- items], ", <nl()><s(l+1)>")><nl()><s(l)>]";
-public str toCode(phpVar(phpName(phpName(str name))), int i) = "$<name>";
-public str toCode(phpVar(phpExpr(PhpExpr expr)), int i) = "$<toCode(expr, i)>";
-public str toCode(phpFetchArrayDim(PhpExpr var, phpNoExpr()), int i) = "<toCode(var, i)>[]";
-public str toCode(phpFetchArrayDim(PhpExpr var, phpSomeExpr(PhpExpr expr)), int i) = "<toCode(var, i)>[<toCode(expr, i)>]";
-public str toCode(phpFetchClassConst(phpName(phpName(str class)), str constantName), int i) = "<class>::<constantName>";
-public str toCode(phpFetchClassConst(phpExpr(PhpExpr expr), str constantName), int i) = "<toCode(expr, i)>::<constantName>";
-public str toCode(phpAssign(PhpExpr assignTo, PhpExpr assignExpr), int i) = "<toCode(assignTo, i)> = <toCode(assignExpr, i)>";
-public str toCode(phpRefAssign(PhpExpr assignTo, PhpExpr assignExpr), int i) = "<toCode(assignTo, i)> =& <toCode(assignExpr, i)>";
-public str toCode(phpUnaryOperation(PhpExpr operand, phpPreInc()), int i) = "++<toCode(operand, i)>";
-public str toCode(phpUnaryOperation(PhpExpr operand, phpPostInc()), int i) = "<toCode(operand, i)>++";
-public str toCode(phpUnaryOperation(PhpExpr operand, phpPreDec()), int i) = "--<toCode(operand, i)>";
-public str toCode(phpUnaryOperation(PhpExpr operand, phpPostDec()), int i) = "<toCode(operand, i)>--";
-public str toCode(phpUnaryOperation(PhpExpr operand, phpUnaryPlus()), int i) = "+<toCode(operand, i)>";
-public str toCode(phpUnaryOperation(PhpExpr operand, phpUnaryMinus()), int i) = "-<toCode(operand, i)>";
-public str toCode(phpUnaryOperation(PhpExpr operand, phpBooleanNot()), int i) = "!<toCode(operand, i)>";
-public str toCode(phpActualParameter(PhpExpr expr, bool byRef), int i) = "<ref(byRef)><toCode(expr, i)>";
+public Code toCode(p: phpScalar(phpClassConstant()), int i) = code("__CLASS__", p);
+public Code toCode(p: phpScalar(phpDirConstant()), int i) = code("__DIR__", p);
+public Code toCode(p: phpScalar(phpFileConstant()), int i) = code("__FILE__", p);
+public Code toCode(p: phpScalar(phpFuncConstant()), int i) = code("__FUNCTION__", p);
+public Code toCode(p: phpScalar(phpLineConstant()), int i) = code("__LINE__", p);
+public Code toCode(p: phpScalar(phpMethodConstant()), int i) = code("__METHOD__", p);
+public Code toCode(p: phpScalar(phpNamespaceConstant()), int i) = code("__NAMESPACE__", p);
+public Code toCode(p: phpScalar(phpTraitConstant()), int i) = code("__TRAIT__", p);
+public Code toCode(p: phpScalar(phpNull()), int i) = code("null", p);
+public Code toCode(p: phpScalar(phpFloat(real realVal)), int i) = code("<realVal>", p);
+public Code toCode(p: phpScalar(phpInteger(int intVal)), int i) = code("<intVal>", p);
+public Code toCode(p: phpScalar(phpString(str strVal)), int i) = code("\"<strVal>\"", p);
+public Code toCode(p: phpScalar(phpBoolean(true)), int i) = code("true", p);
+public Code toCode(p: phpScalar(phpBoolean(false)), int i) = code("false", p);
+public Code toCode(p: phpScalar(phpEncapsed(list[PhpExpr] exprs)), int i) = (code() | it + toCode(expr, i) | expr <- exprs);
+public Code toCode(p: phpScalar(phpEncapsedStringPart(str strVal)), int i) = code(strVal, p);
+public Code toCode(p: phpNoExpr(), int i) = code("", p);
+public Code toCode(p: phpExpr(PhpExpr expr), int i) = toCode(expr, i);
+public Code toCode(p: phpName(phpName(str name)), int i) = code(name, p);
+public Code toCode(p: phpSomeExpr(PhpExpr expr), int i) = toCode(expr, i);
+public Code toCode(p: phpArray(list[PhpArrayElement] items), int l) = code("[", p) + glue([toCode(item, 0) | item <- items], code(", ")) + code("]", p);
+public Code toCode(p: phpVar(phpName(phpName(str name))), int i) = code("$<name>", p);
+public Code toCode(p: phpVar(phpExpr(PhpExpr expr)), int i) = code("$", p) + toCode(expr, i);
+public Code toCode(p: phpFetchArrayDim(PhpExpr var, phpNoExpr()), int i) = toCode(var, i) + code("[]", p);
+public Code toCode(p: phpFetchArrayDim(PhpExpr var, phpSomeExpr(PhpExpr expr)), int i) = toCode(var, i) + code("[", p) + toCode(expr, i) + code("]", p);
+public Code toCode(p: phpFetchClassConst(phpName(phpName(str class)), str constantName), int i) = code("<class>::<constantName>", p);
+public Code toCode(p: phpFetchClassConst(phpExpr(PhpExpr expr), str constantName), int i) = toCode(expr, i) + code("::<constantName>", p);
+public Code toCode(p: phpAssign(PhpExpr assignTo, PhpExpr assignExpr), int i) = toCode(assignTo, i) + code(" = ", p) + toCode(assignExpr, i);
+public Code toCode(p: phpRefAssign(PhpExpr assignTo, PhpExpr assignExpr), int i) = toCode(assignTo, i) + code(" =& ", p) + toCode(assignExpr, i);
+public Code toCode(phpUnaryOperation(PhpExpr operand, p: phpPreInc()), int i) = code("++", p) + toCode(operand, i);
+public Code toCode(phpUnaryOperation(PhpExpr operand, p: phpPostInc()), int i) = toCode(operand, i) + code("++", p);
+public Code toCode(phpUnaryOperation(PhpExpr operand, p: phpPreDec()), int i) = code("--", p) + toCode(operand, i);
+public Code toCode(phpUnaryOperation(PhpExpr operand, p: phpPostDec()), int i) = toCode(operand, i) + code("--", p);
+public Code toCode(phpUnaryOperation(PhpExpr operand, p: phpUnaryPlus()), int i) = code("+", p) + toCode(operand, i);
+public Code toCode(phpUnaryOperation(PhpExpr operand, p: phpUnaryMinus()), int i) = code("-", p) + toCode(operand, i);
+public Code toCode(phpUnaryOperation(PhpExpr operand, p: phpBooleanNot()), int i) = code("!", p) + toCode(operand, i);
+public Code toCode(p: phpActualParameter(PhpExpr expr, bool byRef), int i) = code(ref(byRef), p) + toCode(expr, i);
 
-public str toCode(phpActualParameter(PhpExpr expr, bool byRef, bool isVariadic), int i) = 
-    "<ref(byRef)>" + 
-    "<isVariadic ? "..." : "">" + 
-    "<toCode(expr, i)>";
+public Code toCode(p: phpActualParameter(PhpExpr expr, bool byRef, bool isVariadic), int i) = 
+    code(ref(byRef), p) + 
+    code("<isVariadic ? "..." : "">", p) + 
+    toCode(expr, i);
     
-public str toCode(phpClone(PhpExpr expr), int i) = "clone <toCode(expr, i)>";
-public str toCode(phpFetchConst(phpName(str name)), int i) = "<name>";
-public str toCode(phpEmpty(PhpExpr expr), int i) = "empty(<toCode(expr, i)>)";
-public str toCode(phpSuppress(PhpExpr expr), int i) = "@<toCode(expr, i)>";
-public str toCode(phpEval(PhpExpr expr), int i) = "eval(<toCode(expr, i)>)";
-public str toCode(phpExit(phpNoExpr()), int i) = "exit";
-public str toCode(phpExit(phpSomeExpr(PhpExpr expr)), int i) = "exit(<toCode(expr, i)>)";
-public str toCode(phpPropertyFetch(PhpExpr target, PhpNameOrExpr propertyName), int i) = "<toCode(target, i)>-\><toCode(propertyName, i)>";
-public str toCode(phpInclude(PhpExpr expr, PhpIncludeType includeType), int i) = "<toCode(includeType)> <toCode(expr, i)>";
-public str toCode(phpInstanceOf(PhpExpr expr, PhpNameOrExpr toCompare), int i) = "<toCode(expr, i)> instanceof <toCode(toCompare, i)>";
-public str toCode(phpIsSet(list[PhpExpr] exprs), int i) = "isset(<glue([toCode(expr, i) | expr <- exprs], ", ")>)";
-public str toCode(phpPrint(PhpExpr expr), int i) = "print <toCode(expr, i)>";
-public str toCode(phpShellExec(list[PhpExpr] parts), int i) = "`<glue([toCode(p, i) | p <- parts])>`";
-public str toCode(phpTernary(PhpExpr cond, phpSomeExpr(PhpExpr ifBranch), PhpExpr elseBranch), int i) = "<toCode(cond, i)> ? <toCode(ifBranch, i)> : <toCode(elseBranch, i)>";
-public str toCode(phpTernary(PhpExpr cond, phpNoExpr(), PhpExpr elseBranch), int i) = "<toCode(cond, i)> ?: <toCode(elseBranch, i)>";
-public str toCode(phpStaticPropertyFetch(PhpNameOrExpr className, PhpNameOrExpr propertyName), int i) = "<toCode(className, i)>::$<toCode(propertyName, i)>";
-public str toCode(phpYield(phpNoExpr(), phpSomeExpr(PhpExpr val)), int i) = "yield <toCode(val, i)>";
-public str toCode(phpYield(phpSomeExpr(PhpExpr key), phpSomeExpr(PhpExpr val)), int i) = "yield <toCode(key, i)> =\> <toCode(val, i)>";
-public str toCode(phpYield(phpNoExpr(), phpNoExpr()), int i) = "yield";
-public str toCode(phpListExpr(list[PhpOptionExpr] listExprs), int i) = "[<glue([toCode(e, i) | e <- listExprs], ", ")>]";
-public str toCode(phpBracket(PhpOptionExpr bracketExpr), int i) = "(<toCode(bracketExpr, i)>)";
+public Code toCode(p: phpClone(PhpExpr expr), int i) = code("clone ", p) + toCode(expr, i);
+public Code toCode(p: phpFetchConst(phpName(str name)), int i) = code(name, p);
+public Code toCode(p: phpEmpty(PhpExpr expr), int i) = code("empty(", p) + toCode(expr, i) + code(")", p);
+public Code toCode(p: phpSuppress(PhpExpr expr), int i) = code("@", p) + toCode(expr, i);
+public Code toCode(p: phpEval(PhpExpr expr), int i) = code("eval(", p) + toCode(expr, i) + code(")", p);
+public Code toCode(p: phpExit(phpNoExpr()), int i) = code("exit", p);
+public Code toCode(p: phpExit(phpSomeExpr(PhpExpr expr)), int i) = code("exit(", p) + toCode(expr, i) + code(")", p);
+public Code toCode(p: phpPropertyFetch(PhpExpr target, PhpNameOrExpr propertyName), int i) = toCode(target, i) + code("-\>", p) + toCode(propertyName, i);
+public Code toCode(p: phpInclude(PhpExpr expr, PhpIncludeType includeType), int i) = toCode(includeType) + code(" ", p) + toCode(expr, i);
+public Code toCode(p: phpInstanceOf(PhpExpr expr, PhpNameOrExpr toCompare), int i) = toCode(expr, i) + code(" instanceof ", p) + toCode(toCompare, i);
+public Code toCode(p: phpIsSet(list[PhpExpr] exprs), int i) = code("isset(", p) + glue([toCode(expr, i) | expr <- exprs], code(", ", p)) + code(")", p);
+public Code toCode(p: phpPrint(PhpExpr expr), int i) = code("print ", p) + toCode(expr, i);
+public Code toCode(pr: phpShellExec(list[PhpExpr] parts), int i) = code("`", pr) + glue([toCode(p, i)| p <- parts]) + code("`", pr);
+public Code toCode(p: phpTernary(PhpExpr cond, phpSomeExpr(PhpExpr ifBranch), PhpExpr elseBranch), int i) = 
+	toCode(cond, i) + code(" ? ", p) + toCode(ifBranch, i) + code(" : ", p) + toCode(elseBranch, i);
+public Code toCode(p: phpTernary(PhpExpr cond, phpNoExpr(), PhpExpr elseBranch), int i) = toCode(cond, i) + code(" ?: ", p) + toCode(elseBranch, i);
+public Code toCode(p: phpStaticPropertyFetch(PhpNameOrExpr className, PhpNameOrExpr propertyName), int i) = 
+	toCode(className, i) + code("::$", p) + toCode(propertyName, i);
+public Code toCode(p: phpYield(phpNoExpr(), phpSomeExpr(PhpExpr val)), int i) = code("yield ", p) + toCode(val, i);
+public Code toCode(p: phpYield(phpSomeExpr(PhpExpr key), phpSomeExpr(PhpExpr val)), int i) = code("yield ", p) + toCode(key, i) + code(" =\> ", p) + toCode(val, i);
+public Code toCode(p: phpYield(phpNoExpr(), phpNoExpr()), int i) = code("yield", p);
+public Code toCode(p: phpListExpr(list[PhpOptionExpr] listExprs), int i) = code("[", p) + glue([toCode(e, i) | e <- listExprs], code(", ", p)) + code("]", p);
+public Code toCode(p: phpBracket(PhpOptionExpr bracketExpr), int i) = code("(", p) + toCode(bracketExpr, i) + code(")", p);
 
-public str toCode(phpMethodCall(PhpExpr target, PhpNameOrExpr methodName, list[PhpActualParameter] parameters), int i) =
-	"<toCode(target, i)>-\><toCode(methodName, i)>(<glue([toCode(p, i) | p <- parameters], ", ")>)";
+public Code toCode(pr: phpMethodCall(PhpExpr target, PhpNameOrExpr methodName, list[PhpActualParameter] parameters), int i) =
+	toCode(target, i) + code("-\>", pr) + toCode(methodName, i) + code("(", pr) + glue([toCode(p, i) | p <- parameters], code(", ", pr)) + code(")", pr);
 	
-public str toCode(phpStaticCall(PhpNameOrExpr target, PhpNameOrExpr methodName, list[PhpActualParameter] parameters), int i) = 
-    "<toCode(target, i)>::<toCode(methodName, i)>(<glue([toCode(p, i) | p <- parameters], ", ")>)";
+public Code toCode(pr: phpStaticCall(PhpNameOrExpr target, PhpNameOrExpr methodName, list[PhpActualParameter] parameters), int i) = 
+    toCode(target, i) + code("::", pr) + toCode(methodName, i) + code("(", pr) + glue([toCode(p, i) | p <- parameters], code(", ", pr)) + code(")", pr);
 	
-public str toCode(phpCall(PhpNameOrExpr funName, list[PhpActualParameter] parameters), int i) = 
-	"<toCode(funName, i)>(<glue([toCode(p, i) | p <- parameters], ", ")>)";
+public Code toCode(pr: phpCall(PhpNameOrExpr funName, list[PhpActualParameter] parameters), int i) = 
+	toCode(funName, i) + code("(", pr) + glue([toCode(p, i) | p <- parameters], code(", ", pr)) + code(")", pr);
 
-public str toCode(phpClosure(
+public Code toCode(pr: phpClosure(
 			list[PhpStmt] statements, 
 			list[PhpParam] params, 
 			list[PhpClosureUse] uses, 
 			bool byRef, 
 			bool static), int i) = 
-	"<static ? "static " : ""><ref(byRef)>function (<glue([toCode(p) | p <- params], ", ")>)" + 
-	"<closureUses(uses)> {<nl()><toCode(statements, i + 1)><s(i)>}";
+	code("<static ? "static " : ""><ref(byRef)>function (", pr) + 
+	glue([toCode(p) | p <- params], code(", ", pr)) + 
+	code(")", pr) + 
+	closureUses(uses) +
+	code(" {") + code(nl()) + 
+	toCode(statements, i + 1) + 
+	code("<s(i)>}");
 
-public str toCode(phpNew(PhpNameOrExpr className, list[PhpActualParameter] parameters), int i) = 
-	"new <toCode(className, i)>(<glue([toCode(p, i) | p <- parameters], ", ")>)";
+public Code toCode(pr: phpNew(PhpNameOrExpr className, list[PhpActualParameter] parameters), int i) = 
+	code("new ", pr) + toCode(className, i) + code("(", pr) + glue([toCode(p, i) | p <- parameters], code(", ", pr)) + code(")", pr);
 	
-public str toCode(phpCast(PhpCastType castType, PhpExpr expr), int i) = "(<toCode(castType)>) <toCode(expr, i)>";
+public Code toCode(p: phpCast(PhpCastType castType, PhpExpr expr), int i) = code("(", p) + toCode(castType) + code(") ", p) + toCode(expr, i);
 
-public str toCode(phpBinaryOperation(PhpExpr left, PhpExpr right, PhpOp operation), int i) = 
-	"<toCode(left, i)> <toCode(operation)> <toCode(right, i)>";
+public Code toCode(p: phpBinaryOperation(PhpExpr left, PhpExpr right, PhpOp operation), int i) = 
+	toCode(left, i) + code(" ") + toCode(operation) + code(" ") + toCode(right, i);
 
-public str toCode(phpListAssign(list[PhpOptionExpr] assignsTo, PhpExpr assignExpr), int l) = 
-	"list(<glue([toCode(i, l) | i <- assignsTo], ", ")>) = <toCode(assignExpr, l)>";
+public Code toCode(pr: phpListAssign(list[PhpOptionExpr] assignsTo, PhpExpr assignExpr), int i) = 
+	code("list(", pr) + glue([toCode(p, i) | p <- assignsTo], code(", ", pr)) + code(") = ", pr) + toCode(assignExpr, i);
 	
-public str toCode(phpAssignWOp(PhpExpr assignTo, PhpExpr assignExpr, PhpOp operation), int i) = 
-	"<toCode(assignTo, i)> <toCode(operation)>= <toCode(assignExpr, i)>";
+public Code toCode(p: phpAssignWOp(PhpExpr assignTo, PhpExpr assignExpr, PhpOp operation), int i) = 
+	toCode(assignTo, i) + code(" ") + toCode(operation) + code("= ") + toCode(assignExpr, i);
 
-public str toCode(phpArrayElement(PhpOptionExpr key, PhpExpr val, bool byRef), int i) = 
-	"<arrayKey(key, i)><ref(byRef)><toCode(val, i)>";
+public Code toCode(p: phpArrayElement(PhpOptionExpr key, PhpExpr val, bool byRef), int i) = 
+	arrayKey(key, i) + code(ref(byRef), p) + toCode(val, i);
 
-public str toCode(phpClosureUse(PhpExpr varName, bool byRef)) = "<ref(byRef)><toCode(varName, 0)>";
+public Code toCode(p: phpClosureUse(PhpExpr varName, bool byRef)) = code(ref(byRef), p) + toCode(varName, 0);
 
-private str closureUses(list[PhpClosureUse] uses) = "" when size(uses) == 0;
-private str closureUses(list[PhpClosureUse] uses) = " use (<glue([toCode(u) | u <- uses], ", ")>)" when size(uses) > 0;
+private Code closureUses(list[PhpClosureUse] uses) = code("") when size(uses) == 0;
+private Code closureUses(list[PhpClosureUse] uses) = code(" use (") + glue([toCode(u) | u <- uses], code(", ")) + code(")") when size(uses) > 0;
 
-private str arrayKey(phpSomeExpr(PhpExpr expr), int i) = "<toCode(expr, i)> =\> ";
-private str arrayKey(phpNoExpr(), int i) = "";
+private Code arrayKey(p: phpSomeExpr(PhpExpr expr), int i) = toCode(expr, i) + code(" =\> ", p);
+private Code arrayKey(phpNoExpr(), int i) = code("");

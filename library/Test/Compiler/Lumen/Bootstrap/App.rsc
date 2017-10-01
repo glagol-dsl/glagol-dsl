@@ -13,7 +13,7 @@ test bool shouldCreateAppFileContents() =
 	"$app-\>register(\\LaravelDoctrine\\ORM\\DoctrineServiceProvider::class);\n" +
 	"$app-\>configure(\"database\");\n" + 
 	"$app-\>configure(\"doctrine\");\n" + 
-	"$app-\>group([\n    \n], " +
+	"$app-\>group([], " +
 	"function ($app) {\n" +
 	"    require __DIR__ . \"/../routes/api.php\";\n" +
 	"});\n" +

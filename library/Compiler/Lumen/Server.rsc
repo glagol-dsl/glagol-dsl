@@ -1,11 +1,12 @@
 module Compiler::Lumen::Server
 
+import Compiler::PHP::Code;
 import Compiler::PHP::Compiler;
 import Syntax::Abstract::PHP;
 import Syntax::Abstract::PHP::Helpers;
 
 public str createServerFile() =
-    toCode(phpScript([
+    implode(toCode(phpScript([
         phpExprstmt(phpAssign(phpVar("uri"), phpCall(
             "urldecode", [
                 phpActualParameter(phpCall("parse_url", [
@@ -28,4 +29,4 @@ public str createServerFile() =
             phpScalar(phpString("/public/index.php")), 
             phpConcat()), phpRequireOnce()
         ))
-    ]));
+    ])));

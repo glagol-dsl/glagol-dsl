@@ -8,6 +8,7 @@ import Config::Config;
 import Config::Reader;
 import Compiler::PHP::Compiler;
 import Compiler::EnvFiles;
+import Compiler::PHP::Code;
 import Transform::Glagol2PHP::Namespaces;
 import Transform::Env;
 import Typechecker::CheckFile;
@@ -35,7 +36,7 @@ public void compile(map[loc, str] sources, int listenerId) {
     list[loc] compiledFiles = [];
     
     for (l <- ast, out := toPHPScript(newTransformEnv(config, ast), l.\module, ast), str outputFile <- out) {
-    	compiledFiles += createSourceFile(outputFile, toCode(out[outputFile]), config, listenerId);
+    	compiledFiles += createSourceFile(outputFile, implode(toCode(out[outputFile])), config, listenerId);
     }
     
     map[loc, str] envFiles = generateEnvFiles(config, ast);

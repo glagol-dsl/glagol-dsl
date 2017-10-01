@@ -1,12 +1,13 @@
 module Compiler::PHP::Modifiers
 
+import Compiler::PHP::Code;
 import Syntax::Abstract::PHP;
 
-public str toCode(set[PhpModifier] modifiers) = ("" | it + toCode(m) + " " | m <- modifiers);
+public Code toCode(set[PhpModifier] modifiers) = (code() | it + toCode(m) + code(" ") | m <- modifiers);
 	
-public str toCode(phpPublic()) = "public";
-public str toCode(phpPrivate()) = "private";
-public str toCode(phpProtected()) = "protected";
-public str toCode(phpStatic()) = "static";
-public str toCode(phpAbstract()) = "abstract";
-public str toCode(phpFinal()) = "final";
+public Code toCode(p: phpPublic()) = code("public", p);
+public Code toCode(p: phpPrivate()) = code("private", p);
+public Code toCode(p: phpProtected()) = code("protected", p);
+public Code toCode(p: phpStatic()) = code("static", p);
+public Code toCode(p: phpAbstract()) = code("abstract", p);
+public Code toCode(p: phpFinal()) = code("final", p);
