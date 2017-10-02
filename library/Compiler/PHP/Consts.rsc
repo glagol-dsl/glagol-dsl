@@ -14,5 +14,5 @@ public Code toCode(p: phpConst(str name, PhpExpr constValue), int i) =
 	code(nl()) + 
 	code("<s(i)>const <name> = ", p) + 
 	toCode(constValue, i) + code(";") + 
-	code("<nl()>");
+	code(nl());
 

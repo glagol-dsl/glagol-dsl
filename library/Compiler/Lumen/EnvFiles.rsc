@@ -55,7 +55,7 @@ private PhpCastType lookupCastType(method(_, Type t, _, _, _, _)) = phpString();
 private PhpCastType lookupCastType(emptyDecl()) = phpString();
 
 private str createType(m: \module(ns, _, v: valueObject(str name, declarations)), Declaration dbValMethod) = implode(toCode(
-	origin(phpScript([
+	phpScript([
 		phpDeclareStrict(),
         phpNamespace(
             phpSomeName(phpName("App\\Types")),
@@ -118,7 +118,7 @@ private str createType(m: \module(ns, _, v: valueObject(str name, declarations))
                 ]))
             ]
         )
-    ]), v, true)
+    ])
 ));
 
 private map[loc, str] getRepositoryProviders(doctrine(), Config config, list[Declaration] ast) = 

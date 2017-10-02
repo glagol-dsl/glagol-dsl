@@ -7,6 +7,7 @@ alias Code = list[tuple[str, loc]];
 
 public Code code() = [];
 
+public bool isDefaultLoc(loc l) = l == defaultLoc();
 private loc defaultLoc() = |tmp:///unknown|(0, 0, <0, 0>, <0, 0>);
 
 public Code code(str line, PhpExpr origin) = [<line, origin@origin? ? origin@origin : defaultLoc()>];

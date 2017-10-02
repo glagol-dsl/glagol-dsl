@@ -26,7 +26,7 @@ public Code toCode(d: phpClassDef(class: phpClass(
 	((class@phpAnnotations?) ? (toCode(class@phpAnnotations, i) + code(nl())) : code("")) +
 	toCode(modifiers) +
 	code("class <className> <extends(extending)><implements(interfaces)>", d) + code(nl()) + code("{", d) + 
-		(code() | it + toCode(m, i + 1) | m <- members) +
+		glue([toCode(m, i + 1) | m <- members]) +
 	code("}");
 	
 public Code toCode(list[PhpStmt] statements, i) = (code() | it + toCode(stmt, i) + code(nl()) | stmt <- statements);
@@ -96,7 +96,7 @@ public Code toCode(p: phpTraitDef(trait: phpTrait(str traitName, list[PhpClassIt
 	code("}", p);
 
 public Code toCode(p: phpStatic(list[PhpStaticVar] vars), int i) =
-	code("<s(i)>static ", p) + glue([toCode(v, i) | v <- vars], code(",<nl()><s(i)>       ")) + code(";");
+	code("<s(i)>static ", p) + glue([toCode(v, i) | v <- vars], code(",") + code(nl()) + code("<s(i)>       ")) + code(";");
 
 public Code toCode(p: phpStaticVar(str name, PhpOptionExpr defValue), int i) = 
 	code("$<name>", p) + defaultVal(defValue);

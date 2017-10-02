@@ -19,7 +19,7 @@ public Code toMethod(m: phpMethod(
 	list[PhpParam] params,
 	list[PhpStmt] body,
 	PhpOptionName rt), bool hasBody, int i) = 
-	(m@phpAnnotations?) ? toCode(m@phpAnnotations, i) : code("", m) +
+	((m@phpAnnotations?) ? toCode(m@phpAnnotations, i) : code("")) +
 	code(nl(), m) + 
 	code(s(i)) +
 	toCode(modifiers) +
@@ -27,7 +27,7 @@ public Code toMethod(m: phpMethod(
 	glue([toCode(p) | p <- params], code(", ", m)) + 
 	code(")", m) + returnType(rt) + 
 	(!hasBody ? code(";", m) :
-		(code("<nl()><s(i)>{<nl()>") + toCode(body, i + 1) + code("<s(i)>}"))) +
+		(code(nl()) + code("<s(i)>{") + code(nl()) + toCode(body, i + 1) + code("<s(i)>}"))) +
 	code(nl());
 
 public Code returnType(phpNoName()) = code("");

@@ -8,12 +8,12 @@ import lang::json::IO;
 import IO;
 
 alias Position = tuple[int line, int column];
-alias Mapping = tuple[loc source, Position origin, Position generated, str name];
-alias SourceMap = tuple[loc file, list[Mapping] mappings];
+alias Mapping = tuple[str source, Position origin, Position generated, str name];
+alias SourceMap = tuple[str file, list[Mapping] mappings];
 
-public SourceMap newSourceMap(loc file) = <file, []>;
+public SourceMap newSourceMap(str file) = <file, []>;
 
-public SourceMap addMapping(loc source, int originLine, int originColumn, int generatedLine, int generatedColumn, SourceMap m) = 
+public SourceMap addMapping(str source, int originLine, int originColumn, int generatedLine, int generatedColumn, SourceMap m) = 
 	addMapping(<source, <originLine, originColumn>, <generatedLine, generatedColumn>, "">, m);
 	
 public SourceMap addMapping(Mapping mapping, SourceMap m) = m[mappings = m.mappings + mapping];
@@ -22,13 +22,24 @@ public JSON sourceMapToJSON(SourceMap m) = object((
 	"version": number(3.0),
 	"sources": array([string(s) | s <- sortSources(m)]),
 	"names": array([]),
-	"file": string(m.file.path),
+	"file": string(m.file),
 	"mappings": string(serializeMappings(m))
 ));
 
-private list[str] sortSources(SourceMap m) = sort({mapping.source.path | mapping <- m.mappings});
+private list[str] sortSources(SourceMap m) = sort({mapping.source | mapping <- m.mappings});
 private list[Mapping] sortMappings(list[Mapping] mappings) = sort(mappings, sortMapping);
-private bool sortMapping(Mapping a, Mapping b) = a.generated.line == b.generated.line ? a.generated.column < b.generated.column : a.generated.line < b.generated.line;
+private bool sortMapping(Mapping a, Mapping b) {
+	if (a.generated.line > b.generated.line) {
+		return false;
+	}
+	
+	if (a.generated.line < b.generated.line) {
+		return true;
+	}
+	
+	return a.generated.column < b.generated.column;
+}
+private bool sortMapping(Mapping a, Mapping b) = a.generated.line == b.generated.line ? a.generated.column > b.generated.column : a.generated.line > b.generated.line;
 
 private str serializeMappings(SourceMap m) = serializeMappings(sortMappings(m.mappings), sortSources(m));
 private str serializeMappings(list[Mapping] mappings, list[str] sources) {
@@ -64,7 +75,7 @@ private str serializeMappings(list[Mapping] mappings, list[str] sources) {
 	  	
   		previousGeneratedColumn = mapping.generated.column;
 
-    	sourceIdx = indexOf(sources, mapping.source.path);
+    	sourceIdx = indexOf(sources, mapping.source);
     	next = next + encode(sourceIdx - previousSource);
     	previousSource = sourceIdx;
 
@@ -94,7 +105,7 @@ private int compareByGeneratedPositionsInflated(Mapping mappingA, Mapping mappin
   		return cmp;
   	}
 
-  	cmp = strcmp(mappingA.source.path, mappingB.source.path);
+  	cmp = strcmp(mappingA.source, mappingB.source);
   	if (cmp != 0) {
     	return cmp;
   	}
