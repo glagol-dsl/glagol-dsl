@@ -12,6 +12,7 @@ public &T origin(&T subjectNode, Statement originNode) = subjectNode[@origin = o
 public &T origin(&T subjectNode, Modifier originNode) = subjectNode[@origin = originNode@src] when (originNode@src?);
 public &T origin(&T subjectNode, Type originNode) = subjectNode[@origin = originNode@src] when (originNode@src?);
 public &T origin(&T subjectNode, Name originNode) = subjectNode[@origin = originNode@src] when (originNode@src?);
+public &T origin(&T subjectNode, Symbol originNode) = subjectNode[@origin = originNode@src] when (originNode@src?);
 public &T origin(&T subjectNode, Expression originNode) = subjectNode[@origin = originNode@src] when (originNode@src?);
 public &T origin(&T subjectNode, Annotation originNode) = subjectNode[@origin = originNode@src] when (originNode@src?);
 public &T origin(&T subjectNode, Declaration originNode) = subjectNode[@origin = originNode@src] when (originNode@src?);
@@ -24,6 +25,7 @@ public &T origin(&T subjectNode, Statement originNode, true) = applyDown(subject
 public &T origin(&T subjectNode, Modifier originNode, true) = applyDown(subjectNode, originNode@src) when (originNode@src?);
 public &T origin(&T subjectNode, Type originNode, true) = applyDown(subjectNode, originNode@src) when (originNode@src?);
 public &T origin(&T subjectNode, Name originNode, true) = applyDown(subjectNode, originNode@src) when (originNode@src?);
+public &T origin(&T subjectNode, Symbol originNode, true) = applyDown(subjectNode, originNode@src) when (originNode@src?);
 public &T origin(&T subjectNode, Expression originNode, true) = applyDown(subjectNode, originNode@src) when (originNode@src?);
 public &T origin(&T subjectNode, Annotation originNode, true) = applyDown(subjectNode, originNode@src) when (originNode@src?);
 public &T origin(&T subjectNode, Declaration originNode, true) = applyDown(subjectNode, originNode@src) when (originNode@src?);
@@ -36,6 +38,7 @@ public list[&T] origin(list[&T] subjectNodes, Statement originNode, true) = appl
 public list[&T] origin(list[&T] subjectNodes, Modifier originNode, true) = applyDown(subjectNodes, originNode@src) when (originNode@src?);
 public list[&T] origin(list[&T] subjectNodes, Type originNode, true) = applyDown(subjectNodes, originNode@src) when (originNode@src?);
 public list[&T] origin(list[&T] subjectNodes, Name originNode, true) = applyDown(subjectNodes, originNode@src) when (originNode@src?);
+public list[&T] origin(list[&T] subjectNodes, Symbol originNode, true) = applyDown(subjectNodes, originNode@src) when (originNode@src?);
 public list[&T] origin(list[&T] subjectNodes, Expression originNode, true) = applyDown(subjectNodes, originNode@src) when (originNode@src?);
 public list[&T] origin(list[&T] subjectNodes, Annotation originNode, true) = applyDown(subjectNodes, originNode@src) when (originNode@src?);
 public list[&T] origin(list[&T] subjectNodes, Declaration originNode, true) = applyDown(subjectNodes, originNode@src) when (originNode@src?);

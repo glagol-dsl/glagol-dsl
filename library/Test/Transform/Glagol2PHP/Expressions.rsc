@@ -84,7 +84,7 @@ test bool shouldTransformToUnaryPlusOp() = toPhpExpr(positive(float(4.5)), newTr
 test bool shouldTransformToTypeCast() = toPhpExpr(cast(string(), integer(3)), newTransformEnv()) == phpCast(phpString(), phpScalar(phpInteger(3)));
 
 test bool shouldTransformToLocalMethodCall() = 
-    toPhpExpr(invoke("doSomething", [float(4.3), integer(34)]), newTransformEnv()) ==
+    toPhpExpr(invoke(symbol("doSomething"), [float(4.3), integer(34)]), newTransformEnv()) ==
     phpMethodCall(phpVar(phpName(phpName("this"))), phpName(phpName("doSomething")), [
         phpActualParameter(phpScalar(phpFloat(4.3)), false),
         phpActualParameter(phpScalar(phpInteger(34)), false)
@@ -92,18 +92,18 @@ test bool shouldTransformToLocalMethodCall() =
     
 // TODO Add transformation: if local variable is not defined, try to access a property (using $this)
 test bool shouldTransformToExternalMethodCall() = 
-    toPhpExpr(invoke(variable("someService"), "doSomething", [float(4.3), integer(34)]), newTransformEnv()) ==
+    toPhpExpr(invoke(variable("someService"), symbol("doSomething"), [float(4.3), integer(34)]), newTransformEnv()) ==
     phpMethodCall(phpVar(phpName(phpName("someService"))), phpName(phpName("doSomething")), [
         phpActualParameter(phpScalar(phpFloat(4.3)), false),
         phpActualParameter(phpScalar(phpInteger(34)), false)
     ]);
     
 test bool shouldTransformToLocalPropertyFetch() =
-    toPhpExpr(fieldAccess("counter"), newTransformEnv()) ==
+    toPhpExpr(fieldAccess(symbol("counter")), newTransformEnv()) ==
     phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("counter")));
     
 test bool shouldTransformToExternalPropertyFetch() =
-    toPhpExpr(fieldAccess(variable("someService"), "counter"), newTransformEnv()) ==
+    toPhpExpr(fieldAccess(variable("someService"), symbol("counter")), newTransformEnv()) ==
     phpPropertyFetch(phpVar(phpName(phpName("someService"))), phpName(phpName("counter")));
 
 test bool shouldTransformToThis() = toPhpExpr(this(), newTransformEnv()) == phpVar(phpName(phpName("this")));

@@ -10,10 +10,10 @@ test bool shouldReturnFalseWhenVariableIsUndefined() =
 	!isDefined(variable("a"), newEnv(|tmp:///|));
 
 test bool shouldReturnTrueWhenFieldIsDefined() = 
-	isDefined(fieldAccess("a"), addDefinition(param(integer(), "a", emptyExpr()), newEnv(|tmp:///|)));
+	isDefined(fieldAccess(symbol("a")), addDefinition(param(integer(), "a", emptyExpr()), newEnv(|tmp:///|)));
 	
 test bool shouldReturnFalseWhenFieldIsUndefined() = 
-	!isDefined(fieldAccess("a"), newEnv(|tmp:///|));
+	!isDefined(fieldAccess(symbol("a")), newEnv(|tmp:///|));
 
 test bool shouldReturnTrueIfArtifactIsAlreadyImported() =
     isImported(\import("User", namespace("Test"), "User"), addImported(\import("User", namespace("Test"), "User"), newEnv(|tmp:///|)));

@@ -19,8 +19,8 @@ public Code toCode(p: phpParam(
 
 public Code toCode(list[PhpParam] params) = glue([toCode(p) | p <- params], code(", "));
 
-private Code paramType(p: phpSomeName(phpName(str paramType))) = code(paramType + " ", p);
+private Code paramType(p: phpSomeName(phpName(str paramType))) = code(paramType, p) + code(" ");
 private Code paramType(p: phpNoName()) = code("");
 
-private Code defaultVal(p: phpSomeExpr(PhpExpr expr)) = code(" = ", p) + toCode(expr, 0);
+private Code defaultVal(p: phpSomeExpr(PhpExpr expr)) = code(" ") + code("=", p) + code(" ") + toCode(expr, 0);
 private Code defaultVal(p: phpNoExpr()) = code("");

@@ -49,24 +49,24 @@ public TypeEnv checkExpression(f: fieldAccess(_), TypeEnv env) = checkIsVariable
 public TypeEnv checkExpression(f: fieldAccess(_, _), TypeEnv env) = checkIsVariableDefined(f, env);
 public TypeEnv checkExpression(a: arrayAccess(_, _), TypeEnv env) = checkArrayAccess(a, env);
 
-public TypeEnv checkIsVariableDefined(expr: fieldAccess(str name), TypeEnv env) = 
-	addError(expr, "\'<expr.name>\' is undefined", env)
+public TypeEnv checkIsVariableDefined(expr: fieldAccess(s: symbol(str name)), TypeEnv env) = 
+	addError(expr, "\'<name>\' is undefined", env)
 	when !hasLocalProperty(name, env);
 
-public TypeEnv checkIsVariableDefined(expr: fieldAccess(str name), TypeEnv env) = env;
+public TypeEnv checkIsVariableDefined(expr: fieldAccess(s: symbol(str name)), TypeEnv env) = env;
 
-public TypeEnv checkIsVariableDefined(expr: fieldAccess(this(), str name), TypeEnv env) = 
-	addError(expr, "\'<expr.name>\' is undefined", env)
+public TypeEnv checkIsVariableDefined(expr: fieldAccess(this(), s: symbol(str name)), TypeEnv env) = 
+	addError(expr, "\'<name>\' is undefined", env)
 	when !hasLocalProperty(name, env);
 
-public TypeEnv checkIsVariableDefined(expr: fieldAccess(this(), str name), TypeEnv env) = env;
-public TypeEnv checkIsVariableDefined(expr: fieldAccess(Expression prev, str name), TypeEnv env) = 
-	checkFieldAccess(lookupType(prev, env), prev, fieldAccess(name), env);
+public TypeEnv checkIsVariableDefined(expr: fieldAccess(this(), s: symbol(str name)), TypeEnv env) = env;
+public TypeEnv checkIsVariableDefined(expr: fieldAccess(Expression prev, s: symbol(str name)), TypeEnv env) = 
+	checkFieldAccess(lookupType(prev, env), prev, fieldAccess(s), env);
 
-public TypeEnv checkFieldAccess(self(), Expression prev, f: fieldAccess(str field), TypeEnv env) = checkIsVariableDefined(f, env);
-public TypeEnv checkFieldAccess(artifact(name), Expression prev, fieldAccess(str field), TypeEnv env) = env when isSelf(name, env);
-public TypeEnv checkFieldAccess(repository(name), Expression prev, fieldAccess(str field), TypeEnv env) = env when isSelf(name, env);
-public TypeEnv checkFieldAccess(Type t, Expression prev, f: fieldAccess(str field), TypeEnv env) = addError(prev, "\'<field>\' is undefined", env);
+public TypeEnv checkFieldAccess(self(), Expression prev, f: fieldAccess(s: symbol(str field)), TypeEnv env) = checkIsVariableDefined(f, env);
+public TypeEnv checkFieldAccess(artifact(name), Expression prev, fieldAccess(s: symbol(str field)), TypeEnv env) = env when isSelf(name, env);
+public TypeEnv checkFieldAccess(repository(name), Expression prev, fieldAccess(s: symbol(str field)), TypeEnv env) = env when isSelf(name, env);
+public TypeEnv checkFieldAccess(Type t, Expression prev, f: fieldAccess(s: symbol(str field)), TypeEnv env) = addError(prev, "\'<field>\' is undefined", env);
 
 public TypeEnv checkIsVariableDefined(Expression expr, TypeEnv env) = 
 	addError(expr, "\'<expr.name>\' is undefined", env)
@@ -214,14 +214,14 @@ public TypeEnv checkNewArtifact(Expression n, e: fullName(str localName, Declara
 private str stringify(fullName(str localName, Declaration namespace, str originalName)) = 
 	namespaceToString(namespace, "::") + "::<originalName>";
 
-public TypeEnv checkExpression(i: invoke(str m, list[Expression] params), TypeEnv env) = 
+public TypeEnv checkExpression(i: invoke(s: symbol(str m), list[Expression] params), TypeEnv env) = 
 	checkInvoke(i, toSignature(params, env), checkExpressions(params, env));
 
-public TypeEnv checkInvoke(i: invoke(str m, list[Expression] params), list[Type] signature, TypeEnv env) = 
+public TypeEnv checkInvoke(i: invoke(s: symbol(str m), list[Expression] params), list[Type] signature, TypeEnv env) = 
 	addError(i, "Call to an undefined method <m>(<toString(signature,  ", ")>)", env)
 	when !hasMethod(m, signature, env);
 
-public TypeEnv checkInvoke(i: invoke(str m, list[Expression] params), list[Type] signature, TypeEnv env) = env;
+public TypeEnv checkInvoke(i: invoke(s: symbol(str m), list[Expression] params), list[Type] signature, TypeEnv env) = env;
 
 public bool hasMethod(str name, list[Type] signature, TypeEnv env) = 
 	(false | true | method(Modifier access, _, name, params, _, _) <- getMethods(getContext(env)), 
@@ -246,27 +246,27 @@ public bool haveDefaultValues(list[Declaration] params) =
 public list[Type] toSignature(list[Expression] params, TypeEnv env) = [lookupType(p, env) | p <- params];
 public list[Type] toSignature(list[Declaration] params, TypeEnv env) = [t | param(Type t, _, _) <- params];
 
-public TypeEnv checkExpression(i: invoke(Expression prev, str m, list[Expression] params), TypeEnv env) = 
+public TypeEnv checkExpression(i: invoke(Expression prev, symbol(str m), list[Expression] params), TypeEnv env) = 
 	checkInvoke(lookupType(prev, env), i, toSignature(params, env), checkExpressions(params, env));
 
-public TypeEnv checkInvoke(self(), i: invoke(Expression prev, str m, list[Expression] params), list[Type] signature, TypeEnv env) =
-	checkInvoke(invoke(m, params)[@src=i@src], signature, env);
+public TypeEnv checkInvoke(self(), i: invoke(Expression prev, s: symbol(str m), list[Expression] params), list[Type] signature, TypeEnv env) =
+	checkInvoke(invoke(s, params)[@src=i@src], signature, env);
 
-public TypeEnv checkInvoke(unknownType(), i: invoke(Expression prev, str m, list[Expression] params), list[Type] signature, TypeEnv env) =
+public TypeEnv checkInvoke(unknownType(), i: invoke(Expression prev, symbol(str m), list[Expression] params), list[Type] signature, TypeEnv env) =
 	addError(i,
 		"Cannot call method <m>(<toString(signature,  ", ")>) on unknown type",
 		checkExpression(prev, env)
 	);
 	
-public TypeEnv checkInvoke(Type prevType, i: invoke(Expression prev, str m, list[Expression] params), list[Type] signature, TypeEnv env) =
+public TypeEnv checkInvoke(Type prevType, i: invoke(Expression prev, s: symbol(str m), list[Expression] params), list[Type] signature, TypeEnv env) =
 	addError(i,
 		"Cannot call method <m>(<toString(signature,  ", ")>) on <toString(prevType)>",
 		checkExpression(prev, env)
 	) when (artifact(_) !:= prevType && repository(_) !:= prevType);
 	
-public TypeEnv checkInvoke(Type prevType, i: invoke(Expression prev, str m, list[Expression] params), list[Type] signature, TypeEnv env) =
+public TypeEnv checkInvoke(Type prevType, i: invoke(Expression prev, s: symbol(str m), list[Expression] params), list[Type] signature, TypeEnv env) =
 	decrementDimension(setContext(getContext(env), 
-		checkInvoke(invoke(m, params)[@src=i@src], signature, 
+		checkInvoke(invoke(s, params)[@src=i@src], signature, 
 			incrementDimension(setContext(findModule(prevType, env), checkExpression(prev, env)))
 		)
 	));
@@ -412,7 +412,7 @@ public Type lookupType(get(a: repository(e: fullName(str name, Declaration names
 public Type lookupType(get(t: selfie()), TypeEnv env) = t;
 public Type lookupType(get(_), TypeEnv env) = unknownType();
 
-public Type lookupType(invoke(str m, args), TypeEnv env) {
+public Type lookupType(invoke(s: symbol(str m), args), TypeEnv env) {
 	visit (getContext(env)) { 
 		case method(Modifier access, Type t, m, params, _, _): 
 			if (isMethodAccessible(access, getDimension(env)) && isSignatureMatching(toSignature(args, env), params, env)) {
@@ -423,30 +423,30 @@ public Type lookupType(invoke(str m, args), TypeEnv env) {
 	return unknownType();
 }
 
-public Type lookupType(invoke(Expression prev, str m, params), TypeEnv env) = 
-	lookupType(lookupType(prev, env), invoke(m , params), env);
+public Type lookupType(invoke(Expression prev, s: symbol(str m), params), TypeEnv env) = 
+	lookupType(lookupType(prev, env), invoke(s , params), env);
 	
-public Type lookupType(self(), i: invoke(str m, params), TypeEnv env) = lookupType(i, env);
+public Type lookupType(self(), i: invoke(s: symbol(str m), params), TypeEnv env) = lookupType(i, env);
 	
-public Type lookupType(Type prev, i: invoke(str m, list[Expression] args), TypeEnv env) = 
+public Type lookupType(Type prev, i: invoke(s: symbol(str m), list[Expression] args), TypeEnv env) = 
 	lookupType(i, incrementDimension(setContext(findModule(prev, env), env))) when hasModule(prev, env);
 	
-public Type lookupType(Type prev, i: invoke(str m, list[Expression] args), TypeEnv env) = unknownType();
+public Type lookupType(Type prev, i: invoke(s: symbol(str m), list[Expression] args), TypeEnv env) = unknownType();
 
-public Type lookupType(fieldAccess(str field), TypeEnv env) = 
+public Type lookupType(fieldAccess(s: symbol(str field)), TypeEnv env) = 
 	findLocalProperty(field, env).valueType when hasLocalProperty(field, env);
 	
-public Type lookupType(f: fieldAccess(str field), TypeEnv env) = unknownType();
+public Type lookupType(f: fieldAccess(s: symbol(str field)), TypeEnv env) = unknownType();
 
-public Type lookupType(f: fieldAccess(this(), str field), TypeEnv env) = lookupType(fieldAccess(field), env);
+public Type lookupType(f: fieldAccess(this(), s: symbol(str field)), TypeEnv env) = lookupType(fieldAccess(s), env);
 
-public Type lookupType(f: fieldAccess(Expression prev, str field), TypeEnv env) = 
-	lookupType(lookupType(prev, env), fieldAccess(field), env);
+public Type lookupType(f: fieldAccess(Expression prev, s: symbol(str field)), TypeEnv env) = 
+	lookupType(lookupType(prev, env), fieldAccess(s), env);
 	
-public Type lookupType(self(), f: fieldAccess(str field), TypeEnv env) = lookupType(f, env);
-public Type lookupType(artifact(name), f: fieldAccess(str field), TypeEnv env) = lookupType(f, env) when isSelf(name, env);
-public Type lookupType(repository(name), f: fieldAccess(str field), TypeEnv env) = lookupType(f, env) when isSelf(name, env);
-public Type lookupType(Type t, f: fieldAccess(str field), TypeEnv env) = unknownType();
+public Type lookupType(self(), f: fieldAccess(s: symbol(str field)), TypeEnv env) = lookupType(f, env);
+public Type lookupType(artifact(name), f: fieldAccess(s: symbol(str field)), TypeEnv env) = lookupType(f, env) when isSelf(name, env);
+public Type lookupType(repository(name), f: fieldAccess(s: symbol(str field)), TypeEnv env) = lookupType(f, env) when isSelf(name, env);
+public Type lookupType(Type t, f: fieldAccess(s: symbol(str field)), TypeEnv env) = unknownType();
 
 public Type lookupType(cast(Type t, Expression expr), TypeEnv env) = lookupCastType(t, lookupType(expr, env), env);
 

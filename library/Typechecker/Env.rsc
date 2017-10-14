@@ -75,8 +75,8 @@ private Declaration enclosedNode(method(Declaration d)) = d;
 private default Statement enclosedNode(localVar(Statement stmt)) = stmt;
 
 public bool isDefined(variable(GlagolID name), TypeEnv env) = name in env.definitions;
-public bool isDefined(fieldAccess(str field), TypeEnv env) = field in env.definitions;
-public bool isDefined(fieldAccess(this(), str field), TypeEnv env) = field in env.definitions && isField(env.definitions[field]);
+public bool isDefined(fieldAccess(s: symbol(str field)), TypeEnv env) = field in env.definitions;
+public bool isDefined(fieldAccess(this(), s: symbol(str field)), TypeEnv env) = field in env.definitions && isField(env.definitions[field]);
 public bool isDefined(Expression expr, TypeEnv env) = false;
 
 public TypeEnv addError(loc src, str message, TypeEnv env) = env[errors = env.errors + <src, message>];

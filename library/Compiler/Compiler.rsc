@@ -62,13 +62,13 @@ private SourceMap createSourceMap(str file, Code source) {
 	SourceMap m = newSourceMap(file);
 	int lineNumber = 1;
 	int column = 0;
-	for (<str line, loc source> <- source) {
+	for (<str line, loc source, bool isEnd> <- source) {
 		if (line == nl()) { 
 			lineNumber = lineNumber + 1;
 			column = 0;
 		} else {
 			if (!isDefaultLoc(source)) {
-				m = addMapping(source.path, source.begin.line, source.begin.column, lineNumber, column, m);
+				m = addMapping(source.path, getLine(isEnd, source), getColumn(isEnd, source), lineNumber, column, m);
 			}
 			column = column + size(line);
 		}
@@ -76,6 +76,12 @@ private SourceMap createSourceMap(str file, Code source) {
 	
 	return m;
 }
+
+private int getLine(true, loc source) = source.end.line;
+private int getLine(false, loc source) = source.begin.line;
+
+private int getColumn(true, loc source) = source.end.column;
+private int getColumn(false, loc source) = source.begin.column;
 
 private str line(loc src) = ":<src.begin.line>" when src.begin? && src.begin.line?;
 private str line(loc src) = "";

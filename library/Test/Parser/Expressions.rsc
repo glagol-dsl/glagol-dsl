@@ -208,7 +208,7 @@ test bool testMethodInvoke()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "methodInvoke", [], [
-            expression(invoke("methodInvoke", []))
+            expression(invoke(symbol("methodInvoke"), []))
           ], emptyExpr())
     ]));
 }
@@ -231,10 +231,10 @@ test bool testMethodInvokeChainedToAVariable()
             declare(artifact(fullName("SomeEntity", namespace("Example"), "SomeEntity")), variable("eee"), expression(
                 new(fullName("SomeEntity", namespace("Example"), "SomeEntity"), [])
             )),
-            expression(invoke(variable("eee"), "methodInvoke", [])),
-            expression(invoke(invoke(variable("eee"), "nested", [\list([string("string")])]), "methodInvoke", [])),
-            expression(invoke(fieldAccess(fieldAccess(variable("eee"), "blah"), "blah2"), "methodInvoke", [])),
-            expression(invoke(\bracket(new(fullName("MyClass", namespace("Example"), "MyClass"), [])), "methodInvoke", []))
+            expression(invoke(variable("eee"), symbol("methodInvoke"), [])),
+            expression(invoke(invoke(variable("eee"), symbol("nested"), [\list([string("string")])]), symbol("methodInvoke"), [])),
+            expression(invoke(fieldAccess(fieldAccess(variable("eee"), symbol("blah")), symbol("blah2")), symbol("methodInvoke"), [])),
+            expression(invoke(\bracket(new(fullName("MyClass", namespace("Example"), "MyClass"), [])), symbol("methodInvoke"), []))
           ], emptyExpr())
     ]));
 }
@@ -250,7 +250,7 @@ test bool testMethodInvokeUsingThis()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "methodInvoke", [], [
-            expression(invoke(fieldAccess(fieldAccess(this(), "field"), "nested"), "invoke", []))
+            expression(invoke(fieldAccess(fieldAccess(this(), symbol("field")), symbol("nested")), symbol("invoke"), []))
           ], emptyExpr())
     ]));
 }
@@ -332,9 +332,9 @@ test bool testFieldAccessWithAssign()
     
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         method(\public(), voidValue(), "methodInvoke", [], [
-            assign(fieldAccess(this(), "field"), defaultAssign(), expression(string("adsdsasad"))),
-            assign(fieldAccess(invoke(this(), "invoke", []), "field2"), additionAssign(), expression(integer(33))),
-            assign(fieldAccess(this(), "var"), defaultAssign(), expression(fieldAccess(variable("that"), "var2")))
+            assign(fieldAccess(this(), symbol("field")), defaultAssign(), expression(string("adsdsasad"))),
+            assign(fieldAccess(invoke(this(), symbol("invoke"), []), symbol("field2")), additionAssign(), expression(integer(33))),
+            assign(fieldAccess(this(), symbol("var")), defaultAssign(), expression(fieldAccess(variable("that"), symbol("var2"))))
           ], emptyExpr())
     ]));
 }

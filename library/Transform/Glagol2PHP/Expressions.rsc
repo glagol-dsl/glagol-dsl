@@ -116,29 +116,26 @@ public PhpExpr toPhpExpr(p: positive(Expression e), TransformEnv env) =
 	origin(phpUnaryOperation(toPhpExpr(e, env), origin(phpUnaryPlus(), p)), p);
 
 // Method call
-public PhpExpr toPhpExpr(e: invoke(str methodName, list[Expression] args), TransformEnv env) =
-    origin(
-    	phpMethodCall(
-    		origin(phpVar(phpName(phpName("this"))), e, true), 
-    		origin(phpName(phpName(methodName)), e, true), 
-    		[origin(phpActualParameter(toPhpExpr(arg, env), false), arg) | arg <- args]
-		), e
+public PhpExpr toPhpExpr(e: invoke(s: symbol(str methodName), list[Expression] args), TransformEnv env) =
+    phpMethodCall(
+		phpVar(phpName(phpName("this"))), 
+		origin(phpName(phpName(methodName)), s, true), 
+		[phpActualParameter(toPhpExpr(arg, env), false) | arg <- args]
 	);
 
-public PhpExpr toPhpExpr(e: invoke(Expression prev, str methodName, list[Expression] args), TransformEnv env) =
-    origin(
-    	phpMethodCall(
-    		toPhpExpr(prev, env), origin(phpName(phpName(methodName)), e, true), 
-    		[origin(phpActualParameter(toPhpExpr(arg, env), false), arg) | arg <- args]
-		), e
+public PhpExpr toPhpExpr(e: invoke(Expression prev, s: symbol(str methodName), list[Expression] args), TransformEnv env) =
+    phpMethodCall(
+		toPhpExpr(prev, env), 
+		origin(phpName(phpName(methodName)), s, true), 
+		[phpActualParameter(toPhpExpr(arg, env), false) | arg <- args]
 	);
 
 // Property fetch
-public PhpExpr toPhpExpr(e: fieldAccess(str name), TransformEnv env) =
-    origin(phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName(name))), e, true);
+public PhpExpr toPhpExpr(e: fieldAccess(s: symbol(str name)), TransformEnv env) =
+    phpPropertyFetch(phpVar(phpName(phpName("this"))), origin(phpName(phpName(name)), s, true));
     
-public PhpExpr toPhpExpr(e: fieldAccess(Expression prev, str name), TransformEnv env) =
-    origin(phpPropertyFetch(toPhpExpr(prev, env), origin(phpName(phpName(name)), e, true)), e);
+public PhpExpr toPhpExpr(e: fieldAccess(Expression prev, s: symbol(str name)), TransformEnv env) =
+    phpPropertyFetch(toPhpExpr(prev, env), origin(phpName(phpName(name)), s, true));
     
 public PhpExpr toPhpExpr(e: this(), TransformEnv env) = origin(phpVar(phpName(phpName("this"))), e);
 

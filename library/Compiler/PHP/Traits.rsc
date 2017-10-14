@@ -7,4 +7,4 @@ import Utils::Glue;
 import Utils::NewLine;
 
 public Code toCode(phpTraitUse(list[PhpName] traits, []), int i) =
-    code(nl()) + glue([code("<s(i)>use <name>;", p) | p: phpName(str name) <- traits], code(nl())) + code(nl());
+    code(nl()) + glue([code(s(i)) + code("use", p) + code(" ") + code("<name>", p) + codeEnd(";", p) | p: phpName(str name) <- traits], code(nl())) + code(nl());

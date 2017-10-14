@@ -57,7 +57,7 @@ test bool shouldParseRepositoryWithMethodAndAMap()
         method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findById", [
             param(integer(), "id", emptyExpr())
         ], [\return(
-            invoke("findOneBy", [\map((string("id"): variable("id")))])
+            invoke(symbol("findOneBy"), [\map((string("id"): variable("id")))])
         )], emptyExpr()),
 		method(\public(), artifact(fullName("User", namespace("Example"), "User")), "find", [
 			param(integer(), "id", emptyExpr())

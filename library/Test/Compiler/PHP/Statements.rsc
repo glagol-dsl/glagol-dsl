@@ -64,7 +64,7 @@ test bool shouldCompileDoWithIndentation() =
 test bool shouldCompileEchoWithOneExpr() = implode(toCode(phpEcho([phpScalar(phpString("Hello world!"))]), 0)) == "echo \"Hello world!\";";
 
 test bool shouldCompileEchoWithTwoExprs() = 
-	implode(toCode(phpEcho([phpScalar(phpString("Hello world!")), phpScalar(phpInteger(123))]), 0)) == "echo (\"Hello world!\", 123);";
+	implode(toCode(phpEcho([phpScalar(phpString("Hello world!")), phpScalar(phpInteger(123))]), 0)) == "echo(\"Hello world!\", 123);";
 
 test bool shouldCompileFor() = 
 	implode(toCode(phpFor(
@@ -72,27 +72,27 @@ test bool shouldCompileFor() =
 		[phpBinaryOperation(phpVar(phpName(phpName("i"))), phpScalar(phpInteger(10)), phpLt())], 
 		[phpUnaryOperation(phpVar(phpName(phpName("i"))), phpPostInc())], 
 		[phpEcho([phpVar(phpName(phpName("i"))), phpScalar(phpString("\\n"))])]), 0)) ==
-	"for ($i = 0; $i \< 10; $i++) {\n    echo ($i, \"\\n\");\n}";
+	"for ($i = 0; $i \< 10; $i++) {\n    echo($i, \"\\n\");\n}";
 
 test bool shouldCompileForeachWithoutKeyVarNotByRef() =
 	implode(toCode(phpForeach(phpVar(phpName(phpName("list"))), phpNoExpr(), false, phpVar(phpName(phpName("val"))), [
 		phpEcho([phpVar(phpName(phpName("val"))), phpScalar(phpString("\\n"))])
-	]), 0)) == "foreach ($list as $val) {\n    echo ($val, \"\\n\");\n}";
+	]), 0)) == "foreach ($list as $val) {\n    echo($val, \"\\n\");\n}";
 
 test bool shouldCompileForeachWithKeyVarNotByRef() =
 	implode(toCode(phpForeach(phpVar(phpName(phpName("list"))), phpSomeExpr(phpVar(phpName(phpName("k")))), false, phpVar(phpName(phpName("val"))), [
 		phpEcho([phpVar(phpName(phpName("val"))), phpScalar(phpString("\\n"))])
-	]), 0)) == "foreach ($list as $k =\> $val) {\n    echo ($val, \"\\n\");\n}";
+	]), 0)) == "foreach ($list as $k =\> $val) {\n    echo($val, \"\\n\");\n}";
 
 test bool shouldCompileForeachWithKeyVarWithByRef() =
 	implode(toCode(phpForeach(phpVar(phpName(phpName("list"))), phpSomeExpr(phpVar(phpName(phpName("k")))), true, phpVar(phpName(phpName("val"))), [
 		phpEcho([phpVar(phpName(phpName("val"))), phpScalar(phpString("\\n"))])
-	]), 0)) == "foreach ($list as $k =\> &$val) {\n    echo ($val, \"\\n\");\n}";
+	]), 0)) == "foreach ($list as $k =\> &$val) {\n    echo($val, \"\\n\");\n}";
 
 test bool shouldCompileForeachIndented() =
 	implode(toCode(phpForeach(phpVar(phpName(phpName("list"))), phpSomeExpr(phpVar(phpName(phpName("k")))), true, phpVar(phpName(phpName("val"))), [
 		phpEcho([phpVar(phpName(phpName("val"))), phpScalar(phpString("\\n"))])
-	]), 1)) == "    foreach ($list as $k =\> &$val) {\n        echo ($val, \"\\n\");\n    }";
+	]), 1)) == "    foreach ($list as $k =\> &$val) {\n        echo($val, \"\\n\");\n    }";
 
 test bool shouldCompileFunctionNoParamsNoRefNoReturnType() = 
 	implode(toCode(phpFunction("test", false, [], [phpReturn(phpNoExpr())], phpNoName()), 0)) == 
@@ -178,7 +178,7 @@ test bool shouldCompileWithMembers() =
 	implode(toCode(phpTraitDef(phpTrait("Math", [
 		phpMethod("test", {phpPublic()}, false, [], [], phpNoName())
 	])), 0)) == 
-	"\ntrait Math\n{\n    public function test()\n    {\n    }\n}";
+	"\ntrait Math\n{\n    public function test() {}\n}";
 
 test bool shouldCompileStaticVars() =
 	implode(toCode(phpStatic([phpStaticVar("var1", phpNoExpr()), phpStaticVar("var2", phpSomeExpr(phpScalar(phpInteger(2))))]), 0)) ==

@@ -9,6 +9,7 @@ import Utils::Glue;
 import Compiler::PHP::Params;
 import Compiler::PHP::Statements;
 import Syntax::Abstract::PHP;
+import List;
 
 public Code toCode(m: phpMethod(_, _, _, _, _, _), int i) = toMethod(m, true, i);
 
@@ -18,17 +19,20 @@ public Code toMethod(m: phpMethod(
 	bool byRef, 
 	list[PhpParam] params,
 	list[PhpStmt] body,
-	PhpOptionName rt), bool hasBody, int i) = 
+	PhpOptionName rt), bool isInterface, int i) = 
 	((m@phpAnnotations?) ? toCode(m@phpAnnotations, i) : code("")) +
-	code(nl(), m) + 
+	code(nl()) + 
 	code(s(i)) +
 	toCode(modifiers) +
 	code("function <byRef ? "&" : ""><name>(", m) + 
-	glue([toCode(p) | p <- params], code(", ", m)) + 
-	code(")", m) + returnType(rt) + 
-	(!hasBody ? code(";", m) :
-		(code(nl()) + code("<s(i)>{") + code(nl()) + toCode(body, i + 1) + code("<s(i)>}"))) +
+	glue([toCode(p) | p <- params], code(", ")) + 
+	code(")") + returnType(rt) + 
+	(!isInterface ? codeEnd(";", m) :
+		(size(body) > 0 ?
+		(code(nl()) + code(s(i)) + code("{") + code(nl()) + toCode(body, i + 1) + code(s(i)) + codeEnd("}", m)) :
+		code(" {}"))
+	) +
 	code(nl());
 
 public Code returnType(phpNoName()) = code("");
-public Code returnType(p: phpSomeName(phpName(str name))) = code(": <name>", p);
+public Code returnType(p: phpSomeName(phpName(str name))) = code(":", p) + code(" ") + code("<name>", p);

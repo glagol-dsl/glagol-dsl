@@ -12,7 +12,8 @@ import List;
 public Code toCode(p: phpConstCI(list[PhpConst] consts), int i) = (code() | it + toCode(c, i) | c <- consts);
 public Code toCode(p: phpConst(str name, PhpExpr constValue), int i) = 
 	code(nl()) + 
-	code("<s(i)>const <name> = ", p) + 
-	toCode(constValue, i) + code(";") + 
+	code(s(i)) +
+	code("const <name> = ", p) + 
+	toCode(constValue, i) + codeEnd(";", p) + 
 	code(nl());
 

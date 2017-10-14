@@ -110,10 +110,10 @@ public PhpStmt toPhpStmt(e: flush(Expression expr), TransformEnv env) =
 	);
 
 public PhpStmt toPhpStmt(e: declare(Type t, Expression var, emptyStmt()), TransformEnv env) = 
-	origin(phpExprstmt(origin(phpAssign(toPhpExpr(var, env), origin(phpScalar(phpNull()), e, true)), e)), e);
+	phpExprstmt(origin(phpAssign(toPhpExpr(var, env), origin(phpScalar(phpNull()), var, true)), var));
     
 public PhpStmt toPhpStmt(e: declare(Type t, Expression var, expression(Expression val)), TransformEnv env) = 
-	origin(phpExprstmt(origin(phpAssign(toPhpExpr(var, env), toPhpExpr(val, env)), e)), e);
+	phpExprstmt(origin(phpAssign(toPhpExpr(var, env), toPhpExpr(val, env)), var));
     
 public PhpStmt toPhpStmt(e: declare(Type t, Expression var, defaultValue: assign(assignable, op, expr)), TransformEnv env) = 
 	origin(phpExprstmt(origin(phpAssign(toPhpExpr(var, env), toPhpStmt(defaultValue, env).expr), e)), e);
