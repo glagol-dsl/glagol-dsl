@@ -15,9 +15,10 @@ public Code toCode(p: phpProperty(set[PhpModifier] modifiers, list[PhpProperty] 
 	code(s(i)) +
 	toCode(modifiers) +
 	toCode(prop[0]) + 
-	codeEnd(";", prop[0]) +
+	codeEnd(";", prop[0].defaultValue) +
 	code(nl())
 	when size(prop) == 1;
 
 public Code toCode(p: phpProperty(str propertyName, phpNoExpr())) = code("$<propertyName>", p);
-public Code toCode(p: phpProperty(str propertyName, phpSomeExpr(PhpExpr expr))) = code("$<propertyName>", p) + code(" ") + code("=", p) + code(" ") + toCode(expr, 0);
+public Code toCode(p: phpProperty(str propertyName, phpSomeExpr(PhpExpr expr))) = 
+	code("$<propertyName>", p) + code(" ") + code("=") + code(" ") + toCode(expr, 0);

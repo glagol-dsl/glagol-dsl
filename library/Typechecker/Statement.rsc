@@ -116,7 +116,7 @@ public TypeEnv checkStatement(d: declare(Type varType, variable(GlagolID name), 
 	checkType(varType, s, addDefinition(d, env));
 
 public TypeEnv checkStatement(d: declare(Type varType, variable(GlagolID name), Statement defaultValue), Type t, Declaration s, TypeEnv env) = 
-	checkStatement(defaultValue, t, s, checkDeclareType(varType, lookupType(defaultValue, env), name, d, addDefinition(d, env)));
+	checkDeclareType(varType, lookupType(defaultValue, env), name, d, addDefinition(d, checkStatement(defaultValue, t, s, env)));
 
 public TypeEnv checkDeclareType(\list(Type l), \list(voidValue()), GlagolID name, Statement d, TypeEnv env) = env;
 public TypeEnv checkDeclareType(\map(Type k, Type v), \map(voidValue(), voidValue()), GlagolID name, Statement d, TypeEnv env) = env;

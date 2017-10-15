@@ -17,8 +17,8 @@ private str toString(\map(Type key, Type v)) = "Map";
 private str toString(artifact(Name name)) = name.localName;
 private str toString(repository(Name name)) = "<name.localName>Repository";
 
-public PhpClassItem toPhpClassItem(d: property(valueType: fullName(str localName, Declaration namespace, str originalName), str name, emptyExpr()), TransformEnv env)
-    = origin(phpProperty({origin(phpPrivate(), d)}, [phpProperty(name, origin(phpNoExpr(), d))])[
+public PhpClassItem toPhpClassItem(d: property(valueType: fullName(str localName, Declaration namespace, str originalName), str name, e: emptyExpr()), TransformEnv env)
+    = origin(phpProperty({origin(phpPrivate(), d)}, [origin(phpProperty(name, origin(phpNoExpr(), e)), d)])[
     	@phpAnnotations=toPhpAnnotations(d, env) + {
     		phpAnnotation("var", origin(phpAnnotationVal(toString(valueType)), valueType)),
     		phpAnnotation("column", (
@@ -27,15 +27,15 @@ public PhpClassItem toPhpClassItem(d: property(valueType: fullName(str localName
     	}
     ], d) when isValueObject(valueType, env);
     
-public PhpClassItem toPhpClassItem(d: property(Type valueType, str name, emptyExpr()), TransformEnv env)
-    = origin(phpProperty({origin(phpPrivate(), d)}, [origin(phpProperty(name, phpNoExpr()), d, true)])[
+public PhpClassItem toPhpClassItem(d: property(Type valueType, str name, e: emptyExpr()), TransformEnv env)
+    = origin(phpProperty({origin(phpPrivate(), d)}, [origin(phpProperty(name, origin(phpNoExpr(), e)), d)])[
     	@phpAnnotations=toPhpAnnotations(d, env) + {
     		phpAnnotation("var", origin(phpAnnotationVal(toString(valueType)), valueType))
     	}
     ], d);
 
-public PhpClassItem toPhpClassItem(d: property(Type \valueType, str name, get(_)), TransformEnv env)
-    = origin(phpProperty({origin(phpPrivate(), d)}, [origin(phpProperty(name, phpNoExpr()), d, true)])[
+public PhpClassItem toPhpClassItem(d: property(Type \valueType, str name, g: get(_)), TransformEnv env)
+    = origin(phpProperty({origin(phpPrivate(), d)}, [origin(phpProperty(name, origin(phpNoExpr(), g)), d)])[
     	@phpAnnotations=toPhpAnnotations(d, env) + {
     		phpAnnotation("var", origin(phpAnnotationVal(toString(valueType)), valueType))
     	}

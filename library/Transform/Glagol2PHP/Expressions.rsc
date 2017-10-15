@@ -120,14 +120,14 @@ public PhpExpr toPhpExpr(e: invoke(s: symbol(str methodName), list[Expression] a
     phpMethodCall(
 		phpVar(phpName(phpName("this"))), 
 		origin(phpName(phpName(methodName)), s, true), 
-		[phpActualParameter(toPhpExpr(arg, env), false) | arg <- args]
+		[origin(phpActualParameter(toPhpExpr(arg, env), false), arg) | arg <- args]
 	);
 
 public PhpExpr toPhpExpr(e: invoke(Expression prev, s: symbol(str methodName), list[Expression] args), TransformEnv env) =
     phpMethodCall(
 		toPhpExpr(prev, env), 
 		origin(phpName(phpName(methodName)), s, true), 
-		[phpActualParameter(toPhpExpr(arg, env), false) | arg <- args]
+		[origin(phpActualParameter(toPhpExpr(arg, env), false), arg) | arg <- args]
 	);
 
 // Property fetch

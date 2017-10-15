@@ -18,7 +18,6 @@ import Utils::NewLine;
 import lang::json::IO;
 import IO;
 import String;
-import ValueIO;
 
 public void compile(map[loc, str] sources, int listenerId) {
 	Config config = newConfig();

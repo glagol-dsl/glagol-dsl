@@ -30,20 +30,23 @@ public Code toCode(d: phpClassDef(class: phpClass(
 	code("}");
 	
 public Code toCode(list[PhpStmt] statements, i) = (code() | it + toCode(stmt, i) + code(nl()) | stmt <- statements);
-public Code toCode(p: phpExprstmt(PhpExpr expr), int i) = code(s(i)) + toCode(expr, i) + codeEnd(";", p);
-public Code toCode(p: phpReturn(phpSomeExpr(PhpExpr expr)), int i) = code(s(i)) + code("return", p) + code(" ") + toCode(expr, i) + codeEnd(";", p);
+public Code toCode(p: phpExprstmt(PhpExpr expr), int i) = code(s(i)) + toCode(expr, i) + codeEnd(";", expr);
+public Code toCode(p: phpReturn(phpSomeExpr(PhpExpr expr)), int i) = code(s(i)) + code("return", p) + code(" ") + toCode(expr, i) + codeEnd(";", expr);
 public Code toCode(p: phpReturn(phpNoExpr()), int i) = code(s(i)) + code("return;", p);
-public Code toCode(p: phpBreak(phpSomeExpr(PhpExpr expr)), int i) = code(s(i)) + code("break", p) + code(" ") + toCode(expr, i) + codeEnd(";", p);
+public Code toCode(p: phpBreak(phpSomeExpr(PhpExpr expr)), int i) = code(s(i)) + code("break", p) + code(" ") + toCode(expr, i) + codeEnd(";", expr);
 public Code toCode(p: phpBreak(phpNoExpr()), int i) = code(s(i)) + code("break;", p);
-public Code toCode(p: phpContinue(phpSomeExpr(PhpExpr expr)), int i) = code(s(i)) + code("continue", p) + code(" ") + toCode(expr, i) + codeEnd(";", p);
+public Code toCode(p: phpContinue(phpSomeExpr(PhpExpr expr)), int i) = code(s(i)) + code("continue", p) + code(" ") + toCode(expr, i) + codeEnd(";", expr);
 public Code toCode(p: phpContinue(phpNoExpr()), int i) = code(s(i)) + code("continue;", p);
 public Code toCode(p: phpConst(list[PhpConst] consts), int i) = 
 	code(s(i)) + code("const", p) + code(" ") + glue([toCode(c, i) | c <- consts], code(",") + code(nl()) + code("<s(i)>      ")) + codeEnd(";", p);
-public Code toCode(p: phpConst(str name, PhpExpr val), int i) = code(name, p) + code(" ") + code("=", p) + code(" ") + toCode(val, i);
+public Code toCode(p: phpConst(str name, PhpExpr val), int i) = code(name, p) + code(" ") + code("=") + code(" ") + toCode(val, i);
 public Code toCode(p: phpDeclaration(str key, PhpExpr val), int i) = code(key, p) + code("=", p) + toCode(val, i);
-public Code toCode(p: phpEcho(list[PhpExpr] exprs), int i) = code(s(i)) + code("echo", p) + code(" ") + toCode(exprs[0], i) + codeEnd(";", p) when size(exprs) == 1;
-public Code toCode(p: phpEcho(list[PhpExpr] exprs), int i) = code(s(i)) + code("echo(", p) + glue([toCode(e, i) | e <- exprs], code(", ")) + codeEnd(");", p);
-public Code toCode(p: phpGlobal(list[PhpExpr] exprs), int i) = code(s(i)) + code("global", p) + code(" ") + glue([toCode(e, i) | e <- exprs], code(", ")) + codeEnd(";", p);
+public Code toCode(p: phpEcho(list[PhpExpr] exprs), int i) = 
+	code(s(i)) + code("echo", p) + code(" ") + toCode(exprs[0], i) + codeEnd(";", exprs[0]) when size(exprs) == 1;
+public Code toCode(p: phpEcho(list[PhpExpr] exprs), int i) = 
+	code(s(i)) + code("echo(", p) + glue([toCode(e, i) | e <- exprs], code(", ")) + codeEnd(");", last(exprs));
+public Code toCode(p: phpGlobal(list[PhpExpr] exprs), int i) = 
+	code(s(i)) + code("global", p) + code(" ") + glue([toCode(e, i) | e <- exprs], code(", ")) + codeEnd(";", last(exprs));
 public Code toCode(p: phpGoto(str label), int i) = code(s(i)) + code("goto <label>;", p);
 public Code toCode(p: phpLabel(str label), int i) = code(s(i)) + code("<label>:", p);
 public Code toCode(p: phpHaltCompiler(str remainingText), int i) = code("<s(i)>__halt_compiler();<remainingText>", p);
