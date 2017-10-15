@@ -13,20 +13,22 @@ alias SourceMap = tuple[str file, list[Mapping] mappings];
 
 public SourceMap newSourceMap(str file) = <file, []>;
 
-public SourceMap addMapping(str source, int originLine, int originColumn, int generatedLine, int generatedColumn, SourceMap m) = 
-	addMapping(<source, <originLine, originColumn>, <generatedLine, generatedColumn>, "">, m);
-	
-public SourceMap addMapping(Mapping mapping, SourceMap m) = m[mappings = m.mappings + mapping];
+public SourceMap addMapping(str source, int originLine, int originColumn, int generatedLine, int generatedColumn, str name, SourceMap m) = 
+	addMapping(<source, <originLine, originColumn>, <generatedLine, generatedColumn>, name>, m);
+
+private SourceMap addMapping(Mapping mapping, SourceMap m) = m[mappings = m.mappings + mapping];
 
 public JSON sourceMapToJSON(SourceMap m) = object((
 	"version": number(3.0),
 	"sources": array([string(s) | s <- sortSources(m)]),
-	"names": array([]),
+	"names": array([string(s) | s <- sortNames(m)]),
 	"file": string(m.file),
 	"mappings": string(serializeMappings(m))
 ));
 
 private list[str] sortSources(SourceMap m) = sort({mapping.source | mapping <- m.mappings});
+private list[str] sortNames(SourceMap m) = sort({mapping.name | mapping <- m.mappings, mapping.name != ""});
+
 private list[Mapping] sortMappings(list[Mapping] mappings) = sort(mappings, sortMapping);
 private bool sortMapping(Mapping a, Mapping b) {
 	if (a.generated.line > b.generated.line) {
@@ -41,8 +43,8 @@ private bool sortMapping(Mapping a, Mapping b) {
 }
 private bool sortMapping(Mapping a, Mapping b) = a.generated.line == b.generated.line ? a.generated.column > b.generated.column : a.generated.line > b.generated.line;
 
-private str serializeMappings(SourceMap m) = serializeMappings(sortMappings(m.mappings), sortSources(m));
-private str serializeMappings(list[Mapping] mappings, list[str] sources) {
+private str serializeMappings(SourceMap m) = serializeMappings(sortMappings(m.mappings), sortSources(m), sortNames(m));
+private str serializeMappings(list[Mapping] mappings, list[str] sources, list[str] names) {
 	str out = "";
 	str next;
 	int previousGeneratedLine = 1;
@@ -51,6 +53,8 @@ private str serializeMappings(list[Mapping] mappings, list[str] sources) {
 	int previousOriginalLine = 0;
 	int previousSource = 0;
 	int sourceIdx = 0;
+	int nameIdx = 0;
+	int previousName;
 	Mapping mapping;
 	
 	for (int m <- index(mappings)) {
@@ -86,6 +90,12 @@ private str serializeMappings(list[Mapping] mappings, list[str] sources) {
 
     	next = next + encode(mapping.origin.column - previousOriginalColumn);
     	previousOriginalColumn = mapping.origin.column;
+    	
+    	if (mapping.name != "") {
+            nameIdx = indexOf(names, mapping.name);
+            next = next + encode(nameIdx - previousName);
+            previousName = nameIdx;
+        }
     	
     	out = out + next;
   	}

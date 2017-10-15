@@ -62,13 +62,13 @@ private SourceMap createSourceMap(str file, Code source) {
 	SourceMap m = newSourceMap(file);
 	int lineNumber = 1;
 	int column = 0;
-	for (<str line, loc source, bool isEnd> <- source) {
+	for (<str line, loc source, bool isEnd, str name> <- source) {
 		if (line == nl()) { 
 			lineNumber = lineNumber + 1;
 			column = 0;
 		} else {
 			if (!isDefaultLoc(source)) {
-				m = addMapping(source.path, getLine(isEnd, source), getColumn(isEnd, source), lineNumber, column, m);
+				m = addMapping(source.path, getLine(isEnd, source), getColumn(isEnd, source), lineNumber, column, name, m);
 			}
 			column = column + size(line);
 		}
