@@ -3,7 +3,6 @@ module Compiler::Composer::Dependencies
 import Compiler::Composer::Dependencies::Framework;
 import Compiler::Composer::Dependencies::ORM;
 import Compiler::Composer::Dependencies::Intersect;
-import Syntax::Abstract::Glagol;
 import Config::Config;
 import Config::Reader;
 import Utils::JSON;

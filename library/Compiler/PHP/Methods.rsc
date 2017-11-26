@@ -24,7 +24,7 @@ public Code toMethod(m: phpMethod(
 	code(nl()) + 
 	code(s(i)) +
 	toCode(modifiers) +
-	code("function <byRef ? "&" : ""><name>(", m) + 
+	code("function <byRef ? "&" : "">", m) + codeEnd(name, rt) + code("(", m) + 
 	glue([toCode(p) | p <- params], code(", ")) + 
 	code(")") + returnType(rt) + 
 	(!isInterface ? codeEnd(";", m) :

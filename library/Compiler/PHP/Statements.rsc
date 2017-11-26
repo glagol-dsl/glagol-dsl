@@ -70,10 +70,12 @@ public Code toCode(p: phpFunction(str name, bool byRef, list[PhpParam] params, l
 	code("}");
 
 public Code toCode(p: phpIf(PhpExpr cond, [phpBlock(list[PhpStmt] body)], list[PhpElseIf] elseIfs, PhpOptionElse elseClause), int i) =
-	toCode(phpIf(cond, body, elseIfs, elseClause), i);
+	toCode(phpIf(cond, body, elseIfs, elseClause), p, i);
+	
+public Code toCode(p: phpIf(PhpExpr cond, list[PhpStmt] body, list[PhpElseIf] elseIfs, PhpOptionElse elseClause), int i) = toCode(p, p, i);
 
-public Code toCode(p: phpIf(PhpExpr cond, list[PhpStmt] body, list[PhpElseIf] elseIfs, PhpOptionElse elseClause), int i) =
-	code(s(i)) + code("if", p) + code(" ") + code("(") + toCode(cond, i) + code(")") + code(" ") + 
+public Code toCode(p: phpIf(PhpExpr cond, list[PhpStmt] body, list[PhpElseIf] elseIfs, PhpOptionElse elseClause), PhpStmt sOrigin, int i) =
+	code(s(i)) + code("if", sOrigin) + code(" ") + code("(") + toCode(cond, i) + code(")") + code(" ") + 
 	code("{") + code(nl()) +
 	toCode(body, i + 1) + 
 	code(s(i)) +
@@ -166,23 +168,24 @@ private default str implements(list[PhpName] interfaces) =
 
 private Code toElseIfs(list[PhpElseIf] elseIfs, int i) = glue([toElseIf(e, i) | e <- elseIfs]);
 
-private Code toElseIf(phpElseIf(PhpExpr cond, [phpBlock(list[PhpStmt] body)]), int i) =
-	toElseIf(phpElseIf(cond, body), i);
+private Code toElseIf(p: phpElseIf(PhpExpr cond, [phpBlock(list[PhpStmt] body)]), int i) = toElseIf(phpElseIf(cond, body), p, i);
+private Code toElseIf(p: phpElseIf(PhpExpr cond, list[PhpStmt] body), int i) = toElseIf(p, p, i);
 
-private Code toElseIf(p: phpElseIf(PhpExpr cond, list[PhpStmt] body), int i) = 
-	code(" ") + code("elseif", p) + code(" ") + code("(") + toCode(cond, i) + code(")") + code(" ") + 
+private Code toElseIf(p: phpElseIf(PhpExpr cond, list[PhpStmt] body), PhpElseIf eOrigin, int i) = 
+	code(" ") + code("elseif", eOrigin) + code(" ") + code("(", cond) + toCode(cond, i) + codeEnd(")", cond) + code(" ") + 
 	code("{") + code(nl()) + toCode(body, i + 1) + 
 	code(s(i)) + 
-	code("}");
+	codeEnd("}", eOrigin);
 	
 private Code toElse(phpNoElse(), int i) = code("");
-private Code toElse(phpSomeElse(phpElse([phpBlock(list[PhpStmt] body)])), int i) = toElse(phpSomeElse(phpElse(body)), i);
-private Code toElse(p: phpSomeElse(phpElse(list[PhpStmt] body)), int i) = 
+private Code toElse(p: phpSomeElse(phpElse([phpBlock(list[PhpStmt] body)])), int i) = toElse(phpSomeElse(phpElse(body)), p, i);
+private Code toElse(p: phpSomeElse(phpElse(list[PhpStmt] body)), int i) = toElse(p, p, i);
+private Code toElse(phpSomeElse(p: phpElse(list[PhpStmt] body)), PhpOptionElse eOrigin, int i) = 
 	code(" ") +
-	code("else", p) + code(" ") + 
+	code("else", eOrigin) + code(" ") + 
 	code("{") + code(nl()) + toCode(body, i + 1) + 
 	code(s(i)) +
-	code("}");
+	codeEnd("}", eOrigin);
 
 private Code key(phpNoExpr(), _) = code("");
 private Code key(p: phpSomeExpr(PhpExpr expr), int i) = toCode(expr, i) + code(" ") + code("=\>", p) + code(" ");

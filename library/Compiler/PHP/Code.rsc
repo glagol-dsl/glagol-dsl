@@ -13,18 +13,21 @@ private loc defaultLoc() = |tmp:///unknown|(0, 0, <0, 0>, <0, 0>);
 // code start
 public Code code(str line, PhpExpr origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
 public Code code(str line, PhpOptionExpr origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
-public Code code(str line, PhpOptionName origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
+public Code code(str line, origin: phpSomeName(phpName(str name))) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, name>];
+public Code code(str line, origin: phpNoName()) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
 public Code code(str line, PhpOptionElse origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
 public Code code(str line, PhpActualParameter origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
-public Code code(str line, PhpConst origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
+public Code code(str line, origin: phpConst(str name, PhpExpr constValue)) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, name>];
 public Code code(str line, PhpArrayElement origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
-public Code code(str line, PhpName origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
-public Code code(str line, PhpNameOrExpr origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
+public Code code(str line, origin: phpName(str name)) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, name>];
+public Code code(str line, origin: phpName(phpName(str name))) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, name>];
+public Code code(str line, origin: phpExpr(PhpExpr expr)) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
 public Code code(str line, PhpCastType origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
 public Code code(str line, PhpClosureUse origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
 public Code code(str line, PhpIncludeType origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
 public Code code(str line, PhpOp origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
-public Code code(str line, PhpParam origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
+public Code code(str line, origin: phpParam(str paramName, PhpOptionExpr paramDefault, PhpOptionName paramType, bool byRef, bool isVariadic)) = 
+	[<line, origin@origin? ? origin@origin : defaultLoc(), false, paramName>];
 public Code code(str line, PhpScalar origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
 public Code code(str line, PhpStmt origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
 public Code code(str line, PhpDeclaration origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
@@ -33,14 +36,19 @@ public Code code(str line, PhpCase origin) = [<line, origin@origin? ? origin@ori
 public Code code(str line, PhpElseIf origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
 public Code code(str line, PhpElse origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
 public Code code(str line, PhpUse origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
+public Code code(str line, origin: phpMethod(str name, set[PhpModifier] modifiers, bool byRef, list[PhpParam] params, list[PhpStmt] body, PhpOptionName returnType)) = 
+	[<line, origin@origin? ? origin@origin : defaultLoc(), false, name>]; 
 public Code code(str line, PhpClassItem origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
 public Code code(str line, PhpAdaptation origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
-public Code code(str line, PhpProperty origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
+public Code code(str line, origin: phpProperty(str propertyName, PhpOptionExpr defaultValue)) = 
+	[<line, origin@origin? ? origin@origin : defaultLoc(), false, propertyName>];
 public Code code(str line, PhpModifier origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
-public Code code(str line, PhpClassDef origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
-public Code code(str line, PhpInterfaceDef origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
-public Code code(str line, PhpTraitDef origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
-public Code code(str line, PhpStaticVar origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
+public Code code(str line, origin: phpClass(str className, set[PhpModifier] modifiers, PhpOptionName extends, list[PhpName] implements, list[PhpClassItem] members)) = 
+	[<line, origin@origin? ? origin@origin : defaultLoc(), false, className>]; 
+public Code code(str line, origin: phpInterface(str interfaceName, list[PhpName] extends, list[PhpClassItem] members)) = 
+	[<line, origin@origin? ? origin@origin : defaultLoc(), false, interfaceName>];
+public Code code(str line, origin: phpTrait(str traitName, list[PhpClassItem] members)) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, traitName>];
+public Code code(str line, origin: phpStaticVar(str name, PhpOptionExpr defaultValue)) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, name>];
 public Code code(str line, PhpScript origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
 public Code code(str line, PhpAnnotation origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
 public default Code code(str line, node origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), false, "">];
@@ -49,18 +57,21 @@ public Code code(str line) = [<line, defaultLoc(), false, "">];
 // code end
 public Code codeEnd(str line, PhpExpr origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
 public Code codeEnd(str line, PhpOptionExpr origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
-public Code codeEnd(str line, PhpOptionName origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
+public Code codeEnd(str line, origin: phpSomeName(phpName(str name))) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, name>];
+public Code codeEnd(str line, origin: phpNoName()) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
 public Code codeEnd(str line, PhpOptionElse origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
 public Code codeEnd(str line, PhpActualParameter origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
-public Code codeEnd(str line, PhpConst origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
+public Code codeEnd(str line, origin: phpConst(str name, PhpExpr constValue)) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, name>];
 public Code codeEnd(str line, PhpArrayElement origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
-public Code codeEnd(str line, PhpName origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
-public Code codeEnd(str line, PhpNameOrExpr origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
+public Code codeEnd(str line, origin: phpName(str name)) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, name>];
+public Code codeEnd(str line, origin: phpName(phpName(str name))) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, name>];
+public Code codeEnd(str line, origin: phpExpr(PhpExpr expr)) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
 public Code codeEnd(str line, PhpCastType origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
 public Code codeEnd(str line, PhpClosureUse origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
 public Code codeEnd(str line, PhpIncludeType origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
 public Code codeEnd(str line, PhpOp origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
-public Code codeEnd(str line, PhpParam origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
+public Code codeEnd(str line, origin: phpParam(str paramName, PhpOptionExpr paramDefault, PhpOptionName paramType, bool byRef, bool isVariadic)) = 
+	[<line, origin@origin? ? origin@origin : defaultLoc(), true, paramName>];
 public Code codeEnd(str line, PhpScalar origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
 public Code codeEnd(str line, PhpStmt origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
 public Code codeEnd(str line, PhpDeclaration origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
@@ -69,14 +80,19 @@ public Code codeEnd(str line, PhpCase origin) = [<line, origin@origin? ? origin@
 public Code codeEnd(str line, PhpElseIf origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
 public Code codeEnd(str line, PhpElse origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
 public Code codeEnd(str line, PhpUse origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
+public Code codeEnd(str line, origin: phpMethod(str name, set[PhpModifier] modifiers, bool byRef, list[PhpParam] params, list[PhpStmt] body, PhpOptionName returnType)) = 
+	[<line, origin@origin? ? origin@origin : defaultLoc(), true, name>]; 
 public Code codeEnd(str line, PhpClassItem origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
 public Code codeEnd(str line, PhpAdaptation origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
-public Code codeEnd(str line, PhpProperty origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
+public Code codeEnd(str line, origin: phpProperty(str propertyName, PhpOptionExpr defaultValue)) = 
+	[<line, origin@origin? ? origin@origin : defaultLoc(), true, propertyName>];
 public Code codeEnd(str line, PhpModifier origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
-public Code codeEnd(str line, PhpClassDef origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
-public Code codeEnd(str line, PhpInterfaceDef origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
-public Code codeEnd(str line, PhpTraitDef origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
-public Code codeEnd(str line, PhpStaticVar origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
+public Code codeEnd(str line, origin: phpClass(str className, set[PhpModifier] modifiers, PhpOptionName extends, list[PhpName] implements, list[PhpClassItem] members)) = 
+	[<line, origin@origin? ? origin@origin : defaultLoc(), true, className>]; 
+public Code codeEnd(str line, origin: phpInterface(str interfaceName, list[PhpName] extends, list[PhpClassItem] members)) = 
+	[<line, origin@origin? ? origin@origin : defaultLoc(), true, interfaceName>];
+public Code codeEnd(str line, origin: phpTrait(str traitName, list[PhpClassItem] members)) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, traitName>];
+public Code codeEnd(str line, origin: phpStaticVar(str name, PhpOptionExpr defaultValue)) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, name>];
 public Code codeEnd(str line, PhpScript origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
 public Code codeEnd(str line, PhpAnnotation origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];
 public default Code codeEnd(str line, node origin) = [<line, origin@origin? ? origin@origin : defaultLoc(), true, "">];

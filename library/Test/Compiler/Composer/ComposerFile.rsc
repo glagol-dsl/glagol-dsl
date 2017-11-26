@@ -12,7 +12,7 @@ test bool shouldCreateComposerFileUsingLumenAndDoctrine() =
         "\"require\":{" + 
             "\"bulgaria-php/glagol-bridge-lumen\":\"^0.1\"," + 
         	"\"vlucas/phpdotenv\":\"~2.2\"," +
-            "\"laravel/lumen-framework\":\"5.4.*\"," + 
+            "\"laravel/lumen-framework\":\"5.5.*\"," + 
             "\"bulgaria-php/glagol-php-overriding\":\"^0.1\"," + 
             "\"php\":\"^7.1\"," + 
             "\"laravel-doctrine/orm\":\"^1.3\"," + 
@@ -33,7 +33,7 @@ test bool shouldCreateComposerFileUsingLumenAndDoctrineWithNamespaceAutoload() =
         "\"require\":{" + 
             "\"bulgaria-php/glagol-bridge-lumen\":\"^0.1\"," +
         	"\"vlucas/phpdotenv\":\"~2.2\"," +
-            "\"laravel/lumen-framework\":\"5.4.*\"," + 
+            "\"laravel/lumen-framework\":\"5.5.*\"," + 
             "\"bulgaria-php/glagol-php-overriding\":\"^0.1\"," + 
             "\"php\":\"^7.1\"," + 
             "\"laravel-doctrine/orm\":\"^1.3\"," + 

@@ -50,5 +50,15 @@ public PhpClassItem createMethod(list[Declaration] methods, TransformEnv env) =
     ], methods[0])
     when size(methods) > 1;
 
+private PhpOptionName toPhpReturnType(e: voidValue()) = origin(phpNoName(), e);
+private PhpOptionName toPhpReturnType(e: integer()) = origin(phpSomeName(phpName("int")), e);
+private PhpOptionName toPhpReturnType(e: string()) = origin(phpSomeName(phpName("string")), e);
+private PhpOptionName toPhpReturnType(e: boolean()) = origin(phpSomeName(phpName("bool")), e);
+private PhpOptionName toPhpReturnType(e: float()) = origin(phpSomeName(phpName("float")), e);
+private PhpOptionName toPhpReturnType(e: \list(_)) = origin(phpSomeName(phpName("Vector")), e);
+private PhpOptionName toPhpReturnType(e: \map(_,_)) = origin(phpSomeName(phpName("Map")), e);
+private PhpOptionName toPhpReturnType(e: artifact(Name name)) = origin(phpSomeName(phpName(extractName(name))), e);
+private PhpOptionName toPhpReturnType(e: repository(Name name)) = origin(phpSomeName(phpName(extractName(name) + "Repository")), e);
+
 private PhpModifier toPhpModifier(p: \public()) = origin(phpPublic(), p);
 private PhpModifier toPhpModifier(p: \private()) = origin(phpPrivate(), p);

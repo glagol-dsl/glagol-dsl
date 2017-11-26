@@ -158,15 +158,9 @@ public data PhpProperty = phpProperty(str propertyName, PhpOptionExpr defaultVal
 
 public data PhpModifier = phpPublic() | phpPrivate() | phpProtected() | phpStatic() | phpAbstract() | phpFinal();
  
-public data PhpClassDef = phpClass(str className,
-                             set[PhpModifier] modifiers, 
-                             PhpOptionName extends, 
-                             list[PhpName] implements, 
-                             list[PhpClassItem] members);
+public data PhpClassDef = phpClass(str className, set[PhpModifier] modifiers, PhpOptionName extends, list[PhpName] implements, list[PhpClassItem] members);
 
-public data PhpInterfaceDef = phpInterface(str interfaceName, 
-                                    list[PhpName] extends, 
-                                    list[PhpClassItem] members);
+public data PhpInterfaceDef = phpInterface(str interfaceName, list[PhpName] extends, list[PhpClassItem] members);
                                     
 public data PhpTraitDef = phpTrait(str traitName, list[PhpClassItem] members);
 

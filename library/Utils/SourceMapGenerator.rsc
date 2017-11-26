@@ -54,7 +54,7 @@ private str serializeMappings(list[Mapping] mappings, list[str] sources, list[st
 	int previousSource = 0;
 	int sourceIdx = 0;
 	int nameIdx = 0;
-	int previousName;
+	int previousName = 0;
 	Mapping mapping;
 	
 	for (int m <- index(mappings)) {
@@ -130,7 +130,7 @@ private int compareByGeneratedPositionsInflated(Mapping mappingA, Mapping mappin
     	return cmp;
   	}
 
-  return strcmp(mappingA.name, mappingB.name);
+  	return strcmp(mappingA.name, mappingB.name);
 }
 
 private int strcmp(str aStr1, str aStr2) {

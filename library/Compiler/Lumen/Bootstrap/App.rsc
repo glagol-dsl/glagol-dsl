@@ -40,7 +40,7 @@ public str createAppFile(ORM orm, list[Declaration] ast) = implode(toCode(phpScr
 		])
 	),
 	phpExprstmt(
-		phpMethodCall(phpVar("app"), phpName(phpName("group")), [
+		phpMethodCall(phpPropertyFetch(phpVar("app"), phpName(phpName("router"))), phpName(phpName("group")), [
 			phpActualParameter(phpArray([]), false),
 			phpActualParameter(phpClosure([
 				phpExprstmt(phpInclude(phpBinaryOperation(phpScalar(phpDirConstant()), phpScalar(phpString("/../routes/api.php")), phpConcat()), phpRequire()))
