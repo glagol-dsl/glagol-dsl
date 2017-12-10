@@ -1,8 +1,9 @@
 module Compiler::PHP::IncludeType
 
+import Compiler::PHP::Code;
 import Syntax::Abstract::PHP;
 
-public str toCode(phpInclude()) = "include";
-public str toCode(phpIncludeOnce()) = "include_once";
-public str toCode(phpRequire()) = "require";
-public str toCode(phpRequireOnce()) = "require_once";
+public Code toCode(p: phpInclude()) = code("include", p);
+public Code toCode(p: phpIncludeOnce()) = code("include_once", p);
+public Code toCode(p: phpRequire()) = code("require", p);
+public Code toCode(p: phpRequireOnce()) = code("require_once", p);

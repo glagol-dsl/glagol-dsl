@@ -1,84 +1,142 @@
 module Transform::Glagol2PHP::Expressions
 
 import Transform::Env;
+import Transform::OriginAnnotator;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Utils::String;
 
 // literals
-public PhpExpr toPhpExpr(integer(int i), TransformEnv env) = phpScalar(phpInteger(i));
-public PhpExpr toPhpExpr(float(real r), TransformEnv env) = phpScalar(phpFloat(r));
-public PhpExpr toPhpExpr(string(str s), TransformEnv env) = phpScalar(phpString(s));
-public PhpExpr toPhpExpr(boolean(bool b), TransformEnv env) = phpScalar(phpBoolean(b));
+public PhpExpr toPhpExpr(e: integer(int i), TransformEnv env) = origin(phpScalar(phpInteger(i)), e, true);
+public PhpExpr toPhpExpr(e: float(real r), TransformEnv env) = origin(phpScalar(phpFloat(r)), e, true);
+public PhpExpr toPhpExpr(e: string(str s), TransformEnv env) = origin(phpScalar(phpString(s)), e, true);
+public PhpExpr toPhpExpr(e: boolean(bool b), TransformEnv env) = origin(phpScalar(phpBoolean(b)), e, true);
 
 // arrays
-public PhpExpr toPhpExpr(\list(list[Expression] items), TransformEnv env) = 
-	phpNew(phpName(phpName("Vector")), [phpActualParameter(phpArray([phpArrayElement(phpNoExpr(), toPhpExpr(i, env), false) | i <- items]), false)]);
+public PhpExpr toPhpExpr(e: \list(list[Expression] items), TransformEnv env) = 
+	origin(
+		phpNew(
+			phpName(phpName("Vector")), 
+			[origin(phpActualParameter(
+				origin(phpArray(
+					[origin(phpArrayElement(phpNoExpr(), toPhpExpr(i, env), false), i) | i <- items
+				]), e), false), e)]
+		), 
+	e);
 
-public PhpExpr toPhpExpr(arrayAccess(Expression variable, Expression arrayIndexKey), TransformEnv env) = 
-	phpFetchArrayDim(toPhpExpr(variable, env), phpSomeExpr(toPhpExpr(arrayIndexKey, env)));
+public PhpExpr toPhpExpr(e: arrayAccess(Expression variable, Expression arrayIndexKey), TransformEnv env) = 
+	origin(phpFetchArrayDim(toPhpExpr(variable, env), origin(phpSomeExpr(toPhpExpr(arrayIndexKey, env)), e)), e);
 
-public PhpExpr toPhpExpr(\map(map[Expression key, Expression \value] m), TransformEnv env) = 
-    phpStaticCall(phpName(phpName("MapFactory")), phpName(phpName("createFromPairs")), [
-        phpActualParameter(phpNew(phpName(phpName("Pair")), [phpActualParameter(toPhpExpr(k, env), false), 
-        phpActualParameter(toPhpExpr(m[k], env), false)]), false) | k <- m
-    ]);
+public PhpExpr toPhpExpr(e: \map(map[Expression key, Expression \value] m), TransformEnv env) = 
+    origin(phpStaticCall(origin(phpName(phpName("MapFactory")), e, true), origin(phpName(phpName("createFromPairs")), e, true), [
+        origin(phpActualParameter(
+        	origin(phpNew(
+        		origin(phpName(phpName("Pair")), k, true), [
+        			origin(phpActualParameter(toPhpExpr(k, env), false), k), 
+        			origin(phpActualParameter(toPhpExpr(m[k], env), false), m[k])
+    			]), k), false
+		), k) | k <- m
+    ]), e);
 
-public PhpExpr toPhpExpr(get(artifact(Name name)), TransformEnv env)
-    = phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("_<toLowerCaseFirstChar(name.localName)>")));
+public PhpExpr toPhpExpr(e: get(artifact(Name name)), TransformEnv env)
+    = origin(phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("_<toLowerCaseFirstChar(name.localName)>"))), e, true);
 
-public PhpExpr toPhpExpr(variable(GlagolID name), TransformEnv env) = 
-	isField(name, env) ? phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName(name))) : phpVar(phpName(phpName(name)));
+public PhpExpr toPhpExpr(e: variable(GlagolID name), TransformEnv env) = 
+	origin(isField(name, env) ? phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName(name))) : phpVar(phpName(phpName(name))), e, true);
 
-public PhpExpr toPhpExpr(ifThenElse(Expression condition, Expression ifThen, Expression \else), TransformEnv env) 
-    = phpTernary(toPhpExpr(condition, env), phpSomeExpr(toPhpExpr(ifThen, env)), toPhpExpr(\else, env));
+public PhpExpr toPhpExpr(e: ifThenElse(Expression condition, Expression ifThen, Expression \else), TransformEnv env) 
+    = origin(phpTernary(toPhpExpr(condition, env), origin(phpSomeExpr(toPhpExpr(ifThen, env)), ifThen), toPhpExpr(\else, env)), e);
 
-public PhpExpr toPhpExpr(new(Name artifact, list[Expression] args), TransformEnv env)
-    = phpNew(phpName(phpName(artifact.localName)), [phpActualParameter(toPhpExpr(arg, env), false) | arg <- args]);
+public PhpExpr toPhpExpr(e: new(Name artifact, list[Expression] args), TransformEnv env)
+    = origin(phpNew(origin(phpName(phpName(artifact.localName)), artifact, true), 
+    	[origin(phpActualParameter(toPhpExpr(arg, env), false), arg) | arg <- args]), e);
 
 // Binary operations
-public PhpExpr toPhpExpr(equals(Expression l, Expression r), TransformEnv env) = phpBinaryOperation(toPhpExpr(l, env), toPhpExpr(r, env), phpIdentical());
-public PhpExpr toPhpExpr(greaterThan(Expression l, Expression r), TransformEnv env) = phpBinaryOperation(toPhpExpr(l, env), toPhpExpr(r, env), phpGt());
-public PhpExpr toPhpExpr(product(Expression lhs, Expression rhs), TransformEnv env) = phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), phpMul());
-public PhpExpr toPhpExpr(remainder(Expression lhs, Expression rhs), TransformEnv env) = phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), phpMod());
-public PhpExpr toPhpExpr(division(Expression lhs, Expression rhs), TransformEnv env) = phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), phpDiv());
-public PhpExpr toPhpExpr(addition(Expression lhs, Expression rhs), TransformEnv env) = phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), phpPlus());
-public PhpExpr toPhpExpr(subtraction(Expression lhs, Expression rhs), TransformEnv env) = phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), phpMinus());
-public PhpExpr toPhpExpr(\bracket(Expression e), TransformEnv env) = phpBracket(phpSomeExpr(toPhpExpr(e, env)));
-public PhpExpr toPhpExpr(greaterThanOrEq(Expression lhs, Expression rhs), TransformEnv env) = phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), phpGeq());
-public PhpExpr toPhpExpr(lessThanOrEq(Expression lhs, Expression rhs), TransformEnv env) = phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), phpLeq());
-public PhpExpr toPhpExpr(lessThan(Expression lhs, Expression rhs), TransformEnv env) = phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), phpLt());
-public PhpExpr toPhpExpr(greaterThan(Expression lhs, Expression rhs), TransformEnv env) = phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), phpGt());
-public PhpExpr toPhpExpr(equals(Expression lhs, Expression rhs), TransformEnv env) = phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), phpIdentical());
-public PhpExpr toPhpExpr(nonEquals(Expression lhs, Expression rhs), TransformEnv env) = phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), phpNotIdentical());
-public PhpExpr toPhpExpr(and(Expression lhs, Expression rhs), TransformEnv env) = phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), phpLogicalAnd());
-public PhpExpr toPhpExpr(or(Expression lhs, Expression rhs), TransformEnv env) = phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), phpLogicalOr());
+public PhpExpr toPhpExpr(e: equals(Expression l, Expression r), TransformEnv env) = 
+	origin(phpBinaryOperation(toPhpExpr(l, env), toPhpExpr(r, env), origin(phpIdentical(), e)), e);
 
-public PhpExpr toPhpExpr(cast(Type t, Expression expr), TransformEnv env) = phpCast(toPhpCastType(t), toPhpExpr(expr, env));
+public PhpExpr toPhpExpr(e: greaterThan(Expression l, Expression r), TransformEnv env) = 
+	origin(phpBinaryOperation(toPhpExpr(l, env), toPhpExpr(r, env), origin(phpGt(), e)), e);
+	
+public PhpExpr toPhpExpr(e: product(Expression lhs, Expression rhs), TransformEnv env) = 
+	origin(phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), origin(phpMul(), e)), e);
+	
+public PhpExpr toPhpExpr(e: remainder(Expression lhs, Expression rhs), TransformEnv env) = 
+	origin(phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), origin(phpMod(), e)), e);
+	
+public PhpExpr toPhpExpr(e: division(Expression lhs, Expression rhs), TransformEnv env) = 
+	origin(phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), origin(phpDiv(), e)), e);
+	
+public PhpExpr toPhpExpr(e: addition(Expression lhs, Expression rhs), TransformEnv env) = 
+	origin(phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), origin(phpPlus(), e)), e);
+	
+public PhpExpr toPhpExpr(e: subtraction(Expression lhs, Expression rhs), TransformEnv env) = 
+	origin(phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), origin(phpMinus(), e)), e);
+	
+public PhpExpr toPhpExpr(b: \bracket(Expression e), TransformEnv env) = 
+	origin(phpBracket(origin(phpSomeExpr(toPhpExpr(e, env)), b)), b);
 
-public PhpCastType toPhpCastType(string()) = phpString();
-public PhpCastType toPhpCastType(float()) = phpFloat();
-public PhpCastType toPhpCastType(integer()) = phpInt();
-public PhpCastType toPhpCastType(boolean()) = phpBool();
+public PhpExpr toPhpExpr(e: greaterThanOrEq(Expression lhs, Expression rhs), TransformEnv env) = 
+	origin(phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), origin(phpGeq(), e)), e);
+	
+public PhpExpr toPhpExpr(e: lessThanOrEq(Expression lhs, Expression rhs), TransformEnv env) = 
+	origin(phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), origin(phpLeq(), e)), e);
+
+public PhpExpr toPhpExpr(e: lessThan(Expression lhs, Expression rhs), TransformEnv env) = 
+	origin(phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), origin(phpLt(), e)), e);
+
+public PhpExpr toPhpExpr(e: greaterThan(Expression lhs, Expression rhs), TransformEnv env) = 
+	origin(phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), origin(phpGt(), e)), e);
+	
+public PhpExpr toPhpExpr(e: equals(Expression lhs, Expression rhs), TransformEnv env) = 
+	origin(phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), origin(phpIdentical(), e)), e);
+
+public PhpExpr toPhpExpr(e: nonEquals(Expression lhs, Expression rhs), TransformEnv env) = 
+	origin(phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), origin(phpNotIdentical(), e)), e);
+
+public PhpExpr toPhpExpr(e: and(Expression lhs, Expression rhs), TransformEnv env) = 
+	origin(phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), origin(phpLogicalAnd(), e)), e);
+
+public PhpExpr toPhpExpr(e: or(Expression lhs, Expression rhs), TransformEnv env) = 
+	origin(phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), origin(phpLogicalOr(), e)), e);
+
+public PhpExpr toPhpExpr(e: cast(Type t, Expression expr), TransformEnv env) = 
+	origin(phpCast(toPhpCastType(t), toPhpExpr(expr, env)), e);
+
+public PhpCastType toPhpCastType(e: string()) = origin(phpString(), e);
+public PhpCastType toPhpCastType(e: float()) = origin(phpFloat(), e);
+public PhpCastType toPhpCastType(e: integer()) = origin(phpInt(), e);
+public PhpCastType toPhpCastType(e: boolean()) = origin(phpBool(), e);
 
 // Unary operations
-public PhpExpr toPhpExpr(negative(Expression e), TransformEnv env) = phpUnaryOperation(toPhpExpr(e, env), phpUnaryMinus());
-public PhpExpr toPhpExpr(positive(Expression e), TransformEnv env) = phpUnaryOperation(toPhpExpr(e, env), phpUnaryPlus());
+public PhpExpr toPhpExpr(n: negative(Expression e), TransformEnv env) = 
+	origin(phpUnaryOperation(toPhpExpr(e, env), origin(phpUnaryMinus(), n)), n);
+	
+public PhpExpr toPhpExpr(p: positive(Expression e), TransformEnv env) = 
+	origin(phpUnaryOperation(toPhpExpr(e, env), origin(phpUnaryPlus(), p)), p);
 
 // Method call
-public PhpExpr toPhpExpr(invoke(str methodName, list[Expression] args), TransformEnv env) =
-    phpMethodCall(phpVar(phpName(phpName("this"))), phpName(phpName(methodName)), [phpActualParameter(toPhpExpr(arg, env), false) | arg <- args]);
+public PhpExpr toPhpExpr(e: invoke(s: symbol(str methodName), list[Expression] args), TransformEnv env) =
+    phpMethodCall(
+		phpVar(phpName(phpName("this"))), 
+		origin(phpName(phpName(methodName)), s, true), 
+		[origin(phpActualParameter(toPhpExpr(arg, env), false), arg) | arg <- args]
+	);
 
-public PhpExpr toPhpExpr(invoke(Expression prev, str methodName, list[Expression] args), TransformEnv env) =
-    phpMethodCall(toPhpExpr(prev, env), phpName(phpName(methodName)), [phpActualParameter(toPhpExpr(arg, env), false) | arg <- args]);
+public PhpExpr toPhpExpr(e: invoke(Expression prev, s: symbol(str methodName), list[Expression] args), TransformEnv env) =
+    phpMethodCall(
+		toPhpExpr(prev, env), 
+		origin(phpName(phpName(methodName)), s, true), 
+		[origin(phpActualParameter(toPhpExpr(arg, env), false), arg) | arg <- args]
+	);
 
 // Property fetch
-public PhpExpr toPhpExpr(fieldAccess(str name), TransformEnv env) =
-    phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName(name)));
+public PhpExpr toPhpExpr(e: fieldAccess(s: symbol(str name)), TransformEnv env) =
+    phpPropertyFetch(phpVar(phpName(phpName("this"))), origin(phpName(phpName(name)), s, true));
     
-public PhpExpr toPhpExpr(fieldAccess(Expression prev, str name), TransformEnv env) =
-    phpPropertyFetch(toPhpExpr(prev, env), phpName(phpName(name)));
+public PhpExpr toPhpExpr(e: fieldAccess(Expression prev, s: symbol(str name)), TransformEnv env) =
+    phpPropertyFetch(toPhpExpr(prev, env), origin(phpName(phpName(name)), s, true));
     
-public PhpExpr toPhpExpr(this(), TransformEnv env) = phpVar(phpName(phpName("this")));
+public PhpExpr toPhpExpr(e: this(), TransformEnv env) = origin(phpVar(phpName(phpName("this"))), e);
 
 

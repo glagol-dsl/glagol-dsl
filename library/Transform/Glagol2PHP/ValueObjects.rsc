@@ -1,6 +1,7 @@
 module Transform::Glagol2PHP::ValueObjects
 
 import Transform::Env;
+import Transform::OriginAnnotator;
 import Transform::Glagol2PHP::Annotations;
 import Transform::Glagol2PHP::Common;
 import Transform::Glagol2PHP::Constructors;
@@ -13,8 +14,8 @@ import Syntax::Abstract::PHP;
 import Config::Config;
 
 public PhpStmt toPhpClassDef(v: valueObject(str name, list[Declaration] declarations), TransformEnv env)
-    = phpClassDef(phpClass(name, {}, phpNoName(), [phpName("\\JsonSerializable")], [
-    	phpTraitUse([phpName("\\Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait")], [])
+    = origin(phpClassDef(origin(phpClass(name, {}, phpNoName(), [origin(phpName("\\JsonSerializable"), v)], [
+    	origin(phpTraitUse([phpName("\\Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait")], []), v, true)
     ] + toPhpClassItems(declarations, env))[
         @phpAnnotations=toPhpAnnotations(v, env)
-    ]);
+    ], v)), v);

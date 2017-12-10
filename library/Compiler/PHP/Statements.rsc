@@ -1,5 +1,6 @@
 module Compiler::PHP::Statements
 
+import Compiler::PHP::Code;
 import Syntax::Abstract::PHP;
 import Compiler::PHP::Expressions;
 import Utils::Indentation;
@@ -15,115 +16,145 @@ import Compiler::PHP::Modifiers;
 import Compiler::PHP::Annotations;
 import List;
 
-public str toCode(phpClassDef(class: phpClass(
+public Code toCode(d: phpClassDef(class: phpClass(
 		str className, 
 		set[PhpModifier] modifiers, 
 		PhpOptionName extending, 
 		list[PhpName] interfaces,
-		list[PhpClassItem] members)), int i) = nl() +
-	((class@phpAnnotations?) ? (toCode(class@phpAnnotations, i) + nl()) : "") +
-	"<toCode(modifiers)>class <className> <extends(extending)><implements(interfaces)><nl()>{" + 
-		("" | it + toCode(m, i + 1) | m <- members) +
-	"}";
+		list[PhpClassItem] members)), int i) = 
+	code(nl()) +
+	((class@phpAnnotations?) ? (toCode(class@phpAnnotations, i) + code(nl())) : code("")) +
+	toCode(modifiers) +
+	code("class <className> <extends(extending)><implements(interfaces)>", d) + code(nl()) + code("{") + 
+		glue([toCode(m, i + 1) | m <- members]) +
+	code("}");
 	
-public str toCode(list[PhpStmt] statements, i) = ("" | it + toCode(stmt, i) + nl() | stmt <- statements);
-public str toCode(phpExprstmt(PhpExpr expr), int i) = "<s(i)><toCode(expr, i)>;";
-public str toCode(phpReturn(phpSomeExpr(PhpExpr expr)), int i) = "<s(i)>return <toCode(expr, i)>;";
-public str toCode(phpReturn(phpNoExpr()), int i) = "<s(i)>return;";
-public str toCode(phpBreak(phpSomeExpr(PhpExpr expr)), int i) = "<s(i)>break <toCode(expr, i)>;";
-public str toCode(phpBreak(phpNoExpr()), int i) = "<s(i)>break;";
-public str toCode(phpContinue(phpSomeExpr(PhpExpr expr)), int i) = "<s(i)>continue <toCode(expr, i)>;";
-public str toCode(phpContinue(phpNoExpr()), int i) = "<s(i)>continue;";
-public str toCode(phpConst(list[PhpConst] consts), int i) = "<s(i)>const <glue([toCode(c, i) | c <- consts], ",<nl()><s(i)>      ")>;";
-public str toCode(phpConst(str name, PhpExpr val), int i) = "<name> = <toCode(val, i)>";
-public str toCode(phpDeclaration(str key, PhpExpr val), int i) = "<key>=<toCode(val, i)>";
-public str toCode(phpEcho(list[PhpExpr] exprs), int i) = "<s(i)>echo <glue([toCode(e, i) | e <- exprs], ", ")>;";
-public str toCode(phpGlobal(list[PhpExpr] exprs), int i) = "<s(i)>global <glue([toCode(e, i) | e <- exprs], ", ")>;";
-public str toCode(phpGoto(str label), int i) = "<s(i)>goto <label>;";
-public str toCode(phpLabel(str label), int i) = "<s(i)><label>:";
-public str toCode(phpHaltCompiler(str remainingText), int i) = "<s(i)>__halt_compiler();<remainingText>";
+public Code toCode(list[PhpStmt] statements, i) = (code() | it + toCode(stmt, i) + code(nl()) | stmt <- statements);
+public Code toCode(p: phpExprstmt(PhpExpr expr), int i) = code(s(i)) + toCode(expr, i) + codeEnd(";", expr);
+public Code toCode(p: phpReturn(phpSomeExpr(PhpExpr expr)), int i) = code(s(i)) + code("return", p) + code(" ") + toCode(expr, i) + codeEnd(";", expr);
+public Code toCode(p: phpReturn(phpNoExpr()), int i) = code(s(i)) + code("return;", p);
+public Code toCode(p: phpBreak(phpSomeExpr(PhpExpr expr)), int i) = code(s(i)) + code("break", p) + code(" ") + toCode(expr, i) + codeEnd(";", expr);
+public Code toCode(p: phpBreak(phpNoExpr()), int i) = code(s(i)) + code("break;", p);
+public Code toCode(p: phpContinue(phpSomeExpr(PhpExpr expr)), int i) = code(s(i)) + code("continue", p) + code(" ") + toCode(expr, i) + codeEnd(";", expr);
+public Code toCode(p: phpContinue(phpNoExpr()), int i) = code(s(i)) + code("continue;", p);
+public Code toCode(p: phpConst(list[PhpConst] consts), int i) = 
+	code(s(i)) + code("const", p) + code(" ") + glue([toCode(c, i) | c <- consts], code(",") + code(nl()) + code("<s(i)>      ")) + codeEnd(";", p);
+public Code toCode(p: phpConst(str name, PhpExpr val), int i) = code(name, p) + code(" ") + code("=") + code(" ") + toCode(val, i);
+public Code toCode(p: phpDeclaration(str key, PhpExpr val), int i) = code(key, p) + code("=", p) + toCode(val, i);
+public Code toCode(p: phpEcho(list[PhpExpr] exprs), int i) = 
+	code(s(i)) + code("echo", p) + code(" ") + toCode(exprs[0], i) + codeEnd(";", exprs[0]) when size(exprs) == 1;
+public Code toCode(p: phpEcho(list[PhpExpr] exprs), int i) = 
+	code(s(i)) + code("echo(", p) + glue([toCode(e, i) | e <- exprs], code(", ")) + codeEnd(");", last(exprs));
+public Code toCode(p: phpGlobal(list[PhpExpr] exprs), int i) = 
+	code(s(i)) + code("global", p) + code(" ") + glue([toCode(e, i) | e <- exprs], code(", ")) + codeEnd(";", last(exprs));
+public Code toCode(p: phpGoto(str label), int i) = code(s(i)) + code("goto <label>;", p);
+public Code toCode(p: phpLabel(str label), int i) = code(s(i)) + code("<label>:", p);
+public Code toCode(p: phpHaltCompiler(str remainingText), int i) = code("<s(i)>__halt_compiler();<remainingText>", p);
 
-public str toCode(phpFor(list[PhpExpr] inits, list[PhpExpr] conds, list[PhpExpr] exprs, list[PhpStmt] body), int i) = 
-	"<s(i)>for (<glue([toCode(e, i) | e <- inits], ", ")>; <glue([toCode(e, i) | e <- conds], ", ")>; <glue([toCode(e, i) | e <- exprs], ", ")>) {<nl()>" +
-	"<toCode(body, i + 1)>" +
-	"<s(i)>}";
+public Code toCode(p: phpFor(list[PhpExpr] inits, list[PhpExpr] conds, list[PhpExpr] exprs, list[PhpStmt] body), int i) = 
+	code(s(i)) + code("for", p) + code(" ") + code("(") + glue([toCode(e, i) | e <- inits], code(", ")) + 
+	codeEnd(";", p) + code(" ") + glue([toCode(e, i) | e <- conds], code(", ")) + codeEnd(";", p) + code(" ") + 
+	glue([toCode(e, i) | e <- exprs], code(", ", p)) + code(")") + code(" ") + code("{") + code(nl()) +
+	toCode(body, i + 1) +
+	code(s(i)) + 
+	code("}");
 	
-public str toCode(phpForeach(PhpExpr arrayExpr, PhpOptionExpr keyvar, bool byRef, PhpExpr asVar, list[PhpStmt] body), int i) =
-	"<s(i)>foreach (<toCode(arrayExpr, i)> as <key(keyvar, i)><ref(byRef)><toCode(asVar, i)>) {<nl()><toCode(body, i + 1)><s(i)>}";
+public Code toCode(p: phpForeach(PhpExpr arrayExpr, PhpOptionExpr keyvar, bool byRef, PhpExpr asVar, list[PhpStmt] body), int i) =
+	code(s(i)) + code("foreach", p) + code(" ") + code("(") + toCode(arrayExpr, i) + code(" ") + code("as", p) + code(" ") + key(keyvar, i) + code(ref(byRef), p) + toCode(asVar, i) + 
+	code(")") + code(" ") + code("{") + code(nl()) + toCode(body, i + 1) + code(s(i)) + code("}");
 	
-public str toCode(phpFunction(str name, bool byRef, list[PhpParam] params, list[PhpStmt] body, PhpOptionName rType), int i) =
-	"<s(i)>function <ref(byRef)><name>(<toCode(params)>)<returnType(rType)><nl()><s(i)>{<nl()><toCode(body, i + 1)><s(i)>}";
+public Code toCode(p: phpFunction(str name, bool byRef, list[PhpParam] params, list[PhpStmt] body, PhpOptionName rType), int i) =
+	code(s(i)) + code("function <ref(byRef)><name>(", p) + toCode(params) + code(")") + returnType(rType) + code(nl()) + code(s(i)) + 
+	code("{") + code(nl()) + 
+	toCode(body, i + 1) + code(s(i)) + 
+	code("}");
 
-public str toCode(phpIf(PhpExpr cond, [phpBlock(list[PhpStmt] body)], list[PhpElseIf] elseIfs, PhpOptionElse elseClause), int i) =
-	toCode(phpIf(cond, body, elseIfs, elseClause), i);
+public Code toCode(p: phpIf(PhpExpr cond, [phpBlock(list[PhpStmt] body)], list[PhpElseIf] elseIfs, PhpOptionElse elseClause), int i) =
+	toCode(phpIf(cond, body, elseIfs, elseClause), p, i);
+	
+public Code toCode(p: phpIf(PhpExpr cond, list[PhpStmt] body, list[PhpElseIf] elseIfs, PhpOptionElse elseClause), int i) = toCode(p, p, i);
 
-public str toCode(phpIf(PhpExpr cond, list[PhpStmt] body, list[PhpElseIf] elseIfs, PhpOptionElse elseClause), int i) =
-	"<s(i)>if (<toCode(cond, i)>) {<nl()>" +
-	"<toCode(body, i + 1)>" + 
-	"<s(i)>}<toElseIfs(elseIfs, i)><toElse(elseClause, i)>";
+public Code toCode(p: phpIf(PhpExpr cond, list[PhpStmt] body, list[PhpElseIf] elseIfs, PhpOptionElse elseClause), PhpStmt sOrigin, int i) =
+	code(s(i)) + code("if", sOrigin) + code(" ") + code("(") + toCode(cond, i) + code(")") + code(" ") + 
+	code("{") + code(nl()) +
+	toCode(body, i + 1) + 
+	code(s(i)) +
+	code("}") + 
+	toElseIfs(elseIfs, i) +
+	toElse(elseClause, i);
 
-public str toCode(phpDo(PhpExpr cond, list[PhpStmt] body), int i) = 
-	"<s(i)>do {<nl()><toCode(body, i + 1)><s(i)>} while (<toCode(cond, i)>);";
+public Code toCode(p: phpDo(PhpExpr cond, list[PhpStmt] body), int i) = 
+	code(s(i)) + code("do", p) + code(" ") + code("{") + code(nl()) + toCode(body, i + 1) + code(s(i)) + codeEnd("}") + code(" ") + code("while (", p) + toCode(cond, i) + codeEnd(");", p);
 
-public str toCode(phpDeclare(list[PhpDeclaration] decls, list[PhpStmt] body), int i) = 
-	"<s(i)>declare(<glue([toCode(d, i) | d <- decls], ", ")>);<nl()>" when size(body) == 0;
+public Code toCode(p: phpDeclare(list[PhpDeclaration] decls, list[PhpStmt] body), int i) = 
+	code(s(i)) + code("declare(", p) + glue([toCode(d, i) | d <- decls], code(", ")) + codeEnd(")") + codeEnd(";") + code(nl()) 
+	when size(body) == 0;
 
-public str toCode(phpDeclare(list[PhpDeclaration] decls, list[PhpStmt] body), int i) = 
-	"<s(i)>declare(<glue([toCode(d, i) | d <- decls], ", ")>) {<nl()><toCode(body, i + 1)><s(i)>}" when size(body) > 0;
+public Code toCode(p: phpDeclare(list[PhpDeclaration] decls, list[PhpStmt] body), int i) = 
+	code(s(i)) + code("declare(", p) + glue([toCode(d, i) | d <- decls], code(", ")) + codeEnd(")", body[0]) + code(" ") + 
+	code("{", body[0]) + code(nl()) + toCode(body, i + 1) + code(s(i)) + code("}") when size(body) > 0;
 
-public str toCode(phpInterfaceDef(interface: phpInterface(str interfaceName, list[PhpName] extending, list[PhpClassItem] members)), int i)  = nl() +
-	((interface@phpAnnotations?) ? (toCode(interface@phpAnnotations, i) + nl()) : "") + 
-	"<s(i)>interface <interfaceName><extends(extending)><nl()>{" + 
+public Code toCode(p: phpInterfaceDef(interface: phpInterface(str interfaceName, list[PhpName] extending, list[PhpClassItem] members)), int i)  = code(nl()) +
+	((interface@phpAnnotations?) ? (toCode(interface@phpAnnotations, i) + code(nl())) : code("")) + 
+	code("<s(i)>interface <interfaceName><extends(extending)>", p) + code(nl()) + code("{") + 
 		glue([toMethod(m, false, i + 1) | m <- members]) + 
-	"}";
+	code("}");
 
-public str toCode(phpTraitDef(trait: phpTrait(str traitName, list[PhpClassItem] members)), int i) = nl() +
-	((trait@phpAnnotations?) ? (toCode(trait@phpAnnotations, i) + nl()) : "") +
-	"<s(i)>trait <traitName><nl()>{" + 
+public Code toCode(p: phpTraitDef(trait: phpTrait(str traitName, list[PhpClassItem] members)), int i) = code(nl()) +
+	((trait@phpAnnotations?) ? (toCode(trait@phpAnnotations, i) + code(nl())) : code("")) +
+	code(s(i)) + code("trait <traitName>", p) + code(nl()) + code("{") + 
 		glue([toCode(m, i + 1) | m <- members]) + 
-	"}";
+	code("}");
 
-public str toCode(phpStatic(list[PhpStaticVar] vars), int i) =
-	"<s(i)>static <glue([toCode(v, i) | v <- vars], ",<nl()><s(i)>       ")>;";
+public Code toCode(p: phpStatic(list[PhpStaticVar] vars), int i) =
+	code(s(i)) + code("static", p) + code(" ") + glue([toCode(v, i) | v <- vars], code(",") + code(nl()) + code("<s(i)>       ")) + codeEnd(";", p);
 
-public str toCode(phpStaticVar(str name, PhpOptionExpr defValue), int i) = 
-	"$<name><defaultVal(defValue)>";
+public Code toCode(p: phpStaticVar(str name, PhpOptionExpr defValue), int i) = 
+	code("$<name>", p) + defaultVal(defValue);
 
-public str toCode(phpSwitch(PhpExpr cond, list[PhpCase] cases), int i) =
-	"<s(i)>switch (<toCode(cond, i)>) {<nl()>" +
+public Code toCode(p: phpSwitch(PhpExpr cond, list[PhpCase] cases), int i) =
+	code(s(i)) +
+	code("switch (", p) + toCode(cond, i) + code(")") + code(" ") + code("{") + code(nl()) +
 		glue([toCode(c, i + 1) | c <- cases]) +
-	"<s(i)>}";
+	code(s(i)) + 
+	code("}");
 
-public str toCode(phpCase(phpSomeExpr(PhpExpr expr), list[PhpStmt] body), int i) = 
-	"<s(i)>case <toCode(expr, i)>:<nl()><toCode(body, i + 1)>";
+public Code toCode(p: phpCase(phpSomeExpr(PhpExpr expr), list[PhpStmt] body), int i) = 
+	code(s(i)) + code("case", p) + code(" ") + toCode(expr, i) + codeEnd(":", expr) + code(nl()) + toCode(body, i + 1);
 
-public str toCode(phpCase(phpNoExpr(), list[PhpStmt] body), int i) = 
-	"<s(i)>default:<nl()><toCode(body, i + 1)>";
+public Code toCode(p: phpCase(phpNoExpr(), list[PhpStmt] body), int i) = 
+	code(s(i)) + code("default:", p) + code(nl()) + toCode(body, i + 1);
 
-public str toCode(phpThrow(PhpExpr expr), int i) = "<s(i)>throw <toCode(expr, i)>;";
+public Code toCode(p: phpThrow(PhpExpr expr), int i) = code(s(i)) + code("throw", p) + code(" ") + toCode(expr, i) + codeEnd(";", p);
 
-public str toCode(phpTryCatch(list[PhpStmt] body, list[PhpCatch] catches), int i) =
-	"<s(i)>try {<nl()><toCode(body, i + 1)><s(i)>}<glue([toCode(c, i) | c <- catches])>";
+public Code toCode(p: phpTryCatch(list[PhpStmt] body, list[PhpCatch] catches), int i) =
+	code(s(i)) + code("try", p) + code(" ") + code("{") + code(nl()) + toCode(body, i + 1) + code(s(i)) + code("}") + glue([toCode(c, i) | c <- catches]);
 
-public str toCode(phpTryCatchFinally(list[PhpStmt] body, list[PhpCatch] catches, list[PhpStmt] final), int i) =
-	"<s(i)>try {<nl()><toCode(body, i + 1)><s(i)>}<glue([toCode(c, i) | c <- catches])> finally {<nl()><toCode(final, i + 1)><s(i)>}";
+public Code toCode(p: phpTryCatchFinally(list[PhpStmt] body, list[PhpCatch] catches, list[PhpStmt] final), int i) =
+	code(s(i)) + code("try", p) + code(" ") + code("{") + code(nl()) + toCode(body, i + 1) + code(s(i)) + code("}") + 
+		glue([toCode(c, i) | c <- catches]) + code(" ") + code("finally") + code(" ") + code("{") + code(nl()) + toCode(final, i + 1) + code(s(i)) + code("}");
 
-public str toCode(phpCatch(phpName(str xtype), str varName, list[PhpStmt] body), int i) =
-	"<s(i)> catch (<xtype> $<varName>) {<nl()><toCode(body, i + 1)><s(i)>}";
+public Code toCode(p: phpCatch(phpName(str xtype), str varName, list[PhpStmt] body), int i) =
+	code(s(i) + " ") + code("catch (<xtype> $<varName>) {", p) + code(nl()) + toCode(body, i + 1) + code(s(i)) + code("}");
 
-public str toCode(phpUnset(list[PhpExpr] unsetVars), int i) = "<s(i)>unset(<glue([toCode(v, i) | v <- unsetVars], ", ")>);";
+public Code toCode(p: phpUnset(list[PhpExpr] unsetVars), int i) = 
+	code(s(i)) + code("unset(", p) + glue([toCode(v, i) | v <- unsetVars], code(", ")) + codeEnd(");", p);
 
-public str toCode(phpWhile(PhpExpr cond, list[PhpStmt] body), int i) =
-	"<s(i)>while (<toCode(cond, i)>) {<nl()><toCode(body, i + 1)><s(i)>}";
+public Code toCode(p: phpWhile(PhpExpr cond, list[PhpStmt] body), int i) =
+	code(s(i)) + 
+	code("while (", p) + toCode(cond, i) + code(")") + code(" ") + 
+	code("{") + code(nl()) + 
+	toCode(body, i + 1) + code(s(i)) + 
+	code("}");
 
-public str toCode(phpEmptyStmt(), int i) = "<s(i)>;";
+public Code toCode(p: phpEmptyStmt(), int i) = code(s(i)) + code(";", p);
 
-public str toCode(phpBlock(list[PhpStmt] body), int i) = "<s(i)>{<nl()><toCode(body, i + 1)><s(i)>}";
+public Code toCode(p: phpBlock(list[PhpStmt] body), int i) = code(s(i)) + code("{") + code(nl()) + toCode(body, i + 1) + code(s(i)) + code("}");
 
-public str toCode(phpNewLine(), int i) = "";
+public Code toCode(p: phpNewLine(), int i) = code("", p);
 
-private str defaultVal(phpSomeExpr(PhpExpr expr)) = " = <toCode(expr, 0)>";
-private str defaultVal(phpNoExpr()) = "";
+private Code defaultVal(p: phpSomeExpr(PhpExpr expr)) = code(" ") + code("=", p) + code(" ") + toCode(expr, 0);
+private Code defaultVal(phpNoExpr()) = code("");
 
 private str extends(list[PhpName] extending) = "" when size(extending) == 0;
 private str extends(list[PhpName] extending) = " extends <glue([e.name | e <- extending], ", ")>";
@@ -135,20 +166,29 @@ private str implements(list[PhpName] interfaces) = "implements <interfaces[0].na
 private default str implements(list[PhpName] interfaces) = 
 	"implements <(glue([name | phpName(str name) <- interfaces], ", "))> ";
 
-private str toElseIfs(list[PhpElseIf] elseIfs, int i) = glue([toElseIf(e, i) | e <- elseIfs]);
+private Code toElseIfs(list[PhpElseIf] elseIfs, int i) = glue([toElseIf(e, i) | e <- elseIfs]);
 
-private str toElseIf(phpElseIf(PhpExpr cond, [phpBlock(list[PhpStmt] body)]), int i) =
-	toElseIf(phpElseIf(cond, body), i);
+private Code toElseIf(p: phpElseIf(PhpExpr cond, [phpBlock(list[PhpStmt] body)]), int i) = toElseIf(phpElseIf(cond, body), p, i);
+private Code toElseIf(p: phpElseIf(PhpExpr cond, list[PhpStmt] body), int i) = toElseIf(p, p, i);
 
-private str toElseIf(phpElseIf(PhpExpr cond, list[PhpStmt] body), int i) = 
-	" elseif (<toCode(cond, i)>) {<nl()><toCode(body, i + 1)><s(i)>}";
+private Code toElseIf(p: phpElseIf(PhpExpr cond, list[PhpStmt] body), PhpElseIf eOrigin, int i) = 
+	code(" ") + code("elseif", eOrigin) + code(" ") + code("(", cond) + toCode(cond, i) + codeEnd(")", cond) + code(" ") + 
+	code("{") + code(nl()) + toCode(body, i + 1) + 
+	code(s(i)) + 
+	codeEnd("}", eOrigin);
 	
-private str toElse(phpNoElse(), int i) = "";
-private str toElse(phpSomeElse(phpElse([phpBlock(list[PhpStmt] body)])), int i) = toElse(phpSomeElse(phpElse(body)), i);
-private str toElse(phpSomeElse(phpElse(list[PhpStmt] body)), int i) = " else {<nl()><toCode(body, i + 1)><s(i)>}";
+private Code toElse(phpNoElse(), int i) = code("");
+private Code toElse(p: phpSomeElse(phpElse([phpBlock(list[PhpStmt] body)])), int i) = toElse(phpSomeElse(phpElse(body)), p, i);
+private Code toElse(p: phpSomeElse(phpElse(list[PhpStmt] body)), int i) = toElse(p, p, i);
+private Code toElse(phpSomeElse(p: phpElse(list[PhpStmt] body)), PhpOptionElse eOrigin, int i) = 
+	code(" ") +
+	code("else", eOrigin) + code(" ") + 
+	code("{") + code(nl()) + toCode(body, i + 1) + 
+	code(s(i)) +
+	codeEnd("}", eOrigin);
 
-private str key(phpNoExpr(), _) = "";
-private str key(phpSomeExpr(PhpExpr expr), int i) = "<toCode(expr, i)> =\> ";
+private Code key(phpNoExpr(), _) = code("");
+private Code key(p: phpSomeExpr(PhpExpr expr), int i) = toCode(expr, i) + code(" ") + code("=\>", p) + code(" ");
 
-private str returnType(phpNoName()) = "";
-private str returnType(phpSomeName(phpName(str name))) = ": <name>";
+private Code returnType(phpNoName()) = code("");
+private Code returnType(p: phpSomeName(phpName(str name))) = code(":", p) + code(" ") + code(name, p);

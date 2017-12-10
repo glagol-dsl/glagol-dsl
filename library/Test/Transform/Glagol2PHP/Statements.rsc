@@ -6,7 +6,7 @@ import Syntax::Abstract::PHP;
 import Transform::Glagol2PHP::Statements;
 
 test bool shouldTransformToIfWithoutElse() = 
-    toPhpStmt(ifThen(greaterThan(integer(21), variable("input")), expression(invoke("myFunc", [
+    toPhpStmt(ifThen(greaterThan(integer(21), variable("input")), expression(invoke(symbol("myFunc"), [
         variable("input")
     ]))), newTransformEnv()) ==
     phpIf(
@@ -33,7 +33,7 @@ test bool shouldTransformToABlock() =
     ]);
 
 test bool shouldTransformToIfThenElse() =
-    toPhpStmt(ifThenElse(equals(string("SOME_CONST"), variable("input")), expression(invoke("someFunc", [])), expression(invoke("someOtherFunc", []))), newTransformEnv()) ==
+    toPhpStmt(ifThenElse(equals(string("SOME_CONST"), variable("input")), expression(invoke(symbol("someFunc"), [])), expression(invoke(symbol("someOtherFunc"), []))), newTransformEnv()) ==
     phpIf(
         phpBinaryOperation(phpScalar(phpString("SOME_CONST")), phpVar(phpName(phpName("input"))), phpIdentical()),
         [
@@ -82,7 +82,7 @@ test bool shouldTransformToDeclarationWithAssignAsDefaultValue() =
     phpExprstmt(phpAssign(phpVar(phpName(phpName("var1"))), phpAssign(phpVar(phpName(phpName("var2"))), phpScalar(phpInteger(44)))));
 
 test bool shouldTransformToForeach() = 
-    toPhpStmt(foreach(variable("categories"), emptyExpr(), variable("category"), expression(invoke("func", [])), []), newTransformEnv()) ==
+    toPhpStmt(foreach(variable("categories"), emptyExpr(), variable("category"), expression(invoke(symbol("func"), [])), []), newTransformEnv()) ==
     phpForeach(
         phpVar(phpName(phpName("categories"))), 
         phpNoExpr(), false, phpVar(phpName(phpName("category"))), [
@@ -91,7 +91,7 @@ test bool shouldTransformToForeach() =
     );
 
 test bool shouldTransformToForeachWithConditions() = 
-    toPhpStmt(foreach(variable("categories"), emptyExpr(), variable("category"), expression(invoke("func", [])), [boolean(true)]), newTransformEnv()) ==
+    toPhpStmt(foreach(variable("categories"), emptyExpr(), variable("category"), expression(invoke(symbol("func"), [])), [boolean(true)]), newTransformEnv()) ==
     phpForeach(
         phpVar(phpName(phpName("categories"))), 
         phpNoExpr(), false, phpVar(phpName(phpName("category"))), [
@@ -102,7 +102,7 @@ test bool shouldTransformToForeachWithConditions() =
     );
 
 test bool shouldTransformToForeachWithConditions2() = 
-    toPhpStmt(foreach(variable("categories"), emptyExpr(), variable("category"), expression(invoke("func", [])), [boolean(true), boolean(true)]), newTransformEnv()) ==
+    toPhpStmt(foreach(variable("categories"), emptyExpr(), variable("category"), expression(invoke(symbol("func"), [])), [boolean(true), boolean(true)]), newTransformEnv()) ==
     phpForeach(
         phpVar(phpName(phpName("categories"))), 
         phpNoExpr(), false, phpVar(phpName(phpName("category"))), [
@@ -113,7 +113,7 @@ test bool shouldTransformToForeachWithConditions2() =
     );
 
 test bool shouldTransformToForeachWithConditions3() = 
-    toPhpStmt(foreach(variable("categories"), emptyExpr(), variable("category"), expression(invoke("func", [])), [boolean(true), boolean(true), boolean(true)]), newTransformEnv()) ==
+    toPhpStmt(foreach(variable("categories"), emptyExpr(), variable("category"), expression(invoke(symbol("func"), [])), [boolean(true), boolean(true), boolean(true)]), newTransformEnv()) ==
     phpForeach(
         phpVar(phpName(phpName("categories"))), 
         phpNoExpr(), false, phpVar(phpName(phpName("category"))), [

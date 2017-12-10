@@ -1,6 +1,7 @@
 module Transform::Glagol2PHP::Utils
 
 import Transform::Env;
+import Transform::OriginAnnotator;
 import Transform::Glagol2PHP::Annotations;
 import Transform::Glagol2PHP::Common;
 import Transform::Glagol2PHP::Constructors;
@@ -13,6 +14,6 @@ import Syntax::Abstract::PHP;
 import Config::Config;
 
 public PhpStmt toPhpClassDef(u: util(str name, list[Declaration] declarations), TransformEnv env)
-    = phpClassDef(phpClass(name, {}, phpNoName(), [], toPhpClassItems(declarations, env))[
+    = origin(phpClassDef(origin(phpClass(name, {}, phpNoName(), [], toPhpClassItems(declarations, env))[
         @phpAnnotations=toPhpAnnotations(u, env)
-    ]);
+    ], u)), u);

@@ -35,11 +35,11 @@ public TypeEnv checkStatement(ifThen(condition, then), Type t, Declaration s, Ty
 public TypeEnv checkStatement(ifThenElse(Expression condition, Statement then, Statement \else), Type t, Declaration s, TypeEnv env) = 
 	checkStatement(\else, t, s, checkStatement(then, t, s, checkCondition(condition, env)));
 	
-public TypeEnv checkStatement(a: assign(fieldAccess(this(), GlagolID name), _, _), Type t, Declaration subroutine, TypeEnv env) = 
+public TypeEnv checkStatement(a: assign(fieldAccess(this(), s: symbol(str name)), _, _), Type t, Declaration subroutine, TypeEnv env) = 
 	addError(a, "Value objects are immutable. You can only assign property values from the constructor or private methods", env)
 	when isValueObject(env) && !canVOSubroutineAssignProps(subroutine) && hasLocalProperty(name, env);
 	
-public TypeEnv checkStatement(a: assign(fieldAccess(Expression prev, GlagolID name), AssignOperator ao, Statement val), Type t, Declaration subroutine, TypeEnv env) = 
+public TypeEnv checkStatement(a: assign(fieldAccess(Expression prev, s: symbol(str name)), AssignOperator ao, Statement val), Type t, Declaration subroutine, TypeEnv env) = 
 	addError(a, "Value objects are immutable. You can only assign property values from the constructor or private methods", env)
 	when isValueObject(env) && !canVOSubroutineAssignProps(subroutine) && sameAs(lookupType(prev, env), contextAsType(env), env);
 
@@ -116,7 +116,7 @@ public TypeEnv checkStatement(d: declare(Type varType, variable(GlagolID name), 
 	checkType(varType, s, addDefinition(d, env));
 
 public TypeEnv checkStatement(d: declare(Type varType, variable(GlagolID name), Statement defaultValue), Type t, Declaration s, TypeEnv env) = 
-	checkStatement(defaultValue, t, s, checkDeclareType(varType, lookupType(defaultValue, env), name, d, addDefinition(d, env)));
+	checkDeclareType(varType, lookupType(defaultValue, env), name, d, addDefinition(d, checkStatement(defaultValue, t, s, env)));
 
 public TypeEnv checkDeclareType(\list(Type l), \list(voidValue()), GlagolID name, Statement d, TypeEnv env) = env;
 public TypeEnv checkDeclareType(\map(Type k, Type v), \map(voidValue(), voidValue()), GlagolID name, Statement d, TypeEnv env) = env;

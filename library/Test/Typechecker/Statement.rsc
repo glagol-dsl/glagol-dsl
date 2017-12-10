@@ -38,15 +38,15 @@ test bool shouldGiveErrorWhenVariableAsAssignableIsUndefined() =
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined", newEnv(|tmp:///|));
 	
 test bool shouldGiveErrorWhenFieldAsAssignableIsUndefined() = 
-	checkAssignable(fieldAccess("a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
+	checkAssignable(fieldAccess(symbol("a"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined", newEnv(|tmp:///|));
 	
 test bool shouldGiveErrorWhenThisFieldAsAssignableIsUndefined() = 
-	checkAssignable(fieldAccess(this(), "a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
+	checkAssignable(fieldAccess(this(), symbol("a"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined", newEnv(|tmp:///|));
 	
 test bool shouldNotGiveErrorWhenThisFieldAsAssignableIsDefined() = 
-	checkAssignable(fieldAccess(this(), "a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+	checkAssignable(fieldAccess(this(), symbol("a"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		addDefinition(property(integer(), "a", emptyExpr()), setContext(
 		\module(namespace("Test"), [], entity("User", [
 			property(integer(), "a", emptyExpr())
@@ -59,7 +59,7 @@ test bool shouldNotGiveErrorWhenThisFieldAsAssignableIsDefined() =
 		newEnv(|tmp:///|)));
 	
 test bool shouldGiveErrorWhenThisFieldAsAssignableIsTargettingNonField() = 
-	checkAssignable(fieldAccess(this(), "a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+	checkAssignable(fieldAccess(this(), symbol("a"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		addDefinition(param(integer(), "a", emptyExpr()), newEnv(|tmp:///|))) ==
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "\'a\' is undefined",
 		addDefinition(param(integer(), "a", emptyExpr()), newEnv(|tmp:///|)));
@@ -378,7 +378,7 @@ test bool shouldNotGiveErrorWhenTryingToAssignValueOnAFieldOnNonConstructorInNon
 			setContext(\module(namespace("Test"), [], entity("User", [])), newEnv()))));
 			
 test bool shouldGiveErrorWhenTryingToAssignValueOnThisFieldOnNonConstructorInVO() = 
-	checkStatement(assign(fieldAccess(this(), "a"), defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
+	checkStatement(assign(fieldAccess(this(), symbol("a")), defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
 		method(\public(), voidValue(), "setSomething", [], [], emptyExpr()), addDefinition(property(integer(), "a", emptyExpr()), 
 			setContext(\module(namespace("Test"), [], valueObject("User", [property(integer(), "a", emptyExpr())])), newEnv()))) == 
 	addError(|tmp:///User.g|(0,0,<20,20>,<30,30>), "Value objects are immutable. You can only assign property values from the constructor or private methods", 
@@ -386,12 +386,12 @@ test bool shouldGiveErrorWhenTryingToAssignValueOnThisFieldOnNonConstructorInVO(
 			setContext(\module(namespace("Test"), [], valueObject("User", [property(integer(), "a", emptyExpr())])), newEnv())));
 
 test bool shouldNotGiveErrorWhenTryingToAssignValueOnThisFieldOnNonConstructorInNonVO() = 
-	!hasErrors(checkStatement(assign(fieldAccess(this(), "a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
+	!hasErrors(checkStatement(assign(fieldAccess(this(), symbol("a"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
 		method(\public(), \any(), "aMethod", [], [], emptyExpr()), addDefinition(property(integer(), "a", emptyExpr()), 
 			setContext(\module(namespace("Test"), [], entity("User", [property(integer(), "a", emptyExpr())])), newEnv()))));
 
 test bool shouldGiveErrorWhenAssigningValueThroughATemporaryVariableFromANonConstructorInVO() = 
-	checkStatement(assign(fieldAccess(variable("m"), "a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
+	checkStatement(assign(fieldAccess(variable("m"), symbol("a"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
 		method(\public(), voidValue(), "aMethod", [], [], emptyExpr()), addToAST(
 			\module(namespace("Test"), [], valueObject("Money", [])),
 			addDefinition(property(integer(), "a", emptyExpr()), addDefinition(
@@ -407,7 +407,7 @@ test bool shouldGiveErrorWhenAssigningValueThroughATemporaryVariableFromANonCons
 test bool shouldGiveErrorWhenTryingToAssignRepositoryOnThisFieldOnNonConstructorInVO() {
 
 	Statement assignment = assign(
-		fieldAccess(this(), "users"), defaultAssign(), expression(variable("users")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)])
+		fieldAccess(this(), symbol("users")), defaultAssign(), expression(variable("users")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)])
 	)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)];
 
 	Declaration parameter = param(repository(fullName("User", namespace("Test"), "User")), "users", emptyExpr());
@@ -426,7 +426,7 @@ test bool shouldGiveErrorWhenTryingToAssignRepositoryOnThisFieldOnNonConstructor
 }
 
 test bool shouldNotGiveErrorWhenAssigningValueThroughATemporaryVariableFromAConstructorInVO() = 
-	!hasErrors(checkStatement(assign(fieldAccess(variable("m"), "a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
+	!hasErrors(checkStatement(assign(fieldAccess(variable("m"), symbol("a"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
 		constructor([], [], emptyExpr()), addToAST(
 			\module(namespace("Test"), [], valueObject("Money", [
 				property(integer(), "a", emptyExpr())
@@ -443,12 +443,12 @@ test bool shouldNotGiveErrorWhenTryingToAssignValueOnAFieldOnPrivateMethodInVO()
 			setContext(\module(namespace("Test"), [], valueObject("User", [])), newEnv()))));
 			
 test bool shouldNotGiveErrorWhenTryingToAssignValueOnThisFieldOnPrivateMethodInVO() = 
-	!hasErrors(checkStatement(assign(fieldAccess(this(), "a"), defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
+	!hasErrors(checkStatement(assign(fieldAccess(this(), symbol("a")), defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
 		method(\private(), voidValue(), "setSomething", [], [], emptyExpr()), addDefinition(property(integer(), "a", emptyExpr()), 
 			setContext(\module(namespace("Test"), [], valueObject("User", [property(integer(), "a", emptyExpr())])), newEnv()))));
 
 test bool shouldNotGiveErrorWhenAssigningValueThroughATemporaryVariableFromAPrivateMethodInVO() = 
-	!hasErrors(checkStatement(assign(fieldAccess(variable("m"), "a")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
+	!hasErrors(checkStatement(assign(fieldAccess(variable("m"), symbol("a"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
 		method(\private(), voidValue(), "aMethod", [], [], emptyExpr()), addToAST(
 			\module(namespace("Test"), [], valueObject("Money", [])),
 			addDefinition(property(integer(), "a", emptyExpr()), addDefinition(
@@ -461,7 +461,7 @@ test bool shouldNotGiveErrorWhenAssigningValueThroughATemporaryVariableFromAPriv
 test bool shouldNotGiveErrorWhenTryingToAssignRepositoryOnThisFieldOnPrivateMethodInVO() {
 
 	Statement assignment = assign(
-		fieldAccess(this(), "users"), defaultAssign(), expression(variable("users")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)])
+		fieldAccess(this(), symbol("users")), defaultAssign(), expression(variable("users")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)])
 	)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)];
 
 	Declaration parameter = param(repository(fullName("User", namespace("Test"), "User")), "users", emptyExpr());

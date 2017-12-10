@@ -1,10 +1,12 @@
 module Compiler::PHP::Uses
 
+import Compiler::PHP::Code;
 import Utils::NewLine;
 import Syntax::Abstract::PHP;
 
-public str toCode(phpUse(set[PhpUse] uses), _) = ("" | it + toCode(use) | use <- uses);
+public Code toCode(phpUse(set[PhpUse] uses), _) = (code() | it + toCode(use) | use <- uses);
 
-public str toCode(phpUse(phpName(str name), phpSomeName(phpName(str as)))) = "<nl()>use <name> as <as>;";
+public Code toCode(p: phpUse(nm: phpName(str name), phpSomeName(als: phpName(str as)))) = 
+	code(nl()) + code("use", p) + code(" ") + code(name, nm) + code(" ") + code("as", als) + code(" ") + code(as, als) + codeEnd(";", p);
 	
-public str toCode(phpUse(phpName(str name), phpNoName())) =  "<nl()>use <name>;";
+public Code toCode(p: phpUse(nm: phpName(str name), phpNoName())) = code(nl()) + code("use", p) + code(" ") + code(name, nm) + codeEnd(";", p);

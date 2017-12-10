@@ -6,12 +6,12 @@ import Parser::Converter::Parameter;
 import Parser::Converter::Expression;
 import Parser::Converter::Statement;
 
-public Declaration convertDeclaration(d: (Declaration) `<Action action>`, _, a: /^(?!controller).*$/, _) {
-	throw ActionNotAllowed("Action declarations not allowed in artifact type \'<a>\'", d@\loc);
-}
+public Declaration convertDeclaration((Declaration) `<Annotation* annotations><Action action>`, str _, str _, ParseEnv env) = 
+	convertAction(action, env)[
+    	@annotations = convertAnnotations(annotations, env)
+    ];
 
-// TODO actions with annotations?
-public Declaration convertDeclaration((Declaration) `<Action action>`, _, _, ParseEnv env) = convertAction(action, env);
+public Declaration convertDeclaration((Declaration) `<Action action>`, _, _, ParseEnv env) = convertAction(action, env)[@src=action@\loc];
 
 public Declaration convertAction(a: (Action) `<MemberName name>{<Statement* body>}`, ParseEnv env) = 
 	action("<name>", [], [convertStmt(stmt, env) | stmt <- body]);

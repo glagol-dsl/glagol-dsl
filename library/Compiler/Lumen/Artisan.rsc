@@ -1,12 +1,13 @@
 module Compiler::Lumen::Artisan
 
+import Compiler::PHP::Code;
 import Syntax::Abstract::PHP;
 import Syntax::Abstract::PHP::Helpers;
 import Compiler::PHP::Compiler;
 
 public str createArtisan() =
     "#!/usr/bin/env php\n" +
-    toCode(phpScript([
+    implode(toCode(phpScript([
         phpExprstmt(phpInclude(phpBinaryOperation(phpScalar(phpDirConstant()), phpScalar(phpString("/bootstrap/autoload.php")), phpConcat()), phpRequire())),
         phpExprstmt(phpAssign(phpVar("app"), phpInclude(
             phpBinaryOperation(phpScalar(phpDirConstant()), phpScalar(phpString("/bootstrap/app.php")), phpConcat()), 
@@ -28,4 +29,4 @@ public str createArtisan() =
             phpActualParameter(phpVar("status"), false)
         ])),
         phpExprstmt(phpExit(phpSomeExpr(phpVar("status"))))
-    ]));
+    ])));

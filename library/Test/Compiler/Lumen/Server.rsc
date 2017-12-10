@@ -6,27 +6,9 @@ import Syntax::Abstract::PHP;
 import Syntax::Abstract::PHP::Helpers;
 
 test bool shouldCreateLumenServerFile() =
-    createServerFile() == toCode(phpScript([
-        phpExprstmt(phpAssign(phpVar("uri"), phpCall(
-            "urldecode", [
-                phpActualParameter(phpCall("parse_url", [
-                    phpActualParameter(phpFetchArrayDim(phpVar("_SERVER"), phpSomeExpr(phpScalar(phpString("REQUEST_URI")))), false),
-                    phpActualParameter(phpFetchConst(phpName("PHP_URL_PATH")), false)
-                ]), false)
-            ]
-        ))),
-        phpIf(phpBinaryOperation(
-            phpBinaryOperation(phpVar("uri"), phpScalar(phpString("/")), phpNotIdentical()),
-            phpCall("file_exists", [phpActualParameter(phpBinaryOperation(
-                phpScalar(phpDirConstant()),
-                phpBinaryOperation(phpScalar(phpString("/public")), phpVar("uri"), phpConcat()),
-                phpConcat()
-            ), false)]),
-            phpLogicalAnd()
-        ), [], [], phpNoElse()),
-        phpExprstmt(phpInclude(phpBinaryOperation(
-            phpScalar(phpDirConstant()), 
-            phpScalar(phpString("/public/index.php")), 
-            phpConcat()), phpRequireOnce()
-        ))
-    ]));
+    createServerFile() ==  
+    "\<?php\n" + 
+    "$uri = urldecode(parse_url($_SERVER[\"REQUEST_URI\"], PHP_URL_PATH));\n" + 
+    "if ($uri !== \"/\" and file_exists(__DIR__ . \"/public\" . $uri)) {\n" + 
+    "}\n" + 
+    "require_once __DIR__ . \"/public/index.php\";\n";

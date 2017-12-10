@@ -1,24 +1,26 @@
 module Compiler::PHP::Params
 
+import Compiler::PHP::Code;
 import Syntax::Abstract::PHP;
 import Compiler::PHP::Expressions;
 import Compiler::PHP::ByRef;
 import Utils::Glue;
 
-public str toCode(phpParam(
+public Code toCode(p: phpParam(
 		str paramName, 
 		PhpOptionExpr paramDefault, 
 		PhpOptionName \type, 
 		bool byRef,
 		bool isVariadic)) =
-	"<paramType(\type)><ref(byRef)>" + 
-	"<isVariadic ? "..." : "">" + 
-	"$<paramName><defaultVal(paramDefault)>";
+	paramType(\type) + code(ref(byRef), p) + 
+	code("<isVariadic ? "..." : "">", p) + 
+	code("$<paramName>", p) + 
+	defaultVal(paramDefault);
 
-public str toCode(list[PhpParam] params) = glue([toCode(p) | p <- params], ", ");
+public Code toCode(list[PhpParam] params) = glue([toCode(p) | p <- params], code(", "));
 
-private str paramType(phpSomeName(phpName(str paramType))) = paramType + " ";
-private str paramType(phpNoName()) = "";
+private Code paramType(p: phpSomeName(phpName(str paramType))) = code(paramType, p) + code(" ");
+private Code paramType(p: phpNoName()) = code("");
 
-private str defaultVal(phpSomeExpr(PhpExpr expr)) = " = <toCode(expr, 0)>";
-private str defaultVal(phpNoExpr()) = "";
+private Code defaultVal(p: phpSomeExpr(PhpExpr expr)) = code(" ") + code("=", p) + code(" ") + toCode(expr, 0);
+private Code defaultVal(p: phpNoExpr()) = code("");

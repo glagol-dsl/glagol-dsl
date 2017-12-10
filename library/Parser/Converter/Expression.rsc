@@ -5,6 +5,7 @@ import Syntax::Concrete::Grammar;
 import String;
 import Parser::Converter::Boolean;
 import Parser::Converter::QuotedString;
+import Parser::Converter::Symbol;
 import Exceptions::ParserExceptions;
 
 public Expression convertExpression(a: (Expression) `(<Expression expr>)`, ParseEnv env) = \bracket(convertExpression(expr, env))[@src=a@\loc];
@@ -111,7 +112,7 @@ public Expression convertExpression(a: (Expression) `new <ArtifactName name>(<{E
 // public Expression convertExpression(a: (Expression) `get <Type t>`, ParseEnv env) = get(convertType(t, env))[@src=a@\loc];
     
 public Expression convertExpression(a: (Expression) `<MemberName method>(<{Expression ","}* args>)`, ParseEnv env)
-    = invoke("<method>", [convertExpression(arg, env) | arg <- args])[@src=a@\loc];
+    = invoke(convertSymbol(method), [convertExpression(arg, env) | arg <- args])[@src=a@\loc];
     
 public Expression convertExpression(a: (Expression) `<Expression prev>.<MemberName method>(<{Expression ","}* args>)`, ParseEnv env) {
     
@@ -119,7 +120,7 @@ public Expression convertExpression(a: (Expression) `<Expression prev>.<MemberNa
         throw IllegalObjectOperator("Invalid expression followed by object operator", a@\loc);
     }
     
-    return invoke(convertExpression(true, prev, env), "<method>", [convertExpression(arg, env) | arg <- args])[@src=a@\loc];
+    return invoke(convertExpression(true, prev, env), convertSymbol(method), [convertExpression(arg, env) | arg <- args])[@src=a@\loc];
 }
 
 public Expression convertExpression(brackets: true, e: (Expression) `new <ArtifactName name>(<{Expression ","}* args>)`, ParseEnv env) = 
@@ -133,7 +134,7 @@ public Expression convertExpression(a: (Expression) `<Expression prev>.<MemberNa
         throw IllegalObjectOperator("Invalid expression followed by object operator", a@\loc);
     }
 
-    return fieldAccess(convertExpression(true, prev, env), "<field>")[@src=a@\loc];
+    return fieldAccess(convertExpression(true, prev, env), convertSymbol(field))[@src=a@\loc];
 }
 
 public Expression convertExpression(a: (Expression) `{<{MapPair ","}* pairs>}`, ParseEnv env) = \map(

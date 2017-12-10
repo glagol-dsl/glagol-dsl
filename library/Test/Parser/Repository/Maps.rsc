@@ -22,7 +22,7 @@ test bool shouldParseMapDeclaration()
             param(integer(), "id", emptyExpr())
         ], [
             declare(\map(string(), integer()), variable("query"), expression(\map((string("id"): variable("id"))))),
-            \return(invoke("findOneBy", [variable("query")]))
+            \return(invoke(symbol("findOneBy"), [variable("query")]))
         ], emptyExpr()),
 		method(\public(), artifact(fullName("User", namespace("Example"), "User")), "find", [
 			param(integer(), "id", emptyExpr())

@@ -59,14 +59,17 @@ data Expression
     | ifThenElse(Expression condition, Expression ifThen, Expression \else)
     | new(Name artifact, list[Expression] args)
     | get(Type t)
-    | invoke(str methodName, list[Expression] args)
-    | invoke(Expression prev, str methodName, list[Expression] args)
-    | fieldAccess(str name)
-    | fieldAccess(Expression prev, str name)
+    | invoke(Symbol methodName, list[Expression] args)
+    | invoke(Expression prev, Symbol methodName, list[Expression] args)
+    | fieldAccess(Symbol symbolName)
+    | fieldAccess(Expression prev, Symbol symbolName)
     | emptyExpr()
     | this()
     | cast(Type \type, Expression expr)
     ;
+
+data Symbol 
+	= symbol(str name);
 
 data Type
     = integer()
@@ -134,11 +137,13 @@ data Annotation
 public anno list[Annotation] node@annotations;
 public anno list[Annotation] Declaration@annotations;
 
+public anno loc node@src;
 public anno loc ControllerType@src;
 public anno loc Route@src;
 public anno loc AssignOperator@src;
 public anno loc Statement@src; 
 public anno loc Modifier@src; 
+public anno loc Symbol@src; 
 public anno loc Type@src; 
 public anno loc Name@src; 
 public anno loc Expression@src; 

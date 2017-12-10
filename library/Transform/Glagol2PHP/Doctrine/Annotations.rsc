@@ -6,11 +6,12 @@ import Syntax::Abstract::PHP;
 import Config::Config;
 import List;
 import Transform::Env;
+import Transform::OriginAnnotator;
 
 import IO;
 
 public PhpAnnotation toPhpAnnotation("table", list[Annotation] arguments, TransformEnv env)
-    = phpAnnotationVal(("name": toPhpAnnotation(arguments[0], env))) when usesDoctrine(env) && isInEntity(env);
+    = origin(phpAnnotationVal(("name": toPhpAnnotation(arguments[0], env))), getContext(env)) when usesDoctrine(env) && isInEntity(env);
     
 public PhpAnnotation toPhpAnnotation("column", list[Annotation] arguments, TransformEnv env)
     = toPhpAnnotation(arguments[0], env) when annotationMap(_) := arguments[0] && usesDoctrine(env) && isInEntity(env);

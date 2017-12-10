@@ -5,9 +5,10 @@ import Syntax::Abstract::PHP;
 import Syntax::Abstract::PHP::Helpers;
 import Compiler::Lumen::Config::Abstract;
 import Compiler::PHP::Compiler;
+import Compiler::PHP::Code;
 
 public str createDoctrineConfig(list[Syntax::Abstract::Glagol::Declaration] ast) = 
-    toCode(phpScript([phpReturn(phpSomeExpr(toPhpConf(array((
+    implode(toCode(phpScript([phpReturn(phpSomeExpr(toPhpConf(array((
         "managers": array((
             "default": array((
                 "dev": env("APP_DEBUG"),
@@ -51,7 +52,7 @@ public str createDoctrineConfig(list[Syntax::Abstract::Glagol::Declaration] ast)
         "notifications": array((
             "channel": string("database")
         ))
-    )))))]));
+    )))))])));
 
 private map[Conf, Conf] createCustomTypesMapping(list[Syntax::Abstract::Glagol::Declaration] ast) = 
 	(string("json"): class("LaravelDoctrine\\ORM\\Types\\Json")) + 

@@ -158,15 +158,9 @@ public data PhpProperty = phpProperty(str propertyName, PhpOptionExpr defaultVal
 
 public data PhpModifier = phpPublic() | phpPrivate() | phpProtected() | phpStatic() | phpAbstract() | phpFinal();
  
-public data PhpClassDef = phpClass(str className,
-                             set[PhpModifier] modifiers, 
-                             PhpOptionName extends, 
-                             list[PhpName] implements, 
-                             list[PhpClassItem] members);
+public data PhpClassDef = phpClass(str className, set[PhpModifier] modifiers, PhpOptionName extends, list[PhpName] implements, list[PhpClassItem] members);
 
-public data PhpInterfaceDef = phpInterface(str interfaceName, 
-                                    list[PhpName] extends, 
-                                    list[PhpClassItem] members);
+public data PhpInterfaceDef = phpInterface(str interfaceName, list[PhpName] extends, list[PhpClassItem] members);
                                     
 public data PhpTraitDef = phpTrait(str traitName, list[PhpClassItem] members);
 
@@ -191,3 +185,37 @@ public anno str PhpClassDef@phpdoc;
 
 public anno set[PhpAnnotation] PhpClassItem@phpAnnotations;
 public anno set[PhpAnnotation] PhpStmt@phpAnnotations;
+
+public anno loc node@origin;
+public anno loc PhpExpr@origin;
+public anno loc PhpOptionExpr@origin;
+public anno loc PhpOptionName@origin;
+public anno loc PhpOptionElse@origin;
+public anno loc PhpActualParameter@origin;
+public anno loc PhpConst@origin;
+public anno loc PhpArrayElement@origin;
+public anno loc PhpName@origin;
+public anno loc PhpNameOrExpr@origin;
+public anno loc PhpCastType@origin;
+public anno loc PhpClosureUse@origin;
+public anno loc PhpIncludeType@origin;
+public anno loc PhpOp@origin;
+public anno loc PhpParam@origin;
+public anno loc PhpScalar@origin;
+public anno loc PhpStmt@origin;
+public anno loc PhpDeclaration@origin;
+public anno loc PhpCatch@origin;
+public anno loc PhpCase@origin;
+public anno loc PhpElseIf@origin;
+public anno loc PhpElse@origin;
+public anno loc PhpUse@origin;
+public anno loc PhpClassItem@origin;
+public anno loc PhpAdaptation@origin;
+public anno loc PhpProperty@origin;
+public anno loc PhpModifier@origin;
+public anno loc PhpClassDef@origin;
+public anno loc PhpInterfaceDef@origin;
+public anno loc PhpTraitDef@origin;
+public anno loc PhpStaticVar@origin;
+public anno loc PhpScript@origin;
+public anno loc PhpAnnotation@origin;

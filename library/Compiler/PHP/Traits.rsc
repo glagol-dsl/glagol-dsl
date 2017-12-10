@@ -1,9 +1,10 @@
 module Compiler::PHP::Traits
 
+import Compiler::PHP::Code;
 import Syntax::Abstract::PHP;
 import Utils::Indentation;
 import Utils::Glue;
 import Utils::NewLine;
 
-public str toCode(phpTraitUse(list[PhpName] traits, []), int i) =
-    nl() + glue(["<s(i)>use <name>;" | phpName(str name) <- traits], nl()) + nl();
+public Code toCode(phpTraitUse(list[PhpName] traits, []), int i) =
+    code(nl()) + glue([code(s(i)) + code("use", p) + code(" ") + code("<name>", p) + codeEnd(";", p) | p: phpName(str name) <- traits], code(nl())) + code(nl());

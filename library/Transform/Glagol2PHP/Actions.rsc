@@ -9,20 +9,19 @@ import Config::Config;
 import Transform::Glagol2PHP::Statements;
 import Transform::Glagol2PHP::Params;
 import Transform::Env;
+import Transform::OriginAnnotator;
 import String;
 
 public PhpClassItem toPhpClassItem(a: action(str name, list[Declaration] params, list[Statement] body), TransformEnv env)
-    = phpMethod(
+    = origin(phpMethod(
         name, 
-        {phpPublic()}, 
+        {origin(phpPublic(), a)}, 
         false, 
         toActionParams(params, name), 
         createInitializers(params, name, env) +
-        [toPhpStmt(stmt, addDefinitions(params, env)) | stmt <- body], 
+        [origin(toPhpStmt(stmt, addDefinitions(params, env)), stmt) | stmt <- body], 
         phpNoName()
-    )[
-    	@phpAnnotations=toPhpAnnotations(a, env)
-    ] when usesLumen(env);
+    )[@phpAnnotations=toPhpAnnotations(a, env)], a) when usesLumen(env);
 
 @todo="Tests missing for this one"
 private list[PhpParam] toActionParams(list[Declaration] params, _) {
@@ -30,9 +29,9 @@ private list[PhpParam] toActionParams(list[Declaration] params, _) {
     
     phpParams = for (p <- params) {
         if (hasAnnotation(p, "autofind")) {
-            append toPhpParam(param(integer(), "_<p.name>Id", emptyExpr()));
+            append origin(toPhpParam(param(integer(), "_<p.name>Id", emptyExpr())), p, true);
         } else if (!hasAnnotation(p, "autofill")) {
-            append toPhpParam(p);
+            append origin(toPhpParam(p), p);
         }
     }
     
@@ -47,7 +46,7 @@ private list[PhpStmt] createInitializers(list[Declaration] params, str _, Transf
 
     for (p <- params, hasAnnotation(p, "autofind"), isEntity(p.paramType, env)) {
         hasAutofind = true;
-        stmts += phpExprstmt(
+        stmts += origin(phpExprstmt(
             phpAssign(phpVar(p.name), phpMethodCall(phpCall(phpName(phpName("app")), [
             	phpActualParameter(phpFetchClassConst(phpName(phpName(
             		toString(findRepository(p.paramType, env), env)
@@ -55,21 +54,21 @@ private list[PhpStmt] createInitializers(list[Declaration] params, str _, Transf
             ]), phpName(phpName("find")), [
                 phpActualParameter(phpVar("_<p.name>Id"), false)
             ]))
-        );
+        ), p, true);
     }
     
     for (p <- params, hasAnnotation(p, "autofill")) {
-        if (hasAutofind) 
-            stmts += phpExprstmt(
+        if (hasAnnotation(p, "autofind")) 
+            stmts += origin(phpExprstmt(
                 phpMethodCall(phpVar(p.name), phpName(phpName("_hydrate")), [
                     phpActualParameter(phpMethodCall(phpPropertyFetch(
                         phpCall(phpName(phpName("app")), [phpActualParameter(phpFetchClassConst(phpName(phpName("\\Illuminate\\Http\\Request")), "class"), false)]), 
                         phpName(phpName("request"))
                     ), phpName(phpName("all")), []), false)
                 ])
-            );
+            ), p, true);
         else if (artifact(Name n) := p.paramType)
-            stmts += [
+            stmts += origin([
                 phpExprstmt(phpAssign(phpVar("reflection"), phpNew(phpName(phpName("\\ReflectionClass")), [
                     phpActualParameter(phpFetchClassConst(phpName(phpName(n.localName)), "class"), false)
                 ]))),
@@ -84,7 +83,7 @@ private list[PhpStmt] createInitializers(list[Declaration] params, str _, Transf
                         ), phpName(phpName("all")), []), false)
                     ])
                 )
-            ];
+            ], p, true);
     }
     
     return stmts;

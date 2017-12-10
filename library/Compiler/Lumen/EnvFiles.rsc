@@ -2,6 +2,7 @@ module Compiler::Lumen::EnvFiles
 
 import Config::Config;
 import Config::Reader;
+import Compiler::PHP::Code;
 import Compiler::PHP::Compiler;
 import Compiler::Lumen::Bootstrap::App;
 import Compiler::Lumen::Public::Index;
@@ -16,6 +17,7 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
 import Syntax::Abstract::PHP::Helpers;
+import Transform::OriginAnnotator;
 import String;
 
 public map[loc, str] generateFrameworkFiles(lumen(), Config config, list[Declaration] ast) = (
@@ -52,7 +54,7 @@ private PhpCastType lookupCastType(method(_, boolean(), _, _, _, _)) = phpBool()
 private PhpCastType lookupCastType(method(_, Type t, _, _, _, _)) = phpString();
 private PhpCastType lookupCastType(emptyDecl()) = phpString();
 
-private str createType(m: \module(ns, _, v: valueObject(str name, declarations)), Declaration dbValMethod) = toCode(
+private str createType(m: \module(ns, _, v: valueObject(str name, declarations)), Declaration dbValMethod) = implode(toCode(
 	phpScript([
 		phpDeclareStrict(),
         phpNamespace(
@@ -96,7 +98,7 @@ private str createType(m: \module(ns, _, v: valueObject(str name, declarations))
                     	]), phpBooleanNot()), [
                     		phpReturn(phpSomeExpr(phpScalar(phpNull())))
                     	], [], phpNoElse()),
-                    	phpReturn(phpSomeExpr(phpMethodCall(phpVar(phpName(phpName("value"))), phpName(phpName("toDatabaseValue")), [])))
+                    	origin(phpReturn(phpSomeExpr(phpMethodCall(phpVar(phpName(phpName("value"))), phpName(phpName("toDatabaseValue")), []))), dbValMethod, true)
                     ], phpNoName()),
                     phpMethod("getName", {phpPublic()}, false, [], [
                     	phpReturn(phpSomeExpr(phpFetchClassConst(phpName(phpName("self")), "TYPE_NAME")))
@@ -117,14 +119,14 @@ private str createType(m: \module(ns, _, v: valueObject(str name, declarations))
             ]
         )
     ])
-);
+));
 
 private map[loc, str] getRepositoryProviders(doctrine(), Config config, list[Declaration] ast) = 
     (|file:///| + "app/Provider/<namespaceToString(ns, "/")>/<name>RepositoryProvider.php": 
     	createProvider(doctrine(), e) | \file(_, e: \module(ns, _, repository(str name, _))) <- ast);
 
-private str createProvider(doctrine(), m: \module(ns, _, repository(str name, list[Declaration] declarations))) = 
-    toCode(phpScript([
+private str createProvider(doctrine(), m: \module(ns, _, r: repository(str name, list[Declaration] declarations))) = 
+    implode(toCode(origin(phpScript([
         phpNamespace(
             phpSomeName(phpName("App\\Provider\\<namespaceToString(ns, "\\")>")),
             [
@@ -159,7 +161,7 @@ private str createProvider(doctrine(), m: \module(ns, _, repository(str name, li
                 ]))
             ]
         )
-    ]));
+    ]), r, true)));
 
 private str getTargetEntityWithNamespace(\module(Declaration ns, list[Declaration] imports, repository(str name, _))) {
     for (a: \import(str realName, Declaration namespace, str as) <- imports, as == name) {

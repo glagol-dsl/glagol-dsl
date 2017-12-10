@@ -5,9 +5,10 @@ import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
 import Syntax::Abstract::PHP::Helpers;
 import Compiler::PHP::Compiler;
+import Compiler::PHP::Code;
 import Config::Config;
 
-public str createAppFile(ORM orm, list[Declaration] ast) = toCode(phpScript([
+public str createAppFile(ORM orm, list[Declaration] ast) = implode(toCode(phpScript([
 	phpExprstmt(phpInclude(phpBinaryOperation(phpScalar(phpDirConstant()), phpScalar(phpString("/../vendor/autoload.php")), phpConcat()), phpRequire())),
 	phpExprstmt(phpAssign(phpVar("app"), phpNew(phpName(phpName("\\Laravel\\Lumen\\Application")), [
 		phpActualParameter(phpCall(phpName(phpName("realpath")), [
@@ -39,7 +40,7 @@ public str createAppFile(ORM orm, list[Declaration] ast) = toCode(phpScript([
 		])
 	),
 	phpExprstmt(
-		phpMethodCall(phpVar("app"), phpName(phpName("group")), [
+		phpMethodCall(phpPropertyFetch(phpVar("app"), phpName(phpName("router"))), phpName(phpName("group")), [
 			phpActualParameter(phpArray([]), false),
 			phpActualParameter(phpClosure([
 				phpExprstmt(phpInclude(phpBinaryOperation(phpScalar(phpDirConstant()), phpScalar(phpString("/../routes/api.php")), phpConcat()), phpRequire()))
@@ -47,7 +48,7 @@ public str createAppFile(ORM orm, list[Declaration] ast) = toCode(phpScript([
 		])
 	),
 	phpReturn(phpSomeExpr(phpVar("app")))
-]));
+])));
 
 private list[PhpStmt] getORMProviders(doctrine(), list[Declaration] ast) = [
     phpExprstmt(

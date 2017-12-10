@@ -7,11 +7,12 @@ import Syntax::Abstract::Glagol::Helpers;
 import Exceptions::TransformExceptions;
 import Config::Config;
 import Transform::Env;
+import Transform::OriginAnnotator;
 
 public list[PhpStmt] toPhpUses(m: \module(Declaration namespace, list[Declaration] imports, Declaration artifact), list[Declaration] ast, TransformEnv env) =
-    [phpUse(
-        {toPhpUse(i) | i <- imports + extractImports(m, ast, env)}
-    )];
+    [origin(phpUse(
+        {origin(toPhpUse(i), i) | i <- imports + extractImports(m, ast, env)}
+    ), namespace)];
 
 private list[Declaration] extractImports(
 	m: \module(Declaration ns, list[Declaration] imports, a: entity(_, list[Declaration] ds)), 
