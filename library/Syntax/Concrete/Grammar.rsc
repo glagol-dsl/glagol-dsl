@@ -201,6 +201,7 @@ syntax Statement
     | ifThen: "if" "(" Expression condition ")" Statement then () !>> "else"
     | ifThenElse: "if" "(" Expression condition ")" Statement then "else" Statement else
     | assign: Assignable assignable AssignOperator operator Statement value !emptyStmt!block!ifThen!ifThenElse!return!break
+    | query: QueryStatement query ";"
     | foreach: "for" "(" Expression list "as" MemberName var (","  {Expression ","}+ conditions)? ")" Statement body
     | foreach: "for" "(" Expression list "as" MemberName key ":" MemberName var (","  {Expression ","}+ conditions)? ")" Statement body
     > non-assoc  (
@@ -215,6 +216,63 @@ syntax Statement
     )
     > emptyStmt: ";"
     ;   
+
+syntax QueryStatement 
+	= QuerySelectStmt selectStatement
+	;
+
+syntax QuerySelectStmt
+	= "SELECT" QuerySpec spec "FROM" {QuerySource ","}+ sources QueryWhere? where QueryOrderBy? order QueryLimit? limit
+	;
+
+syntax QuerySpec
+	= MemberName as 
+	;
+
+syntax QuerySource
+	= ArtifactName artifact MemberName as
+	| ArtifactName artifact "as" MemberName as
+	;
+
+syntax QueryWhere
+	= "WHERE" QueryExpression
+	;
+
+syntax QueryField
+	= MemberName artifact "." MemberName field
+	;
+
+syntax QueryExpression
+	= bracket "(" QueryExpression expr ")"
+	| QueryExpression l "=" QueryExpression r
+	| QueryExpression l "!=" QueryExpression r
+	| QueryExpression l "\>" QueryExpression r
+	| QueryExpression l "\>=" QueryExpression r
+	| QueryExpression l "\<" QueryExpression r
+	| QueryExpression l "\<=" QueryExpression r
+	| QueryExpression l "IS" "NULL"
+	| QueryExpression l "IS" "NOT" "NULL"
+	| QueryExpression l "AND" QueryExpression r
+	| QueryExpression l "OR" QueryExpression r
+	| "\<" Expression expr "\>"
+	| QueryField field
+	;
+
+syntax QueryOrderBy
+	= "ORDER" "BY" {QueryOrderByField ","}+ fields
+	;
+
+syntax QueryOrderByField
+	= QueryField field
+	| QueryField field "DESC"
+	| QueryField field "ASC"
+	;
+
+syntax QueryLimit
+	= QueryExpression size
+	| QueryExpression size "OFFSET" QueryExpression offset
+	| QueryExpression offset "," QueryExpression size
+	;
 
 syntax Assignable
     = variable: MemberName varName
