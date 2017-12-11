@@ -111,7 +111,60 @@ data Statement
     | foreach(Expression \list, Expression key, Expression varName, Statement body, list[Expression] conditions)
     | \break(int level)
     | \continue(int level)
+    | query(QueryStatement queryStmt)
     ;
+
+data QueryStatement
+	= querySelect(QuerySpec spec, list[QuerySource] sources, QueryWhere where, QueryOrderBy order, QueryLimit limit)
+	;
+
+data QuerySpec
+	= querySpec(Symbol symbol)
+	;
+
+data QuerySource
+	= querySource(GlagolID name, Symbol symbol)
+	;
+	
+data QueryWhere
+	= noWhere()
+	| expression(QueryExpression expr)
+	;
+
+data QueryExpression
+	= \bracket(QueryExpression expr)
+	| equals(QueryExpression lhs, QueryExpression rhs)
+	| nonEquals(QueryExpression lhs, QueryExpression rhs)
+	| greaterThan(QueryExpression lhs, QueryExpression rhs)
+	| greaterThanOrEq(QueryExpression lhs, QueryExpression rhs)
+	| lowerThan(QueryExpression lhs, QueryExpression rhs)
+	| lowerThanOrEq(QueryExpression lhs, QueryExpression rhs)
+	| isNull(QueryExpression lhs)
+	| isNotNull(QueryExpression lhs)
+	| and(QueryExpression lhs, QueryExpression rhs)
+	| or(QueryExpression lhs, QueryExpression rhs)
+	| glagolExpr(Expression expr)
+	| queryField(QueryField expr)
+	;
+
+data QueryLimit
+	= limit(int size, int offset)
+	;
+	
+data QueryOrderBy
+	= noOrderBy()
+	| orderBy(list[QueryOrderBy] orderByFields)
+	| orderBy(QueryField field, OrderByDirection dir)
+	;
+	
+data OrderByDirection
+	= asc()
+	| desc()
+	;
+
+data QueryField
+	= queryField(Symbol artifact, Symbol field)
+	;
 
 data AssignOperator
     = defaultAssign()
