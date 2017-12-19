@@ -169,6 +169,7 @@ syntax Expression
     | invoke: Expression prev "." MemberName method "(" {Expression ","}* args ")"
     | fieldAccess: Expression prev "." MemberName field
     | this: "this"
+    | query: QueryStatement query
     > left "(" Type type ")" Expression expr
     > left ( product: Expression lhs "*" () !>> "*" Expression rhs
            | remainder: Expression lhs "%" Expression rhs
@@ -201,7 +202,6 @@ syntax Statement
     | ifThen: "if" "(" Expression condition ")" Statement then () !>> "else"
     | ifThenElse: "if" "(" Expression condition ")" Statement then "else" Statement else
     | assign: Assignable assignable AssignOperator operator Statement value !emptyStmt!block!ifThen!ifThenElse!return!break
-    | query: QueryStatement query ";"
     | foreach: "for" "(" Expression list "as" MemberName var (","  {Expression ","}+ conditions)? ")" Statement body
     | foreach: "for" "(" Expression list "as" MemberName key ":" MemberName var (","  {Expression ","}+ conditions)? ")" Statement body
     > non-assoc  (
@@ -222,11 +222,12 @@ syntax QueryStatement
 	;
 
 syntax QuerySelectStmt
-	= "SELECT" QuerySpec spec "FROM" {QuerySource ","}+ sources QueryWhere? where QueryOrderBy? order QueryLimit? limit
+	= "SELECT" QuerySpec spec "FROM" QuerySource source QueryWhere? where QueryOrderBy? order QueryLimit? limit
 	;
 
 syntax QuerySpec
 	= MemberName as 
+	| MemberName as "[" "]"
 	;
 
 syntax QuerySource
@@ -235,7 +236,7 @@ syntax QuerySource
 	;
 
 syntax QueryWhere
-	= "WHERE" QueryExpression
+	= "WHERE" QueryExpression expr
 	;
 
 syntax QueryField
@@ -269,9 +270,9 @@ syntax QueryOrderByField
 	;
 
 syntax QueryLimit
-	= QueryExpression size
-	| QueryExpression size "OFFSET" QueryExpression offset
-	| QueryExpression offset "," QueryExpression size
+	= "LIMIT" QueryExpression size
+	| "LIMIT" QueryExpression size "OFFSET" QueryExpression offset
+	| "LIMIT" QueryExpression offset "," QueryExpression size
 	;
 
 syntax Assignable

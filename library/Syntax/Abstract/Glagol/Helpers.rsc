@@ -2,7 +2,6 @@ module Syntax::Abstract::Glagol::Helpers
 
 import Syntax::Abstract::Glagol;
 import List;
-import IO;
 
 public bool isProperty(property(_, _, _)) = true;
 public default bool isProperty(value _) = false;

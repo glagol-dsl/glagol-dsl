@@ -10,7 +10,6 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 
 import List;
-import IO;
 
 public TypeEnv checkMethod(c: constructor(_, _, _), repository(_, _), TypeEnv env) =
 	addError(c, "Constructors are disabled for repositories", env);

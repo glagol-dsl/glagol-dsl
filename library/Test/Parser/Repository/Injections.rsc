@@ -2,7 +2,6 @@ module Test::Parser::Repository::Injections
 
 import Parser::ParseAST;
 import Syntax::Abstract::Glagol;
-import IO;
 
 test bool shouldParseInjections() 
 {    

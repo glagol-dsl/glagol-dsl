@@ -7,7 +7,6 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import Typechecker::Type::Compatibility;
 
-import IO;
 import List;
 import Map;
 import Set;

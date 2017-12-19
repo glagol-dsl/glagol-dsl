@@ -6,7 +6,6 @@ import lang::json::IO;
 import lang::json::ast::JSON;
 import List;
 import String;
-import IO;
 
 alias Config = tuple[
 	Framework framework,

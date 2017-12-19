@@ -3,6 +3,7 @@ module Parser::Converter::Statement
 import Syntax::Abstract::Glagol;
 import Syntax::Concrete::Grammar;
 import Parser::Converter::Expression;
+import Parser::Converter::Query;
 import Parser::Converter::Assignable;
 import Parser::Converter::AssignOperator;
 import Parser::Converter::Type;

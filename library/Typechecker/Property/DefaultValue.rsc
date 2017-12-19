@@ -4,7 +4,6 @@ extend Typechecker::DefaultValue;
 
 import Typechecker::Env;
 import Syntax::Abstract::Glagol;
-import IO;
 
 public TypeEnv checkDefaultValue(g:get(_), TypeEnv env) = 
 	addError(g, "Get is not allowed in entities and value objects", env)

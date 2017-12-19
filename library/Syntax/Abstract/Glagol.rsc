@@ -66,6 +66,7 @@ data Expression
     | emptyExpr()
     | this()
     | cast(Type \type, Expression expr)
+    | query(QueryStatement queryStmt)
     ;
 
 data Symbol 
@@ -111,19 +112,18 @@ data Statement
     | foreach(Expression \list, Expression key, Expression varName, Statement body, list[Expression] conditions)
     | \break(int level)
     | \continue(int level)
-    | query(QueryStatement queryStmt)
     ;
 
 data QueryStatement
-	= querySelect(QuerySpec spec, list[QuerySource] sources, QueryWhere where, QueryOrderBy order, QueryLimit limit)
+	= querySelect(QuerySpec spec, QuerySource source, QueryWhere where, QueryOrderBy order, QueryLimit limit)
 	;
 
 data QuerySpec
-	= querySpec(Symbol symbol)
+	= querySpec(Symbol symbol, bool single)
 	;
 
 data QuerySource
-	= querySource(GlagolID name, Symbol symbol)
+	= querySource(Name name, Symbol symbol)
 	;
 	
 data QueryWhere
@@ -143,23 +143,20 @@ data QueryExpression
 	| isNotNull(QueryExpression lhs)
 	| and(QueryExpression lhs, QueryExpression rhs)
 	| or(QueryExpression lhs, QueryExpression rhs)
-	| glagolExpr(Expression expr)
-	| queryField(QueryField expr)
+	| glagolExpr(Expression glExpr)
+	| queryField(QueryField field)
+	| noQueryExpr()
 	;
 
 data QueryLimit
-	= limit(int size, int offset)
+	= limit(QueryExpression size, QueryExpression offset)
+	| noLimit()
 	;
 	
 data QueryOrderBy
 	= noOrderBy()
 	| orderBy(list[QueryOrderBy] orderByFields)
-	| orderBy(QueryField field, OrderByDirection dir)
-	;
-	
-data OrderByDirection
-	= asc()
-	| desc()
+	| orderBy(QueryField field, bool desc)
 	;
 
 data QueryField
@@ -202,3 +199,11 @@ public anno loc Name@src;
 public anno loc Expression@src; 
 public anno loc Annotation@src;
 public anno loc Declaration@src;
+public anno loc QueryStatement@src;
+public anno loc QuerySpec@src;
+public anno loc QuerySource@src;
+public anno loc QueryWhere@src;
+public anno loc QueryExpression@src;
+public anno loc QueryLimit@src;
+public anno loc QueryOrderBy@src;
+public anno loc QueryField@src;
