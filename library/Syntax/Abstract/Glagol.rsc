@@ -4,7 +4,7 @@ import List;
 
 alias GlagolID = str;
 
-data Declaration 
+data Declaration
     = file(loc file, Declaration \module)
     | \module(Declaration namespace, list[Declaration] imports, Declaration artifact)
     | namespace(GlagolID name)

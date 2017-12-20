@@ -806,6 +806,57 @@ test bool shouldReturnBoolWhenTypeCastingAFloatToBool() = boolean() == lookupTyp
 test bool shouldReturnBoolWhenTypeCastingABoolToBool() = boolean() == lookupType(cast(boolean(), boolean(true)), newEnv());
 test bool shouldReturnUnknownTypeWhenTypeCastingAnUnknownToBool() = unknownType() == lookupType(cast(boolean(), get(string())), newEnv());
 
+test bool shouldReturnUnknownTypeWhenQueryUsesWrongAlias() = unknownType() == lookupType(query(querySelect(
+	querySpec(symbol("u"), true), querySource(fullName("User", namespace("Example"), "User"), symbol("user")), noWhere(), noOrderBy(), noLimit())), newEnv());
+	
+test bool shouldReturnUnknownTypeWhenQueryUsesWrongAliasWhileFetchingList() = \list(unknownType()) == lookupType(query(querySelect(
+	querySpec(symbol("u"), false), querySource(fullName("User", namespace("Example"), "User"), symbol("user")), noWhere(), noOrderBy(), noLimit())), newEnv());
+	
+test bool shouldReturnUnknownTypeWhenQuerySourceIsUnknownArtifact() = unknownType() == lookupType(query(querySelect(
+	querySpec(symbol("u"), true), querySource(fullName("User", namespace("Example"), "User"), symbol("u")), noWhere(), noOrderBy(), noLimit())), newEnv());
+	
+test bool shouldReturnUnknownTypeWhenQuerySourceIsUnknownArtifactWhileFetchingList() = \list(unknownType()) == lookupType(query(querySelect(
+	querySpec(symbol("u"), false), querySource(fullName("User", namespace("Example"), "User"), symbol("u")), noWhere(), noOrderBy(), noLimit())), newEnv());
+
+test bool shouldReturnUnknownTypeWhenQuerySourceIsNotAnEntity() = unknownType() == lookupType(query(querySelect(
+	querySpec(symbol("u"), true), querySource(fullName("User", namespace("Example"), "User"), symbol("u")), noWhere(), noOrderBy(), noLimit())), 
+	addToAST(file(|tmp:///|, \module(namespace("Example"), [], valueObject("User", []))), newEnv(|tmp:///|)));
+	
+test bool shouldReturnListOfUnknownTypeWhenQuerySourceIsNotAnEntity() = \list(unknownType()) == lookupType(query(querySelect(
+	querySpec(symbol("u"), false), querySource(fullName("User", namespace("Example"), "User"), symbol("u")), noWhere(), noOrderBy(), noLimit())), 
+	addToAST(file(|tmp:///|, \module(namespace("Example"), [], valueObject("User", []))), newEnv(|tmp:///|)));
+	
+test bool shouldReturnArtifactTypeWhenQuerySourceIsAnEntity() = artifact(fullName("User", namespace("Example"), "User")) == lookupType(query(querySelect(
+	querySpec(symbol("u"), true), querySource(fullName("User", namespace("Example"), "User"), symbol("u")), noWhere(), noOrderBy(), noLimit())), 
+	addToAST(file(|tmp:///|, \module(namespace("Example"), [], entity("User", []))), newEnv(|tmp:///|)));
+
+test bool shouldReturnListOfArtifactTypeWhenQuerySourceIsAnEntity() = \list(artifact(fullName("User", namespace("Example"), "User"))) == lookupType(query(querySelect(
+	querySpec(symbol("u"), false), querySource(fullName("User", namespace("Example"), "User"), symbol("u")), noWhere(), noOrderBy(), noLimit())), 
+	addToAST(file(|tmp:///|, \module(namespace("Example"), [], entity("User", []))), newEnv(|tmp:///|)));
+
+test bool shouldGiveErrorWhenQuerySourceEntityIsDoesNotExist() = 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Example::User not found", newEnv(|tmp:///|)) == 
+	checkExpression(query(querySelect(
+		querySpec(symbol("u"), false), querySource(fullName("User", namespace("Example"), "User"), symbol("u"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+		noWhere(), noOrderBy(), noLimit())), newEnv(|tmp:///|));
+
+test bool shouldGiveErrorWhenQuerySourceIsNotEntity() = 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Example::User is not an entity", addToAST(file(|tmp:///|, \module(namespace("Example"), [], valueObject("User", []))), newEnv(|tmp:///|))) == 
+	checkExpression(query(querySelect(
+		querySpec(symbol("u"), false), querySource(fullName("User", namespace("Example"), "User"), symbol("u"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+		noWhere(), noOrderBy(), noLimit())), addToAST(file(|tmp:///|, \module(namespace("Example"), [], valueObject("User", []))), newEnv(|tmp:///|)));
+
+test bool shouldGiveErrorWhenQuerySpecIsUndefined() = 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Alias \'us\' is not defined in the FROM clause", addToAST(file(|tmp:///|, \module(namespace("Example"), [], entity("User", []))), newEnv(|tmp:///|))) == 
+	checkExpression(query(querySelect(
+		querySpec(symbol("us"), false)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], querySource(fullName("User", namespace("Example"), "User"), symbol("u")), 
+		noWhere(), noOrderBy(), noLimit())), addToAST(file(|tmp:///|, \module(namespace("Example"), [], entity("User", []))), newEnv(|tmp:///|)));
+		
+test bool shouldGiveErrorWhenQuerySpecIsUndefined() = 
+	!hasErrors(checkExpression(query(querySelect(
+		querySpec(symbol("u"), false)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], querySource(fullName("User", namespace("Example"), "User"), symbol("u")), 
+		noWhere(), noOrderBy(), noLimit())), addToAST(file(|tmp:///|, \module(namespace("Example"), [], entity("User", []))), newEnv(|tmp:///|))));
+
 test bool shouldNotGiveErrorOnStringTypeCastToString() = !hasErrors(checkExpression(cast(string(), string("dadsa")), newEnv()));
 test bool shouldNotGiveErrorOnIntegerTypeCastToString() = !hasErrors(checkExpression(cast(string(), integer(123)), newEnv()));
 test bool shouldNotGiveErrorOnFloatTypeCastToString() = !hasErrors(checkExpression(cast(string(), float(12.453)), newEnv()));

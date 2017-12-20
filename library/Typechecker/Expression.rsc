@@ -297,6 +297,20 @@ public TypeEnv checkCast(boolean(), boolean(), TypeEnv env) = env;
 public TypeEnv checkCast(Type cast, Type actual, TypeEnv env) = 
 	addError(cast, "Type casting <toString(actual)> to <toString(cast)> is not supported", env);
 
+public TypeEnv checkExpression(query(querySelect(QuerySpec qs, src: querySource(Name name, Symbol as), QueryWhere w, QueryOrderBy ord, QueryLimit l)), TypeEnv env) =
+	addError(src, "<stringify(name)> not found", env) when !isInAST(toNamespace(name), env);
+	
+public TypeEnv checkExpression(query(querySelect(QuerySpec qs, src: querySource(Name name, Symbol as), QueryWhere w, QueryOrderBy ord, QueryLimit l)), TypeEnv env) =
+	addError(src, "<stringify(name)> is not an entity", env) when isInAST(toNamespace(name), env) && !isEntity(toNamespace(name), env);
+
+public TypeEnv checkExpression(query(querySelect(QuerySpec querySpec, QuerySource querySource, QueryWhere where, QueryOrderBy order, QueryLimit limit)), TypeEnv env) =
+	checkQuerySpec(querySpec, addQuerySources(querySource, newQueryEnv(), env), env);
+
+public TypeEnv checkQuerySpec(q: querySpec(symbol(str as), bool single), QueryEnv qEnv, TypeEnv env) = 
+	addError(q, "Alias \'<as>\' is not defined in the FROM clause", env) when !hasAlias(as, qEnv);
+
+public TypeEnv checkQuerySpec(q: querySpec(symbol(str as), bool single), QueryEnv qEnv, TypeEnv env) = env;
+
 @doc="Empty expression is always unknown type"
 public Type lookupType(emptyExpr(), TypeEnv env) = unknownType();
 
@@ -412,7 +426,7 @@ public Type lookupType(get(t: selfie()), TypeEnv env) = t;
 public Type lookupType(get(_), TypeEnv env) = unknownType();
 
 public Type lookupType(invoke(s: symbol(str m), args), TypeEnv env) {
-	visit (getContext(env)) { 
+	visit (getContext(env)) {
 		case method(Modifier access, Type t, m, params, _, _): 
 			if (isMethodAccessible(access, getDimension(env)) && isSignatureMatching(toSignature(args, env), params, env)) {
 				return t; 
@@ -448,6 +462,18 @@ public Type lookupType(repository(name), f: fieldAccess(s: symbol(str field)), T
 public Type lookupType(Type t, f: fieldAccess(s: symbol(str field)), TypeEnv env) = unknownType();
 
 public Type lookupType(cast(Type t, Expression expr), TypeEnv env) = lookupCastType(t, lookupType(expr, env), env);
+
+@doc="Query language lookups"
+public Type lookupType(query(QueryStatement queryStmt), TypeEnv env) = lookupType(queryStmt, env);
+public Type lookupType(querySelect(querySpec(Symbol as, false), QuerySource source, QueryWhere where, QueryOrderBy order, QueryLimit limit), TypeEnv env) = 
+	\list(lookupType(source, as, env));
+public Type lookupType(querySelect(querySpec(Symbol as, true), QuerySource source, QueryWhere where, QueryOrderBy order, QueryLimit limit), TypeEnv env) = 
+	lookupType(source, as, env);
+public Type lookupType(querySelect(QuerySpec spec, QuerySource source, QueryWhere where, QueryOrderBy order, QueryLimit limit), TypeEnv env) = unknownType();
+
+public Type lookupType(querySource(Name name, Symbol srcAlias), Symbol as, TypeEnv env) = artifact(name) 
+	when srcAlias == as && isInAST(toNamespace(name), env) && isEntity(toNamespace(name), env);
+public Type lookupType(querySource(Name name, Symbol srcAlias), Symbol as, TypeEnv env) = unknownType();
 
 public Type lookupCastType(string(), string(), TypeEnv env) = string();
 public Type lookupCastType(string(), integer(), TypeEnv env) = string();
