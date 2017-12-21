@@ -9,6 +9,7 @@ import ParseTree;
 import String;
 import List;
 import Set;
+import util::Math;
 import Exceptions::ParserExceptions;
 
 
@@ -566,7 +567,7 @@ public QueryExpression convertQueryExpression(a: (QueryExpression) `<QueryExpres
 	and(convertQueryExpression(l, env), convertQueryExpression(r, env))[@src=a@\loc];
 	
 public QueryExpression convertQueryExpression(a: (QueryExpression) `\<<Expression exp>\>`, ParseEnv env) = 
-	glagolExpr(convertExpression(exp, env))[@src=a@\loc];
+	glagolExpr(convertExpression(exp, env), arbInt(100000))[@src=a@\loc];
 	
 public QueryExpression convertQueryExpression(a: (QueryExpression) `<QueryField field>`, ParseEnv env) = 
 	queryField(convertQueryField(field))[@src=a@\loc];

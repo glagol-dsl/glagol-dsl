@@ -81,11 +81,11 @@ test bool shouldCompileFuncCallWithParams() = implode(toCode(phpCall(
 	"test(3)";
 
 test bool shouldCompileMethodCall() = 
-    implode(toCode(phpMethodCall(phpVar(phpName(phpName("this"))), phpName(phpName("test")), []), 0)) == "$this-\>test()";
+    implode(toCode(phpMethodCall(phpVar(phpName(phpName("this"))), phpName(phpName("test")), []), 0)) == "$this-\>\n    test()";
     
 test bool shouldCompileMethodCallWithParams() = 
     implode(toCode(phpMethodCall(phpVar(phpName(phpName("this"))),
-        phpName(phpName("test")), [phpActualParameter(phpScalar(phpInteger(3)), false)]), 0)) == "$this-\>test(3)";
+        phpName(phpName("test")), [phpActualParameter(phpScalar(phpInteger(3)), false)]), 0)) == "$this-\>\n    test(3)";
 
 test bool shouldCompileStaticCall() = 
     implode(toCode(phpStaticCall(phpName(phpName("This")), phpName(phpName("test")), []), 0)) == "This::test()";

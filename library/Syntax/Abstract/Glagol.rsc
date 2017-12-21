@@ -143,7 +143,7 @@ data QueryExpression
 	| isNotNull(QueryExpression lhs)
 	| and(QueryExpression lhs, QueryExpression rhs)
 	| or(QueryExpression lhs, QueryExpression rhs)
-	| glagolExpr(Expression glExpr)
+	| glagolExpr(Expression glExpr, int id)
 	| queryField(QueryField field)
 	| noQueryExpr()
 	;

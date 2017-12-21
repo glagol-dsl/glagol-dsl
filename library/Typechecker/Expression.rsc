@@ -303,8 +303,11 @@ public TypeEnv checkExpression(query(querySelect(QuerySpec qs, src: querySource(
 public TypeEnv checkExpression(query(querySelect(QuerySpec qs, src: querySource(Name name, Symbol as), QueryWhere w, QueryOrderBy ord, QueryLimit l)), TypeEnv env) =
 	addError(src, "<stringify(name)> is not an entity", env) when isInAST(toNamespace(name), env) && !isEntity(toNamespace(name), env);
 
-public TypeEnv checkExpression(query(querySelect(QuerySpec querySpec, QuerySource querySource, QueryWhere where, QueryOrderBy order, QueryLimit limit)), TypeEnv env) =
-	checkQuerySpec(querySpec, addQuerySources(querySource, newQueryEnv(), env), env);
+public TypeEnv checkExpression(query(q: querySelect(QuerySpec querySpec, QuerySource querySource, QueryWhere where, QueryOrderBy order, QueryLimit limit)), TypeEnv env) =
+	checkExpression(q, addQuerySources(querySource, newQueryEnv(), env), env);
+
+public TypeEnv checkExpression(querySelect(QuerySpec spec, QuerySource source, QueryWhere where, QueryOrderBy order, QueryLimit limit), QueryEnv qEnv, TypeEnv env) = 
+	checkQuerySpec(spec, qEnv, env);
 
 public TypeEnv checkQuerySpec(q: querySpec(symbol(str as), bool single), QueryEnv qEnv, TypeEnv env) = 
 	addError(q, "Alias \'<as>\' is not defined in the FROM clause", env) when !hasAlias(as, qEnv);

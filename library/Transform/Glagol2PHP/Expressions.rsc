@@ -139,4 +139,114 @@ public PhpExpr toPhpExpr(e: fieldAccess(Expression prev, s: symbol(str name)), T
     
 public PhpExpr toPhpExpr(e: this(), TransformEnv env) = origin(phpVar(phpName(phpName("this"))), e);
 
+public PhpExpr toPhpExpr(e: query(querySelect(spec: querySpec(symbol(str as), false), QuerySource src, QueryWhere where, QueryOrderBy order, QueryLimit limit)), TransformEnv env) =
+	phpMethodCall(
+		phpMethodCall(
+			setWhereClause(where, makeQueryBuilder(spec, src), env),
+			phpName(phpName("getQuery")),
+			[]
+		),
+		phpName(phpName("execute")),
+		[]
+	);
+	
+public PhpExpr toPhpExpr(e: query(querySelect(spec: querySpec(symbol(str as), true), QuerySource src, QueryWhere where, QueryOrderBy order, QueryLimit limit)), TransformEnv env) =
+	phpMethodCall(
+		phpMethodCall(
+			setWhereClause(where, makeQueryBuilder(spec, src), env),
+			phpName(phpName("getQuery")),
+			[]
+		),
+		phpName(phpName("getOneOrNullResult")),
+		[]
+	);
 
+public PhpExpr setWhereClause(noWhere(), PhpExpr prev, TransformEnv env) = prev;
+public PhpExpr setWhereClause(expression(QueryExpression expr), PhpExpr prev, TransformEnv env) = 
+	phpMethodCall(
+		phpMethodCall(prev, phpName(phpName("where")), [phpActualParameter(toPhpExpr(expr, env), false)]),
+		phpName(phpName("setParameters")),
+		[phpActualParameter(collectParameters(expr, env), false)]
+	);
+
+private PhpExpr collectParameters(QueryExpression expr, TransformEnv env) {
+	map[str, PhpExpr] paramValues = ();
+	
+	top-down visit (expr) {
+		case glagolExpr(Expression glExpr, int id): {
+			paramValues["param_<id>"] = toPhpExpr(glExpr, env);
+		}
+	}
+	
+	return phpArray([phpArrayElement(phpSomeExpr(phpScalar(phpString(k))), paramValues[k], false) | k <- paramValues]);
+}
+
+public PhpExpr toPhpExpr(\bracket(QueryExpression expr), TransformEnv env) = toPhpExpr(expr, env);
+public PhpExpr toPhpExpr(equals(QueryExpression lhs, QueryExpression rhs), TransformEnv env) = 
+	phpMethodCall(queryExpr(), phpName(phpName("eq")), [
+		phpActualParameter(toPhpExpr(lhs, env), false), phpActualParameter(toPhpExpr(rhs, env), false)
+	]);
+public PhpExpr toPhpExpr(nonEquals(QueryExpression lhs, QueryExpression rhs), TransformEnv env) = 
+	phpMethodCall(queryExpr(), phpName(phpName("neq")), [
+		phpActualParameter(toPhpExpr(lhs, env), false), phpActualParameter(toPhpExpr(rhs, env), false)
+	]);
+public PhpExpr toPhpExpr(greaterThan(QueryExpression lhs, QueryExpression rhs), TransformEnv env) = 
+	phpMethodCall(queryExpr(), phpName(phpName("gt")), [
+		phpActualParameter(toPhpExpr(lhs, env), false), phpActualParameter(toPhpExpr(rhs, env), false)
+	]);
+public PhpExpr toPhpExpr(greaterThanOrEq(QueryExpression lhs, QueryExpression rhs), TransformEnv env) = 
+	phpMethodCall(queryExpr(), phpName(phpName("gte")), [
+		phpActualParameter(toPhpExpr(lhs, env), false), phpActualParameter(toPhpExpr(rhs, env), false)
+	]);
+public PhpExpr toPhpExpr(lowerThan(QueryExpression lhs, QueryExpression rhs), TransformEnv env) = 
+	phpMethodCall(queryExpr(), phpName(phpName("lt")), [
+		phpActualParameter(toPhpExpr(lhs, env), false), phpActualParameter(toPhpExpr(rhs, env), false)
+	]);
+public PhpExpr toPhpExpr(lowerThanOrEq(QueryExpression lhs, QueryExpression rhs), TransformEnv env) = 
+	phpMethodCall(queryExpr(), phpName(phpName("lte")), [
+		phpActualParameter(toPhpExpr(lhs, env), false), phpActualParameter(toPhpExpr(rhs, env), false)
+	]);
+public PhpExpr toPhpExpr(isNull(QueryExpression expr), TransformEnv env) = 
+	phpMethodCall(queryExpr(), phpName(phpName("isNull")), [
+		phpActualParameter(toPhpExpr(expr, env), false)
+	]);
+public PhpExpr toPhpExpr(isNotNull(QueryExpression expr), TransformEnv env) = 
+	phpMethodCall(queryExpr(), phpName(phpName("isNotNull")), [
+		phpActualParameter(toPhpExpr(expr, env), false)
+	]);
+public PhpExpr toPhpExpr(and(QueryExpression lhs, QueryExpression rhs), TransformEnv env) = 
+	phpMethodCall(queryExpr(), phpName(phpName("andX")), [
+		phpActualParameter(toPhpExpr(lhs, env), false), phpActualParameter(toPhpExpr(rhs, env), false)
+	]);
+public PhpExpr toPhpExpr(or(QueryExpression lhs, QueryExpression rhs), TransformEnv env) = 
+	phpMethodCall(queryExpr(), phpName(phpName("orX")), [
+		phpActualParameter(toPhpExpr(lhs, env), false), phpActualParameter(toPhpExpr(rhs, env), false)
+	]);
+public PhpExpr toPhpExpr(glagolExpr(Expression glExpr, int id), TransformEnv env) = phpScalar(phpString(":param_<id>"));
+public PhpExpr toPhpExpr(queryField(queryField(symbol(str entity), symbol(str field))), TransformEnv env) = phpScalar(phpString("<entity>.<field>"));
+
+public PhpExpr queryExpr() = 
+	phpMethodCall(
+		phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("_em"))),
+		phpName(phpName("getExpressionBuilder")),
+		[]
+	);
+
+public PhpExpr makeQueryBuilder(querySpec(symbol(str as), bool single), querySource(fullName(str org, Declaration ns, str entity), Symbol s)) = 
+	phpMethodCall(
+		phpMethodCall(
+			phpMethodCall(
+				phpPropertyFetch(phpVar(phpName(phpName("this"))), phpName(phpName("_em"))),
+				phpName(phpName("createQueryBuilder")),
+				[]
+			),
+			phpName(phpName("select")),
+			[phpActualParameter(phpScalar(phpString(as)), false)]
+		),
+		phpName(phpName("from")),
+		[
+			phpActualParameter(phpFetchClassConst(phpName(phpName(entity)), "class"), false), 
+			phpActualParameter(phpScalar(phpString(as)), false)
+		]
+	);
+	

@@ -17,16 +17,16 @@ test bool shouldTransformBooleanTypeToPhpTypeName()
     = toPhpTypeName(boolean()) == phpName("bool");
     
 test bool shouldTransformIntTypedListToPhpTypeName()
-    = toPhpTypeName(\list(integer())) == phpName("Vector");
+    = toPhpTypeName(\list(integer())) == phpName("iterable");
     
 test bool shouldTransformStringTypedListToPhpTypeName()
-    = toPhpTypeName(\list(string())) == phpName("Vector");
+    = toPhpTypeName(\list(string())) == phpName("iterable");
     
 test bool shouldTransformTypedMapToPhpTypeName()
-    = toPhpTypeName(\map(string(), integer())) == phpName("Map");
+    = toPhpTypeName(\map(string(), integer())) == phpName("iterable");
     
 test bool shouldTransformTypedMapTwoToPhpTypeName()
-    = toPhpTypeName(\map(string(), string())) == phpName("Map");
+    = toPhpTypeName(\map(string(), string())) == phpName("iterable");
     
 test bool shouldTransformArtifactTypeToPhpTypeName()
     = toPhpTypeName(artifact(fullName("SomeUtil", namespace("Example"), "SomeUtil"))) == phpName("SomeUtil");

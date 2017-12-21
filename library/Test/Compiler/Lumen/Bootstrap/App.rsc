@@ -8,13 +8,13 @@ test bool shouldCreateAppFileContents() =
 	"\<?php\n" + 
 	"require __DIR__ . \"/../vendor/autoload.php\";\n" +
 	"$app = new \\Laravel\\Lumen\\Application(realpath(__DIR__ . \"/../\"));\n" +
-	"$app-\>singleton(\\Illuminate\\Contracts\\Console\\Kernel::class, \\Laravel\\Lumen\\Console\\Kernel::class);\n" +
-	"$app-\>singleton(\\Illuminate\\Contracts\\Debug\\ExceptionHandler::class, \\Glagol\\Bridge\\Lumen\\Exceptions\\Handler::class);\n" +
-	"$app-\>register(\\LaravelDoctrine\\ORM\\DoctrineServiceProvider::class);\n" +
-	"$app-\>configure(\"database\");\n" + 
-	"$app-\>configure(\"doctrine\");\n" + 
-	"$app-\>router-\>group([], " +
+	"$app-\>\n    singleton(\\Illuminate\\Contracts\\Console\\Kernel::class, \\Laravel\\Lumen\\Console\\Kernel::class);\n" +
+	"$app-\>\n    singleton(\\Illuminate\\Contracts\\Debug\\ExceptionHandler::class, \\Glagol\\Bridge\\Lumen\\Exceptions\\Handler::class);\n" +
+	"$app-\>\n    register(\\LaravelDoctrine\\ORM\\DoctrineServiceProvider::class);\n" +
+	"$app-\>\n    configure(\"database\");\n" + 
+	"$app-\>\n    configure(\"doctrine\");\n" + 
+	"$app-\>router-\>\n    group([], " +
 	"function ($app) {\n" +
-	"    require __DIR__ . \"/../routes/api.php\";\n" +
-	"});\n" +
+	"        require __DIR__ . \"/../routes/api.php\";\n" +
+	"    });\n" +
 	"return $app;\n";

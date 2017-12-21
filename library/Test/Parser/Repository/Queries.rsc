@@ -22,7 +22,7 @@ test bool shouldParseQueryFromMethodValue()
           '     public User[] findOne() = SELECT u[] FROM User u;
           '}";
     
-    return parseModule(code) == \module(namespace("Example"), [], repository("User", [
+    return \module(namespace("Example"), [], repository("User", [
 		method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findAll", [], [
 			\return(
 				query(
@@ -75,21 +75,21 @@ test bool shouldParseQueryFromMethodValue()
 			\return(
 				query(
 					querySelect(querySpec(symbol("u"), true), querySource(fullName("User", namespace("Example"), "User"), symbol("u")), noWhere(), 
-						noOrderBy(), limit(glagolExpr(integer(33)), noQueryExpr())))
+						noOrderBy(), limit(glagolExpr(integer(33), int _), noQueryExpr())))
 			)
 		], emptyExpr()),
 		method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findAllUsingLimitAndOffset", [], [
 			\return(
 				query(
 					querySelect(querySpec(symbol("u"), true), querySource(fullName("User", namespace("Example"), "User"), symbol("u")), noWhere(), 
-						noOrderBy(), limit(glagolExpr(integer(33)), glagolExpr(integer(11)))))
+						noOrderBy(), limit(glagolExpr(integer(33), int _), glagolExpr(integer(11), int _))))
 			)
 		], emptyExpr()),
 		method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findAllUsingLimitAndOffset2", [], [
 			\return(
 				query(
 					querySelect(querySpec(symbol("u"), true), querySource(fullName("User", namespace("Example"), "User"), symbol("u")), noWhere(), 
-						noOrderBy(), limit(glagolExpr(integer(33)), glagolExpr(integer(11)))))
+						noOrderBy(), limit(glagolExpr(integer(33), int _), glagolExpr(integer(11), int _))))
 			)
 		], emptyExpr()),
 		method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findOne", [], [
@@ -102,5 +102,5 @@ test bool shouldParseQueryFromMethodValue()
 			param(integer(), "id", emptyExpr())
 		], [\return(new(fullName("User", namespace("Example"), "User"), []))], emptyExpr()),
 		method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findAll", [], [\return(\list([]))], emptyExpr())
-    ]));
+    ])) := parseModule(code) ;
 }

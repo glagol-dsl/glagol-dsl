@@ -852,7 +852,7 @@ test bool shouldGiveErrorWhenQuerySpecIsUndefined() =
 		querySpec(symbol("us"), false)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], querySource(fullName("User", namespace("Example"), "User"), symbol("u")), 
 		noWhere(), noOrderBy(), noLimit())), addToAST(file(|tmp:///|, \module(namespace("Example"), [], entity("User", []))), newEnv(|tmp:///|)));
 		
-test bool shouldGiveErrorWhenQuerySpecIsUndefined() = 
+test bool shouldNotGiveErrorsWhenQueryIsValid() = 
 	!hasErrors(checkExpression(query(querySelect(
 		querySpec(symbol("u"), false)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], querySource(fullName("User", namespace("Example"), "User"), symbol("u")), 
 		noWhere(), noOrderBy(), noLimit())), addToAST(file(|tmp:///|, \module(namespace("Example"), [], entity("User", []))), newEnv(|tmp:///|))));
