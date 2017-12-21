@@ -5,7 +5,6 @@ import List;
 import Set;
 import lang::json::ast::JSON;
 import lang::json::IO;
-import IO;
 
 alias Position = tuple[int line, int column];
 alias Mapping = tuple[str source, Position origin, Position generated, str name];

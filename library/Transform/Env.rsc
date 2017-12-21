@@ -5,8 +5,6 @@ import Config::Reader;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Definitions;
 
-import IO;
-
 alias TransformEnv = tuple[
 	Framework framework, 
 	ORM orm, 

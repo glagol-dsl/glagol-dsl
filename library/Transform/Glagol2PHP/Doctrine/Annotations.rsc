@@ -8,8 +8,6 @@ import List;
 import Transform::Env;
 import Transform::OriginAnnotator;
 
-import IO;
-
 public PhpAnnotation toPhpAnnotation("table", list[Annotation] arguments, TransformEnv env)
     = origin(phpAnnotationVal(("name": toPhpAnnotation(arguments[0], env))), getContext(env)) when usesDoctrine(env) && isInEntity(env);
     

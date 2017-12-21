@@ -169,6 +169,7 @@ syntax Expression
     | invoke: Expression prev "." MemberName method "(" {Expression ","}* args ")"
     | fieldAccess: Expression prev "." MemberName field
     | this: "this"
+    | query: QueryStatement query
     > left "(" Type type ")" Expression expr
     > left ( product: Expression lhs "*" () !>> "*" Expression rhs
            | remainder: Expression lhs "%" Expression rhs
@@ -215,6 +216,64 @@ syntax Statement
     )
     > emptyStmt: ";"
     ;   
+
+syntax QueryStatement 
+	= QuerySelectStmt selectStatement
+	;
+
+syntax QuerySelectStmt
+	= "SELECT" QuerySpec spec "FROM" QuerySource source QueryWhere? where QueryOrderBy? order QueryLimit? limit
+	;
+
+syntax QuerySpec
+	= MemberName as 
+	| MemberName as "[" "]"
+	;
+
+syntax QuerySource
+	= ArtifactName artifact MemberName as
+	| ArtifactName artifact "as" MemberName as
+	;
+
+syntax QueryWhere
+	= "WHERE" QueryExpression expr
+	;
+
+syntax QueryField
+	= MemberName artifact "." MemberName field
+	;
+
+syntax QueryExpression
+	= bracket "(" QueryExpression expr ")"
+	| QueryExpression l "=" QueryExpression r
+	| QueryExpression l "!=" QueryExpression r
+	| QueryExpression l "\>" QueryExpression r
+	| QueryExpression l "\>=" QueryExpression r
+	| QueryExpression l "\<" QueryExpression r
+	| QueryExpression l "\<=" QueryExpression r
+	| QueryExpression l "IS" "NULL"
+	| QueryExpression l "IS" "NOT" "NULL"
+	| QueryExpression l "AND" QueryExpression r
+	| QueryExpression l "OR" QueryExpression r
+	| "\<" Expression expr "\>"
+	| QueryField field
+	;
+
+syntax QueryOrderBy
+	= "ORDER" "BY" {QueryOrderByField ","}+ fields
+	;
+
+syntax QueryOrderByField
+	= QueryField field
+	| QueryField field "DESC"
+	| QueryField field "ASC"
+	;
+
+syntax QueryLimit
+	= "LIMIT" QueryExpression size
+	| "LIMIT" QueryExpression size "OFFSET" QueryExpression offset
+	| "LIMIT" QueryExpression offset "," QueryExpression size
+	;
 
 syntax Assignable
     = variable: MemberName varName

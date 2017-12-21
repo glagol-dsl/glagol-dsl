@@ -11,7 +11,6 @@ import Syntax::Abstract::PHP;
 import Syntax::Abstract::PHP::Helpers;
 import Config::Config;
 import List;
-import IO;
 
 public PhpStmt toPhpStmt(e: ifThen(Expression when, Statement body), TransformEnv env) = 
     origin(phpIf(toPhpExpr(when, env), [toPhpStmt(body, env)], [], phpNoElse()), e);

@@ -2,7 +2,6 @@ module Test::Parser::Util::Injections
 
 import Parser::ParseAST;
 import Syntax::Abstract::Glagol;
-import IO;
 
 test bool canParseRepositoryInjection() 
 {

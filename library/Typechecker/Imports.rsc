@@ -3,7 +3,6 @@ module Typechecker::Imports
 import Typechecker::Env;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
-import IO;
 import List;
 
 public TypeEnv checkImports(list[Declaration] imports, TypeEnv env) {

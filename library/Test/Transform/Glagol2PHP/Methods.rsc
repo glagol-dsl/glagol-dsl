@@ -28,15 +28,15 @@ test bool shouldTransformMethodWithFloatReturnValue() =
 
 test bool shouldTransformMethodWithIntegerListReturnValue() =
     toPhpClassItem(method(\public(), \list(integer()), "test", [], [], emptyExpr()), newTransformEnv()) ==
-    phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("Vector")));
+    phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("iterable")));
 
 test bool shouldTransformMethodWithStringListReturnValue() =
     toPhpClassItem(method(\public(), \list(string()), "test", [], [], emptyExpr()), newTransformEnv()) ==
-    phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("Vector")));
+    phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("iterable")));
 
 test bool shouldTransformMethodWithMapReturnValue() =
     toPhpClassItem(method(\public(), \map(string(), float()), "test", [], [], emptyExpr()), newTransformEnv()) ==
-    phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("Map")));
+    phpMethod("test", {phpPublic()}, false, [], [], phpSomeName(phpName("iterable")));
 
 test bool shouldTransformMethodWithArtifactReturnValue() =
     toPhpClassItem(method(\public(), artifact(fullName("User", namespace("Example"), "User")), "test", [], [], emptyExpr()), newTransformEnv()) ==

@@ -4,7 +4,7 @@ import List;
 
 alias GlagolID = str;
 
-data Declaration 
+data Declaration
     = file(loc file, Declaration \module)
     | \module(Declaration namespace, list[Declaration] imports, Declaration artifact)
     | namespace(GlagolID name)
@@ -66,6 +66,7 @@ data Expression
     | emptyExpr()
     | this()
     | cast(Type \type, Expression expr)
+    | query(QueryStatement queryStmt)
     ;
 
 data Symbol 
@@ -113,6 +114,55 @@ data Statement
     | \continue(int level)
     ;
 
+data QueryStatement
+	= querySelect(QuerySpec spec, QuerySource source, QueryWhere where, QueryOrderBy order, QueryLimit limit)
+	;
+
+data QuerySpec
+	= querySpec(Symbol symbol, bool single)
+	;
+
+data QuerySource
+	= querySource(Name name, Symbol symbol)
+	;
+	
+data QueryWhere
+	= noWhere()
+	| expression(QueryExpression expr)
+	;
+
+data QueryExpression
+	= \bracket(QueryExpression expr)
+	| equals(QueryExpression lhs, QueryExpression rhs)
+	| nonEquals(QueryExpression lhs, QueryExpression rhs)
+	| greaterThan(QueryExpression lhs, QueryExpression rhs)
+	| greaterThanOrEq(QueryExpression lhs, QueryExpression rhs)
+	| lowerThan(QueryExpression lhs, QueryExpression rhs)
+	| lowerThanOrEq(QueryExpression lhs, QueryExpression rhs)
+	| isNull(QueryExpression lhs)
+	| isNotNull(QueryExpression lhs)
+	| and(QueryExpression lhs, QueryExpression rhs)
+	| or(QueryExpression lhs, QueryExpression rhs)
+	| glagolExpr(Expression glExpr, int id)
+	| queryField(QueryField field)
+	| noQueryExpr()
+	;
+
+data QueryLimit
+	= limit(QueryExpression size, QueryExpression offset)
+	| noLimit()
+	;
+	
+data QueryOrderBy
+	= noOrderBy()
+	| orderBy(list[QueryOrderBy] orderByFields)
+	| orderBy(QueryField field, bool desc)
+	;
+
+data QueryField
+	= queryField(Symbol artifact, Symbol field)
+	;
+
 data AssignOperator
     = defaultAssign()
     | divisionAssign()
@@ -149,3 +199,11 @@ public anno loc Name@src;
 public anno loc Expression@src; 
 public anno loc Annotation@src;
 public anno loc Declaration@src;
+public anno loc QueryStatement@src;
+public anno loc QuerySpec@src;
+public anno loc QuerySource@src;
+public anno loc QueryWhere@src;
+public anno loc QueryExpression@src;
+public anno loc QueryLimit@src;
+public anno loc QueryOrderBy@src;
+public anno loc QueryField@src;

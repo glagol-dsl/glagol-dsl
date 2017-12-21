@@ -78,6 +78,8 @@ public Expression convertExpression(a: (Expression) `+<Expression expr>`, ParseE
 
 public Expression convertExpression(a: (Expression) `this`, ParseEnv env) = this()[@src=a@\loc];
 
+public Expression convertExpression(a: (Expression) `<QueryStatement q>`, ParseEnv env) = query(convertQuery(q, env))[@src=a@\loc];
+
 public Expression convertExpression(a: (DefaultValue) `<StringQuoted s>`, ParseEnv env)
     = string(convertStringQuoted(s))[@src=a@\loc];
     

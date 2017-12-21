@@ -20,6 +20,26 @@ alias TypeEnv = tuple[
     int dimension
 ];
 
+alias QueryEnv = tuple[
+	map[GlagolID, Declaration] entities,
+	map[GlagolID, map[GlagolID, Type]] fields
+];
+
+public QueryEnv newQueryEnv() = <(), ()>;
+
+public QueryEnv addQuerySources(querySource(Name name, symbol(str as)), QueryEnv env, TypeEnv typeEnv) {
+	
+	Declaration artifact = getArtifact(findModule(toNamespace(name), typeEnv));
+	
+	env.entities += (as: artifact);
+	
+	env.fields += (as: (name : t | property(Type t, GlagolID name, Expression dv) <- artifact.declarations));
+	
+	return env;
+}
+
+public bool hasAlias(GlagolID as, QueryEnv env) = as in env.entities;
+
 public int getDimension(TypeEnv env) = env.dimension;
 public TypeEnv incrementDimension(TypeEnv env) = env[dimension = env.dimension + 1];
 public TypeEnv decrementDimension(TypeEnv env) = env[dimension = env.dimension - 1];
@@ -90,6 +110,14 @@ public TypeEnv addError(Type element, str message, TypeEnv env) = addError(eleme
 public TypeEnv addError(Name element, str message, TypeEnv env) = addError(element@src, message, env);
 public TypeEnv addError(AssignOperator element, str message, TypeEnv env) = addError(element@src, message, env);
 public TypeEnv addError(Annotation element, str message, TypeEnv env) = addError(element@src, message, env);
+public TypeEnv addError(QueryStatement element, str message, TypeEnv env) = addError(element@src, message, env);
+public TypeEnv addError(QuerySpec element, str message, TypeEnv env) = addError(element@src, message, env);
+public TypeEnv addError(QuerySource element, str message, TypeEnv env) = addError(element@src, message, env);
+public TypeEnv addError(QueryWhere element, str message, TypeEnv env) = addError(element@src, message, env);
+public TypeEnv addError(QueryOrderBy element, str message, TypeEnv env) = addError(element@src, message, env);
+public TypeEnv addError(QueryExpression element, str message, TypeEnv env) = addError(element@src, message, env);
+public TypeEnv addError(QueryLimit element, str message, TypeEnv env) = addError(element@src, message, env);
+public TypeEnv addError(QueryField element, str message, TypeEnv env) = addError(element@src, message, env);
 
 public bool hasErrors(TypeEnv env) = size(env.errors) > 0;
 public list[Error] getErrors(TypeEnv env) = env.errors;

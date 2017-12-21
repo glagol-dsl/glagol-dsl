@@ -6,7 +6,6 @@ import Typechecker::Method;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 
-import IO;
 import List;
 
 public TypeEnv checkDeclarations(list[Declaration] ds, Declaration e, TypeEnv env) =	

@@ -6,8 +6,6 @@ import Typechecker::Expression;
 import Typechecker::Type;
 import Syntax::Abstract::Glagol;
 
-import IO;
-
 public TypeEnv checkStatements(list[Statement] stmts, Type t, Declaration subroutine, TypeEnv env) = 
 	(env | checkStatement(stmt, t, subroutine, it) | stmt <- stmts);
 public TypeEnv checkStatement(r: \return(Expression expr), \any(), action(_, _, _), TypeEnv env) = checkExpression(expr, env);

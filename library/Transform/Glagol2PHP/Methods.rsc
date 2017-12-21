@@ -55,8 +55,8 @@ private PhpOptionName toPhpReturnType(e: integer()) = origin(phpSomeName(phpName
 private PhpOptionName toPhpReturnType(e: string()) = origin(phpSomeName(phpName("string")), e);
 private PhpOptionName toPhpReturnType(e: boolean()) = origin(phpSomeName(phpName("bool")), e);
 private PhpOptionName toPhpReturnType(e: float()) = origin(phpSomeName(phpName("float")), e);
-private PhpOptionName toPhpReturnType(e: \list(_)) = origin(phpSomeName(phpName("Vector")), e);
-private PhpOptionName toPhpReturnType(e: \map(_,_)) = origin(phpSomeName(phpName("Map")), e);
+private PhpOptionName toPhpReturnType(e: \list(_)) = origin(phpSomeName(phpName("iterable")), e);
+private PhpOptionName toPhpReturnType(e: \map(_,_)) = origin(phpSomeName(phpName("iterable")), e);
 private PhpOptionName toPhpReturnType(e: artifact(Name name)) = origin(phpSomeName(phpName(extractName(name))), e);
 private PhpOptionName toPhpReturnType(e: repository(Name name)) = origin(phpSomeName(phpName(extractName(name) + "Repository")), e);
 

@@ -81,16 +81,16 @@ public Code toCode(p: phpListExpr(list[PhpOptionExpr] listExprs), int i) = code(
 public Code toCode(p: phpBracket(PhpOptionExpr bracketExpr), int i) = code("(") + toCode(bracketExpr, i) + codeEnd(")");
 
 public Code toCode(pr: phpMethodCall(PhpExpr target, PhpNameOrExpr methodName, list[PhpActualParameter] parameters), int i) =
-	toCode(target, i) + codeEnd("-\>", target) + toCode(methodName, i) + codeEnd("()", methodName)
+	toCode(target, i) + codeEnd("-\>", target) + code(nl()) + code(s(i + 1)) + toCode(methodName, i) + codeEnd("()", methodName)
 	when size(parameters) == 0;
 
 public Code toCode(pr: phpMethodCall(PhpExpr target, PhpNameOrExpr methodName, list[PhpActualParameter] parameters), int i) =
-	toCode(target, i) + codeEnd("-\>", target) + toCode(methodName, i) + codeEnd("(", methodName) + glue([toCode(p, i) | p <- parameters], code(", ")) + 
+	toCode(target, i) + codeEnd("-\>", target) + code(nl()) + code(s(i + 1)) + toCode(methodName, i) + codeEnd("(", methodName) + glue([toCode(p, i + 1) | p <- parameters], code(", ")) + 
 	codeEnd(")", last(parameters))
 	when size(parameters) > 0;
 
 public Code toCode(pr: phpStaticCall(PhpNameOrExpr target, PhpNameOrExpr methodName, list[PhpActualParameter] parameters), int i) = 
-    toCode(target, i) + codeEnd("::", target) + toCode(methodName, i) + codeEnd("(", methodName) + glue([toCode(p, i) | p <- parameters], code(", ")) + codeEnd(")");
+    toCode(target, i) + codeEnd("::", target) + toCode(methodName, i + 1) + codeEnd("(", methodName) + glue([toCode(p, i) | p <- parameters], code(", ")) + codeEnd(")");
 	
 public Code toCode(pr: phpCall(PhpNameOrExpr funName, list[PhpActualParameter] parameters), int i) = 
 	toCode(funName, i) + code("(") + glue([toCode(p, i) | p <- parameters], code(", ")) + codeEnd(")");

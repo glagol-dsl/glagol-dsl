@@ -199,13 +199,13 @@ test bool shouldCompileTryCatch() =
 	implode(toCode(phpTryCatch([phpExprstmt(phpMethodCall(phpVar(phpName(phpName("this"))), phpName(phpName("blah")), []))], [
 		phpCatch(phpName("Exception"), "e", [phpEcho([phpScalar(phpString("error"))])])
 	]), 0)) ==
-	"try {\n    $this-\>blah();\n} catch (Exception $e) {\n    echo \"error\";\n}";
+	"try {\n    $this-\>\n        blah();\n} catch (Exception $e) {\n    echo \"error\";\n}";
 
 test bool shouldCompileTryCatchFinally() =	
 	implode(toCode(phpTryCatchFinally([phpExprstmt(phpMethodCall(phpVar(phpName(phpName("this"))), phpName(phpName("blah")), []))], [
 		phpCatch(phpName("Exception"), "e", [phpEcho([phpScalar(phpString("error"))])])
 	], [phpEcho([phpScalar(phpString("error2"))])]), 0)) ==
-	"try {\n    $this-\>blah();\n} catch (Exception $e) {\n    echo \"error\";\n} finally {\n    echo \"error2\";\n}";
+	"try {\n    $this-\>\n        blah();\n} catch (Exception $e) {\n    echo \"error\";\n} finally {\n    echo \"error2\";\n}";
 
 test bool shouldCompileUnsetVar() =
 	implode(toCode(phpUnset([phpVar(phpName(phpName("var1")))]), 0)) ==
