@@ -1,0 +1,28 @@
+
+  name: glagol-server
+  version: '0.5'
+  summary: Glagol DSL server app
+  description: |
+    Glagol DSL is a domain-specific language to help developers engineer 
+    microservices using the concepts of Domain-Driven Design out-of-the-box.
+    
+    The Glagol DSL server app is a compiler running as a daemon that handles compile requests. 
+    For more information please visit https://glagol-dsl-docs.readthedocs.io
+
+  grade: devel
+  confinement: devmode
+
+  parts:
+    compile:
+      plugin: maven
+      source: .
+      build: |
+        export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
+        mvn versions:set -DgenerateBackupPoms=false -DnewVersion=0.5-SNAPSHOT
+        mvn clean package
+      install: |
+        cp target/glagol-dsl.jar $SNAPCRAFT_PART_INSTALL/glagol-dsl-server.jar
+      build-packages:
+        - openjdk-8-jdk
+  apps:
+    command: java -Xmx400m -jar $SNAPCRAFT_PART_INSTALL/glagol-dsl-server.jar
