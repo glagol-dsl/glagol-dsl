@@ -11,12 +11,16 @@ test bool shouldAddOverriderWithRulesWhenTransformingOverridedMethods() =
         method(\public(), voidValue(), "test", [param(integer(), "a", emptyExpr())], [], emptyExpr()),
         method(\public(), voidValue(), "test", [param(string(), "b", emptyExpr())], [], emptyExpr()),
         method(\public(), voidValue(), "test", [param(float(), "c", emptyExpr())], [], equals(variable("c"), integer(7)))
-    ]), newTransformEnv()) ==
+    ]), setContext(entity("User", []), newTransformEnv())) ==
     phpClassDef(phpClass(
         "User", {}, phpNoName(), [phpName("\\JsonSerializable")], [
             phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], []),
             phpMethod("test", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
-                phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), []))),
+                phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [
+		        	phpActualParameter(phpScalar(phpBoolean(false)), false),
+		        	phpActualParameter(phpScalar(phpString("User")), false),
+		        	phpActualParameter(phpScalar(phpString("test")), false)
+		        ]))),
                 phpExprstmt(phpMethodCall(
                     phpVar(phpName(phpName("overrider"))), phpName(phpName("override")), [
                         phpActualParameter(phpClosure([], [phpParam("a", phpNoExpr(), phpSomeName(phpName("int")), false, false)], [], false, false), false),

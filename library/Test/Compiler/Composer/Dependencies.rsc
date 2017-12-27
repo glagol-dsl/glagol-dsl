@@ -11,7 +11,7 @@ test bool shouldCreateComposerDependenciesUsingLumenAndDoctrine() =
         "laravel/lumen-framework":string("5.5.*"),
         "vlucas/phpdotenv": string("~2.2"),
         "bulgaria-php/glagol-bridge-lumen":string("^0.1"),
-        "bulgaria-php/glagol-php-overriding":string("^0.1"),
+        "bulgaria-php/glagol-php-overriding":string("^0.2"),
         "php":string("^7.1"),
         "laravel-doctrine/orm":string("^1.3"),
         "bulgaria-php/glagol-php-ds":string("^0.1")

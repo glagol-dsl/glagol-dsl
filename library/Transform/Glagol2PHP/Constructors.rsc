@@ -37,7 +37,10 @@ public list[Declaration] getNonConditionalConstructors(list[Declaration] declara
 
 public PhpClassItem createConstructor(list[Declaration] declarations, TransformEnv env) = 
     phpMethod("__construct", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)],
-        [phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))] + 
+        [phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [
+        	phpActualParameter(phpScalar(phpBoolean(true)), false),
+        	phpActualParameter(phpScalar(phpString(getArtifactName(env))), false)
+        ])))] + 
         [origin(phpExprstmt(createOverrideRule(d, env)), d) | d <- declarations] +
         [phpNewLine()] +
         [phpExprstmt(phpMethodCall(phpVar("overrider"), phpName(phpName("execute")), [

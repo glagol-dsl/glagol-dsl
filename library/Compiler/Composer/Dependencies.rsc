@@ -12,7 +12,7 @@ import lang::json::ast::JSON;
 public JSON setDependencies(object(map[str, JSON] properties), Config config) = object(merge(properties, (
     "require": object((
         "php": string("^7.1"),
-        "bulgaria-php/glagol-php-overriding": string("^0.1"),
+        "bulgaria-php/glagol-php-overriding": string("^0.2"),
         "bulgaria-php/glagol-php-ds": string("^0.1")
     ) + getFrameworkDependencies(getFramework(config))
       + getORMDependencies(getORM(config))

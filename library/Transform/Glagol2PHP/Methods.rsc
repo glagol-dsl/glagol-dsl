@@ -40,7 +40,11 @@ public PhpClassItem createMethod(list[Declaration] methods, TransformEnv env)
 
 public PhpClassItem createMethod(list[Declaration] methods, TransformEnv env) = 
     origin(phpMethod(methods[0].name, {toPhpModifier(methods[0].modifier)}, false, [origin(phpParam("args", phpNoExpr(), phpNoName(), false, true), methods[0], true)], 
-        [phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [])))] + 
+        [phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [
+        	phpActualParameter(phpScalar(phpBoolean(false)), false),
+        	phpActualParameter(phpScalar(phpString(getArtifactName(env))), false),
+        	phpActualParameter(phpScalar(phpString(methods[0].name)), false)
+        ])))] + 
         [origin(phpExprstmt(createOverrideRule(m, env)), m) | m <- methods] +
         [phpNewLine()] +
         [phpReturn(phpSomeExpr(phpMethodCall(phpVar(phpName(phpName("overrider"))), phpName(phpName("execute")), [

@@ -11,12 +11,15 @@ test bool shouldAddOverriderWithRulesWhenTransformingOverridedConstructors() =
         constructor([param(integer(), "a", emptyExpr())], [], emptyExpr()),
         constructor([param(string(), "b", emptyExpr())], [], emptyExpr()),
         constructor([param(float(), "c", emptyExpr())], [], equals(variable("c"), integer(7)))
-    ]), newTransformEnv()) ==
+    ]), setContext(entity("User", []), newTransformEnv())) ==
     phpClassDef(phpClass(
         "User", {}, phpNoName(), [phpName("\\JsonSerializable")], [
             phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], []),
             phpMethod("__construct", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
-                phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), []))),
+                phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [
+		        	phpActualParameter(phpScalar(phpBoolean(true)), false),
+		        	phpActualParameter(phpScalar(phpString("User")), false)
+		        ]))),
                 phpExprstmt(phpMethodCall(
                     phpVar(phpName(phpName("overrider"))), phpName(phpName("override")), [
                         phpActualParameter(phpClosure([], [phpParam("a", phpNoExpr(), phpSomeName(phpName("int")), false, false)], [], false, false), false),
@@ -53,12 +56,15 @@ test bool shouldAddOverriderWithWhenRulesWhenTransformingOverridedConstructors()
         constructor([param(integer(), "a", emptyExpr())], [], equals(variable("a"), integer(7))),
         constructor([param(integer(), "b", emptyExpr())], [], emptyExpr()),
         constructor([param(integer(), "c", emptyExpr())], [], greaterThan(variable("c"), integer(13)))
-    ]), newTransformEnv()) ==
+    ]), setContext(entity("User", []), newTransformEnv())) ==
     phpClassDef(phpClass(
         "User", {}, phpNoName(), [phpName("\\JsonSerializable")], [
             phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], []),
             phpMethod("__construct", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
-                phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), []))),
+                phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [
+		        	phpActualParameter(phpScalar(phpBoolean(true)), false),
+		        	phpActualParameter(phpScalar(phpString("User")), false)
+		        ]))),
                 phpExprstmt(phpMethodCall(phpMethodCall(
                     phpVar(phpName(phpName("overrider"))), phpName(phpName("override")), [
                         phpActualParameter(phpClosure([], [phpParam("a", phpNoExpr(), phpSomeName(phpName("int")), false, false)], [], false, false), false),

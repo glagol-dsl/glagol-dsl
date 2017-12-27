@@ -22,6 +22,15 @@ public TransformEnv setAST(list[Declaration] ds, TransformEnv env) = env[ast = d
 public TransformEnv setContext(Declaration ctx, TransformEnv env) = env[context = ctx];
 public Declaration getContext(TransformEnv env) = env.context;
 
+public str getArtifactName(TransformEnv env) = getArtifactName(getContext(env));
+public str getArtifactName(file(loc file, Declaration \module)) = getArtifactName(\module);
+public str getArtifactName(\module(Declaration namespace, list[Declaration] imports, Declaration artifact)) = getArtifactName(artifact);
+public str getArtifactName(entity(GlagolID name, list[Declaration] declarations)) = name;
+public str getArtifactName(repository(GlagolID name, list[Declaration] declarations)) = "repository\<<name>\>";
+public str getArtifactName(valueObject(GlagolID name, list[Declaration] declarations)) = name;
+public str getArtifactName(util(GlagolID name, list[Declaration] declarations)) = name;
+public str getArtifactName(controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations)) = name;
+
 public Declaration getNamespace(TransformEnv env) = env.context.namespace;
 
 public bool isInEntity(TransformEnv env) = \module(Declaration ns, list[Declaration] imports, entity(str name, list[Declaration] ds)) := env.context;
