@@ -23,10 +23,6 @@ test bool shouldParseMapDeclaration()
         ], [
             declare(\map(string(), integer()), variable("query"), expression(\map((string("id"): variable("id"))))),
             \return(invoke(symbol("findOneBy"), [variable("query")]))
-        ], emptyExpr()),
-		method(\public(), artifact(fullName("User", namespace("Example"), "User")), "find", [
-			param(integer(), "id", emptyExpr())
-		], [\return(new(fullName("User", namespace("Example"), "User"), []))], emptyExpr()),
-		method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findAll", [], [\return(\list([]))], emptyExpr())
+        ], emptyExpr())
     ]));
 }

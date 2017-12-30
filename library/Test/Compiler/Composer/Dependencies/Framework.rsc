@@ -7,6 +7,5 @@ import Config::Config;
 test bool shouldGetFrameworkDependenciesForLumen() =
     getFrameworkDependencies(lumen()) == (
         "vlucas/phpdotenv": string("~2.2"),
-        "laravel/lumen-framework": string("5.5.*"),
-        "bulgaria-php/glagol-bridge-lumen": string("^0.1")
+        "bulgaria-php/glagol-bridge-lumen": string("^0.2")
     );

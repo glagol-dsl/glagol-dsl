@@ -10,12 +10,10 @@ test bool shouldCreateComposerFileUsingLumenAndDoctrine() =
     generateComposerFile(newConfig(), []) == 
     "{" + 
         "\"require\":{" + 
-            "\"bulgaria-php/glagol-bridge-lumen\":\"^0.1\"," + 
+            "\"bulgaria-php/glagol-bridge-lumen\":\"^0.2\"," + 
         	"\"vlucas/phpdotenv\":\"~2.2\"," +
-            "\"laravel/lumen-framework\":\"5.5.*\"," + 
             "\"bulgaria-php/glagol-php-overriding\":\"^0.2\"," + 
-            "\"php\":\"^7.1\"," + 
-            "\"laravel-doctrine/orm\":\"^1.3\"," + 
+            "\"php\":\"^7.1\"," +  
             "\"bulgaria-php/glagol-php-ds\":\"^0.1\"" + 
         "}," + 
         "\"autoload\":{" + 
@@ -31,12 +29,10 @@ test bool shouldCreateComposerFileUsingLumenAndDoctrineWithNamespaceAutoload() =
     ]) == 
     "{" + 
         "\"require\":{" + 
-            "\"bulgaria-php/glagol-bridge-lumen\":\"^0.1\"," +
+            "\"bulgaria-php/glagol-bridge-lumen\":\"^0.2\"," +
         	"\"vlucas/phpdotenv\":\"~2.2\"," +
-            "\"laravel/lumen-framework\":\"5.5.*\"," + 
             "\"bulgaria-php/glagol-php-overriding\":\"^0.2\"," + 
             "\"php\":\"^7.1\"," + 
-            "\"laravel-doctrine/orm\":\"^1.3\"," + 
             "\"bulgaria-php/glagol-php-ds\":\"^0.1\"" + 
         "}," + 
         "\"autoload\":{" + 

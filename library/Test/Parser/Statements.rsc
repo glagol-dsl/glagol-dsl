@@ -314,11 +314,7 @@ test bool testPersistStatementOnRepository() {
         repository("User", [
             method(\public(), voidValue(), "blah", [], [
                 persist(variable("a"))
-            ], emptyExpr()),
-			method(\public(), artifact(fullName("User", namespace("Example"), "User")), "find", [
-				param(integer(), "id", emptyExpr())
-			], [\return(new(fullName("User", namespace("Example"), "User"), []))], emptyExpr()),
-			method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findAll", [], [\return(\list([]))], emptyExpr())
+            ], emptyExpr())
     ]));
 }
 
@@ -340,11 +336,7 @@ test bool testFlushStatementOnRepository() {
                 persist(variable("a")),
                 flush(variable("a")),
                 flush(emptyExpr())
-            ], emptyExpr()),
-			method(\public(), artifact(fullName("User", namespace("Example"), "User")), "find", [
-				param(integer(), "id", emptyExpr())
-			], [\return(new(fullName("User", namespace("Example"), "User"), []))], emptyExpr()),
-			method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findAll", [], [\return(\list([]))], emptyExpr())
+            ], emptyExpr())
     ]));
 }
 
@@ -362,10 +354,6 @@ test bool testRemoveStatementOnRepository() {
         repository("User", [
             method(\public(), voidValue(), "blah", [], [
                 remove(variable("a"))
-            ], emptyExpr()),
-			method(\public(), artifact(fullName("User", namespace("Example"), "User")), "find", [
-				param(integer(), "id", emptyExpr())
-			], [\return(new(fullName("User", namespace("Example"), "User"), []))], emptyExpr()),
-			method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findAll", [], [\return(\list([]))], emptyExpr())
+            ], emptyExpr())
     ]));
 }

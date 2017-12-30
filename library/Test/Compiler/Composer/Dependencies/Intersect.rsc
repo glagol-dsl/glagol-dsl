@@ -6,7 +6,7 @@ import lang::json::ast::JSON;
 import Config::Config;
 
 test bool shouldGetDependenciesForLumenAndDoctrine() =
-    getIntersectDependencies(lumen(), doctrine()) == ("laravel-doctrine/orm": string("^1.3"));
+    getIntersectDependencies(lumen(), doctrine()) == ();
 
 test bool shouldGetDependenciesForAnyOtherIntersect() = 
     getIntersectDependencies(anyFramework(), anyORM()) == ();

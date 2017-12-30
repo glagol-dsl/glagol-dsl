@@ -47,12 +47,13 @@ private list[PhpStmt] createInitializers(list[Declaration] params, str _, Transf
     for (p <- params, hasAnnotation(p, "autofind"), isEntity(p.paramType, env)) {
         hasAutofind = true;
         stmts += origin(phpExprstmt(
-            phpAssign(phpVar(p.name), phpMethodCall(phpCall(phpName(phpName("app")), [
-            	phpActualParameter(phpFetchClassConst(phpName(phpName(
-            		toString(findRepository(p.paramType, env), env)
-            	)), "class"), false)
-            ]), phpName(phpName("find")), [
-                phpActualParameter(phpVar("_<p.name>Id"), false)
+            phpAssign(phpVar(p.name), phpMethodCall(phpMethodCall(phpCall(phpName(phpName("app")), [
+	            	phpActualParameter(phpScalar(phpString("em")), false)
+	            ]), phpName(phpName("getRepository")), [
+	                phpActualParameter(phpFetchClassConst(phpName(phpName(p.paramType.name.localName)), "class"), false)
+	            ]), 
+            phpName(phpName("find")), [
+            	phpActualParameter(phpVar("_<p.name>Id"), false)
             ]))
         ), p, true);
     }

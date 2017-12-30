@@ -97,10 +97,6 @@ test bool shouldParseQueryFromMethodValue()
 				query(
 					querySelect(querySpec(symbol("u"), false), querySource(fullName("User", namespace("Example"), "User"), symbol("u")), noWhere(), noOrderBy(), noLimit()))
 			)
-		], emptyExpr()),
-		method(\public(), artifact(fullName("User", namespace("Example"), "User")), "find", [
-			param(integer(), "id", emptyExpr())
-		], [\return(new(fullName("User", namespace("Example"), "User"), []))], emptyExpr()),
-		method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findAll", [], [\return(\list([]))], emptyExpr())
+		], emptyExpr())
     ])) := parseModule(code) ;
 }

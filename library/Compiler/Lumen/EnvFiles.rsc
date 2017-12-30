@@ -142,18 +142,8 @@ private str createProvider(doctrine(), m: \module(ns, _, r: repository(str name,
                                 phpExprstmt(phpAssign(phpVar("em"), phpMethodCall(phpVar("app"), phpName(phpName("make")), [
                                     phpActualParameter(phpScalar(phpString("em")), false)
                                 ]))),
-                                phpExprstmt(phpAssign(phpVar("meta"), phpMethodCall(
-                                    phpVar("em"),
-                                    phpName(phpName("getClassMetadata")),
-                                    [
-                                        phpActualParameter(phpFetchClassConst(
-                                        phpName(phpName("<getTargetEntityWithNamespace(m)>")),
-                                        "class"), false)
-                                    ]
-                                ))),
                                 phpReturn(phpSomeExpr(phpNew(phpName(phpName("<name>Repository")), [
-                                    phpActualParameter(phpVar("em"), false),
-                                    phpActualParameter(phpVar("meta"), false)
+                                    phpActualParameter(phpVar("em"), false)
                                 ])))
                             ], [phpParam("app", phpNoExpr(), phpNoName(), false, false)], [], false, false), false)
                         ]))

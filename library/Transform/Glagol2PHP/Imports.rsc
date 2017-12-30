@@ -34,7 +34,7 @@ private list[Declaration] extractImports(
     m: \module(Declaration ns, list[Declaration] imports, a: repository(_, list[Declaration] ds)), 
     list[Declaration] ast, 
     TransformEnv env) =
-        [\import("EntityRepository", namespace("Doctrine", namespace("ORM")), "EntityRepository")] +
+        [\import("EntityRepository", namespace("Glagol", namespace("Bridge", namespace("Lumen", namespace("Entity")))), "EntityRepository")] +
         commonImports(m, ast, env) when usesDoctrine(env);
     
 private list[Declaration] extractImports(

@@ -17,11 +17,7 @@ test bool shouldParseEmptyRepository()
     return parseModule(code) == \module(namespace("Example"), [
         \import("EntityManager", namespace("Glagol", namespace("ORM")), "EntityManager"),
         \import("User", namespace("Example"), "User")
-    ], repository("User", [
-			method(\public(), artifact(fullName("User", namespace("Example"), "User")), "find", [
-				param(integer(), "id", emptyExpr())
-			], [\return(new(fullName("User", namespace("Example"), "User"), []))], emptyExpr()),
-			method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findAll", [], [\return(\list([]))], emptyExpr())]));
+    ], repository("User", []));
 }
 
 test bool shouldNotAllowRepositoryConstructor()
@@ -57,10 +53,6 @@ test bool shouldParseRepositoryWithMethodAndAMap()
             param(integer(), "id", emptyExpr())
         ], [\return(
             invoke(symbol("findOneBy"), [\map((string("id"): variable("id")))])
-        )], emptyExpr()),
-		method(\public(), artifact(fullName("User", namespace("Example"), "User")), "find", [
-			param(integer(), "id", emptyExpr())
-		], [\return(new(fullName("User", namespace("Example"), "User"), []))], emptyExpr()),
-		method(\public(), \list(artifact(fullName("User", namespace("Example"), "User"))), "findAll", [], [\return(\list([]))], emptyExpr())
+        )], emptyExpr())
     ]));
 }
