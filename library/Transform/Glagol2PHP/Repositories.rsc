@@ -15,11 +15,6 @@ import Config::Config;
 
 public PhpStmt toPhpClassDef(r: repository(str name, list[Declaration] declarations), TransformEnv env)
     = origin(phpClassDef(origin(phpClass("<name>Repository", {}, origin(phpSomeName(phpName("EntityRepository")), r), [], 
-    		toPhpClassItems(withoutFinders(declarations), env))[
+    		toPhpClassItems(declarations, env))[
         @phpAnnotations=toPhpAnnotations(r, env)
     ], r)), r);
-
-private list[Declaration] withoutFinders(list[Declaration] declarations) = 
-	[d | d <- declarations, 
-		method(\public(), artifact(_), "find", _, _, emptyExpr()) !:= d, 
-		method(\public(), \list(_), "findAll", _, _, emptyExpr()) !:= d];
