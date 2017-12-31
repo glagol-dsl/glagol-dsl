@@ -16,9 +16,9 @@ test bool shouldParseQueryFromMethodValue()
           '     public User[] findAllUsingOrderByASC() = SELECT u FROM User u ORDER BY u.id ASC;
           '     public User[] findAllUsingOrderByDESC() = SELECT u FROM User u ORDER BY u.id DESC;
           '     public User[] findAllUsingOrderByMultipleFields() = SELECT u FROM User u ORDER BY u.id DESC, u.id2 ASC;
-          '     public User[] findAllUsingLimit() = SELECT u FROM User u LIMIT \<33\>;
-          '     public User[] findAllUsingLimitAndOffset() = SELECT u FROM User u LIMIT \<33\> OFFSET \<11\>;
-          '     public User[] findAllUsingLimitAndOffset2() = SELECT u FROM User u LIMIT \<11\>, \<33\>;
+          '     public User[] findAllUsingLimit() = SELECT u FROM User u LIMIT \<\<33\>\>;
+          '     public User[] findAllUsingLimitAndOffset() = SELECT u FROM User u LIMIT \<\<33\>\> OFFSET \<\<11\>\>;
+          '     public User[] findAllUsingLimitAndOffset2() = SELECT u FROM User u LIMIT \<\<11\>\>, \<\<33\>\>;
           '     public User[] findOne() = SELECT u[] FROM User u;
           '}";
     

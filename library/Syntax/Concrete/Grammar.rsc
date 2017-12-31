@@ -255,7 +255,7 @@ syntax QueryExpression
 	| QueryExpression l "IS" "NOT" "NULL"
 	| QueryExpression l "AND" QueryExpression r
 	| QueryExpression l "OR" QueryExpression r
-	| "\<" Expression expr "\>"
+	| "\<\<" Expression expr "\>\>"
 	| QueryField field
 	;
 

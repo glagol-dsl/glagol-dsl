@@ -75,7 +75,7 @@ public QueryExpression convertQueryExpression(a: (QueryExpression) `<QueryExpres
 public QueryExpression convertQueryExpression(a: (QueryExpression) `<QueryExpression l>AND<QueryExpression r>`, ParseEnv env) = 
 	and(convertQueryExpression(l, env), convertQueryExpression(r, env))[@src=a@\loc];
 	
-public QueryExpression convertQueryExpression(a: (QueryExpression) `\<<Expression exp>\>`, ParseEnv env) = 
+public QueryExpression convertQueryExpression(a: (QueryExpression) `\<\<<Expression exp>\>\>`, ParseEnv env) = 
 	glagolExpr(convertExpression(exp, env), arbInt(100000))[@src=a@\loc];
 	
 public QueryExpression convertQueryExpression(a: (QueryExpression) `<QueryField field>`, ParseEnv env) = 
