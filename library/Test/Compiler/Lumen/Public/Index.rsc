@@ -6,4 +6,4 @@ test bool testCreateIndexFile() =
 	createIndexFile() == 
 	"\<?php\n" + 
 	"$app = require_once __DIR__ . \"/../bootstrap/app.php\";\n" + 
-	"$app-\>\n    run();\n";
+	"$app\n    -\>run();\n";

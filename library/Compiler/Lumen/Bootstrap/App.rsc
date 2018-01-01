@@ -10,6 +10,16 @@ import Config::Config;
 
 public str createAppFile(ORM orm, list[Declaration] ast) = implode(toCode(phpScript([
 	phpExprstmt(phpInclude(phpBinaryOperation(phpScalar(phpDirConstant()), phpScalar(phpString("/../vendor/autoload.php")), phpConcat()), phpRequire())),
+	phpTryCatch([
+		phpExprstmt(phpMethodCall(phpBracket(phpSomeExpr(
+				phpNew(phpName(phpName("\\Dotenv\\Dotenv")), [
+					phpActualParameter(phpBinaryOperation(phpScalar(phpDirConstant()), phpScalar(phpString("/../")), phpConcat()), false)
+				])
+			)), phpName(phpName("load")), [])
+		)
+	], [
+		phpCatch(phpName("\\Dotenv\\Exception\\InvalidPathException"), "e", [])
+	]),
 	phpExprstmt(phpAssign(phpVar("app"), phpNew(phpName(phpName("\\Laravel\\Lumen\\Application")), [
 		phpActualParameter(phpCall(phpName(phpName("realpath")), [
 			phpActualParameter(phpBinaryOperation(phpScalar(phpDirConstant()), phpScalar(phpString("/../")), phpConcat()), false)
