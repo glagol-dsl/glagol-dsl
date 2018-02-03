@@ -23,6 +23,26 @@ test bool testShouldParseVariableInBrackets()
     ]));
 }
 
+test bool testShouldParseStringConcat()
+{
+    str code = "namespace Example
+               'entity User {
+               '    void variableInBrackets(int theVariable) {
+               '        \"test\" ++ \"test\";
+               '        \"test\" ++ 3 + 2;
+               '        \"test\" ++ 3 * 2;
+               '    }
+               '}"; 
+    
+    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
+        method(\public(), voidValue(), "variableInBrackets", [param(integer(), "theVariable", emptyExpr())], [
+            expression(concat(string("test"), string("test"))),
+            expression(addition(concat(string("test"), integer(3)), integer(2))),
+            expression(concat(string("test"), product(integer(3), integer(2))))
+        ], emptyExpr())
+    ]));
+}
+
 test bool testShouldParseList()
 {
     str code = "namespace Example

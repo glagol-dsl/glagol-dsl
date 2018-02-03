@@ -19,6 +19,9 @@ public Expression convertExpression(a: (Expression) `<Expression lhs> / <Express
 public Expression convertExpression(a: (Expression) `<Expression lhs> + <Expression rhs>`, ParseEnv env)
     = addition(convertExpression(lhs, env), convertExpression(rhs, env))[@src=a@\loc];
     
+public Expression convertExpression(a: (Expression) `<Expression lhs> ++ <Expression rhs>`, ParseEnv env)
+    = concat(convertExpression(lhs, env), convertExpression(rhs, env))[@src=a@\loc];
+    
 public Expression convertExpression(a: (Expression) `<Expression lhs> - <Expression rhs>`, ParseEnv env)
     = subtraction(convertExpression(lhs, env), convertExpression(rhs, env))[@src=a@\loc];
     

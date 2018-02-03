@@ -1,0 +1,4 @@
+#!/bin/sh
+cd library
+../build/build && ../build/rascalu Tests
+cd ..

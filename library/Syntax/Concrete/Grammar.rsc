@@ -164,7 +164,6 @@ syntax Expression
     | booleanLiteral: Boolean boolean
     | variable: MemberName varName
     | newInstance: "new" ArtifactName "(" {Expression ","}* args ")"
-//    | getInstance: "get" Type
     | invokeLocal: MemberName method "(" {Expression ","}* args ")"
     | invoke: Expression prev "." MemberName method "(" {Expression ","}* args ")"
     | fieldAccess: Expression prev "." MemberName field
@@ -175,7 +174,8 @@ syntax Expression
            | remainder: Expression lhs "%" Expression rhs
            | division: Expression lhs "/" Expression rhs
     )
-    > left ( addition: Expression lhs "+" Expression rhs
+    > left concat: Expression lhs "++" Expression rhs
+    > left ( addition: Expression lhs "+" () !>> "+" Expression rhs
            | subtraction: Expression lhs "-" Expression rhs
     )
 //    > left modulo: Expression lhs "mod" Expression rhs
