@@ -59,5 +59,5 @@ private map[Conf, Conf] createCustomTypesMapping(list[Syntax::Abstract::Glagol::
 	(class("\\App\\Types\\<namespaceToString(ns)><name>Type", "TYPE_NAME"): class("\\App\\Types\\<namespaceToString(ns)><name>Type") |
 		Syntax::Abstract::Glagol::file(_, 
 			Syntax::Abstract::Glagol::\module(ns, _, 
-				Syntax::Abstract::Glagol::valueObject(str name, _))) <- ast);
+				Syntax::Abstract::Glagol::valueObject(str name, _, notProxy()))) <- ast);
 

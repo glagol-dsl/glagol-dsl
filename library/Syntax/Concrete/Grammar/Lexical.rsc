@@ -74,3 +74,11 @@ lexical DeciFloatNumeral
     ;
 
 lexical ControllerType = "json-api" | "rest";
+
+lexical Route = "/" {RoutePart "/"}* routes;
+
+lexical PhpClassName 
+	= "\\" Name
+	| "\\" Name PhpClassName 
+	;
+

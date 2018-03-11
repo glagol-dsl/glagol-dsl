@@ -43,7 +43,7 @@ public loc constructFileFromModule(loc sources, \module(Declaration ns, _, repos
     sources + namespaceToString(ns, "/") + "<name>Repository.g";
 
 @doc="Constructrs supposable file name based on value object name and namespace"
-public loc constructFileFromModule(loc sources, \module(Declaration ns, _, valueObject(GlagolID name, _))) = 
+public loc constructFileFromModule(loc sources, \module(Declaration ns, _, valueObject(GlagolID name, _, notProxy()))) = 
     sources + namespaceToString(ns, "/") + "<name>.g";
     
 @doc="Constructrs supposable file name based on utility name and namespace"

@@ -622,7 +622,7 @@ test bool shouldReturnArtifactTypeOnNewExternal() = artifact(fullName("User", na
 	
 test bool shouldReturnArtifactTypeOnNewExternalValueObject() = artifact(fullName("User", namespace("Example"), "User")) == 
 	lookupType(new(fullName("User", namespace("Example"), "User"), []), 
-	addToAST(file(|tmp:///|, \module(namespace("Example"), [], valueObject("User", []))), newEnv(|tmp:///|)));
+	addToAST(file(|tmp:///|, \module(namespace("Example"), [], valueObject("User", [], notProxy()))), newEnv(|tmp:///|)));
 	
 test bool shouldReturnUnknownTypeOnNewExternalThatIsNotInAST() = unknownType() == 
 	lookupType(new(fullName("User", namespace("Example"), "User"), []), newEnv(|tmp:///|));
@@ -647,7 +647,7 @@ test bool shouldReturnArtifactTypeOnGetArtifactWhichIsUtil() =
 		
 test bool shouldReturnUnknownTypeOnGetArtifactWhichIsValueObject() = 
 	unknownType() == lookupType(get(artifact(fullName("User", namespace("Test"), "User"))), addImported(\import("User", namespace("Test"), "User"), addToAST(
-		file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("User", []))),
+		file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("User", [], notProxy()))),
 		newEnv(|tmp:///|))));
 
 test bool shouldReturnArtifactTypeOnGetExternalArtifact() = 
@@ -832,11 +832,11 @@ test bool shouldReturnUnknownTypeWhenQuerySourceIsUnknownArtifactWhileFetchingLi
 
 test bool shouldReturnUnknownTypeWhenQuerySourceIsNotAnEntity() = unknownType() == lookupType(query(querySelect(
 	querySpec(symbol("u"), true), querySource(fullName("User", namespace("Example"), "User"), symbol("u")), noWhere(), noOrderBy(), noLimit())), 
-	addToAST(file(|tmp:///|, \module(namespace("Example"), [], valueObject("User", []))), newEnv(|tmp:///|)));
+	addToAST(file(|tmp:///|, \module(namespace("Example"), [], valueObject("User", [], notProxy()))), newEnv(|tmp:///|)));
 	
 test bool shouldReturnListOfUnknownTypeWhenQuerySourceIsNotAnEntity() = \list(unknownType()) == lookupType(query(querySelect(
 	querySpec(symbol("u"), false), querySource(fullName("User", namespace("Example"), "User"), symbol("u")), noWhere(), noOrderBy(), noLimit())), 
-	addToAST(file(|tmp:///|, \module(namespace("Example"), [], valueObject("User", []))), newEnv(|tmp:///|)));
+	addToAST(file(|tmp:///|, \module(namespace("Example"), [], valueObject("User", [], notProxy()))), newEnv(|tmp:///|)));
 	
 test bool shouldReturnArtifactTypeWhenQuerySourceIsAnEntity() = artifact(fullName("User", namespace("Example"), "User")) == lookupType(query(querySelect(
 	querySpec(symbol("u"), true), querySource(fullName("User", namespace("Example"), "User"), symbol("u")), noWhere(), noOrderBy(), noLimit())), 
@@ -853,10 +853,10 @@ test bool shouldGiveErrorWhenQuerySourceEntityIsDoesNotExist() =
 		noWhere(), noOrderBy(), noLimit())), newEnv(|tmp:///|));
 
 test bool shouldGiveErrorWhenQuerySourceIsNotEntity() = 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Example::User is not an entity", addToAST(file(|tmp:///|, \module(namespace("Example"), [], valueObject("User", []))), newEnv(|tmp:///|))) == 
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Example::User is not an entity", addToAST(file(|tmp:///|, \module(namespace("Example"), [], valueObject("User", [], notProxy()))), newEnv(|tmp:///|))) == 
 	checkExpression(query(querySelect(
 		querySpec(symbol("u"), false), querySource(fullName("User", namespace("Example"), "User"), symbol("u"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
-		noWhere(), noOrderBy(), noLimit())), addToAST(file(|tmp:///|, \module(namespace("Example"), [], valueObject("User", []))), newEnv(|tmp:///|)));
+		noWhere(), noOrderBy(), noLimit())), addToAST(file(|tmp:///|, \module(namespace("Example"), [], valueObject("User", [], notProxy()))), newEnv(|tmp:///|)));
 
 test bool shouldGiveErrorWhenQuerySpecIsUndefined() = 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Alias \'us\' is not defined in the FROM clause", addToAST(file(|tmp:///|, \module(namespace("Example"), [], entity("User", []))), newEnv(|tmp:///|))) == 

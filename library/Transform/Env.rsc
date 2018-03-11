@@ -27,7 +27,7 @@ public str getArtifactName(file(loc file, Declaration \module)) = getArtifactNam
 public str getArtifactName(\module(Declaration namespace, list[Declaration] imports, Declaration artifact)) = getArtifactName(artifact);
 public str getArtifactName(entity(GlagolID name, list[Declaration] declarations)) = name;
 public str getArtifactName(repository(GlagolID name, list[Declaration] declarations)) = "repository\<<name>\>";
-public str getArtifactName(valueObject(GlagolID name, list[Declaration] declarations)) = name;
+public str getArtifactName(valueObject(GlagolID name, list[Declaration] declarations, notProxy())) = name;
 public str getArtifactName(util(GlagolID name, list[Declaration] declarations)) = name;
 public str getArtifactName(controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations)) = name;
 
@@ -64,7 +64,7 @@ public default bool isField(str name, TransformEnv env) = false;
 
 public bool isValueObject(artifact(fullName(str localName, Declaration ns, str originalName)), TransformEnv env) {
 	top-down visit (env.ast) {
-		case valueObject(originalName, list[Declaration] ds): return true;
+		case valueObject(originalName, list[Declaration] ds, notProxy()): return true;
 	}
 	return false;
 }

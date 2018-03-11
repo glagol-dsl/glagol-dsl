@@ -12,7 +12,7 @@ data Declaration
     | \import(GlagolID artifactName, Declaration namespace, GlagolID as)
     | entity(GlagolID name, list[Declaration] declarations)
     | repository(GlagolID name, list[Declaration] declarations)
-    | valueObject(GlagolID name, list[Declaration] declarations)
+    | valueObject(GlagolID name, list[Declaration] declarations, Proxy proxy)
     | property(Type valueType, GlagolID name, Expression defaultValue)
     | util(GlagolID name, list[Declaration] declarations)
     | controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations)
@@ -22,6 +22,12 @@ data Declaration
     | param(Type paramType, GlagolID name, Expression defaultValue)
     | emptyDecl()
     ;
+
+data Proxy
+	= proxyClass(str origin)
+	| proxyMethod(str origin)
+	| notProxy()
+	;
 
 data ControllerType = jsonApi();
 
@@ -199,6 +205,7 @@ public anno loc Name@src;
 public anno loc Expression@src; 
 public anno loc Annotation@src;
 public anno loc Declaration@src;
+public anno loc Proxy@src;
 public anno loc QueryStatement@src;
 public anno loc QuerySpec@src;
 public anno loc QuerySource@src;

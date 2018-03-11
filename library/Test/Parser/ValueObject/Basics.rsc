@@ -10,7 +10,7 @@ test bool shouldParseEmptyValueObject()
         'value DateTime {}
         '";
         
-    return parseModule(code) == \module(namespace("Testing"), [], valueObject("DateTime", []));
+    return parseModule(code) == \module(namespace("Testing"), [], valueObject("DateTime", [], notProxy()));
 }
 
 test bool testShouldParseFlatDocAnnotationForVO()
@@ -19,7 +19,7 @@ test bool testShouldParseFlatDocAnnotationForVO()
                '@doc=\"This is a doc\"
                'value DateTime { }";
 
-    Declaration expectedEntity = valueObject("DateTime", []);
+    Declaration expectedEntity = valueObject("DateTime", [], notProxy());
 
     return 
     	parseModule(code) == \module(namespace("Example"), [], expectedEntity) &&

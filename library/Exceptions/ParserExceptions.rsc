@@ -8,4 +8,5 @@ data ParserException
     | ConstructorNotAllowed(str msg, loc at)
     | ActionNotAllowed(str msg, loc at)
     | EntityNotImported(str msg, loc at)
+    | ProxyNotAllowed(str msg, loc at)
     ;

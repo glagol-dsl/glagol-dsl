@@ -14,7 +14,7 @@ public str makeFilename(Declaration namespace, entity(str name, _)) =
 public str makeFilename(Declaration namespace, util(str name, _)) = 
 	namespaceToDir(namespace) + name + ".<EXT>";
 	
-public str makeFilename(Declaration namespace, valueObject(str name, _)) = 
+public str makeFilename(Declaration namespace, valueObject(str name, _, notProxy())) = 
 	namespaceToDir(namespace) + name + ".<EXT>";
 
 public str makeFilename(Declaration namespace, repository(str name, _)) = 

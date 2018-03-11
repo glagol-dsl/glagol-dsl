@@ -102,10 +102,10 @@ test bool shouldGiveErrorWhenAutofindOnNonEntityParameterInAction() =
 		param(artifact(fullName("Money", namespace("Test"), "Money")), "m", emptyExpr())[@annotations=[
 			annotation("autofind", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]]]
 	], [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], controller("UserController", jsonApi(), route([]), []), addToAST(
-		\file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("Money", []))), 
+		\file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("Money", [], notProxy()))), 
 			addImported(\import("Money", namespace("Test"), "Money"), newEnv()))) ==
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Annotation @autofind can only be used on entities", addToAST(
-		\file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("Money", []))), 
+		\file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("Money", [], notProxy()))), 
 			addImported(\import("Money", namespace("Test"), "Money"), 
 				addDefinition(param(artifact(fullName("Money", namespace("Test"), "Money")), "m", emptyExpr())[@annotations=[
 			annotation("autofind", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]]], newEnv()))));

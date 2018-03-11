@@ -57,7 +57,7 @@ test bool shouldGiveErrorsWhenVORedefiningImportedArtifact() =
 	checkArtifact(valueObject("User", [
     	constructor([param(string(), "test", emptyExpr())], [], emptyExpr()),
     	method(\public(), string(), "toDatabaseValue", [], [\return(string(""))], emptyExpr())
-	])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+	], notProxy())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
     addImported(\import("User", namespace("Test"), "User")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
     	addToAST(
     	file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", [])[@src=|tmp:///User.g|(0, 0, <10, 20>, <30, 30>)])),
@@ -71,7 +71,7 @@ test bool shouldGiveErrorsWhenVORedefiningImportedArtifact() =
 	);
 
 test bool shouldNotGiveErrorsWhenVORedefiningImportedArtifactButUsingAlias() = 
-    !hasErrors(checkArtifact(valueObject("User", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+    !hasErrors(checkArtifact(valueObject("User", [], notProxy())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
     addImported(\import("User", namespace("Test"), "UserEntity"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
@@ -80,7 +80,7 @@ test bool shouldNotGiveErrorsWhenVORedefiningImportedArtifactButUsingAlias() =
 test bool shouldGiveErrorWhenToDatabaseValueMethodReturnsVoid() = 
     checkArtifact(valueObject("User", [
     	method(\public(), voidValue(), "toDatabaseValue", [], [\return(emptyExpr())], emptyExpr())
-	])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+	], notProxy())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
     addImported(\import("User", namespace("Test"), "UserEntity"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
@@ -96,7 +96,7 @@ test bool shouldGiveErrorWhenHasToDatabaseValueMethodButNoMatchingConstructor() 
     checkArtifact(valueObject("User", [
     	constructor([param(integer(), "test", emptyExpr())], [], emptyExpr()),
     	method(\public(), string(), "toDatabaseValue", [], [\return(string(""))], emptyExpr())
-	])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+	], notProxy())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
     addImported(\import("User", namespace("Test"), "UserEntity"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
@@ -112,7 +112,7 @@ test bool shouldNotGiveErrorWhenHasToDatabaseValueMethodWithMatchingConstructor(
     !hasErrors(checkArtifact(valueObject("User", [
     	constructor([param(string(), "test", emptyExpr())], [], emptyExpr()),
     	method(\public(), string(), "toDatabaseValue", [], [\return(string(""))], emptyExpr())
-	])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+	], notProxy())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
     addImported(\import("User", namespace("Test"), "UserEntity"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
@@ -122,7 +122,7 @@ test bool shouldNotGiveErrorWhenHasToDatabaseValueMethodWithMatchingConstructorH
     !hasErrors(checkArtifact(valueObject("User", [
     	constructor([param(string(), "test", emptyExpr())], [], emptyExpr()),
     	method(\public(), string(), "toDatabaseValue", [], [\return(string(""))], emptyExpr())
-	])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+	], notProxy())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
     addImported(\import("User", namespace("Test"), "UserEntity"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),

@@ -31,9 +31,8 @@ syntax Artifact
     | "value" ArtifactName name "{" Declaration* declarations "}"
     | ("util" | "service") ArtifactName name "{" Declaration* declarations "}"
     | ControllerType controllerType "controller" Route routes "{" Declaration* declarations "}"
+    | "proxy" PhpClassName phpClass "as" Artifact artifact
     ;
-
-lexical Route = "/" {RoutePart "/"}* routes;
 
 syntax RoutePart
 	= Identifier part

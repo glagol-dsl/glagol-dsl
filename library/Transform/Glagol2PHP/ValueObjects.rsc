@@ -13,7 +13,7 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Config::Config;
 
-public PhpStmt toPhpClassDef(v: valueObject(str name, list[Declaration] declarations), TransformEnv env)
+public PhpStmt toPhpClassDef(v: valueObject(str name, list[Declaration] declarations, notProxy()), TransformEnv env)
     = origin(phpClassDef(origin(phpClass(name, {}, phpNoName(), [origin(phpName("\\JsonSerializable"), v)], [
     	origin(phpTraitUse([phpName("\\Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait")], []), v, true)
     ] + toPhpClassItems(declarations, env))[

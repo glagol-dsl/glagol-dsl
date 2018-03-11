@@ -13,7 +13,7 @@ test bool shouldConstructFileFromRepositoryModuleUsingTmpLoc() =
     |tmp:///src/Test/Repository/UserRepository.g|;
 
 test bool shouldConstructFileFromVOModuleUsingTmpLoc() =
-    constructFileFromModule(|tmp:///src|, \module(namespace("Test", namespace("VO")), [], valueObject("Date", []))) ==
+    constructFileFromModule(|tmp:///src|, \module(namespace("Test", namespace("VO")), [], valueObject("Date", [], notProxy()))) ==
     |tmp:///src/Test/VO/Date.g|;
 
 test bool shouldConstructFileFromUtilModuleUsingTmpLoc() =

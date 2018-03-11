@@ -17,7 +17,7 @@ public default bool isConstructor(value _) = false;
 public bool isEntity(entity(GlagolID name, list[Declaration] declarations)) = true;
 public default bool isEntity(value _) = false;
 
-public bool isValueObject(valueObject(_, _)) = true;
+public bool isValueObject(valueObject(GlagolID name, list[Declaration] declarations, Proxy proxy)) = true;
 public default bool isValueObject(value _) = false;
 
 public bool isRepository(repository(_, _)) = true;

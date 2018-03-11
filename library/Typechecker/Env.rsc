@@ -152,7 +152,7 @@ public bool isEntity(a: artifact(e: fullName(_, _, _)), TypeEnv env) = isEntity(
     
 public bool isValueObject(TypeEnv env) = isValueObject(getContext(env).artifact);
 public bool isValueObject(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
-    [valueObject(_, _)] := findArtifact(i, env);
+    [valueObject(_, _, notProxy())] := findArtifact(i, env);
     
 public bool isUtil(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
     [util(_, _)] := findArtifact(i, env);
@@ -163,7 +163,7 @@ public bool isUtil(artifact(Name name), TypeEnv env) =
 public Type contextAsType(TypeEnv env) = contextAsType(getContext(env));
 public Type contextAsType(\module(ns, _, repository(name, _))) = repository(fullName(name, ns, name));
 public Type contextAsType(\module(ns, _, entity(name, _))) = artifact(fullName(name, ns, name));
-public Type contextAsType(\module(ns, _, valueObject(name, _))) = artifact(fullName(name, ns, name));
+public Type contextAsType(\module(ns, _, valueObject(name, _, notProxy()))) = artifact(fullName(name, ns, name));
 public Type contextAsType(\module(ns, _, util(name, _))) = artifact(fullName(name, ns, name));
 public Type contextAsType(\module(ns, _, Declaration)) = unknownType();
 

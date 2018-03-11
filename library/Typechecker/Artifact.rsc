@@ -16,7 +16,7 @@ public TypeEnv checkArtifact(e:entity(GlagolID name, list[Declaration] declarati
 public TypeEnv checkArtifact(u:util(GlagolID name, list[Declaration] declarations), TypeEnv env) =
     checkDeclarations(declarations, u, checkRedefine(u, env));
 
-public TypeEnv checkArtifact(v:valueObject(GlagolID name, list[Declaration] declarations), TypeEnv env) =
+public TypeEnv checkArtifact(v:valueObject(GlagolID name, list[Declaration] declarations, notProxy()), TypeEnv env) =
     checkToDbValMethod(v, declarations, checkDeclarations(declarations, v, checkRedefine(v, env)));
 
 public TypeEnv checkArtifact(r:repository(GlagolID name, list[Declaration] declarations), TypeEnv env) =
@@ -62,12 +62,12 @@ private Type findToDbValMethod(list[Declaration] ds) = (emptyDecl() | m | m: met
 private bool hasToDbValMethod(list[Declaration] ds) = (false | true | method(\public(), _, "toDatabaseValue", [], _, _) <- ds);
 private bool hasVoidToDbValMethod(list[Declaration] ds) = (false | true | method(\public(), voidValue(), "toDatabaseValue", [], _, _) <- ds);
 
-private TypeEnv checkValueConstructor(v: valueObject(str name, list[Declaration] ds), TypeEnv env) = 
+private TypeEnv checkValueConstructor(v: valueObject(str name, list[Declaration] ds, notProxy()), TypeEnv env) = 
 	addError(v, "Value object should implement a constructor matching <name>(<toString(findToDbValMethodType(ds))>)", env)
 	when !hasConstructor(ds, findToDbValMethodType(ds), env);
 	
-private TypeEnv checkValueConstructor(v: valueObject(str name, list[Declaration] ds), TypeEnv env) = env;
+private TypeEnv checkValueConstructor(v: valueObject(str name, list[Declaration] ds, notProxy()), TypeEnv env) = env;
 	
 private bool hasConstructor(list[Declaration] ds, Type t, TypeEnv env) = (false | true | constructor(params, _, _) <- ds, isSignatureMatching([t], params, env));
 	
-private TypeEnv checkValueConstructor(v: valueObject(str name, list[Declaration] ds), TypeEnv env) = env;
+private TypeEnv checkValueConstructor(v: valueObject(str name, list[Declaration] ds, notProxy()), TypeEnv env) = env;
