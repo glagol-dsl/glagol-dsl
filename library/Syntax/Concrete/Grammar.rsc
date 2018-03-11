@@ -40,7 +40,9 @@ syntax Proxable
 
 syntax ProxyDeclaration
 	= ProxyMethod m
+	| Annotation+ annotations ProxyMethod m
 	| ProxyConstructor c
+	| Annotation+ annotations ProxyConstructor c
 	;
 
 syntax ProxyMethod

@@ -32,6 +32,25 @@ test bool shouldParseProxyValueObjectWithAMethodAndConstructor()
     ], proxyClass("\\DateTimeImmutable")));
 }
 
+test bool shouldParseProxyValueObjectWithAMethodAndConstructorWithAnnotations()
+{
+    str code 
+        = "namespace Testing
+        'proxy \\DateTimeImmutable as
+        'value DateTime {
+        '	 @test
+        '	 DateTime(string now);
+        '    @test
+        '	 string format();
+        '}
+        '";
+        
+    return parseModule(code) == \module(namespace("Testing"), [], valueObject("DateTime", [
+    	constructor([param(string(), "now", emptyExpr())], [\return(adaptable())], emptyExpr()),
+    	method(\public(), string(), "format", [], [\return(adaptable())], emptyExpr())
+    ], proxyClass("\\DateTimeImmutable")));
+}
+
 test bool shouldFailWhenInvalidConstructorNameIsUsedOnProxy()
 {
     str code 

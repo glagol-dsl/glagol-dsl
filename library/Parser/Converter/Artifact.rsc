@@ -27,7 +27,18 @@ public Declaration convertArtifact(a: (Artifact) `proxy<PhpClassName phpClassNam
 public Declaration convertProxable(a: (Proxable) `value <ArtifactName name> {<ProxyDeclaration* declarations>}`, Proxy proxy, ParseEnv env) = 
 	valueObject("<name>", [convertProxyDeclaration(d, "<name>", env) | d <- declarations], proxy)[@src=a@\loc];
 
+public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<Annotation+ annotations><ProxyMethod m>`, str proxyName, ParseEnv env) 
+    = convertProxyMethod(m, env)[
+    	@annotations = convertAnnotations(annotations, env)
+    ][@src=a@\loc];
+
 public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<ProxyMethod m>`, str proxyName, ParseEnv env) = convertProxyMethod(m, env);
+
+public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<Annotation+ annotations><ProxyConstructor c>`, str proxyName, ParseEnv env) 
+    = convertProxyConstructor(c, proxyName, env)[
+    	@annotations = convertAnnotations(annotations, env)
+    ][@src=a@\loc];
+
 public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<ProxyConstructor c>`, str proxyName, ParseEnv env) = convertProxyConstructor(c, proxyName, env);
 
 public Declaration convertProxyMethod(
