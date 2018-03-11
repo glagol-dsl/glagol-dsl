@@ -15,19 +15,38 @@ test bool shouldParseEmptyProxyValueObject()
     return parseModule(code) == \module(namespace("Testing"), [], valueObject("DateTime", [], proxyClass("\\DateTimeImmutable")));
 }
 
-test bool shouldParseProxyValueObjectWithAMethod()
+test bool shouldParseProxyValueObjectWithAMethodAndConstructor()
 {
     str code 
         = "namespace Testing
         'proxy \\DateTimeImmutable as
         'value DateTime {
+        '	 DateTime(string now);
         '    string format();
         '}
         '";
         
     return parseModule(code) == \module(namespace("Testing"), [], valueObject("DateTime", [
+    	constructor([param(string(), "now", emptyExpr())], [\return(adaptable())], emptyExpr()),
     	method(\public(), string(), "format", [], [\return(adaptable())], emptyExpr())
     ], proxyClass("\\DateTimeImmutable")));
+}
+
+test bool shouldFailWhenInvalidConstructorNameIsUsedOnProxy()
+{
+    str code 
+        = "namespace Testing
+        'proxy \\DateTimeImmutable as
+        'value DateTime {
+        '	 DateTimeImmutable(string now);
+        '    string format();
+        '}
+        '";
+    
+    try parseModule(code);
+    catch IllegalConstructorName(_, _): return true;
+    
+    return false;
 }
 
 test bool shouldParseEmptyProxyIlluminateHttpRequestValueObject()

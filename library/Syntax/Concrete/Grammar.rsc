@@ -35,11 +35,20 @@ syntax Artifact
     ;
 
 syntax Proxable 
-	= "value" ArtifactName name "{" ProxyMethod* method "}"
+	= "value" ArtifactName name "{" ProxyDeclaration* method "}"
+	;
+
+syntax ProxyDeclaration
+	= ProxyMethod m
+	| ProxyConstructor c
 	;
 
 syntax ProxyMethod
 	= Type returnType MemberName name "(" {AbstractParameter ","}* parameters ")" ";"
+	;
+
+syntax ProxyConstructor
+	= ArtifactName "(" {AbstractParameter ","}* parameters ")" ";"
 	;
 
 syntax RoutePart

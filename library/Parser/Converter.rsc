@@ -51,13 +51,26 @@ public Declaration convertArtifact(a: (Artifact) `repository for <ArtifactName n
 public Declaration convertArtifact(a: (Artifact) `proxy<PhpClassName phpClassName>as<Proxable proxy>`, ParseEnv env) =
 	convertProxable(proxy, proxyClass("<phpClassName>")[@src=phpClassName@\loc], env);
 
-public Declaration convertProxable(a: (Proxable) `value <ArtifactName name> {<ProxyMethod* declarations>}`, Proxy proxy, ParseEnv env) = 
-	valueObject("<name>", [convertProxyMethod(d, env) | d <- declarations], proxy)[@src=a@\loc];
+public Declaration convertProxable(a: (Proxable) `value <ArtifactName name> {<ProxyDeclaration* declarations>}`, Proxy proxy, ParseEnv env) = 
+	valueObject("<name>", [convertProxyDeclaration(d, "<name>", env) | d <- declarations], proxy)[@src=a@\loc];
+
+public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<ProxyMethod m>`, str proxyName, ParseEnv env) = convertProxyMethod(m, env);
+public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<ProxyConstructor c>`, str proxyName, ParseEnv env) = convertProxyConstructor(c, proxyName, env);
 
 public Declaration convertProxyMethod(
     a: (ProxyMethod) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>);`, ParseEnv env) 
     = method(\public()[@src=a@\loc], convertType(returnType, env), "<name>", 
     	[convertParameter(p, env) | p <- parameters], [\return(adaptable()[@src=a@\loc])[@src=a@\loc]], emptyExpr()[@src=a@\loc])[@src=a@\loc];
+
+public Declaration convertProxyConstructor(
+    a: (ProxyConstructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>);`, str proxyName, ParseEnv env) {
+	
+	if ("<name>" != proxyName) {
+        throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
+	}
+	
+	return constructor([convertParameter(p, env) | p <- parameters], [\return(adaptable()[@src=a@\loc])[@src=a@\loc]], emptyExpr()[@src=a@\loc])[@src=a@\loc];    
+}
 
 public Declaration convertArtifact(a: (Artifact) `value <ArtifactName name> {<Declaration* declarations>}`, ParseEnv env) = 
 	valueObject("<name>", [convertDeclaration(d, "<name>", "value", env) | d <- declarations], notProxy()[@src=a@\loc])[@src=a@\loc];
