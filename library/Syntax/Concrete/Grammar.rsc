@@ -122,7 +122,7 @@ syntax AbstractParameter
     | Annotation+ annotations Parameter parameter;
 
 syntax Parameter
-    = Type paramType MemberName name AssignDefaultValue? defaultValue
+    = Type paramType MemberName name
     ;
 
 syntax AssignDefaultValue

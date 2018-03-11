@@ -50,13 +50,13 @@ test bool canUseRepositorySelfieAsParamDefaultValue()
     str code
         = "namespace Test
           'service UserCreator {
-          '    public void make(repository\<User\> userRepository = get selfie) { }
+          '    public void make(repository\<User\> userRepository) { }
           '}";
     
     return parseModule(code) ==
         \module(namespace("Test"), [], util("UserCreator", [
             method(\public(), voidValue(), "make", [
-                param(repository(fullName("User", namespace("Test"), "User")), "userRepository", get(repository(fullName("User", namespace("Test"), "User"))))
+                param(repository(fullName("User", namespace("Test"), "User")), "userRepository", emptyExpr())
             ], [], emptyExpr())
         ]));
 }
