@@ -114,9 +114,6 @@ public PhpCastType toPhpCastType(e: boolean()) = origin(phpBool(), e);
 // Unary operations
 public PhpExpr toPhpExpr(n: negative(Expression e), TransformEnv env) = 
 	origin(phpUnaryOperation(toPhpExpr(e, env), origin(phpUnaryMinus(), n)), n);
-	
-public PhpExpr toPhpExpr(p: positive(Expression e), TransformEnv env) = 
-	origin(phpUnaryOperation(toPhpExpr(e, env), origin(phpUnaryPlus(), p)), p);
 
 // Method call
 public PhpExpr toPhpExpr(e: invoke(s: symbol(str methodName), list[Expression] args), TransformEnv env) =

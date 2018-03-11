@@ -156,8 +156,6 @@ syntax Expression
     = bracket \bracket: "(" Expression expression ")"
     | \list: "[" {Expression ","}* items "]"
     | \map: "{" {MapPair ","}* items "}"
-    | negative: "-" Expression argument
-    | positive: "+" Expression argument
     | stringLiteral: StringQuoted string
     | integer: DecimalIntegerLiteral number
     | float: DeciFloatNumeral number
@@ -169,6 +167,7 @@ syntax Expression
     | fieldAccess: Expression prev "." MemberName field
     | this: "this"
     | query: QueryStatement query
+    > negative: "-" Expression argument
     > left "(" Type type ")" Expression expr
     > left ( product: Expression lhs "*" () !>> "*" Expression rhs
            | remainder: Expression lhs "%" Expression rhs
@@ -178,7 +177,6 @@ syntax Expression
     > left ( addition: Expression lhs "+" () !>> "+" Expression rhs
            | subtraction: Expression lhs "-" Expression rhs
     )
-//    > left modulo: Expression lhs "mod" Expression rhs
     > non-assoc ( greaterThanOrEq: Expression lhs "\>=" Expression rhs
                 | lessThanOrEq: Expression lhs "\<=" Expression rhs
                 | lessThan: Expression lhs "\<" !>> "-" Expression rhs
@@ -245,16 +243,21 @@ syntax QueryField
 
 syntax QueryExpression
 	= bracket "(" QueryExpression expr ")"
-	| QueryExpression l "=" QueryExpression r
-	| QueryExpression l "!=" QueryExpression r
-	| QueryExpression l "\>" QueryExpression r
-	| QueryExpression l "\>=" QueryExpression r
-	| QueryExpression l "\<" QueryExpression r
-	| QueryExpression l "\<=" QueryExpression r
-	| QueryExpression l "IS" "NULL"
-	| QueryExpression l "IS" "NOT" "NULL"
-	| QueryExpression l "AND" QueryExpression r
-	| QueryExpression l "OR" QueryExpression r
+	> left ( QueryExpression l "=" QueryExpression r
+		| QueryExpression l "!=" QueryExpression r
+		| QueryExpression l "\>" QueryExpression r
+		| QueryExpression l "\>=" QueryExpression r
+		| QueryExpression l "\<" QueryExpression r
+		| QueryExpression l "\<=" QueryExpression r
+	)
+	> left (
+		| QueryExpression l "AND" QueryExpression r
+		| QueryExpression l "OR" QueryExpression r
+	)
+	> non-assoc ( 
+		| QueryExpression l "IS" "NULL"
+		| QueryExpression l "IS" "NOT" "NULL"
+	)
 	| "\<\<" Expression expr "\>\>"
 	| QueryField field
 	;

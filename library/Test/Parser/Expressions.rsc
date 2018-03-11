@@ -81,22 +81,6 @@ test bool testShouldParseExpressionsWithNegativeLiterals()
     ]));
 }
 
-test bool testShouldParseExpressionsWithPositiveLiterals()
-{
-    str code = "namespace Example
-               'entity User {
-               '    void nestedNegative() {
-               '        +(+(+(23)));
-               '    }
-               '}";
-               
-    return parseModule(code) == \module(namespace("Example"), [], entity("User", [
-        method(\public(), voidValue(), "nestedNegative", [], [
-            expression(positive(\bracket(positive(\bracket(positive(\bracket(integer(23))))))))
-        ], emptyExpr())
-    ]));
-}
-
 test bool testShouldParseMathExpressions()
 {
     str code = "namespace Example

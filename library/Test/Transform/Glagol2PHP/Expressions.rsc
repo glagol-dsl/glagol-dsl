@@ -79,7 +79,6 @@ test bool shouldTransformToBinaryNonEqOp() = toPhpExpr(nonEquals(integer(3), flo
 test bool shouldTransformToBinaryAndOp() = toPhpExpr(and(integer(3), float(4.5)), newTransformEnv()) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpLogicalAnd());
 test bool shouldTransformToBinaryOrOp() = toPhpExpr(or(integer(3), float(4.5)), newTransformEnv()) == phpBinaryOperation(phpScalar(phpInteger(3)), phpScalar(phpFloat(4.5)), phpLogicalOr());
 test bool shouldTransformToUnaryMinusOp() = toPhpExpr(negative(float(4.5)), newTransformEnv()) == phpUnaryOperation(phpScalar(phpFloat(4.5)), phpUnaryMinus());
-test bool shouldTransformToUnaryPlusOp() = toPhpExpr(positive(float(4.5)), newTransformEnv()) == phpUnaryOperation(phpScalar(phpFloat(4.5)), phpUnaryPlus());
 test bool shouldTransformToBinaryConcatOp() = toPhpExpr(concat(string("test"), string("ing")), newTransformEnv()) == phpBinaryOperation(phpScalar(phpString("test")), phpScalar(phpString("ing")), phpConcat());
 
 

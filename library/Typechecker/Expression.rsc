@@ -175,8 +175,6 @@ public TypeEnv checkBinaryLogic(Expression e, Type l, Type r, TypeEnv env) =
 
 public TypeEnv checkExpression(e: negative(Expression expr), TypeEnv env) = 
 	checkExpression(expr, checkUnaryMath(e, lookupType(expr, env), env));
-public TypeEnv checkExpression(e: positive(Expression expr), TypeEnv env) = 
-	checkExpression(expr, checkUnaryMath(e, lookupType(expr, env), env));
 
 public TypeEnv checkUnaryMath(Expression n, float(), TypeEnv env) = env;
 public TypeEnv checkUnaryMath(Expression n, integer(), TypeEnv env) = env;
@@ -184,7 +182,6 @@ public TypeEnv checkUnaryMath(Expression n, Type t, TypeEnv env) =
 	addError(n, "Cannot apply <stringify(n)> on <toString(t)>", env);
 
 private str stringify(negative(Expression n)) = "minus";
-private str stringify(positive(Expression n)) = "plus";
 
 public TypeEnv checkExpression(e: ifThenElse(Expression condition, Expression ifThen, Expression \else), TypeEnv env) = checkIfThenElse(e, env);
 
@@ -428,7 +425,6 @@ public Type lookupType(and(Expression lhs, Expression rhs), TypeEnv env) =
 public Type lookupType(or(Expression lhs, Expression rhs), TypeEnv env) =
     lookupBooleanCompatibilityType(lookupType(lhs, env), lookupType(rhs, env));
 
-public Type lookupType(positive(Expression expr), TypeEnv env) = lookupUnaryMathType(lookupType(expr, env));
 public Type lookupType(negative(Expression expr), TypeEnv env) = lookupUnaryMathType(lookupType(expr, env));
 
 public Type lookupType(ifThenElse(Expression condition, Expression ifThen, Expression \else), TypeEnv env) = 

@@ -324,16 +324,10 @@ test bool shouldGiveErrorWhenApplyingLogicalOrOnBooleanAndInteger() =
 
 test bool shouldNotGiveErrorWhenApplyingNegativeOnInteger() = checkExpression(negative(integer(2))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == newEnv(|tmp:///|);
 test bool shouldNotGiveErrorWhenApplyingNegativeOnFloat() = checkExpression(negative(float(2.4)), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
-test bool shouldNotGiveErrorWhenApplyingPositiveOnInteger() = checkExpression(positive(integer(2)), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
-test bool shouldNotGiveErrorWhenApplyingPositiveOnFloat() = checkExpression(positive(float(2.4)), newEnv(|tmp:///|)) == newEnv(|tmp:///|);
 
 test bool shouldGiveErrorWhenApplyingNegativeOnString() = 
 	checkExpression(negative(string("2.4"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot apply minus on string", newEnv(|tmp:///|));
-
-test bool shouldGiveErrorWhenApplyingPositiveOnString() = 
-	checkExpression(positive(string("2.4"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) == 
-	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot apply plus on string", newEnv(|tmp:///|));
 
 // Check lists
 test bool shouldNotGiveErrorWhenCheckingEmptyList() = 
@@ -582,9 +576,6 @@ test bool shouldReturnUnknownTypeOnConjunctionOfNonBooleans() = unknownType() ==
 
 test bool shouldReturnBooleanTypeOnDisjunctionOfBooleans() = boolean() == lookupType(or(boolean(true), boolean(false)), newEnv(|tmp:///|));
 test bool shouldReturnUnknownTypeOnDisjunctionOfNonBooleans() = unknownType() == lookupType(or(boolean(true), integer(1)), newEnv(|tmp:///|));
-
-test bool shouldReturnIntegerTypeOnPositiveInteger() = integer() == lookupType(positive(integer(2)), newEnv(|tmp:///|));
-test bool shouldReturnIntegerTypeOnPositiveFloat() = float() == lookupType(positive(float(2.2)), newEnv(|tmp:///|));
 
 test bool shouldReturnIntegerTypeOnNegativeInteger() = integer() == lookupType(negative(integer(2)), newEnv(|tmp:///|));
 test bool shouldReturnIntegerTypeOnNegativeFloat() = float() == lookupType(negative(float(2.2)), newEnv(|tmp:///|));

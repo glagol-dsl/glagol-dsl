@@ -338,9 +338,6 @@ public Expression convertExpression(a: (Expression) `<MemberName varName>`, Pars
     
 public Expression convertExpression(a: (Expression) `-<Expression expr>`, ParseEnv env)
     = negative(convertExpression(expr, env))[@src=a@\loc];
-    
-public Expression convertExpression(a: (Expression) `+<Expression expr>`, ParseEnv env)
-    = positive(convertExpression(expr, env))[@src=a@\loc];
 
 public Expression convertExpression(a: (Expression) `this`, ParseEnv env) = this()[@src=a@\loc];
 
