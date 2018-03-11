@@ -15,6 +15,21 @@ test bool shouldParseEmptyProxyValueObject()
     return parseModule(code) == \module(namespace("Testing"), [], valueObject("DateTime", [], proxyClass("\\DateTimeImmutable")));
 }
 
+test bool shouldParseProxyValueObjectWithAMethod()
+{
+    str code 
+        = "namespace Testing
+        'proxy \\DateTimeImmutable as
+        'value DateTime {
+        '    string format();
+        '}
+        '";
+        
+    return parseModule(code) == \module(namespace("Testing"), [], valueObject("DateTime", [
+    	method(\public(), string(), "format", [], [\return(adaptable())], emptyExpr())
+    ], proxyClass("\\DateTimeImmutable")));
+}
+
 test bool shouldParseEmptyProxyIlluminateHttpRequestValueObject()
 {
     str code 
@@ -25,22 +40,3 @@ test bool shouldParseEmptyProxyIlluminateHttpRequestValueObject()
         
     return parseModule(code) == \module(namespace("Testing"), [], valueObject("Request", [], proxyClass("\\Illuminate\\Http\\Request")));
 }
-
-test bool shouldThrowExceptionWhenParsingProxiedEntity()
-{
-    str code 
-        = "namespace Testing
-        'proxy \\DateTimeImmutable as
-        'entity DateTime {}
-        '";
-        
-    try {
-    	parseModule(code);
-	} catch ProxyNotAllowed(str msg, loc l): {
-    	return true;
-    }
-        
-    return false;
-}
-
-

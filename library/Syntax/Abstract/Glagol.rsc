@@ -73,6 +73,7 @@ data Expression
     | this()
     | cast(Type \type, Expression expr)
     | query(QueryStatement queryStmt)
+    | adaptable() // used by the typechecker to fit with any excepted type
     ;
 
 data Symbol 

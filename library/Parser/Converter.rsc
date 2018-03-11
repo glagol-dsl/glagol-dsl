@@ -48,15 +48,16 @@ public Declaration convertArtifact(a: (Artifact) `entity <ArtifactName name> {<D
 public Declaration convertArtifact(a: (Artifact) `repository for <ArtifactName name> {<Declaration* declarations>}`, ParseEnv env) =
 	repository("<name>", [convertDeclaration(d, "<name>", "repository", env) | d <- declarations])[@src=a@\loc];
 
-public Declaration convertArtifact(a: (Artifact) `proxy<PhpClassName phpClassName>as<Artifact artifact>`, ParseEnv env) =
-	convertArtifact(artifact, proxyClass("<phpClassName>")[@src=phpClassName@\loc], env);
+public Declaration convertArtifact(a: (Artifact) `proxy<PhpClassName phpClassName>as<Proxable proxy>`, ParseEnv env) =
+	convertProxable(proxy, proxyClass("<phpClassName>")[@src=phpClassName@\loc], env);
 
-public Declaration convertArtifact(a: (Artifact) `value <ArtifactName name> {<Declaration* declarations>}`, Proxy proxy, ParseEnv env) = 
-	valueObject("<name>", [convertDeclaration(d, "<name>", "value", env) | d <- declarations], proxy)[@src=a@\loc];
-	
-public Declaration convertArtifact(a: (Artifact) `<Artifact artifact>`, Proxy proxy, ParseEnv env) {
-	throw ProxyNotAllowed("Proxies only allowed on value objects and utility/services", a@\loc);
-}
+public Declaration convertProxable(a: (Proxable) `value <ArtifactName name> {<ProxyMethod* declarations>}`, Proxy proxy, ParseEnv env) = 
+	valueObject("<name>", [convertProxyMethod(d, env) | d <- declarations], proxy)[@src=a@\loc];
+
+public Declaration convertProxyMethod(
+    a: (ProxyMethod) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>);`, ParseEnv env) 
+    = method(\public()[@src=a@\loc], convertType(returnType, env), "<name>", 
+    	[convertParameter(p, env) | p <- parameters], [\return(adaptable()[@src=a@\loc])[@src=a@\loc]], emptyExpr()[@src=a@\loc])[@src=a@\loc];
 
 public Declaration convertArtifact(a: (Artifact) `value <ArtifactName name> {<Declaration* declarations>}`, ParseEnv env) = 
 	valueObject("<name>", [convertDeclaration(d, "<name>", "value", env) | d <- declarations], notProxy()[@src=a@\loc])[@src=a@\loc];

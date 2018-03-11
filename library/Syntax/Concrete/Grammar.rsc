@@ -31,8 +31,16 @@ syntax Artifact
     | "value" ArtifactName name "{" Declaration* declarations "}"
     | ("util" | "service") ArtifactName name "{" Declaration* declarations "}"
     | ControllerType controllerType "controller" Route routes "{" Declaration* declarations "}"
-    | "proxy" PhpClassName phpClass "as" Artifact artifact
+    | "proxy" PhpClassName phpClass "as" Proxable proxy
     ;
+
+syntax Proxable 
+	= "value" ArtifactName name "{" ProxyMethod* method "}"
+	;
+
+syntax ProxyMethod
+	= Type returnType MemberName name "(" {AbstractParameter ","}* parameters ")" ";"
+	;
 
 syntax RoutePart
 	= Identifier part
