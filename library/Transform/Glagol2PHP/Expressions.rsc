@@ -70,6 +70,9 @@ public PhpExpr toPhpExpr(e: division(Expression lhs, Expression rhs), TransformE
 public PhpExpr toPhpExpr(e: addition(Expression lhs, Expression rhs), TransformEnv env) = 
 	origin(phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), origin(phpPlus(), e)), e);
 	
+public PhpExpr toPhpExpr(e: concat(Expression lhs, Expression rhs), TransformEnv env) = 
+	origin(phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), origin(phpConcat(), e)), e);
+	
 public PhpExpr toPhpExpr(e: subtraction(Expression lhs, Expression rhs), TransformEnv env) = 
 	origin(phpBinaryOperation(toPhpExpr(lhs, env), toPhpExpr(rhs, env), origin(phpMinus(), e)), e);
 	

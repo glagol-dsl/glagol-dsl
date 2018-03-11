@@ -106,6 +106,21 @@ public TypeEnv checkExpression(e: remainder(Expression lhs, Expression rhs), Typ
 public TypeEnv checkExpression(e: division(Expression lhs, Expression rhs), TypeEnv env) = checkBinaryMath(e, lhs, rhs, env);
 public TypeEnv checkExpression(e: addition(Expression lhs, Expression rhs), TypeEnv env) = checkBinaryMath(e, lhs, rhs, env);
 public TypeEnv checkExpression(e: subtraction(Expression lhs, Expression rhs), TypeEnv env) = checkBinaryMath(e, lhs, rhs, env);
+public TypeEnv checkExpression(e: concat(Expression lhs, Expression rhs), TypeEnv env) = checkConcat(e, lhs, rhs, env);
+
+public TypeEnv checkConcat(Expression e, Expression lhs, Expression rhs, TypeEnv env) = 
+	checkExpression(rhs, checkExpression(lhs, checkConcat(e, lookupType(lhs, env), lookupType(rhs, env), env)));
+
+public TypeEnv checkConcat(Expression e, unknownType(), Type t, TypeEnv env) = 
+	addError(e, "Cannot concatenate unknown type and <toString(t)>", env);
+	
+public TypeEnv checkConcat(Expression e, Type t, unknownType(), TypeEnv env) = 
+	addError(e, "Cannot concatenate <toString(t)> and unknown type", env);
+
+public TypeEnv checkConcat(Expression e, Type l, Type r, TypeEnv env) = 
+	addError(e, "Cannot concatenate <toString(l)> and <toString(r)>", env) when !concatCompatible(l, r);
+	
+public TypeEnv checkConcat(Expression e, Type l, Type r, TypeEnv env) = env;
 
 public TypeEnv checkBinaryMath(Expression e, Expression lhs, Expression rhs, TypeEnv env) = 
 	checkExpression(rhs, checkExpression(lhs, checkBinaryMath(e, lookupType(lhs, env), lookupType(rhs, env), env)));
@@ -371,16 +386,23 @@ public Type lookupType(division(Expression lhs, Expression rhs), TypeEnv env) =
 public Type lookupType(subtraction(Expression lhs, Expression rhs), TypeEnv env) =
     lookupMathCompatibility(lookupType(lhs, env), lookupType(rhs, env));
     
-public Type lookupType(addition(Expression lhs, Expression rhs), TypeEnv env) {
-    Type lType = lookupType(lhs, env);
-    Type rType = lookupType(rhs, env);
+public Type lookupType(concat(Expression lhs, Expression rhs), TypeEnv env) = string() when concatCompatible(lookupType(lhs, env), lookupType(rhs, env));
 
-    if (lType == rType && rType == string()) {
-        return string();
-    }
+public Type lookupType(concat(Expression lhs, Expression rhs), TypeEnv env) = unknownType();
 
-    return lookupMathCompatibility(lType, rType);
-}
+public bool concatCompatible(string(), string()) = true;
+public bool concatCompatible(string(), integer()) = true;
+public bool concatCompatible(string(), float()) = true;
+public bool concatCompatible(float(), string()) = true;
+public bool concatCompatible(float(), float()) = true;
+public bool concatCompatible(float(), integer()) = true;
+public bool concatCompatible(integer(), integer()) = true;
+public bool concatCompatible(integer(), string()) = true;
+public bool concatCompatible(integer(), float()) = true;
+
+public default bool concatCompatible(Type l, Type r) = false;
+
+public Type lookupType(addition(Expression lhs, Expression rhs), TypeEnv env) = lookupMathCompatibility(lookupType(lhs, env), lookupType(rhs, env));
     
 public Type lookupType(g: greaterThanOrEq(Expression lhs, Expression rhs), TypeEnv env) =
     lookupRelationalCompatibilityType(lookupType(lhs, env), lookupType(rhs, env), g);

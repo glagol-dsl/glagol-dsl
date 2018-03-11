@@ -46,6 +46,7 @@ data Expression
     | division(Expression lhs, Expression rhs)
     | addition(Expression lhs, Expression rhs)
     | subtraction(Expression lhs, Expression rhs)
+    | concat(Expression lhs, Expression rhs)
     | greaterThanOrEq(Expression lhs, Expression rhs)
     | lessThanOrEq(Expression lhs, Expression rhs)
     | lessThan(Expression lhs, Expression rhs)

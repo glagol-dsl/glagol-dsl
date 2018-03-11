@@ -279,6 +279,13 @@ test bool shouldNotGiveErrorWhenConditionIsBoolean() =
 	checkCondition(boolean(true)[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 		newEnv(|tmp:///|)) == newEnv(|tmp:///|);
 
+test bool shouldGiveErrorWhenConcatenatingWrongTypes() = 
+	checkExpression(concat(string("dsadsadsa"), boolean(true))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
+	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot concatenate string and bool", newEnv(|tmp:///|));
+
+test bool shouldNotGiveErrorWhenConcatenatingStrings() = 
+	!hasErrors(checkExpression(concat(string("dsadsadsa"), string("dasdass"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)));
+
 // Check binary math operations
 test bool shouldGiveErrorWhenApplyingProductOnUnknownType() = 
 	checkExpression(product(emptyExpr(), emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///|)) ==
@@ -484,11 +491,25 @@ test bool shouldReturnIntegerTypeForDivOfIntegers() = integer() == lookupType(di
 test bool shouldReturnFloatTypeForDivOfFloats() = float() == lookupType(division(float(23.22), float(33.33)), newEnv(|tmp:///|));
 test bool shouldReturnUnknownTypeForDivOfStrings() = unknownType() == lookupType(division(string("adsdassda"), string("adsadsads")), newEnv(|tmp:///|));
 
-test bool shoudReturnStringTypeForAddOfStrings() = string() == lookupType(addition(string("test"), string("test")), newEnv(|tmp:///|));
+test bool shoudReturnUnknownTypeForAddOfStrings() = unknownType() == lookupType(addition(string("test"), string("test")), newEnv(|tmp:///|));
 test bool shoudReturnIntegerTypeForAddOfIntegers() = integer() == lookupType(addition(integer(1), integer(2)), newEnv(|tmp:///|));
 test bool shoudReturnFloatTypeForAddOfFloats() = float() == lookupType(addition(float(1.2), float(2.2)), newEnv(|tmp:///|));
 
 test bool shoudReturnUnknownTypeForAddOfFloatAndInt() = float() == lookupType(addition(float(1.2), integer(2)), newEnv(|tmp:///|));
+
+test bool shoudReturnStringTypeForConcatOnStrings() = string() == lookupType(concat(string("test"), string("test")), newEnv(|tmp:///|));
+test bool shoudReturnStringTypeForConcatOnStringAndInt() = string() == lookupType(concat(string("test"), integer(2)), newEnv(|tmp:///|));
+test bool shoudReturnStringTypeForConcatOnStringAndFloat() = string() == lookupType(concat(string("test"), float(2.2)), newEnv(|tmp:///|));
+
+test bool shoudReturnStringTypeForConcatOnIntAndString() = string() == lookupType(concat(integer(1), string("2")), newEnv(|tmp:///|));
+test bool shoudReturnStringTypeForConcatOnIntAndInt() = string() == lookupType(concat(integer(1), integer(2)), newEnv(|tmp:///|));
+test bool shoudReturnStringTypeForConcatOnIntAndFloat() = string() == lookupType(concat(integer(1), float(2.2)), newEnv(|tmp:///|));
+
+test bool shoudReturnStringTypeForConcatOnFloatAndInt() = string() == lookupType(concat(float(1.2), integer(2)), newEnv(|tmp:///|));
+test bool shoudReturnStringTypeForConcatOnFloatAndString() = string() == lookupType(concat(float(1.2), string("2")), newEnv(|tmp:///|));
+test bool shoudReturnStringTypeForConcatOnFloatAndFloat() = string() == lookupType(concat(float(1.2), float(2.2)), newEnv(|tmp:///|));
+
+test bool shoudReturnUnknownTypeForConcatOfWrongTypes() = unknownType() == lookupType(concat(boolean(true), integer(2)), newEnv(|tmp:///|));
 
 test bool shouldReturnIntegerTypeForSubOfIntegers() = integer() == lookupType(subtraction(integer(23), integer(33)), newEnv(|tmp:///|));
 test bool shouldReturnFloatTypeForSubOfFloats() = float() == lookupType(subtraction(float(23.22), float(33.33)), newEnv(|tmp:///|));
