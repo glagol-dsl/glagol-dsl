@@ -10,7 +10,7 @@ test bool shouldCreateConstructorWhenUtilHasDependencies() =
     toPhpClassDef(util("UserCreator", [
         property(repository(fullName("User", namespace("Example"), "User")), "users", get(repository(fullName("User", namespace("Example"), "User")))),
         property(repository(fullName("Customer", namespace("Example"), "Customer")), "customers", get(repository(fullName("Customer", namespace("Example"), "Customer"))))
-    ]), newTransformEnv()) == 
+    ], notProxy()), newTransformEnv()) == 
     phpClassDef(phpClass(
         "UserCreator", {}, phpNoName(), [], [
         	phpProperty({phpPrivate()}, [phpProperty("users", phpNoExpr())]),

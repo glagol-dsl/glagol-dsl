@@ -14,7 +14,7 @@ data Declaration
     | repository(GlagolID name, list[Declaration] declarations)
     | valueObject(GlagolID name, list[Declaration] declarations, Proxy proxy)
     | property(Type valueType, GlagolID name, Expression defaultValue)
-    | util(GlagolID name, list[Declaration] declarations)
+    | util(GlagolID name, list[Declaration] declarations, Proxy proxy)
     | controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations)
     | action(GlagolID name, list[Declaration] params, list[Statement] body)
     | constructor(list[Declaration] params, list[Statement] body, Expression when)

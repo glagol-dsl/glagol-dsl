@@ -36,6 +36,7 @@ syntax Artifact
 
 syntax Proxable 
 	= "value" ArtifactName name "{" ProxyDeclaration* method "}"
+	| ("util" | "service") ArtifactName name "{" ProxyDeclaration* method "}"
 	;
 
 syntax ProxyDeclaration

@@ -120,7 +120,7 @@ test bool shouldIncludeRepositoryWhenUsed() =
     	], 
         util("UserCreator", [
             property(repository(fullName("User", namespace("Example"), "User")), "users", emptyExpr())
-        ])), [
+        ], notProxy())), [
         	file(|tmp:///repo.g|, \module(namespace("Example", namespace("Repository")), [
 		        \import("User", namespace("Example", namespace("Entity")), "User")
 		    ], repository("User", []))),
@@ -140,7 +140,7 @@ test bool shouldIncludeRepositoryWhenUsedWithAliases() =
     	], 
         util("UserCreator", [
             property(repository(fullName("UserHa", namespace("Example"), "User")), "users", emptyExpr())
-        ])), [
+        ], notProxy())), [
         	file(|tmp:///repo.g|, \module(namespace("Example", namespace("Repository")), [
 		        \import("User", namespace("Example", namespace("Entity")), "UserBla")
 		    ], repository("UserBla", []))),
@@ -162,7 +162,7 @@ test bool shouldIncludeRepositoriesWhenUsed() =
         util("UserCreator", [
             property(repository(fullName("User", namespace("Example", namespace("Entity")), "User")), "users", emptyExpr()),
             property(repository(fullName("Customer", namespace("Example", namespace("Entity")), "Customer")), "customers", emptyExpr())
-        ])), [
+        ], notProxy())), [
         	file(|tmp:///repo.g|, \module(namespace("Example", namespace("Repository")), [
 		        \import("User", namespace("Example", namespace("Entity")), "User")
 		    ], repository("User", []))),
@@ -187,7 +187,7 @@ test bool shouldIncludeProxiedClassWhenUsed() =
     toPhpUses(\module(namespace("Example"), [
     		\import("DateTime", namespace("StdLib"), "DateTime")
     	], 
-        util("UserCreator", [])), [], addToAST([
+        util("UserCreator", [], notProxy())), [], addToAST([
         	file(|tmp:///repo.g|, \module(namespace("StdLib"), [], valueObject("DateTime", [], proxyClass("\\DateTimeImmutable"))))
         ], newTransformEnv(anyFramework(), anyORM()))) ==
     [phpUse({

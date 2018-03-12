@@ -20,7 +20,7 @@ test bool testIsConstructor() =
 
 test bool testIsEntity() =
     isEntity(entity("User", [])) &&
-    !isEntity(util("UserCreator", []));
+    !isEntity(util("UserCreator", [], notProxy()));
 
 test bool testHasConstructors() = 
     hasConstructors([property(integer(), "test", emptyExpr()), property(integer(), "test2", emptyExpr()), constructor([], [], emptyExpr())]) && 

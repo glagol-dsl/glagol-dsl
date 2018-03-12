@@ -9,7 +9,7 @@ test bool shouldParseEmptyUtil()
         = "namespace Test
           'util UserCreator {}";
           
-    return parseModule(code) == \module(namespace("Test"), [], util("UserCreator", []));
+    return parseModule(code) == \module(namespace("Test"), [], util("UserCreator", [], notProxy()));
 }
 
 test bool shouldParseUtilUsingTheServiceKeyword()
@@ -18,7 +18,7 @@ test bool shouldParseUtilUsingTheServiceKeyword()
         = "namespace Test
           'service UserCreator {}";
           
-    return parseModule(code) == \module(namespace("Test"), [], util("UserCreator", []));
+    return parseModule(code) == \module(namespace("Test"), [], util("UserCreator", [], notProxy()));
 }
 
 test bool testShouldParseFlatDocAnnotationForUtil()
@@ -27,7 +27,7 @@ test bool testShouldParseFlatDocAnnotationForUtil()
                '@doc=\"This is a doc\"
                'util UserCreator { }";
 
-    Declaration expectedEntity = util("UserCreator", []);
+    Declaration expectedEntity = util("UserCreator", [], notProxy());
 
     return 
     	parseModule(code) == \module(namespace("Example"), [], expectedEntity) &&

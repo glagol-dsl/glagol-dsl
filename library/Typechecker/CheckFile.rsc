@@ -50,8 +50,12 @@ public loc constructFileFromModule(loc sources, m: \module(Declaration ns, _, va
     m@src;
     
 @doc="Constructrs supposable file name based on utility name and namespace"
-public loc constructFileFromModule(loc sources, \module(Declaration ns, _, util(GlagolID name, _))) = 
+public loc constructFileFromModule(loc sources, \module(Declaration ns, _, util(GlagolID name, _, notProxy()))) = 
     sources + namespaceToString(ns, "/") + "<name>.g";
+    
+@doc="Suspends check for file name on value object proxies"
+public loc constructFileFromModule(loc sources, m: \module(Declaration ns, _, util(GlagolID name, _, proxyClass(str s)))) = 
+    m@src;
     
 @doc="Constructrs supposable file name based on controller name and namespace"
 public loc constructFileFromModule(loc sources, \module(Declaration ns, _, controller(GlagolID name, _, _, _))) = 

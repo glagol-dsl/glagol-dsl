@@ -155,16 +155,16 @@ public bool isValueObject(i:\import(GlagolID name, Declaration namespace, Glagol
     [valueObject(_, _, _)] := findArtifact(i, env);
     
 public bool isUtil(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
-    [util(_, _)] := findArtifact(i, env);
+    [util(_, _, _)] := findArtifact(i, env);
     
 public bool isUtil(artifact(Name name), TypeEnv env) =
-	[util(_, _)] := findArtifact(env.imported[name.localName], env);
+	[util(_, _, _)] := findArtifact(env.imported[name.localName], env);
 
 public Type contextAsType(TypeEnv env) = contextAsType(getContext(env));
 public Type contextAsType(\module(ns, _, repository(name, _))) = repository(fullName(name, ns, name));
 public Type contextAsType(\module(ns, _, entity(name, _))) = artifact(fullName(name, ns, name));
 public Type contextAsType(\module(ns, _, valueObject(name, _, notProxy()))) = artifact(fullName(name, ns, name));
-public Type contextAsType(\module(ns, _, util(name, _))) = artifact(fullName(name, ns, name));
+public Type contextAsType(\module(ns, _, util(name, _, _))) = artifact(fullName(name, ns, name));
 public Type contextAsType(\module(ns, _, Declaration)) = unknownType();
 
 public TypeEnv addToAST(Declaration file, TypeEnv env) = env[ast = env.ast + file];

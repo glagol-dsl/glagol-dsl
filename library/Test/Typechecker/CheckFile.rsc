@@ -17,7 +17,7 @@ test bool shouldConstructFileFromVOModuleUsingTmpLoc() =
     |tmp:///src/Test/VO/Date.g|;
 
 test bool shouldConstructFileFromUtilModuleUsingTmpLoc() =
-    constructFileFromModule(|tmp:///src|, \module(namespace("Test", namespace("Util")), [], util("Serve", []))) ==
+    constructFileFromModule(|tmp:///src|, \module(namespace("Test", namespace("Util")), [], util("Serve", [], notProxy()))) ==
     |tmp:///src/Test/Util/Serve.g|;
     
 test bool shouldConstructFileFromControllerModuleUsingTmpLoc() =

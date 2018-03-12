@@ -50,7 +50,7 @@ test bool shouldGiveErrorWhenUsingConstructorOnRepository() =
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Constructors are disabled for repositories", newEnv());
 
 test bool shouldGiveErrorWhenUsingConstructorOnUtils() = 
-	checkMethod(constructor([], [], emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], util("User", []), newEnv()) ==
+	checkMethod(constructor([], [], emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], util("User", [], notProxy()), newEnv()) ==
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Constructors are disabled for utilities/services", newEnv());
 
 test bool shouldGiveErrorWhenUsingConstructorOnControllers() = 

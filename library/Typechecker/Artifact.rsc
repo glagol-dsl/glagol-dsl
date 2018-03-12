@@ -13,7 +13,7 @@ import String;
 public TypeEnv checkArtifact(e:entity(GlagolID name, list[Declaration] declarations), TypeEnv env) =
     checkDeclarations(declarations, e, checkRedefine(e, env));
 
-public TypeEnv checkArtifact(u:util(GlagolID name, list[Declaration] declarations), TypeEnv env) =
+public TypeEnv checkArtifact(u:util(GlagolID name, list[Declaration] declarations, Proxy pr), TypeEnv env) =
     checkDeclarations(declarations, u, checkRedefine(u, env));
 
 public TypeEnv checkArtifact(v:valueObject(GlagolID name, list[Declaration] declarations, Proxy _), TypeEnv env) =

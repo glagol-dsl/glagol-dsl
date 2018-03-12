@@ -48,9 +48,9 @@ test bool shouldGiveNotEntityErrorOnGetRepository() =
 		[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)]
 	)[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)], 
 	
-	addImported(\import("User", namespace("Test"), "User"), addToAST(file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), newEnv(|tmp:///Util.g|)))) == 
+	addImported(\import("User", namespace("Test"), "User"), addToAST(file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), newEnv(|tmp:///Util.g|)))) == 
 	addError(|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>), "\"User\" is not an entity",
-		addImported(\import("User", namespace("Test"), "User"), addToAST(file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), newEnv(|tmp:///Util.g|))));
+		addImported(\import("User", namespace("Test"), "User"), addToAST(file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), newEnv(|tmp:///Util.g|))));
 
 test bool shouldNotGiveErrorOnGetRepository() = 
 	checkDefaultValue(get(repository(fullName("User", namespace("Test"), "User"))

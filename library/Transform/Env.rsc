@@ -29,7 +29,7 @@ public str getArtifactName(\module(Declaration namespace, list[Declaration] impo
 public str getArtifactName(entity(GlagolID name, list[Declaration] declarations)) = name;
 public str getArtifactName(repository(GlagolID name, list[Declaration] declarations)) = "repository\<<name>\>";
 public str getArtifactName(valueObject(GlagolID name, list[Declaration] declarations, notProxy())) = name;
-public str getArtifactName(util(GlagolID name, list[Declaration] declarations)) = name;
+public str getArtifactName(util(GlagolID name, list[Declaration] declarations, Proxy pr)) = name;
 public str getArtifactName(controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations)) = name;
 
 public Declaration getNamespace(TransformEnv env) = env.context.namespace;

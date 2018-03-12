@@ -131,7 +131,7 @@ test bool shouldTransformMethodsWithOverridingToPhpClassItems() =
 	toPhpClassItems([
 		method(\private(), voidValue(), "a", [], [], emptyExpr()),
 		method(\private(), voidValue(), "a", [param(string(), "blah", emptyExpr())], [], emptyExpr())
-	], setContext(util("", []), newTransformEnv(anyFramework(), anyORM()))) ==
+	], setContext(util("", [], notProxy()), newTransformEnv(anyFramework(), anyORM()))) ==
 	[
 		phpMethod(
 		    "a",

@@ -12,7 +12,7 @@ test bool checkImportsShouldReturnNoErrors() =
     ], addToAST([
         file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))),
         file(|tmp:///Test/Entity/Customer.g|, \module(namespace("Test", namespace("Entity")), [], entity("Customer", []))),
-        file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [])))
+        file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [], notProxy())))
     ], newEnv(|tmp:///|))) == 
     
     addImported(\import("CustomerService", namespace("Test", namespace("Service")), "CustomerService")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
@@ -21,7 +21,7 @@ test bool checkImportsShouldReturnNoErrors() =
     addToAST([
         file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))),
         file(|tmp:///Test/Entity/Customer.g|, \module(namespace("Test", namespace("Entity")), [], entity("Customer", []))),
-        file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [])))
+        file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [], notProxy())))
     ], newEnv(|tmp:///|)))));
 
 
@@ -35,7 +35,7 @@ test bool checkImportsShouldReturnAlreadyImportedError() =
     addToAST([
         file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))),
         file(|tmp:///Test/Entity/Customer.g|, \module(namespace("Test", namespace("Entity")), [], entity("Customer", []))),
-        file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [])))
+        file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [], notProxy())))
     ], newEnv(|tmp:///|)))) == 
     
     addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Cannot import User twice",
@@ -45,7 +45,7 @@ test bool checkImportsShouldReturnAlreadyImportedError() =
     addToAST([
         file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))),
         file(|tmp:///Test/Entity/Customer.g|, \module(namespace("Test", namespace("Entity")), [], entity("Customer", []))),
-        file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [])))
+        file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [], notProxy())))
     ], newEnv(|tmp:///|))))));
 
 
@@ -58,7 +58,7 @@ test bool checkImportsShouldReturnAlreadyImportedErrorUsingAlias() =
     ], addToAST([
     	file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))),
         file(|tmp:///Test/Entity/Customer.g|, \module(namespace("Test", namespace("Entity")), [], entity("Customer", []))),
-        file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [])))
+        file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [], notProxy())))
     ], newEnv(|tmp:///|))) == 
     
     addImported(\import("User", namespace("Test", namespace("Entity")), "User")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
@@ -68,7 +68,7 @@ test bool checkImportsShouldReturnAlreadyImportedErrorUsingAlias() =
 	    addToAST([
 	    	file(|tmp:///Test/Entity/User.g|, \module(namespace("Test", namespace("Entity")), [], entity("User", []))),
 	        file(|tmp:///Test/Entity/Customer.g|, \module(namespace("Test", namespace("Entity")), [], entity("Customer", []))),
-	        file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [])))
+	        file(|tmp:///Test/Service/CustomerService.g|, \module(namespace("Test", namespace("Service")), [], util("CustomerService", [], notProxy())))
 	    ], newEnv(|tmp:///|))))));
 
 test bool checkImportsShouldReturnNotDefinedError() = 

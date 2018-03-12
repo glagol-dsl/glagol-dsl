@@ -119,12 +119,12 @@ test bool shouldNotGiveErrorWhenTryingToPersistAnEntity() =
 test bool shouldGiveErrorWhenTryingToPersistANonEntity() = 
 	checkStatement(persist(new(fullName("User", namespace("Test"), "User"), []))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
 		addImported(\import("User", namespace("Test"), "User"), addToAST(
-			file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), 
+			file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), 
 			setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 		)
 	) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Only entities can be persisted", addImported(\import("User", namespace("Test"), "User"), addToAST(
-		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), 
+		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), 
 		setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 	));
 
@@ -143,13 +143,13 @@ test bool shouldNotGiveErrorWhenTryingToFlushAnEntity() =
 test bool shouldGiveErrorWhenTryingToFlushANonEntity() = 
 	checkStatement(flush(new(fullName("User", namespace("Test"), "User"), []))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
 		addImported(\import("User", namespace("Test"), "User"), addToAST(
-			file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), 
+			file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), 
 			setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 		)
 	) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
 		"Only entities can be flushed", addImported(\import("User", namespace("Test"), "User"), addToAST(
-		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), 
+		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), 
 		setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 	));
 
@@ -168,13 +168,13 @@ test bool shouldNotGiveErrorWhenTryingToRemoveAnEntity() =
 test bool shouldGiveErrorWhenTryingToRemoveANonEntity() = 
 	checkStatement(remove(new(fullName("User", namespace("Test"), "User"), []))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
 		addImported(\import("User", namespace("Test"), "User"), addToAST(
-			file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), 
+			file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), 
 			setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 		)
 	) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
 		"Only entities can be removed", addImported(\import("User", namespace("Test"), "User"), addToAST(
-		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), 
+		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), 
 		setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 	));
 
@@ -182,12 +182,12 @@ test bool shouldGiveErrorWhenTryingToRemoveAnEntityFromANonRepository() =
 	checkStatement(remove(new(fullName("User", namespace("Test"), "User"), []))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
 		addImported(\import("User", namespace("Test"), "User"), addToAST(
 			file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", []))), 
-			setContext(\module(namespace("Test"), [], util("User", [])), newEnv(|tmp:///|)))
+			setContext(\module(namespace("Test"), [], util("User", [], notProxy())), newEnv(|tmp:///|)))
 		)
 	) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Entities can only be removed from within a repository", addImported(\import("User", namespace("Test"), "User"), addToAST(
 		file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", []))), 
-		setContext(\module(namespace("Test"), [], util("User", [])), newEnv(|tmp:///|)))
+		setContext(\module(namespace("Test"), [], util("User", [], notProxy())), newEnv(|tmp:///|)))
 	));
 
 test bool shouldNotGiveErrorWhenDeclaringVariableOfTypeListWithVoidListAsDefaultValue() = 

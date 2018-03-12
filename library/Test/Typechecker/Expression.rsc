@@ -111,14 +111,14 @@ test bool shouldNotGiveErrorWhenInvokingExternalExistingPublicMethod() =
 	checkExpression(invoke(invoke(symbol("repo"), []), symbol("myInt"), [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], setContext(
 		\module(namespace("Test"), [], util("User", [
 			method(\public(), repository(fullName("Customer", namespace("Test"), "Customer")), "repo", [], [], emptyExpr())
-		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+		], notProxy())), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
 			method(\public(), integer(), "myInt", [], [], emptyExpr())
 		]))), newEnv(|tmp:///|))
 	)) == 
 	setContext(
 		\module(namespace("Test"), [], util("User", [
 			method(\public(), repository(fullName("Customer", namespace("Test"), "Customer")), "repo", [], [], emptyExpr())
-		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+		], notProxy())), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
 			method(\public(), integer(), "myInt", [], [], emptyExpr())
 		]))), newEnv(|tmp:///|))
 	);
@@ -130,14 +130,14 @@ test bool shouldNotGiveErrorWhenInvokingExternalExistingPublicMethodStartingWith
 		setContext(
 			\module(namespace("Test"), [], util("User", [
 				method(\public(), repository(fullName("Customer", namespace("Test"), "Customer")), "repo", [], [], emptyExpr())
-			])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+			], notProxy())), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
 				method(\public(), integer(), "myInt", [], [], emptyExpr())
 			]))), newEnv(|tmp:///|))
 	)) == 
 	setContext(
 		\module(namespace("Test"), [], util("User", [
 			method(\public(), repository(fullName("Customer", namespace("Test"), "Customer")), "repo", [], [], emptyExpr())
-		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+		], notProxy())), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
 			method(\public(), integer(), "myInt", [], [], emptyExpr())
 		]))), newEnv(|tmp:///|))
 	);
@@ -146,26 +146,26 @@ test bool shouldGiveErrorWhenInvokingExternalNonExistingMethod() =
 	checkExpression(invoke(invoke(symbol("repo"), []), symbol("myInt"), [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], setContext(
 		\module(namespace("Test"), [], util("User", [
 			method(\public(), repository(fullName("Customer", namespace("Test"), "Customer")), "repo", [], [], emptyExpr())
-		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", []))), newEnv(|tmp:///|))
+		], notProxy())), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", []))), newEnv(|tmp:///|))
 	)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Call to an undefined method myInt()", setContext(
 		\module(namespace("Test"), [], util("User", [
 			method(\public(), repository(fullName("Customer", namespace("Test"), "Customer")), "repo", [], [], emptyExpr())
-		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", []))), newEnv(|tmp:///|))
+		], notProxy())), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", []))), newEnv(|tmp:///|))
 	));
 	
 test bool shouldGiveErrorWhenInvokingExternalExistingPrivateMethod() = 
 	checkExpression(invoke(invoke(symbol("repo"), []), symbol("myInt"), [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], setContext(
 		\module(namespace("Test"), [], util("User", [
 			method(\public(), repository(fullName("Customer", namespace("Test"), "Customer")), "repo", [], [], emptyExpr())
-		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+		], notProxy())), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
 			method(\private(), integer(), "myInt", [], [], emptyExpr())
 		]))), newEnv(|tmp:///|))
 	)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Call to an undefined method myInt()", setContext(
 		\module(namespace("Test"), [], util("User", [
 			method(\public(), repository(fullName("Customer", namespace("Test"), "Customer")), "repo", [], [], emptyExpr())
-		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+		], notProxy())), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
 			method(\private(), integer(), "myInt", [], [], emptyExpr())
 		]))), newEnv(|tmp:///|))
 	));
@@ -174,14 +174,14 @@ test bool shouldGiveErrorWhenInvokingExternalMethodWithWrongSignature() =
 	checkExpression(invoke(invoke(symbol("repo"), []), symbol("myInt"), [integer(33)])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], setContext(
 		\module(namespace("Test"), [], util("User", [
 			method(\public(), repository(fullName("Customer", namespace("Test"), "Customer")), "repo", [], [], emptyExpr())
-		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+		], notProxy())), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
 			method(\public(), integer(), "myInt", [], [], emptyExpr())
 		]))), newEnv(|tmp:///|))
 	)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Call to an undefined method myInt(integer)", setContext(
 		\module(namespace("Test"), [], util("User", [
 			method(\public(), repository(fullName("Customer", namespace("Test"), "Customer")), "repo", [], [], emptyExpr())
-		])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+		], notProxy())), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
 			method(\public(), integer(), "myInt", [], [], emptyExpr())
 		]))), newEnv(|tmp:///|))
 	));
@@ -190,24 +190,24 @@ test bool shouldNotGiveErrorWhenAccessingLocalField() =
 	checkExpression(fieldAccess(this(), symbol("i")), addDefinition(property(integer(), "i", emptyExpr()), setContext(
 		\module(namespace("Test"), [], util("User", [
 			property(integer(), "i", emptyExpr())
-		])), newEnv(|tmp:///|)
+		], notProxy())), newEnv(|tmp:///|)
 	))) == 
 	 addDefinition(property(integer(), "i", emptyExpr()), setContext(
 		\module(namespace("Test"), [], util("User", [
 			property(integer(), "i", emptyExpr())
-		])), newEnv(|tmp:///|)
+		], notProxy())), newEnv(|tmp:///|)
 	));
 
 test bool shouldNotGiveErrorWhenAccessingLocalField2() = 
 	checkExpression(fieldAccess(symbol("i")), addDefinition(property(integer(), "i", emptyExpr()), setContext(
 		\module(namespace("Test"), [], util("User", [
 			property(integer(), "i", emptyExpr())
-		])), newEnv(|tmp:///|)
+		], notProxy())), newEnv(|tmp:///|)
 	))) == 
 	 addDefinition(property(integer(), "i", emptyExpr()), setContext(
 		\module(namespace("Test"), [], util("User", [
 			property(integer(), "i", emptyExpr())
-		])), newEnv(|tmp:///|)
+		], notProxy())), newEnv(|tmp:///|)
 	));
 
 // new artifact instances
@@ -220,15 +220,15 @@ test bool shouldGiveErrorWhenCreatingNewUtil() =
 	checkExpression(
 		new(fullName("User", namespace("Example"), "User"), [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
 			addImported(\import("User", namespace("Example"), "User"), setContext(
-				\module(namespace("Example"), [], util("User", [])),
-				addToAST(file(|tmp:///|, \module(namespace("Example"), [], util("User", []))), newEnv(|tmp:///|))
+				\module(namespace("Example"), [], util("User", [], notProxy())),
+				addToAST(file(|tmp:///|, \module(namespace("Example"), [], util("User", [], notProxy()))), newEnv(|tmp:///|))
 			)
 	)) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
 		"Cannot instantiate artifact Example::User: only entities and value objects can be instantiated",
 		addImported(\import("User", namespace("Example"), "User"), setContext(
-			\module(namespace("Example"), [], util("User", [])),
-			addToAST(file(|tmp:///|, \module(namespace("Example"), [], util("User", []))), newEnv(|tmp:///|)))
+			\module(namespace("Example"), [], util("User", [], notProxy())),
+			addToAST(file(|tmp:///|, \module(namespace("Example"), [], util("User", [], notProxy()))), newEnv(|tmp:///|)))
 		)
 	);
 	
@@ -592,15 +592,15 @@ test bool shouldReturnArtifactOnTernaryOfSameArtifacts() =
     artifact(fullName("User", namespace("Test"), "User")) == lookupType(ifThenElse(boolean(true), 
     		get(artifact(fullName("User", namespace("Test"), "User"))), get(artifact(fullName("User", namespace("Test"), "User")))), 
 	addImported(\import("User", namespace("Test"), "User"), addToAST(
-		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))),
-		setContext(\module(namespace("Test"), [], util("User", [])), newEnv(|tmp:///|)))));
+		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))),
+		setContext(\module(namespace("Test"), [], util("User", [], notProxy())), newEnv(|tmp:///|)))));
 test bool shouldReturnUnknownTypeOnTernaryOfDifferentArtifacts() = 
     unknownType() == lookupType(ifThenElse(boolean(true), get(artifact(fullName("User", namespace("Example"), "User"))), 
     	get(artifact(fullName("Customer", namespace("Test"), "Customer")))), newEnv(|tmp:///|));
 test bool shouldReturnRepositoryOnTernaryOfSameRepositories() = 
     repository(fullName("User", namespace("Test"), "User")) == lookupType(ifThenElse(boolean(true), 
     	get(repository(fullName("User", namespace("Test"), "User"))), get(repository(fullName("User", namespace("Test"), "User")))), 
-    	setContext(\module(namespace("Test"), [], util("UserService", [])), addToAST(
+    	setContext(\module(namespace("Test"), [], util("UserService", [], notProxy())), addToAST(
     		file(|tmp:///|, \module(namespace("Test"), [], entity("User", []))),
     	newEnv(|tmp:///|))));
 test bool shouldReturnUnknownTypeOnTernaryOfDifferentRepositories() = 
@@ -629,7 +629,7 @@ test bool shouldReturnUnknownTypeOnNewExternalThatIsNotInAST() = unknownType() =
 	
 test bool shouldReturnUnknownTypeOnNewExternalThatIsNotAnEntity() = unknownType() == 
 	lookupType(new(fullName("User", namespace("Example"), "User"), []), 
-	addToAST(file(|tmp:///|, \module(namespace("Example"), [], util("User", []))), newEnv(|tmp:///|)));
+	addToAST(file(|tmp:///|, \module(namespace("Example"), [], util("User", [], notProxy()))), newEnv(|tmp:///|)));
 
 @doc{
 Test getting artifacts locally and internally
@@ -642,7 +642,7 @@ test bool shouldReturnUnknownTypeOnGetArtifactWhichIsEntity() =
 		newEnv(|tmp:///|))));
 test bool shouldReturnArtifactTypeOnGetArtifactWhichIsUtil() = 
 	artifact(fullName("User", namespace("Test"), "User")) == lookupType(get(artifact(fullName("User", namespace("Test"), "User"))), addImported(\import("User", namespace("Test"), "User"), addToAST(
-		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))),
+		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))),
 		setContext(\module(namespace("Test"), [], entity("Customer", [])), newEnv(|tmp:///|)))));
 		
 test bool shouldReturnUnknownTypeOnGetArtifactWhichIsValueObject() = 
@@ -653,7 +653,7 @@ test bool shouldReturnUnknownTypeOnGetArtifactWhichIsValueObject() =
 test bool shouldReturnArtifactTypeOnGetExternalArtifact() = 
 	artifact(fullName("User", namespace("Test"), "User")) == lookupType(get(artifact(fullName("User", namespace("Test"), "User"))), 
 	addImported(\import("User", namespace("Test"), "User"), addToAST(
-    		file(|tmp:///|, \module(namespace("Test"), [], util("User", []))),
+    		file(|tmp:///|, \module(namespace("Test"), [], util("User", [], notProxy()))),
     	newEnv(|tmp:///|))));
 
 test bool shouldReturnUnknownTypeOnGetExternalArtifactThatIsNotEntity() = 
@@ -668,7 +668,7 @@ test bool shouldReturnUnknownTypeOnGetLocalRepositoryWithMissingEntity() =
 
 test bool shouldReturnRepositoryTypeOnGetRepository() = 
 	repository(fullName("User", namespace("Test"), "User")) == lookupType(get(repository(fullName("User", namespace("Test"), "User"))), 
-	setContext(\module(namespace("Test"), [], util("UserService", [])), addToAST(
+	setContext(\module(namespace("Test"), [], util("UserService", [], notProxy())), addToAST(
     		file(|tmp:///|, \module(namespace("Test"), [], entity("User", []))),
     	newEnv(|tmp:///|))));
     	
@@ -735,7 +735,7 @@ test bool shouldReturnIntegerOnChainedInvokeFromLocalArtifact() = integer() == l
 		method(\public(), artifact(fullName("Customer", namespace("Test"), "Customer")), "artifact", [], [], emptyExpr())
 	])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], util("Customer", [
 		method(\public(), integer(), "myInt", [], [], emptyExpr())
-	]))), newEnv(|tmp:///|))
+	], notProxy()))), newEnv(|tmp:///|))
 ));
 
 test bool shouldReturnUnknownTypeOnChainedInvokeFromLocalArtifactThatHasStringReturnedInTheMiddle() = 
@@ -744,13 +744,13 @@ test bool shouldReturnUnknownTypeOnChainedInvokeFromLocalArtifactThatHasStringRe
 		method(\public(), string(), "artifact", [], [], emptyExpr())
 	])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], util("Customer", [
 		method(\public(), integer(), "myInt", [], [], emptyExpr())
-	]))), newEnv(|tmp:///|))
+	], notProxy()))), newEnv(|tmp:///|))
 ));
 
 test bool shouldReturnIntegerOnChainedInvokeFromLocalRepository() = integer() == lookupType(invoke(invoke(symbol("repo"), []), symbol("myInt"), []), setContext(
 	\module(namespace("Test"), [], util("User", [
 		method(\public(), repository(fullName("Customer", namespace("Test"), "Customer")), "repo", [], [], emptyExpr())
-	])), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
+	], notProxy())), addToAST(file(|tmp:///|, \module(namespace("Test"), [], repository("Customer", [
 		method(\public(), integer(), "myInt", [], [], emptyExpr())
 	]))), newEnv(|tmp:///|))
 ));
@@ -758,7 +758,7 @@ test bool shouldReturnIntegerOnChainedInvokeFromLocalRepository() = integer() ==
 test bool shouldReturnIntegerOnChainedInvokeFromExternalRepository() = integer() == lookupType(invoke(invoke(symbol("repo"), []), symbol("myInt"), []), setContext(
 	\module(namespace("Test"), [], util("User", [
 		method(\public(), repository(fullName("Customer", namespace("Example"), "Customer")), "repo", [], [], emptyExpr())
-	])), addToAST(file(|tmp:///|, \module(namespace("Example"), [], repository("Customer", [
+	], notProxy())), addToAST(file(|tmp:///|, \module(namespace("Example"), [], repository("Customer", [
 		method(\public(), integer(), "myInt", [], [], emptyExpr())
 	]))), newEnv(|tmp:///|))
 ));

@@ -33,6 +33,7 @@ public bool isEmpty(emptyExpr()) = true;
 public default bool isEmpty(value _) = false;
 
 public bool isProxy(\module(Declaration ns, [], valueObject(GlagolID name, list[Declaration] declarations, proxyClass(str pr)))) = true;
+public bool isProxy(\module(Declaration ns, [], util(GlagolID name, list[Declaration] declarations, proxyClass(str pr)))) = true;
 public default bool isProxy(value _) = false;
 
 public bool hasConstructors(list[Declaration] declarations) = size([d | d <- declarations, isConstructor(d)]) > 0;

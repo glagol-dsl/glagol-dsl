@@ -30,7 +30,7 @@ test bool shouldNotGiveErrorsWhenEntityRedefiningImportedArtifactButUsingAlias()
     	newEnv(|tmp:///User.g|)));
     
 test bool shouldGiveErrorsWhenUtilRedefiningImportedArtifact() = 
-    checkArtifact(util("User", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+    checkArtifact(util("User", [], notProxy())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
     addImported(\import("User", namespace("Test"), "User")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
     	addToAST(
     	file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", [])[@src=|tmp:///User.g|(0, 0, <10, 20>, <30, 30>)])),
@@ -44,7 +44,7 @@ test bool shouldGiveErrorsWhenUtilRedefiningImportedArtifact() =
 	);
 
 test bool shouldNotGiveErrorsWhenUtilRedefiningImportedArtifactButUsingAlias() = 
-    checkArtifact(util("User", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
+    checkArtifact(util("User", [], notProxy())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
     addImported(\import("User", namespace("Test"), "UserEntity"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
@@ -146,10 +146,10 @@ test bool shouldNotGiveErrorsWhenRepositoryPointsToImportedEntity() =
 
 test bool shouldGiveErrorsWhenRepositoryPointsToImportedNonEntity() = 
     checkArtifact(repository("User", [])[@src=|tmp:///Test/UserRepository.g|(0, 0, <20, 20>, <30, 30>)], 
-    	addImported(\import("User", namespace("Test"), "User")[@src=|tmp:///Test/UserRepository.g|(0, 0, <10, 20>, <30, 30>)], addToAST(file(|tmp:///Test/User.g|, \module(namespace("Test"), [], util("User", []))), newEnv(|tmp:///Test/UserRepository.g|)))
+    	addImported(\import("User", namespace("Test"), "User")[@src=|tmp:///Test/UserRepository.g|(0, 0, <10, 20>, <30, 30>)], addToAST(file(|tmp:///Test/User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), newEnv(|tmp:///Test/UserRepository.g|)))
     ) ==
     addError(|tmp:///Test/UserRepository.g|(0, 0, <20, 20>, <30, 30>), "\"User\" is not an entity", 
-	    addImported(\import("User", namespace("Test"), "User")[@src=|tmp:///Test/UserRepository.g|(0, 0, <10, 20>, <30, 30>)], addToAST(file(|tmp:///Test/User.g|, \module(namespace("Test"), [], util("User", []))), newEnv(|tmp:///Test/UserRepository.g|)))
+	    addImported(\import("User", namespace("Test"), "User")[@src=|tmp:///Test/UserRepository.g|(0, 0, <10, 20>, <30, 30>)], addToAST(file(|tmp:///Test/User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), newEnv(|tmp:///Test/UserRepository.g|)))
     );
 
 test bool shouldGiveErrorWhenControllerDoesNotFollowNamingConvention() = 
