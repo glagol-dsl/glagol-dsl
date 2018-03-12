@@ -477,3 +477,4 @@ test bool shouldNotGiveErrorWhenTryingToAssignRepositoryOnThisFieldOnPrivateMeth
 	
 	return !hasErrors(checkStatement(assignment, \any(), m, env));
 }
+

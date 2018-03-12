@@ -28,11 +28,10 @@ public TypeEnv checkFile(Config config, f:file(loc src, m:\module(ns, list[Decla
 public TypeEnv checkLocVsModule(loc sources, file(loc src, m:\module(ns, imports, Declaration artifact)), TypeEnv env) =
     addError(src, "Wrong file name, does not follow namespace declaration and/or artifact name. " + 
         "Expected <constructFileFromModule(sources, m).uri>, got <src.uri>.", env)
-    when src != constructFileFromModule(sources, m);
+    when src.uri != constructFileFromModule(sources, m).uri;
 
 @doc="Module location correspondence typecheck SUCCESS case (returns untouched env directly)"
-public TypeEnv checkLocVsModule(loc sources, file(loc src, m:\module(ns, imports, Declaration artifact)), TypeEnv env) =
-    env when src == constructFileFromModule(sources, m);
+public TypeEnv checkLocVsModule(loc sources, file(loc src, m:\module(ns, imports, Declaration artifact)), TypeEnv env) = env;
 
 @doc="Constructrs supposable file name based on entity name and namespace"
 public loc constructFileFromModule(loc sources, \module(Declaration ns, _, entity(GlagolID name, _))) = 
@@ -45,6 +44,10 @@ public loc constructFileFromModule(loc sources, \module(Declaration ns, _, repos
 @doc="Constructrs supposable file name based on value object name and namespace"
 public loc constructFileFromModule(loc sources, \module(Declaration ns, _, valueObject(GlagolID name, _, notProxy()))) = 
     sources + namespaceToString(ns, "/") + "<name>.g";
+    
+@doc="Suspends check for file name on value object proxies"
+public loc constructFileFromModule(loc sources, m: \module(Declaration ns, _, valueObject(GlagolID name, _, proxyClass(str s)))) = 
+    m@src;
     
 @doc="Constructrs supposable file name based on utility name and namespace"
 public loc constructFileFromModule(loc sources, \module(Declaration ns, _, util(GlagolID name, _))) = 

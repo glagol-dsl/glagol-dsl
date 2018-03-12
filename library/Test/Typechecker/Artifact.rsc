@@ -161,3 +161,9 @@ test bool shouldNotGiveErrorWhenControllerFollowsNamingConvention() =
     checkArtifact(controller("BlahController", jsonApi(), route([routePart("/")]), [])[@src=|tmp:///BlahController.g|(0, 0, <20, 20>, <30, 30>)], 
     newEnv(|tmp:///Blag.g|)) == 
     newEnv(|tmp:///Blag.g|);
+
+test bool shouldNotGiveErrorWhenTypecheckingReturnAdaptableOnProxy() = 
+	!hasErrors(checkArtifact(valueObject("DateTime", [
+    	constructor([param(string(), "now", emptyExpr())], [\return(adaptable())], emptyExpr()),
+    	method(\public(), string(), "format", [], [\return(adaptable())], emptyExpr())
+    ], proxyClass("\\DateTimeImmutable")), newEnv(|tmp:///Blag.g|)));

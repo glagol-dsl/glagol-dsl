@@ -9,6 +9,7 @@ import Syntax::Abstract::Glagol;
 public TypeEnv checkStatements(list[Statement] stmts, Type t, Declaration subroutine, TypeEnv env) = 
 	(env | checkStatement(stmt, t, subroutine, it) | stmt <- stmts);
 public TypeEnv checkStatement(r: \return(Expression expr), \any(), action(_, _, _), TypeEnv env) = checkExpression(expr, env);
+public TypeEnv checkStatement(r: \return(adaptable()), Type t, Declaration s, TypeEnv env) = env;
 public TypeEnv checkStatement(r: \return(emptyExpr()), Type t, Declaration s, TypeEnv env) = checkReturn(voidValue(), t, r, env);
 public TypeEnv checkStatement(r: \return(Expression expr), Type t, Declaration s, TypeEnv env) = checkReturn(lookupType(expr, env), t, r, checkExpression(expr, env));
 
@@ -17,7 +18,7 @@ public TypeEnv checkStatement(emptyStmt(), Type t, Declaration s, TypeEnv env) =
 public TypeEnv checkReturn(Type actualType, Type expectedType, Statement r, TypeEnv env) = 
 	addError(r, "Returning <toString(actualType)>, <toString(expectedType)> expected", env)
 	when !isCompatibleForReturn(actualType, expectedType, env);
-	
+
 private bool isCompatibleForReturn(\list(voidValue()), \list(Type t), TypeEnv env) = true;
 private bool isCompatibleForReturn(\map(voidValue(), voidValue()), \map(Type l, Type r), TypeEnv env) = true;
 private bool isCompatibleForReturn(self(), artifact(Name n), TypeEnv env) = isSelf(n, env);

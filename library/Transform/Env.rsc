@@ -19,6 +19,7 @@ public TransformEnv newTransformEnv(Declaration context) = <lumen(), doctrine(),
 public TransformEnv newTransformEnv(Framework f, ORM orm) = <f, orm, (), emptyDecl(), []>;
 
 public TransformEnv setAST(list[Declaration] ds, TransformEnv env) = env[ast = ds];
+public TransformEnv addToAST(list[Declaration] ds, TransformEnv env) = env[ast = env.ast + ds];
 public TransformEnv setContext(Declaration ctx, TransformEnv env) = env[context = ctx];
 public Declaration getContext(TransformEnv env) = env.context;
 
@@ -86,3 +87,9 @@ public Declaration findRepository(artifact(fullName(str localName, Declaration n
 	}
 	return emptyDecl();
 }
+
+public Proxy getProxyClass(\import(str artifactName, Declaration ns, str as), TransformEnv env) =
+	(notProxy() | proxy | file(_, m: \module(ns, _, valueObject(artifactName, list[Declaration] declarations, proxy: proxyClass(str pr)))) <- env.ast);
+
+public bool isProxy(i: \import(str artifactName, Declaration namespace, str as), TransformEnv env) =
+	getProxyClass(i, env) != notProxy();

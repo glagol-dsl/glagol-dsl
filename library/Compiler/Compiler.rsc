@@ -2,6 +2,7 @@ module Compiler::Compiler
 
 import Daemon::Response;
 import Syntax::Abstract::Glagol;
+import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
 import Parser::ParseAST;
 import Config::Config;
@@ -19,10 +20,17 @@ import lang::json::IO;
 import IO;
 import String;
 
+private list[loc] collectStdLibFiles() = collectStdLibFiles(|glagol:///StdLib/|);
+private list[loc] collectStdLibFiles(loc path) = [path] when isFile(path) && /\.g$/ := path.file;
+private list[loc] collectStdLibFiles(loc path) = ([] | it + collectStdLibFiles(f) | f <- path.ls) when !isFile(path);
+private default list[loc] collectStdLibFiles(loc path) = [];
+
+private map[loc, str] collectStdLibSources() = (f : readFile(f) | f <- collectStdLibFiles());
+
 public void compile(map[loc, str] sources, int listenerId) {
 	Config config = newConfig();
 	
-    list[Declaration] ast = parseMultiple(sources);
+    list[Declaration] ast = parseMultiple(collectStdLibSources() + sources);
     
     TypeEnv typeEnv = checkAST(config, ast);
 	
@@ -38,7 +46,7 @@ public void compile(map[loc, str] sources, int listenerId) {
     
     list[loc] compiledFiles = [];
     
-    for (l <- ast, out := toPHPScript(newTransformEnv(config, ast), l.\module, ast), str outputFile <- out) {
+    for (l <- ast, !isProxy(l.\module), out := toPHPScript(newTransformEnv(config, ast), l.\module, ast), str outputFile <- out) {
     	Code compiledCode = toCode(out[outputFile]);
     	compiledFiles += createSourceFile(outputFile, implode(compiledCode) + nl() + "//# sourceMappingURL=source_maps/<outputFile + ".map">", listenerId);
     	str sourceMap = toJSON(sourceMapToJSON(createSourceMap(outputFile, compiledCode)));

@@ -182,4 +182,15 @@ test bool shouldIncludeRepositoriesWhenUsed() =
         phpUse(phpName("Example\\Repository\\CustomerRepository"), phpNoName())
     })]
     ;
-    
+
+test bool shouldIncludeProxiedClassWhenUsed() =
+    toPhpUses(\module(namespace("Example"), [
+    		\import("DateTime", namespace("StdLib"), "DateTime")
+    	], 
+        util("UserCreator", [])), [], addToAST([
+        	file(|tmp:///repo.g|, \module(namespace("StdLib"), [], valueObject("DateTime", [], proxyClass("\\DateTimeImmutable"))))
+        ], newTransformEnv(anyFramework(), anyORM()))) ==
+    [phpUse({
+        phpUse(phpName("\\DateTimeImmutable"), phpSomeName(phpName("DateTime")))
+    })];
+

@@ -152,7 +152,7 @@ public bool isEntity(a: artifact(e: fullName(_, _, _)), TypeEnv env) = isEntity(
     
 public bool isValueObject(TypeEnv env) = isValueObject(getContext(env).artifact);
 public bool isValueObject(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
-    [valueObject(_, _, notProxy())] := findArtifact(i, env);
+    [valueObject(_, _, _)] := findArtifact(i, env);
     
 public bool isUtil(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
     [util(_, _)] := findArtifact(i, env);

@@ -16,7 +16,7 @@ public TypeEnv checkArtifact(e:entity(GlagolID name, list[Declaration] declarati
 public TypeEnv checkArtifact(u:util(GlagolID name, list[Declaration] declarations), TypeEnv env) =
     checkDeclarations(declarations, u, checkRedefine(u, env));
 
-public TypeEnv checkArtifact(v:valueObject(GlagolID name, list[Declaration] declarations, notProxy()), TypeEnv env) =
+public TypeEnv checkArtifact(v:valueObject(GlagolID name, list[Declaration] declarations, Proxy _), TypeEnv env) =
     checkToDbValMethod(v, declarations, checkDeclarations(declarations, v, checkRedefine(v, env)));
 
 public TypeEnv checkArtifact(r:repository(GlagolID name, list[Declaration] declarations), TypeEnv env) =

@@ -43,7 +43,7 @@ public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<ProxyConstruc
 
 public Declaration convertProxyMethod(
     a: (ProxyMethod) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>);`, ParseEnv env) 
-    = method(\public()[@src=a@\loc], convertType(returnType, env), "<name>", 
+    = method(\public()[@src=a@\loc], convertType(returnType, env), stringify(name), 
     	[convertParameter(p, env) | p <- parameters], [\return(adaptable()[@src=a@\loc])[@src=a@\loc]], emptyExpr()[@src=a@\loc])[@src=a@\loc];
 
 public Declaration convertProxyConstructor(
@@ -68,7 +68,7 @@ public Declaration convertArtifact(a: (Artifact) `service <ArtifactName name> {<
 public ControllerType convertControllerType(c: (ControllerType) `json-api`) = jsonApi()[@src=c@\loc];
 public ControllerType convertControllerType(c: (ControllerType) `rest`) = jsonApi()[@src=c@\loc];
 
-public Route convertRoute(r: (RoutePart) `<Identifier part>`) = routePart("<part>")[@src=r@\loc];
+public Route convertRoute(r: (RoutePart) `<Identifier part>`) = routePart(stringify(part))[@src=r@\loc];
 public Route convertRoute(r: (RoutePart) `<RoutePlaceholder placeholder>`) = 
 	routeVar(substring("<placeholder>", 1, size("<placeholder>")))[@src=r@\loc];
 
