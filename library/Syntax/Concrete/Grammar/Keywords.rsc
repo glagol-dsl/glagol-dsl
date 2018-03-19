@@ -42,4 +42,5 @@ keyword GlagolPreserved
     | "NOT"
     | "NULL"
     | "OFFSET"
+    | "require"
     ;

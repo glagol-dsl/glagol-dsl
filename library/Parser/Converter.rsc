@@ -14,13 +14,6 @@ import Exceptions::ParserExceptions;
 
 
 
-public Declaration buildAST(a: (Module) `namespace <Namespace n><Import* imports><AnnotatedArtifact annotatedArtifact>`) {
-	list[Declaration] convertedImports = [convertImport(\import) | \import <- imports];
-	Declaration ns = convertModuleNamespace(n);
-    return \module(ns, convertedImports, convertAnnotatedArtifact(annotatedArtifact, newParseEnv(convertedImports, ns)))[@src=a@\loc];
-}
-
-
 public Expression convertParameterDefaultVal(a: (AssignDefaultValue) `=<DefaultValue defaultValue>`, Type onType, ParseEnv env) {
 
     Expression defaultValue = convertExpression(defaultValue, env);
@@ -59,35 +52,6 @@ public Declaration convertProxable(a: (Proxable) `util <ArtifactName name> {<Pro
 
 public Declaration convertProxable(a: (Proxable) `service <ArtifactName name> {<ProxyDeclaration* declarations>}`, Proxy proxy, ParseEnv env) = 
 	util("<name>", [convertProxyDeclaration(d, "<name>", env) | d <- declarations], proxy)[@src=a@\loc];
-
-public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<Annotation+ annotations><ProxyMethod m>`, str proxyName, ParseEnv env) 
-    = convertProxyMethod(m, env)[
-    	@annotations = convertAnnotations(annotations, env)
-    ][@src=a@\loc];
-
-public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<ProxyMethod m>`, str proxyName, ParseEnv env) = convertProxyMethod(m, env);
-
-public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<Annotation+ annotations><ProxyConstructor c>`, str proxyName, ParseEnv env) 
-    = convertProxyConstructor(c, proxyName, env)[
-    	@annotations = convertAnnotations(annotations, env)
-    ][@src=a@\loc];
-
-public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<ProxyConstructor c>`, str proxyName, ParseEnv env) = convertProxyConstructor(c, proxyName, env);
-
-public Declaration convertProxyMethod(
-    a: (ProxyMethod) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>);`, ParseEnv env) 
-    = method(\public()[@src=a@\loc], convertType(returnType, env), stringify(name), 
-    	[convertParameter(p, env) | p <- parameters], [\return(adaptable()[@src=a@\loc])[@src=a@\loc]], emptyExpr()[@src=a@\loc])[@src=a@\loc];
-
-public Declaration convertProxyConstructor(
-    a: (ProxyConstructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>);`, str proxyName, ParseEnv env) {
-	
-	if ("<name>" != proxyName) {
-        throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
-	}
-	
-	return constructor([convertParameter(p, env) | p <- parameters], [\return(adaptable()[@src=a@\loc])[@src=a@\loc]], emptyExpr()[@src=a@\loc])[@src=a@\loc];    
-}
 
 public Declaration convertArtifact(a: (Artifact) `value <ArtifactName name> {<Declaration* declarations>}`, ParseEnv env) = 
 	valueObject("<name>", [convertDeclaration(d, "<name>", "value", env) | d <- declarations], notProxy()[@src=a@\loc])[@src=a@\loc];
@@ -180,6 +144,24 @@ public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations
 public str convertStringQuoted(string) = substring("<string>", 1, size("<string>") - 1);
 
 
+public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<Annotation+ annotations><ProxyConstructor c>`, str proxyName, ParseEnv env) 
+    = convertProxyConstructor(c, proxyName, env)[
+    	@annotations = convertAnnotations(annotations, env)
+    ][@src=a@\loc];
+
+public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<ProxyConstructor c>`, str proxyName, ParseEnv env) = convertProxyConstructor(c, proxyName, env);
+
+public Declaration convertProxyConstructor(
+    a: (ProxyConstructor) `<ArtifactName name> (<{AbstractParameter ","}* parameters>);`, str proxyName, ParseEnv env) {
+	
+	if ("<name>" != proxyName) {
+        throw IllegalConstructorName("\'<name>\' is invalid constructor name", a@\loc);
+	}
+	
+	return constructor([convertParameter(p, env) | p <- parameters], [\return(adaptable()[@src=a@\loc])[@src=a@\loc]], emptyExpr()[@src=a@\loc])[@src=a@\loc];    
+}
+
+
 public Declaration convertProperty(a: (Property) `<Type prop><MemberName name>;`, ParseEnv env)  =
     property(convertType(prop, env), stringify(name), emptyExpr()[@src=name@\loc])[@src=a@\loc][
         @annotations=buildPropDefaultAnnotations(convertType(prop, env))
@@ -216,6 +198,25 @@ public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations
 }
     
 public Declaration convertDeclaration(a: (Declaration) `<Property prop>`, _, _, ParseEnv env) = convertProperty(prop, env);
+
+
+public Declaration buildAST(a: (Module) `namespace <Namespace n><Import* imports><AnnotatedArtifact annotatedArtifact>`) {
+	list[Declaration] convertedImports = [convertImport(\import) | \import <- imports];
+	Declaration ns = convertModuleNamespace(n);
+    return \module(ns, convertedImports, convertAnnotatedArtifact(annotatedArtifact, newParseEnv(convertedImports, ns)))[@src=a@\loc];
+}
+
+
+public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<Annotation+ annotations><ProxyRequire r>`, str proxyName, ParseEnv env) 
+    = convertProxyMethod(r, env)[
+    	@annotations = convertAnnotations(annotations, env)
+    ][@src=a@\loc];
+
+public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<ProxyRequire r>`, str proxyName, ParseEnv env) = convertProxyRequire(r, env);
+
+public Declaration convertProxyRequire(
+    a: (ProxyRequire) `require<StringQuoted package><StringQuoted version>;`, ParseEnv env) 
+    = require(convertStringQuoted(package), convertStringQuoted(version))[@src=a@\loc];
 
 
 public Declaration convertModuleNamespace(a: (Namespace) `<Name name>`) = namespace("<name>")[@src=a@\loc];
@@ -462,6 +463,21 @@ private bool isValidForAccessChain((Expression) `<MemberName method>(<{Expressio
 private bool isValidForAccessChain((Expression) `<Expression prev>.<MemberName method>(<{Expression ","}* args>)`) = true;
 private bool isValidForAccessChain((Expression) `<Expression prev>.<MemberName field>`) = true;
 private default bool isValidForAccessChain(_) = false;
+
+
+public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<Annotation+ annotations><ProxyMethod m>`, str proxyName, ParseEnv env) 
+    = convertProxyMethod(m, env)[
+    	@annotations = convertAnnotations(annotations, env)
+    ][@src=a@\loc];
+
+public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<ProxyMethod m>`, str proxyName, ParseEnv env) = convertProxyMethod(m, env);
+
+public Declaration convertProxyMethod(
+    a: (ProxyMethod) `<Type returnType><MemberName name> (<{AbstractParameter ","}* parameters>);`, ParseEnv env) 
+    = method(\public()[@src=a@\loc], convertType(returnType, env), stringify(name), 
+    	[convertParameter(p, env) | p <- parameters], [\return(adaptable()[@src=a@\loc])[@src=a@\loc]], emptyExpr()[@src=a@\loc])[@src=a@\loc];
+
+
 
 
 public Type convertType(a: (Type) `int`, ParseEnv env) = integer()[@src=a@\loc];

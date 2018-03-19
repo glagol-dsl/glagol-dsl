@@ -44,6 +44,8 @@ syntax ProxyDeclaration
 	| Annotation+ annotations ProxyMethod m
 	| ProxyConstructor c
 	| Annotation+ annotations ProxyConstructor c
+	| ProxyRequire r
+	| Annotation+ annotations ProxyRequire r
 	;
 
 syntax ProxyMethod
@@ -52,6 +54,10 @@ syntax ProxyMethod
 
 syntax ProxyConstructor
 	= ArtifactName "(" {AbstractParameter ","}* parameters ")" ";"
+	;
+
+syntax ProxyRequire
+	= "require" StringQuoted string StringQuoted string ";"
 	;
 
 syntax RoutePart

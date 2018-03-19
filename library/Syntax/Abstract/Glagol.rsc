@@ -20,6 +20,7 @@ data Declaration
     | constructor(list[Declaration] params, list[Statement] body, Expression when)
     | method(Modifier modifier, Type returnType, GlagolID name, list[Declaration] params, list[Statement] body, Expression when)
     | param(Type paramType, GlagolID name, Expression defaultValue)
+    | require(str package, str version)
     | emptyDecl()
     ;
 
