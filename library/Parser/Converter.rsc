@@ -217,6 +217,7 @@ public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<ProxyRequire 
 public Declaration convertProxyRequire(
     a: (ProxyRequire) `require<StringQuoted package><StringQuoted version>;`, ParseEnv env) 
     = require(convertStringQuoted(package), convertStringQuoted(version))[@src=a@\loc];
+	
 
 
 public Declaration convertModuleNamespace(a: (Namespace) `<Name name>`) = namespace("<name>")[@src=a@\loc];

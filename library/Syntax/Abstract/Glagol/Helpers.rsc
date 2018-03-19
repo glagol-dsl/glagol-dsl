@@ -106,3 +106,9 @@ public str extractName(fullName(str localName, Declaration namespace, str origin
 public str toString(\public()) = "public";
 public str toString(\private()) = "private";
 
+public list[Declaration] requirements(list[Declaration] ast) = 
+	[r | file(loc file, \module(Declaration ns, list[Declaration] is, Declaration artifact)) <- ast, r: require(str package, str version) <- declarations(artifact)];
+
+private list[Declaration] declarations(util(GlagolID name, list[Declaration] declarations, proxyClass(str c))) = [d | d <- declarations];
+private list[Declaration] declarations(valueObject(GlagolID name, list[Declaration] declarations, proxyClass(str c))) = [d | d <- declarations];
+private default list[Declaration] declarations(Declaration d) = [];
