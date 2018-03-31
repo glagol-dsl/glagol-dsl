@@ -9,7 +9,7 @@ import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import String;
 
-public TypeEnv checkAST(Config config, list[Declaration] ast) = (newEnv(ast) | checkFile(config, f, cleanCopy(it)) | f <- ast);
+public TypeEnv checkAST(Config config, list[Declaration] ast) = checkForDuplicatedRepositories((newEnv(ast) | checkFile(config, f, cleanCopy(it)) | f <- ast));
 
 @doc{
 Runs typecheck on Glagol file:

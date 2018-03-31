@@ -8,22 +8,47 @@ import Typechecker::Expression;
 import Typechecker::Route;
 import Typechecker::Errors;
 import Typechecker::Type;
+import Typechecker::Redeclare;
+
 import String;
+import List;
+import IO;
 
 public TypeEnv checkArtifact(e:entity(GlagolID name, list[Declaration] declarations), TypeEnv env) =
-    checkDeclarations(declarations, e, checkRedefine(e, env));
+    checkDeclarations(declarations, e, checkRedefine(e, checkRedeclare(e, env)));
 
 public TypeEnv checkArtifact(u:util(GlagolID name, list[Declaration] declarations, Proxy pr), TypeEnv env) =
-    checkDeclarations(declarations, u, checkRedefine(u, env));
+    checkDeclarations(declarations, u, checkRedefine(u, checkRedeclare(u, env)));
 
-public TypeEnv checkArtifact(v:valueObject(GlagolID name, list[Declaration] declarations, Proxy _), TypeEnv env) =
-    checkToDbValMethod(v, declarations, checkDeclarations(declarations, v, checkRedefine(v, env)));
+public TypeEnv checkArtifact(v:valueObject(GlagolID name, list[Declaration] declarations, Proxy pr), TypeEnv env) =
+    checkToDbValMethod(v, declarations, checkDeclarations(declarations, v, checkRedefine(v, checkRedeclare(v, env))));
 
 public TypeEnv checkArtifact(r:repository(GlagolID name, list[Declaration] declarations), TypeEnv env) =
-    checkDeclarations(declarations, r, checkRepositoryEntity(r, env));
+    checkDeclarations(declarations, r, checkRepositoryEntity(r, checkRedeclare(r, env)));
 
 public TypeEnv checkArtifact(c:controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations), TypeEnv env) =
     checkDeclarations(declarations, c, checkRoute(route, checkControllerFileName(c, env)));
+
+public TypeEnv checkForDuplicatedRepositories(TypeEnv env) = checkForDuplicatedRepositories(mapRepositoriesToEntities(env), env);
+
+private map[Declaration, list[Declaration]] mapRepositoriesToEntities(TypeEnv env) = 
+	(m : collectRepositories(m, env) | file(_, m: \module(Declaration ns, _, e: entity(GlagolID n, list[Declaration] ds))) <- getAST(env));
+
+private list[Declaration] collectRepositories(\module(Declaration namespace, list[Declaration] _i, entity(GlagolID name, list[Declaration] ds)), TypeEnv env) =
+	[r | 
+		file(_, \module(Declaration rns, list[Declaration] imports, r: repository(GlagolID rname, list[Declaration] rds))) <- getAST(env),
+		\import(GlagolID iName, Declaration iNs, GlagolID as) <- imports,
+		rname == as && iName == name && iNs == namespace
+	];
+
+public TypeEnv checkForDuplicatedRepositories(map[Declaration, list[Declaration]] erMap, TypeEnv env) = 
+	(env | checkForDuplicatedRepositories(m, erMap[m], it) | m <- erMap);
+
+public TypeEnv checkForDuplicatedRepositories(m: \module(Declaration namespace, list[Declaration] is, e: entity(GlagolID name, list[Declaration] declarations)), list[Declaration] repos, TypeEnv env) = 
+	addError(m, "More than one repository declared for entity <namespaceToString(namespace, "::")>::<name>", env)
+	when size(repos) > 1;
+
+public default TypeEnv checkForDuplicatedRepositories(Declaration m, list[Declaration] repos, TypeEnv env) = env;
 
 private TypeEnv checkControllerFileName(c:controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations), TypeEnv env) = 
     addError(c, "Controller does not follow the convetion \<Identifier\>Controller.g", env)

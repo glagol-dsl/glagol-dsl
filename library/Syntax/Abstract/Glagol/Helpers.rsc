@@ -55,6 +55,7 @@ public map[str name, list[Declaration] methods] categorizeMethods(list[Declarati
 
 public list[Declaration] getMethods(list[Declaration] ds) = [m | m: method(_, _, _, _, _, _) <- ds];
 public list[Declaration] getMethods(\module(_, _, Declaration artifact)) = getMethods(artifact.declarations);
+public default list[Declaration] getMethods(emptyDecl()) = [];
 public list[Declaration] getPublicMethods(list[Declaration] ds) = [m | m: method(\public(), _, _, _, _, _) <- ds];
 
 public bool hasOverriding(list[Declaration] declarations) =

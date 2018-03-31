@@ -9,13 +9,13 @@ test bool shouldGiveErrorsWhenEntityRedefiningImportedArtifact() =
     addImported(\import("User", namespace("Test"), "User")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
     	addToAST(
     	file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", [])[@src=|tmp:///User.g|(0, 0, <10, 20>, <30, 30>)])),
-    	newEnv(|tmp:///User.g|)))) == 
+    	setContext(\module(namespace("Test"), [], entity("User", [])), newEnv(|tmp:///User.g|))))) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
 		"Cannot redefine \"User\"",
 		addImported(\import("User", namespace("Test"), "User"),
     	addToAST(
     	file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", []))),
-    	newEnv(|tmp:///User.g|)))
+    	setContext(\module(namespace("Test"), [], entity("User", [])), newEnv(|tmp:///User.g|))))
 	);
 
 test bool shouldNotGiveErrorsWhenEntityRedefiningImportedArtifactButUsingAlias() = 
@@ -23,24 +23,25 @@ test bool shouldNotGiveErrorsWhenEntityRedefiningImportedArtifactButUsingAlias()
     addImported(\import("User", namespace("Test2"), "UserEntity"),
     	addToAST(
     	file(|tmp:///UserEntity.g|, \module(namespace("Test2"), [], entity("User", []))),
-    	newEnv(|tmp:///User.g|)))) == 
+    	setContext(\module(namespace("Test"), [], entity("Bla", [])), newEnv(|tmp:///User.g|))))) == 
 	addImported(\import("User", namespace("Test2"), "UserEntity"),
+	addImported(\import("Bla", namespace("Test"), "Bla"),
     	addToAST(
     	file(|tmp:///UserEntity.g|, \module(namespace("Test2"), [], entity("User", []))),
-    	newEnv(|tmp:///User.g|)));
+    	setContext(\module(namespace("Test"), [], entity("Bla", [])), newEnv(|tmp:///User.g|)))));
     
 test bool shouldGiveErrorsWhenUtilRedefiningImportedArtifact() = 
     checkArtifact(util("User", [], notProxy())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], 
     addImported(\import("User", namespace("Test"), "User")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
     	addToAST(
     	file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", [])[@src=|tmp:///User.g|(0, 0, <10, 20>, <30, 30>)])),
-    	newEnv(|tmp:///User.g|)))) == 
+    	setContext(\module(namespace("Test"), [], entity("Bla", [])), newEnv(|tmp:///User.g|))))) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
 		"Cannot redefine \"User\"",
 		addImported(\import("User", namespace("Test"), "User"),
     	addToAST(
     	file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", []))),
-    	newEnv(|tmp:///User.g|)))
+    	setContext(\module(namespace("Test"), [], entity("Bla", [])), newEnv(|tmp:///User.g|))))
 	);
 
 test bool shouldNotGiveErrorsWhenUtilRedefiningImportedArtifactButUsingAlias() = 
@@ -48,10 +49,12 @@ test bool shouldNotGiveErrorsWhenUtilRedefiningImportedArtifactButUsingAlias() =
     addImported(\import("User", namespace("Test"), "UserEntity"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
-    	newEnv(|tmp:///User.g|)))) == addImported(\import("User", namespace("Test"), "UserEntity"),
+    	setContext(\module(namespace("Test"), [], entity("Bla", [])), newEnv(|tmp:///User.g|))))) == 
+	addImported(\import("User", namespace("Test"), "UserEntity"),
+    addImported(\import("Bla", namespace("Test"), "Bla"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
-    	newEnv(|tmp:///User.g|)));
+    	setContext(\module(namespace("Test"), [], entity("Bla", [])), newEnv(|tmp:///User.g|)))));
     
 test bool shouldGiveErrorsWhenVORedefiningImportedArtifact() = 
 	checkArtifact(valueObject("User", [
@@ -61,13 +64,13 @@ test bool shouldGiveErrorsWhenVORedefiningImportedArtifact() =
     addImported(\import("User", namespace("Test"), "User")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
     	addToAST(
     	file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", [])[@src=|tmp:///User.g|(0, 0, <10, 20>, <30, 30>)])),
-    	newEnv(|tmp:///User.g|)))) == 
+    	setContext(\module(namespace("Test"), [], entity("User", [])), newEnv(|tmp:///User.g|))))) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
         "Cannot redefine \"User\"",
 		addImported(\import("User", namespace("Test"), "User")[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)],
     	addToAST(
     	file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", [])[@src=|tmp:///User.g|(0, 0, <10, 20>, <30, 30>)])),
-    	newEnv(|tmp:///User.g|)))
+    	setContext(\module(namespace("Test"), [], entity("User", [])), newEnv(|tmp:///User.g|))))
 	);
 
 test bool shouldNotGiveErrorsWhenVORedefiningImportedArtifactButUsingAlias() = 
@@ -75,7 +78,7 @@ test bool shouldNotGiveErrorsWhenVORedefiningImportedArtifactButUsingAlias() =
     addImported(\import("User", namespace("Test"), "UserEntity"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
-    	newEnv(|tmp:///User.g|)))));
+    	setContext(\module(namespace("Test"), [], entity("Bla", [])), newEnv(|tmp:///User.g|))))));
     	
 test bool shouldGiveErrorWhenToDatabaseValueMethodReturnsVoid() = 
     checkArtifact(valueObject("User", [
@@ -84,13 +87,14 @@ test bool shouldGiveErrorWhenToDatabaseValueMethodReturnsVoid() =
     addImported(\import("User", namespace("Test"), "UserEntity"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
-    	newEnv(|tmp:///User.g|)))) == 
+    	setContext(\module(namespace("Test"), [], entity("Bla", [])), newEnv(|tmp:///User.g|))))) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
     	"toDatabaseValue() cannot return void", 
     	addImported(\import("User", namespace("Test"), "UserEntity"),
+    	addImported(\import("Bla", namespace("Test"), "Bla"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
-    	newEnv(|tmp:///User.g|))));
+    	setContext(\module(namespace("Test"), [], entity("Bla", [])), newEnv(|tmp:///User.g|))))));
     	
 test bool shouldGiveErrorWhenHasToDatabaseValueMethodButNoMatchingConstructor() = 
     checkArtifact(valueObject("User", [
@@ -100,13 +104,14 @@ test bool shouldGiveErrorWhenHasToDatabaseValueMethodButNoMatchingConstructor() 
     addImported(\import("User", namespace("Test"), "UserEntity"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
-    	newEnv(|tmp:///User.g|)))) == 
+    	setContext(\module(namespace("Test"), [], entity("Bla", [])), newEnv(|tmp:///User.g|))))) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
     	"Value object should implement a constructor matching User(string)", 
-    	addImported(\import("User", namespace("Test"), "UserEntity"),
+    	addImported(\import("User", namespace("Test"), "UserEntity"), 
+    	addImported(\import("Bla", namespace("Test"), "Bla"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
-    	newEnv(|tmp:///User.g|))));
+    	setContext(\module(namespace("Test"), [], entity("Bla", [])), newEnv(|tmp:///User.g|))))));
     	
 test bool shouldNotGiveErrorWhenHasToDatabaseValueMethodWithMatchingConstructor() = 
     !hasErrors(checkArtifact(valueObject("User", [
@@ -116,7 +121,7 @@ test bool shouldNotGiveErrorWhenHasToDatabaseValueMethodWithMatchingConstructor(
     addImported(\import("User", namespace("Test"), "UserEntity"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
-    	newEnv(|tmp:///User.g|)))));
+    	setContext(\module(namespace("Test"), [], entity("Bla", [])), newEnv(|tmp:///User.g|))))));
     	
 test bool shouldNotGiveErrorWhenHasToDatabaseValueMethodWithMatchingConstructorHavingDefaultParams() = 
     !hasErrors(checkArtifact(valueObject("User", [
@@ -126,7 +131,7 @@ test bool shouldNotGiveErrorWhenHasToDatabaseValueMethodWithMatchingConstructorH
     addImported(\import("User", namespace("Test"), "UserEntity"),
     addToAST(
     	file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))),
-    	newEnv(|tmp:///User.g|)))));
+    	setContext(\module(namespace("Test"), [], entity("User", [])), newEnv(|tmp:///User.g|))))));
 
 test bool shouldGiveErrorsWhenRepositoryPointsToNotImportedEntity() = 
     checkArtifact(repository("User", [])[@src=|tmp:///UserRepository.g|(0, 0, <20, 20>, <30, 30>)], newEnv(|tmp:///UserRepository.g|)) == 
@@ -166,4 +171,23 @@ test bool shouldNotGiveErrorWhenTypecheckingReturnAdaptableOnProxy() =
 	!hasErrors(checkArtifact(valueObject("DateTime", [
     	constructor([param(string(), "now", emptyExpr())], [\return(adaptable())], emptyExpr()),
     	method(\public(), string(), "format", [], [\return(adaptable())], emptyExpr())
-    ], proxyClass("\\DateTimeImmutable")), newEnv(|tmp:///Blag.g|)));
+    ], proxyClass("\\DateTimeImmutable")), setContext(\module(namespace("Test"), [], entity("Bla", [])), newEnv(|tmp:///User.g|))));
+
+test bool shouldGiveErrorWhenTypecheckingMultipleRepositoriesForOneEntity() =
+	checkForDuplicatedRepositories(addToAST([
+		file(|tmp:///|, \module(namespace("Test"), [], entity("User", []))[@src=|tmp:///Test/UserRepository.g|(0, 0, <20, 20>, <30, 30>)]),
+		file(|tmp:///|, \module(namespace("TestR"), [\import("User", namespace("Test"), "U")], repository("U", []))),
+		file(|tmp:///|, \module(namespace("TestF"), [\import("User", namespace("Test"), "User")], repository("User", [])))
+	], newEnv(|tmp:///|))) == addError(|tmp:///Test/UserRepository.g|(0, 0, <20, 20>, <30, 30>), 
+		"More than one repository declared for entity Test::User", addToAST([
+		file(|tmp:///|, \module(namespace("Test"), [], entity("User", []))[@src=|tmp:///Test/UserRepository.g|(0, 0, <20, 20>, <30, 30>)]),
+		file(|tmp:///|, \module(namespace("TestR"), [\import("User", namespace("Test"), "U")], repository("U", []))),
+		file(|tmp:///|, \module(namespace("TestF"), [\import("User", namespace("Test"), "User")], repository("User", [])))
+	], newEnv(|tmp:///|)));
+	
+test bool shouldNotGiveErrorWhenTypecheckingSingleRepositoriesForOneEntity() =
+	!hasErrors(checkForDuplicatedRepositories(addToAST([
+		file(|tmp:///|, \module(namespace("Test"), [], entity("User", []))[@src=|tmp:///Test/UserRepository.g|(0, 0, <20, 20>, <30, 30>)]),
+		file(|tmp:///|, \module(namespace("TestR"), [\import("User", namespace("Test"), "U")], repository("U", [])))
+	], newEnv(|tmp:///|))));
+
