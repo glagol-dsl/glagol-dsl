@@ -35,7 +35,7 @@ public map[loc, str] generateFrameworkFiles(lumen(), Config config, list[Declara
 
 private map[loc, str] getCustomTypes(list[Declaration] ast, doctrine()) =
 	(|file:///| + "app/Types/<namespaceToString(ns)><name>Type.php": 
-    	createType(e, findDbValueMethod(declarations)) | \file(_, e: \module(ns, _, valueObject(str name, declarations))) <- ast);
+    	createType(e, findDbValueMethod(declarations)) | \file(_, e: \module(ns, _, valueObject(str name, declarations, notProxy()))) <- ast);
 
 private Declaration findDbValueMethod(list[Declaration] methods) = 
 	(emptyDecl() | m | m: method(\public(), _, "toDatabaseValue", [], _, _) <- methods);
@@ -54,7 +54,7 @@ private PhpCastType lookupCastType(method(_, boolean(), _, _, _, _)) = phpBool()
 private PhpCastType lookupCastType(method(_, Type t, _, _, _, _)) = phpString();
 private PhpCastType lookupCastType(emptyDecl()) = phpString();
 
-private str createType(m: \module(ns, _, v: valueObject(str name, declarations)), Declaration dbValMethod) = implode(toCode(
+private str createType(m: \module(ns, _, v: valueObject(str name, declarations, Proxy pr)), Declaration dbValMethod) = implode(toCode(
 	phpScript([
 		phpDeclareStrict(),
         phpNamespace(

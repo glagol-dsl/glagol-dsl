@@ -14,10 +14,10 @@ test bool shouldGiveErrorOnGetOnEntity() =
 		
 test bool shouldGiveErrorOnGetOnVo() = 
 	checkDefaultValue(get(selfie())[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)], 
-		setContext(\module(namespace("Test"), [], valueObject("User", [])), newEnv(|tmp:///User.g|))) == 
+		setContext(\module(namespace("Test"), [], valueObject("User", [], notProxy())), newEnv(|tmp:///User.g|))) == 
 	addError(
 		|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>), "Get is not allowed in entities and value objects", 
-		setContext(\module(namespace("Test"), [], valueObject("User", [])), newEnv(|tmp:///User.g|)));
+		setContext(\module(namespace("Test"), [], valueObject("User", [], notProxy())), newEnv(|tmp:///User.g|)));
 	
 test bool shouldNotGiveErrorOnGetSelfie() = 
 	checkDefaultValue(get(selfie()), newEnv(|tmp:///User.g|)) == newEnv(|tmp:///User.g|);
@@ -48,9 +48,9 @@ test bool shouldGiveNotEntityErrorOnGetRepository() =
 		[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)]
 	)[@src=|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>)], 
 	
-	addImported(\import("User", namespace("Test"), "User"), addToAST(file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), newEnv(|tmp:///Util.g|)))) == 
+	addImported(\import("User", namespace("Test"), "User"), addToAST(file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), newEnv(|tmp:///Util.g|)))) == 
 	addError(|tmp:///Util.g|(0, 0, <10, 10>, <15, 15>), "\"User\" is not an entity",
-		addImported(\import("User", namespace("Test"), "User"), addToAST(file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), newEnv(|tmp:///Util.g|))));
+		addImported(\import("User", namespace("Test"), "User"), addToAST(file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), newEnv(|tmp:///Util.g|))));
 
 test bool shouldNotGiveErrorOnGetRepository() = 
 	checkDefaultValue(get(repository(fullName("User", namespace("Test"), "User"))

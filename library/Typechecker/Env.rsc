@@ -120,7 +120,10 @@ public TypeEnv addError(QueryLimit element, str message, TypeEnv env) = addError
 public TypeEnv addError(QueryField element, str message, TypeEnv env) = addError(element@src, message, env);
 
 public bool hasErrors(TypeEnv env) = size(env.errors) > 0;
+
 public list[Error] getErrors(TypeEnv env) = env.errors;
+
+public bool hasError(loc src, str message, TypeEnv env) = (false | true | <loc s, str m> <- getErrors(env), s == src && m == message);
 
 public TypeEnv addImported(i: \import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = env[imported = env.imported + (as: i)];
 public TypeEnv addImported(\module(ns, _, Declaration a), TypeEnv env) = addImported(\import(a.name, ns, a.name), env);
@@ -142,6 +145,9 @@ public bool isImported(Name name, TypeEnv env) = name.localName in env.imported 
 public bool isInAST(\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
     (false | true | file(_, \module(Declaration ns, _, a)) <- env.ast, a.name == name && ns == namespace);
 
+public list[Declaration] findModules(GlagolID name, Declaration namespace, TypeEnv env) = 
+    [m | f: file(_, m: \module(Declaration ns, _, a)) <- env.ast, a.name == name && ns == namespace];
+
 public list[Declaration] findArtifact(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) =
 	[a | file(_, \module(Declaration ns, _, Declaration a)) <- env.ast, !isRepository(a) && !isController(a) && a.name == name && ns == namespace];
  
@@ -152,23 +158,31 @@ public bool isEntity(a: artifact(e: fullName(_, _, _)), TypeEnv env) = isEntity(
     
 public bool isValueObject(TypeEnv env) = isValueObject(getContext(env).artifact);
 public bool isValueObject(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
-    [valueObject(_, _)] := findArtifact(i, env);
+    [valueObject(_, _, _)] := findArtifact(i, env);
     
 public bool isUtil(i:\import(GlagolID name, Declaration namespace, GlagolID as), TypeEnv env) = 
-    [util(_, _)] := findArtifact(i, env);
+    [util(_, _, _)] := findArtifact(i, env);
     
 public bool isUtil(artifact(Name name), TypeEnv env) =
-	[util(_, _)] := findArtifact(env.imported[name.localName], env);
+	[util(_, _, _)] := findArtifact(env.imported[name.localName], env);
 
 public Type contextAsType(TypeEnv env) = contextAsType(getContext(env));
 public Type contextAsType(\module(ns, _, repository(name, _))) = repository(fullName(name, ns, name));
 public Type contextAsType(\module(ns, _, entity(name, _))) = artifact(fullName(name, ns, name));
-public Type contextAsType(\module(ns, _, valueObject(name, _))) = artifact(fullName(name, ns, name));
-public Type contextAsType(\module(ns, _, util(name, _))) = artifact(fullName(name, ns, name));
+public Type contextAsType(\module(ns, _, valueObject(name, _, notProxy()))) = artifact(fullName(name, ns, name));
+public Type contextAsType(\module(ns, _, util(name, _, _))) = artifact(fullName(name, ns, name));
 public Type contextAsType(\module(ns, _, Declaration)) = unknownType();
 
 public TypeEnv addToAST(Declaration file, TypeEnv env) = env[ast = env.ast + file];
 public TypeEnv addToAST(list[Declaration] files, TypeEnv env) = env[ast = env.ast + files];
+
+public list[Declaration] getAST(TypeEnv env) = env.ast;
+
+public list[Declaration] getEntities(TypeEnv env) = 
+	[e | file(_, m: \module(Declaration ns, _, e: entity(GlagolID name, list[Declaration] declarations))) <- env.ast];
+	
+public list[Declaration] getRepositories(TypeEnv env) = 
+	[r | file(_, m: \module(Declaration ns, _, r: repository(GlagolID name, list[Declaration] declarations))) <- env.ast];
 
 public TypeEnv setContext(Declaration ctx, TypeEnv env) = env[context = ctx];
 public Declaration getContext(TypeEnv env) = env.context;

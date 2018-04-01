@@ -9,13 +9,13 @@ import Parser::Converter::QuotedString;
 
 public list[Annotation] convertAnnotations(annotations, ParseEnv env) = [convertAnnotation(a, env) | a <- annotations];
 
-public Annotation convertAnnotation(a: (Annotation) `@<Identifier id>`, ParseEnv env) = annotation("<id>", [])[@src=a@\loc];
+public Annotation convertAnnotation(a: (Annotation) `@<Identifier id>`, ParseEnv env) = annotation(stringify(id), [])[@src=a@\loc];
 
 public Annotation convertAnnotation(a: (Annotation) `@<Identifier id><AnnotationArgs args>`, ParseEnv env)
-    = annotation("<id>", convertAnnotationArgs(args, env))[@src=a@\loc];
+    = annotation(stringify(id), convertAnnotationArgs(args, env))[@src=a@\loc];
 
 public Annotation convertAnnotation(a: (Annotation) `@<Identifier id>=<AnnotationArg arg>`, ParseEnv env)
-    = annotation("<id>", [convertAnnotationArg(arg, env)])[@src=a@\loc];
+    = annotation(stringify(id), [convertAnnotationArg(arg, env)])[@src=a@\loc];
 
 private list[Annotation] convertAnnotationArgs(a: (AnnotationArgs) `(<{AnnotationArg ","}+ args>)`, ParseEnv env)
     = [convertAnnotationArg(arg, env) | arg <- args];

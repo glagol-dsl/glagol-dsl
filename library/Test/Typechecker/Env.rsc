@@ -84,5 +84,5 @@ test bool shouldReturnTrueWhenArtifactIsEntity() =
 	isEntity(\import("User", namespace("Test"), "User"), addToAST(file(|tmp:///Test/User.g|, \module(namespace("Test"), [], entity("User", []))), newEnv(|tmp:///|)));
 
 test bool shouldReturnFalseWhenArtifactIsNotEntity() =
-	!isEntity(\import("User", namespace("Test"), "User"), addToAST(file(|tmp:///Test/User.g|, \module(namespace("Test"), [], util("User", []))), newEnv(|tmp:///|)));
+	!isEntity(\import("User", namespace("Test"), "User"), addToAST(file(|tmp:///Test/User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), newEnv(|tmp:///|)));
 	

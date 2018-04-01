@@ -12,16 +12,23 @@ data Declaration
     | \import(GlagolID artifactName, Declaration namespace, GlagolID as)
     | entity(GlagolID name, list[Declaration] declarations)
     | repository(GlagolID name, list[Declaration] declarations)
-    | valueObject(GlagolID name, list[Declaration] declarations)
+    | valueObject(GlagolID name, list[Declaration] declarations, Proxy proxy)
     | property(Type valueType, GlagolID name, Expression defaultValue)
-    | util(GlagolID name, list[Declaration] declarations)
+    | util(GlagolID name, list[Declaration] declarations, Proxy proxy)
     | controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations)
     | action(GlagolID name, list[Declaration] params, list[Statement] body)
     | constructor(list[Declaration] params, list[Statement] body, Expression when)
     | method(Modifier modifier, Type returnType, GlagolID name, list[Declaration] params, list[Statement] body, Expression when)
     | param(Type paramType, GlagolID name, Expression defaultValue)
+    | require(str package, str version)
     | emptyDecl()
     ;
+
+data Proxy
+	= proxyClass(str origin)
+	| proxyMethod(str origin)
+	| notProxy()
+	;
 
 data ControllerType = jsonApi();
 
@@ -67,6 +74,7 @@ data Expression
     | this()
     | cast(Type \type, Expression expr)
     | query(QueryStatement queryStmt)
+    | adaptable() // used by the typechecker to fit with any excepted type
     ;
 
 data Symbol 
@@ -199,6 +207,7 @@ public anno loc Name@src;
 public anno loc Expression@src; 
 public anno loc Annotation@src;
 public anno loc Declaration@src;
+public anno loc Proxy@src;
 public anno loc QueryStatement@src;
 public anno loc QuerySpec@src;
 public anno loc QuerySource@src;

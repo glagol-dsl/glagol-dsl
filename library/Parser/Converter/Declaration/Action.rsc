@@ -14,13 +14,13 @@ public Declaration convertDeclaration((Declaration) `<Annotation* annotations><A
 public Declaration convertDeclaration((Declaration) `<Action action>`, _, _, ParseEnv env) = convertAction(action, env)[@src=action@\loc];
 
 public Declaration convertAction(a: (Action) `<MemberName name>{<Statement* body>}`, ParseEnv env) = 
-	action("<name>", [], [convertStmt(stmt, env) | stmt <- body]);
+	action(stringify(name), [], [convertStmt(stmt, env) | stmt <- body]);
 
 public Declaration convertAction(a: (Action) `<MemberName name>=<Expression expr>;`, ParseEnv env) = 
-	action("<name>", [], [\return(convertExpression(expr, env))]);
+	action(stringify(name), [], [\return(convertExpression(expr, env))]);
 
 public Declaration convertAction(a: (Action) `<MemberName name><AbstractParameters params>{<Statement* body>}`, ParseEnv env) = 
-	action("<name>", convertParameters(params, env), [convertStmt(stmt, env) | stmt <- body]);
+	action(stringify(name), convertParameters(params, env), [convertStmt(stmt, env) | stmt <- body]);
 
 public Declaration convertAction(a: (Action) `<MemberName name><AbstractParameters params>=<Expression expr>;`, ParseEnv env) = 
-	action("<name>", convertParameters(params, env), [\return(convertExpression(expr, env))]);
+	action(stringify(name), convertParameters(params, env), [\return(convertExpression(expr, env))]);

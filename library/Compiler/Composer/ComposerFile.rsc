@@ -12,6 +12,6 @@ import Config::Reader;
 import Map;
 	
 public str generateComposerFile(Config config, list[Declaration] ast) = 
-    toJSON(removeGlagolProps(setAutoloading(setDependencies(object(()), config), config, ast)));
+    toJSON(removeGlagolProps(setAutoloading(setDependencies(object(()), config, ast), config, ast)));
 
 private JSON removeGlagolProps(object(map[str, JSON] properties)) = object(delete(properties, "glagol"));

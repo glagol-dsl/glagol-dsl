@@ -119,12 +119,12 @@ test bool shouldNotGiveErrorWhenTryingToPersistAnEntity() =
 test bool shouldGiveErrorWhenTryingToPersistANonEntity() = 
 	checkStatement(persist(new(fullName("User", namespace("Test"), "User"), []))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
 		addImported(\import("User", namespace("Test"), "User"), addToAST(
-			file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), 
+			file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), 
 			setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 		)
 	) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Only entities can be persisted", addImported(\import("User", namespace("Test"), "User"), addToAST(
-		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), 
+		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), 
 		setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 	));
 
@@ -143,13 +143,13 @@ test bool shouldNotGiveErrorWhenTryingToFlushAnEntity() =
 test bool shouldGiveErrorWhenTryingToFlushANonEntity() = 
 	checkStatement(flush(new(fullName("User", namespace("Test"), "User"), []))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
 		addImported(\import("User", namespace("Test"), "User"), addToAST(
-			file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), 
+			file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), 
 			setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 		)
 	) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
 		"Only entities can be flushed", addImported(\import("User", namespace("Test"), "User"), addToAST(
-		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), 
+		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), 
 		setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 	));
 
@@ -168,13 +168,13 @@ test bool shouldNotGiveErrorWhenTryingToRemoveAnEntity() =
 test bool shouldGiveErrorWhenTryingToRemoveANonEntity() = 
 	checkStatement(remove(new(fullName("User", namespace("Test"), "User"), []))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
 		addImported(\import("User", namespace("Test"), "User"), addToAST(
-			file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), 
+			file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), 
 			setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 		)
 	) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), 
 		"Only entities can be removed", addImported(\import("User", namespace("Test"), "User"), addToAST(
-		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", []))), 
+		file(|tmp:///User.g|, \module(namespace("Test"), [], util("User", [], notProxy()))), 
 		setContext(\module(namespace("Test"), [], repository("User", [])), newEnv(|tmp:///|)))
 	));
 
@@ -182,12 +182,12 @@ test bool shouldGiveErrorWhenTryingToRemoveAnEntityFromANonRepository() =
 	checkStatement(remove(new(fullName("User", namespace("Test"), "User"), []))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], voidValue(), emptyDecl(), 
 		addImported(\import("User", namespace("Test"), "User"), addToAST(
 			file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", []))), 
-			setContext(\module(namespace("Test"), [], util("User", [])), newEnv(|tmp:///|)))
+			setContext(\module(namespace("Test"), [], util("User", [], notProxy())), newEnv(|tmp:///|)))
 		)
 	) == 
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Entities can only be removed from within a repository", addImported(\import("User", namespace("Test"), "User"), addToAST(
 		file(|tmp:///User.g|, \module(namespace("Test"), [], entity("User", []))), 
-		setContext(\module(namespace("Test"), [], util("User", [])), newEnv(|tmp:///|)))
+		setContext(\module(namespace("Test"), [], util("User", [], notProxy())), newEnv(|tmp:///|)))
 	));
 
 test bool shouldNotGiveErrorWhenDeclaringVariableOfTypeListWithVoidListAsDefaultValue() = 
@@ -367,10 +367,10 @@ test bool shouldNotGiveErrorWhenContinueOutFromExistingLevel() =
 test bool shouldGiveErrorWhenTryingToAssignValueOnAFieldOnNonConstructorInVO() = 
 	checkStatement(assign(variable("a"), defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
 		method(\public(), \any(), "aMethod", [], [], emptyExpr()), addDefinition(property(integer(), "a", emptyExpr()), 
-			setContext(\module(namespace("Test"), [], valueObject("User", [])), newEnv()))) == 
+			setContext(\module(namespace("Test"), [], valueObject("User", [], notProxy())), newEnv()))) == 
 	addError(|tmp:///User.g|(0,0,<20,20>,<30,30>), "Value objects are immutable. You can only assign property values from the constructor or private methods", 
 		addDefinition(property(integer(), "a", emptyExpr()), 
-			setContext(\module(namespace("Test"), [], valueObject("User", [])), newEnv())));
+			setContext(\module(namespace("Test"), [], valueObject("User", [], notProxy())), newEnv())));
 			
 test bool shouldNotGiveErrorWhenTryingToAssignValueOnAFieldOnNonConstructorInNonVO() = 
 	!hasErrors(checkStatement(assign(variable("a"), defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
@@ -380,10 +380,10 @@ test bool shouldNotGiveErrorWhenTryingToAssignValueOnAFieldOnNonConstructorInNon
 test bool shouldGiveErrorWhenTryingToAssignValueOnThisFieldOnNonConstructorInVO() = 
 	checkStatement(assign(fieldAccess(this(), symbol("a")), defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
 		method(\public(), voidValue(), "setSomething", [], [], emptyExpr()), addDefinition(property(integer(), "a", emptyExpr()), 
-			setContext(\module(namespace("Test"), [], valueObject("User", [property(integer(), "a", emptyExpr())])), newEnv()))) == 
+			setContext(\module(namespace("Test"), [], valueObject("User", [property(integer(), "a", emptyExpr())], notProxy())), newEnv()))) == 
 	addError(|tmp:///User.g|(0,0,<20,20>,<30,30>), "Value objects are immutable. You can only assign property values from the constructor or private methods", 
 		addDefinition(property(integer(), "a", emptyExpr()), 
-			setContext(\module(namespace("Test"), [], valueObject("User", [property(integer(), "a", emptyExpr())])), newEnv())));
+			setContext(\module(namespace("Test"), [], valueObject("User", [property(integer(), "a", emptyExpr())], notProxy())), newEnv())));
 
 test bool shouldNotGiveErrorWhenTryingToAssignValueOnThisFieldOnNonConstructorInNonVO() = 
 	!hasErrors(checkStatement(assign(fieldAccess(this(), symbol("a"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
@@ -393,16 +393,16 @@ test bool shouldNotGiveErrorWhenTryingToAssignValueOnThisFieldOnNonConstructorIn
 test bool shouldGiveErrorWhenAssigningValueThroughATemporaryVariableFromANonConstructorInVO() = 
 	checkStatement(assign(fieldAccess(variable("m"), symbol("a"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
 		method(\public(), voidValue(), "aMethod", [], [], emptyExpr()), addToAST(
-			\module(namespace("Test"), [], valueObject("Money", [])),
+			\module(namespace("Test"), [], valueObject("Money", [], notProxy())),
 			addDefinition(property(integer(), "a", emptyExpr()), addDefinition(
 				declare(artifact(fullName("Money", namespace("Test"), "Money")), variable("m"), emptyStmt()), 
-				setContext(\module(namespace("Test"), [], valueObject("Money", [])), newEnv()))))) ==
+				setContext(\module(namespace("Test"), [], valueObject("Money", [], notProxy())), newEnv()))))) ==
 	addError(|tmp:///User.g|(0,0,<20,20>,<30,30>),"Value objects are immutable. You can only assign property values from the constructor or private methods", 
 		addToAST(
-			\module(namespace("Test"), [], valueObject("Money", [])),
+			\module(namespace("Test"), [], valueObject("Money", [], notProxy())),
 			addDefinition(property(integer(), "a", emptyExpr()), addDefinition(
 				declare(artifact(fullName("Money", namespace("Test"), "Money")), variable("m"), emptyStmt()), 
-				setContext(\module(namespace("Test"), [], valueObject("Money", [])), newEnv())))));
+				setContext(\module(namespace("Test"), [], valueObject("Money", [], notProxy())), newEnv())))));
 			
 test bool shouldGiveErrorWhenTryingToAssignRepositoryOnThisFieldOnNonConstructorInVO() {
 
@@ -416,9 +416,9 @@ test bool shouldGiveErrorWhenTryingToAssignRepositoryOnThisFieldOnNonConstructor
 	
 	Declaration prop = property(repository(fullName("User", namespace("Test"), "User")), "users", emptyExpr());
 	
-	TypeEnv env = setContext(\module(namespace("Test"), [], valueObject("User", [prop, m])), addToAST([
+	TypeEnv env = setContext(\module(namespace("Test"), [], valueObject("User", [prop, m], notProxy())), addToAST([
 		file(|tmp:///User.g|, \module(namespace("Test"), [], repository("User", []))),
-		file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("User", [prop, m])))
+		file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("User", [prop, m], notProxy())))
 	], addDefinition(parameter, addDefinition(prop, newEnv()))));
 	
 	return checkStatement(assignment, \any(), m, env) == 
@@ -430,33 +430,33 @@ test bool shouldNotGiveErrorWhenAssigningValueThroughATemporaryVariableFromACons
 		constructor([], [], emptyExpr()), addToAST(
 			\module(namespace("Test"), [], valueObject("Money", [
 				property(integer(), "a", emptyExpr())
-			])),
+			], notProxy())),
 			addDefinition(property(integer(), "a", emptyExpr()), addDefinition(
 				declare(artifact(fullName("Money", namespace("Test"), "Money")), variable("m"), emptyStmt()), 
 				setContext(\module(namespace("Test"), [], valueObject("Money", [
 					property(integer(), "a", emptyExpr())
-				])), newEnv()))))));
+				], notProxy())), newEnv()))))));
 
 test bool shouldNotGiveErrorWhenTryingToAssignValueOnAFieldOnPrivateMethodInVO() = 
 	!hasErrors(checkStatement(assign(variable("a"), defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
 		method(\private(), \any(), "aMethod", [], [], emptyExpr()), addDefinition(property(integer(), "a", emptyExpr()), 
-			setContext(\module(namespace("Test"), [], valueObject("User", [])), newEnv()))));
+			setContext(\module(namespace("Test"), [], valueObject("User", [], notProxy())), newEnv()))));
 			
 test bool shouldNotGiveErrorWhenTryingToAssignValueOnThisFieldOnPrivateMethodInVO() = 
 	!hasErrors(checkStatement(assign(fieldAccess(this(), symbol("a")), defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
 		method(\private(), voidValue(), "setSomething", [], [], emptyExpr()), addDefinition(property(integer(), "a", emptyExpr()), 
-			setContext(\module(namespace("Test"), [], valueObject("User", [property(integer(), "a", emptyExpr())])), newEnv()))));
+			setContext(\module(namespace("Test"), [], valueObject("User", [property(integer(), "a", emptyExpr())], notProxy())), newEnv()))));
 
 test bool shouldNotGiveErrorWhenAssigningValueThroughATemporaryVariableFromAPrivateMethodInVO() = 
 	!hasErrors(checkStatement(assign(fieldAccess(variable("m"), symbol("a"))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], defaultAssign(), expression(integer(1)))[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], \any(), 
 		method(\private(), voidValue(), "aMethod", [], [], emptyExpr()), addToAST(
-			\module(namespace("Test"), [], valueObject("Money", [])),
+			\module(namespace("Test"), [], valueObject("Money", [], notProxy())),
 			addDefinition(property(integer(), "a", emptyExpr()), addDefinition(
 				declare(artifact(fullName("Money", namespace("Test"), "Money")), variable("m"), emptyStmt()), 
 				setContext(\module(namespace("Test"), [], valueObject("Money", [
 					property(artifact(fullName("Money", namespace("Test"), "Money")), "m", emptyExpr()),
 					property(integer(), "a", emptyExpr())
-				])), newEnv()))))));
+				], notProxy())), newEnv()))))));
 			
 test bool shouldNotGiveErrorWhenTryingToAssignRepositoryOnThisFieldOnPrivateMethodInVO() {
 
@@ -470,10 +470,11 @@ test bool shouldNotGiveErrorWhenTryingToAssignRepositoryOnThisFieldOnPrivateMeth
 	
 	Declaration prop = property(repository(fullName("User", namespace("Test"), "User")), "users", emptyExpr());
 	
-	TypeEnv env = setContext(\module(namespace("Test"), [], valueObject("User", [prop, m])), addToAST([
+	TypeEnv env = setContext(\module(namespace("Test"), [], valueObject("User", [prop, m], notProxy())), addToAST([
 		file(|tmp:///User.g|, \module(namespace("Test"), [], repository("User", []))),
-		file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("User", [prop, m])))
+		file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("User", [prop, m], notProxy())))
 	], addDefinition(parameter, addDefinition(prop, newEnv()))));
 	
 	return !hasErrors(checkStatement(assignment, \any(), m, env));
 }
+

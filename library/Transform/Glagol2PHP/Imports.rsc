@@ -11,7 +11,7 @@ import Transform::OriginAnnotator;
 
 public list[PhpStmt] toPhpUses(m: \module(Declaration namespace, list[Declaration] imports, Declaration artifact), list[Declaration] ast, TransformEnv env) =
     [origin(phpUse(
-        {origin(toPhpUse(i), i) | i <- imports + extractImports(m, ast, env)}
+        {origin(toPhpUse(i, env), i) | i <- imports + extractImports(m, ast, env)}
     ), namespace)];
 
 private list[Declaration] extractImports(
@@ -100,10 +100,14 @@ private str toString(\import(str name, Declaration namespace, _)) = "<toString(n
 private str toString(namespace(str name)) = "<name>";
 private str toString(namespace(str name, Declaration namespace)) = "<name>::<toString(namespace)>";
 
-private PhpUse toPhpUse(\import(str artifactName, Declaration namespace, str as)) = 
-	phpUse(phpName(namespaceToString(namespace, "\\") + "\\" + artifactName), phpSomeName(phpName(as)))
-    when as != artifactName;
+private str toString(proxyClass(str class)) = class;
 
-private PhpUse toPhpUse(\import(str artifactName, Declaration namespace, str as)) = 
-	phpUse(phpName(namespaceToString(namespace, "\\") + "\\" + artifactName), phpNoName()) 
-	when as == artifactName;
+private PhpUse toPhpUse(i: \import(str artifactName, Declaration namespace, str as), TransformEnv env) =
+	phpUse(phpName(toString(getProxyClass(i, env))), phpSomeName(phpName(as)))
+	when isProxy(i, env);
+
+private default PhpUse toPhpUse(\import(str artifactName, Declaration namespace, str as), TransformEnv env) = 
+	phpUse(phpName(namespaceToString(namespace, "\\") + "\\" + artifactName), toPhpAlias(as, artifactName));
+
+private PhpOptionName toPhpAlias(str as, str artifactName) = phpSomeName(phpName(as)) when as != artifactName;
+private PhpOptionName toPhpAlias(str as, str artifactName) = phpNoName() when as == artifactName;

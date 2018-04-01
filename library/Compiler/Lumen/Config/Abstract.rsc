@@ -11,9 +11,9 @@ public data Conf
     | storagePath(str path)
     | basePath(str path)
     | \null()
-    | boolean(bool bval)
-    | string(str val)
-    | integer(int ival)
+    | booleanVal(bool bval)
+    | stringVal(str val)
+    | integerVal(int ival)
     | class(str className)
     | class(str className, str field)
     | array(list[Conf] l)
@@ -49,9 +49,9 @@ public PhpExpr toPhpConf(basePath(str path)) = phpCall("base_path", [
     phpActualParameter(phpScalar(phpString(path)), false)
 ]);
 
-public PhpExpr toPhpConf(string(str val)) = phpScalar(phpString(val));
-public PhpExpr toPhpConf(integer(int val)) = phpScalar(phpInteger(val));
-public PhpExpr toPhpConf(boolean(bool bval)) = phpScalar(phpBoolean(bval));
+public PhpExpr toPhpConf(stringVal(str val)) = phpScalar(phpString(val));
+public PhpExpr toPhpConf(integerVal(int val)) = phpScalar(phpInteger(val));
+public PhpExpr toPhpConf(booleanVal(bool bval)) = phpScalar(phpBoolean(bval));
 public PhpExpr toPhpConf(\null()) = phpScalar(phpNull());
 public PhpExpr toPhpConf(class(str className)) = toPhpConf(class(className, "class"));
 public PhpExpr toPhpConf(class(str className, str field)) = phpFetchClassConst(phpName(phpName(className)), field);

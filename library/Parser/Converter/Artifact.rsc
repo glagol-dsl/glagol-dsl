@@ -21,19 +21,31 @@ public Declaration convertArtifact(a: (Artifact) `entity <ArtifactName name> {<D
 public Declaration convertArtifact(a: (Artifact) `repository for <ArtifactName name> {<Declaration* declarations>}`, ParseEnv env) =
 	repository("<name>", [convertDeclaration(d, "<name>", "repository", env) | d <- declarations])[@src=a@\loc];
 
+public Declaration convertArtifact(a: (Artifact) `proxy<PhpClassName phpClassName>as<Proxable proxy>`, ParseEnv env) =
+	convertProxable(proxy, proxyClass("<phpClassName>")[@src=phpClassName@\loc], env);
+
+public Declaration convertProxable(a: (Proxable) `value <ArtifactName name> {<ProxyDeclaration* declarations>}`, Proxy proxy, ParseEnv env) = 
+	valueObject("<name>", [convertProxyDeclaration(d, "<name>", env) | d <- declarations], proxy)[@src=a@\loc];
+
+public Declaration convertProxable(a: (Proxable) `util <ArtifactName name> {<ProxyDeclaration* declarations>}`, Proxy proxy, ParseEnv env) = 
+	util("<name>", [convertProxyDeclaration(d, "<name>", env) | d <- declarations], proxy)[@src=a@\loc];
+
+public Declaration convertProxable(a: (Proxable) `service <ArtifactName name> {<ProxyDeclaration* declarations>}`, Proxy proxy, ParseEnv env) = 
+	util("<name>", [convertProxyDeclaration(d, "<name>", env) | d <- declarations], proxy)[@src=a@\loc];
+
 public Declaration convertArtifact(a: (Artifact) `value <ArtifactName name> {<Declaration* declarations>}`, ParseEnv env) = 
-	valueObject("<name>", [convertDeclaration(d, "<name>", "value", env) | d <- declarations])[@src=a@\loc];
+	valueObject("<name>", [convertDeclaration(d, "<name>", "value", env) | d <- declarations], notProxy()[@src=a@\loc])[@src=a@\loc];
     
 public Declaration convertArtifact(a: (Artifact) `util <ArtifactName name> {<Declaration* declarations>}`, ParseEnv env) = 
-	util("<name>", [convertDeclaration(d, "<name>", "util", env) | d <- declarations])[@src=a@\loc];
+	util("<name>", [convertDeclaration(d, "<name>", "util", env) | d <- declarations], notProxy())[@src=a@\loc];
     
 public Declaration convertArtifact(a: (Artifact) `service <ArtifactName name> {<Declaration* declarations>}`, ParseEnv env) = 
-	util("<name>", [convertDeclaration(d, "<name>", "util", env) | d <- declarations])[@src=a@\loc];
+	util("<name>", [convertDeclaration(d, "<name>", "util", env) | d <- declarations], notProxy())[@src=a@\loc];
 
 public ControllerType convertControllerType(c: (ControllerType) `json-api`) = jsonApi()[@src=c@\loc];
 public ControllerType convertControllerType(c: (ControllerType) `rest`) = jsonApi()[@src=c@\loc];
 
-public Route convertRoute(r: (RoutePart) `<Identifier part>`) = routePart("<part>")[@src=r@\loc];
+public Route convertRoute(r: (RoutePart) `<Identifier part>`) = routePart(stringify(part))[@src=r@\loc];
 public Route convertRoute(r: (RoutePart) `<RoutePlaceholder placeholder>`) = 
 	routeVar(substring("<placeholder>", 1, size("<placeholder>")))[@src=r@\loc];
 

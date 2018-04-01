@@ -14,7 +14,7 @@ import List;
 public TypeEnv checkMethod(c: constructor(_, _, _), repository(_, _), TypeEnv env) =
 	addError(c, "Constructors are disabled for repositories", env);
 
-public TypeEnv checkMethod(c: constructor(_, _, _), util(_, _), TypeEnv env) =
+public TypeEnv checkMethod(c: constructor(_, _, _), util(_, _, _), TypeEnv env) =
 	addError(c, "Constructors are disabled for utilities/services", env);
 
 public TypeEnv checkMethod(c: constructor(_, _, _), controller(_, _, _, _), TypeEnv env) =

@@ -17,7 +17,7 @@ public default bool isConstructor(value _) = false;
 public bool isEntity(entity(GlagolID name, list[Declaration] declarations)) = true;
 public default bool isEntity(value _) = false;
 
-public bool isValueObject(valueObject(_, _)) = true;
+public bool isValueObject(valueObject(GlagolID name, list[Declaration] declarations, Proxy proxy)) = true;
 public default bool isValueObject(value _) = false;
 
 public bool isRepository(repository(_, _)) = true;
@@ -31,6 +31,10 @@ public default bool isIfThenElse(value _) = false;
 
 public bool isEmpty(emptyExpr()) = true;
 public default bool isEmpty(value _) = false;
+
+public bool isProxy(\module(Declaration ns, list[Declaration] is, valueObject(GlagolID name, list[Declaration] declarations, proxyClass(str pr)))) = true;
+public bool isProxy(\module(Declaration ns, list[Declaration] is, util(GlagolID name, list[Declaration] declarations, proxyClass(str pr)))) = true;
+public default bool isProxy(value _) = false;
 
 public bool hasConstructors(list[Declaration] declarations) = size([d | d <- declarations, isConstructor(d)]) > 0;
 
@@ -51,6 +55,7 @@ public map[str name, list[Declaration] methods] categorizeMethods(list[Declarati
 
 public list[Declaration] getMethods(list[Declaration] ds) = [m | m: method(_, _, _, _, _, _) <- ds];
 public list[Declaration] getMethods(\module(_, _, Declaration artifact)) = getMethods(artifact.declarations);
+public default list[Declaration] getMethods(emptyDecl()) = [];
 public list[Declaration] getPublicMethods(list[Declaration] ds) = [m | m: method(\public(), _, _, _, _, _) <- ds];
 
 public bool hasOverriding(list[Declaration] declarations) =
@@ -102,3 +107,9 @@ public str extractName(fullName(str localName, Declaration namespace, str origin
 public str toString(\public()) = "public";
 public str toString(\private()) = "private";
 
+public list[Declaration] requirements(list[Declaration] ast) = 
+	[r | file(loc file, \module(Declaration ns, list[Declaration] is, Declaration artifact)) <- ast, r: require(str package, str version) <- declarations(artifact)];
+
+private list[Declaration] declarations(util(GlagolID name, list[Declaration] declarations, proxyClass(str c))) = [d | d <- declarations];
+private list[Declaration] declarations(valueObject(GlagolID name, list[Declaration] declarations, proxyClass(str c))) = [d | d <- declarations];
+private default list[Declaration] declarations(Declaration d) = [];

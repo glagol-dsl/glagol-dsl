@@ -12,11 +12,11 @@ test bool shouldMakeFilenameFromNamespaceAndAnnotatedEntity()
 
 test bool shouldMakeFilenameFromNamespaceAndUtil()
     = "Some/Example/Util/Test.php" == makeFilename(namespace(
-    	"Some", namespace("Example", namespace("Util"))), util("Test", []));
+    	"Some", namespace("Example", namespace("Util"))), util("Test", [], notProxy()));
 
 test bool shouldMakeFilenameFromNamespaceAndValueObject()
     = "Some/Example/VO/Test.php" == makeFilename(namespace(
-    	"Some", namespace("Example", namespace("VO"))), valueObject("Test", []));
+    	"Some", namespace("Example", namespace("VO"))), valueObject("Test", [], notProxy()));
 
 test bool shouldMakeFilenameFromNamespaceAndRepository()
     = "Some/Example/Repository/TestRepository.php" == makeFilename(namespace(

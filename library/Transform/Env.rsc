@@ -3,6 +3,7 @@ module Transform::Env
 import Config::Config;
 import Config::Reader;
 import Syntax::Abstract::Glagol;
+import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::Glagol::Definitions;
 
 alias TransformEnv = tuple[
@@ -19,6 +20,7 @@ public TransformEnv newTransformEnv(Declaration context) = <lumen(), doctrine(),
 public TransformEnv newTransformEnv(Framework f, ORM orm) = <f, orm, (), emptyDecl(), []>;
 
 public TransformEnv setAST(list[Declaration] ds, TransformEnv env) = env[ast = ds];
+public TransformEnv addToAST(list[Declaration] ds, TransformEnv env) = env[ast = env.ast + ds];
 public TransformEnv setContext(Declaration ctx, TransformEnv env) = env[context = ctx];
 public Declaration getContext(TransformEnv env) = env.context;
 
@@ -27,8 +29,8 @@ public str getArtifactName(file(loc file, Declaration \module)) = getArtifactNam
 public str getArtifactName(\module(Declaration namespace, list[Declaration] imports, Declaration artifact)) = getArtifactName(artifact);
 public str getArtifactName(entity(GlagolID name, list[Declaration] declarations)) = name;
 public str getArtifactName(repository(GlagolID name, list[Declaration] declarations)) = "repository\<<name>\>";
-public str getArtifactName(valueObject(GlagolID name, list[Declaration] declarations)) = name;
-public str getArtifactName(util(GlagolID name, list[Declaration] declarations)) = name;
+public str getArtifactName(valueObject(GlagolID name, list[Declaration] declarations, notProxy())) = name;
+public str getArtifactName(util(GlagolID name, list[Declaration] declarations, Proxy pr)) = name;
 public str getArtifactName(controller(GlagolID name, ControllerType controllerType, Route route, list[Declaration] declarations)) = name;
 
 public Declaration getNamespace(TransformEnv env) = env.context.namespace;
@@ -64,7 +66,7 @@ public default bool isField(str name, TransformEnv env) = false;
 
 public bool isValueObject(artifact(fullName(str localName, Declaration ns, str originalName)), TransformEnv env) {
 	top-down visit (env.ast) {
-		case valueObject(originalName, list[Declaration] ds): return true;
+		case valueObject(originalName, list[Declaration] ds, Proxy proxy): return true;
 	}
 	return false;
 }
@@ -86,3 +88,9 @@ public Declaration findRepository(artifact(fullName(str localName, Declaration n
 	}
 	return emptyDecl();
 }
+
+public Proxy getProxyClass(\import(str artifactName, Declaration ns, str as), TransformEnv env) =
+	(notProxy() | artifact.proxy | file(_, m: \module(ns, _, Declaration artifact)) <- env.ast, isProxy(m) && artifactName == artifact.name);
+
+public bool isProxy(i: \import(str artifactName, Declaration namespace, str as), TransformEnv env) =
+	getProxyClass(i, env) != notProxy();

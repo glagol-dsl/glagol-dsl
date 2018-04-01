@@ -31,9 +31,34 @@ syntax Artifact
     | "value" ArtifactName name "{" Declaration* declarations "}"
     | ("util" | "service") ArtifactName name "{" Declaration* declarations "}"
     | ControllerType controllerType "controller" Route routes "{" Declaration* declarations "}"
+    | "proxy" PhpClassName phpClass "as" Proxable proxy
     ;
 
-lexical Route = "/" {RoutePart "/"}* routes;
+syntax Proxable 
+	= "value" ArtifactName name "{" ProxyDeclaration* method "}"
+	| ("util" | "service") ArtifactName name "{" ProxyDeclaration* method "}"
+	;
+
+syntax ProxyDeclaration
+	= ProxyMethod m
+	| Annotation+ annotations ProxyMethod m
+	| ProxyConstructor c
+	| Annotation+ annotations ProxyConstructor c
+	| ProxyRequire r
+	| Annotation+ annotations ProxyRequire r
+	;
+
+syntax ProxyMethod
+	= Type returnType MemberName name "(" {AbstractParameter ","}* parameters ")" ";"
+	;
+
+syntax ProxyConstructor
+	= ArtifactName "(" {AbstractParameter ","}* parameters ")" ";"
+	;
+
+syntax ProxyRequire
+	= "require" StringQuoted string StringQuoted string ";"
+	;
 
 syntax RoutePart
 	= Identifier part
@@ -115,7 +140,7 @@ syntax AbstractParameter
     | Annotation+ annotations Parameter parameter;
 
 syntax Parameter
-    = Type paramType MemberName name AssignDefaultValue? defaultValue
+    = Type paramType MemberName name
     ;
 
 syntax AssignDefaultValue

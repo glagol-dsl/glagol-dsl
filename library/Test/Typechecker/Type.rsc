@@ -51,12 +51,12 @@ test bool shlouldGiveErrorWhenUsingRepositoryWithImportedArtifactButIsNotEntity(
 		param(repository(fullName("Date", namespace("Test"), "Date")), "prop", emptyExpr())[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
 		
 		addImported(\import("Date", namespace("Test"), "Date"),
-			addToAST(file(|tmp:///Date.g|, \module(namespace("Test"), [], util("Date", [])[@src=|tmp:///Date.g|(0, 0, <10, 10>, <20, 20>)])), newEnv(|tmp:///User.g|))
+			addToAST(file(|tmp:///Date.g|, \module(namespace("Test"), [], util("Date", [], notProxy())[@src=|tmp:///Date.g|(0, 0, <10, 10>, <20, 20>)])), newEnv(|tmp:///User.g|))
 		)
 	) == 
 	addError(|tmp:///User.g|(0, 0, <10, 10>, <20, 20>), "\"Date\" is not an entity",
 	addImported(\import("Date", namespace("Test"), "Date"),
-		addToAST(file(|tmp:///Date.g|, \module(namespace("Test"), [], util("Date", [])[@src=|tmp:///Date.g|(0, 0, <10, 10>, <20, 20>)])), newEnv(|tmp:///User.g|))
+		addToAST(file(|tmp:///Date.g|, \module(namespace("Test"), [], util("Date", [], notProxy())[@src=|tmp:///Date.g|(0, 0, <10, 10>, <20, 20>)])), newEnv(|tmp:///User.g|))
 	));
 
 test bool shouldGiveErrorsWhenUsingSelfieForSomethingElseThanGettingPropertyInstance() = 
@@ -85,11 +85,11 @@ test bool shlouldNotGiveErrorWhenGettingSelfieOfNonUtilArtifact() =
 		property(artifact(fullName("Date", namespace("Test"), "Date")), "prop", get(selfie()))[@src=|tmp:///User.g|(0, 0, <10, 10>, <20, 20>)],
 		
 		addImported(\import("Date", namespace("Test"), "Date"),
-			addToAST(file(|tmp:///Date.g|, \module(namespace("Test"), [], util("Date", [])[@src=|tmp:///Date.g|(0, 0, <10, 10>, <20, 20>)])), newEnv(|tmp:///User.g|))
+			addToAST(file(|tmp:///Date.g|, \module(namespace("Test"), [], util("Date", [], notProxy())[@src=|tmp:///Date.g|(0, 0, <10, 10>, <20, 20>)])), newEnv(|tmp:///User.g|))
 		)
 	) == 
 	addImported(\import("Date", namespace("Test"), "Date"),
-		addToAST(file(|tmp:///Date.g|, \module(namespace("Test"), [], util("Date", [])[@src=|tmp:///Date.g|(0, 0, <10, 10>, <20, 20>)])), newEnv(|tmp:///User.g|))
+		addToAST(file(|tmp:///Date.g|, \module(namespace("Test"), [], util("Date", [], notProxy())[@src=|tmp:///Date.g|(0, 0, <10, 10>, <20, 20>)])), newEnv(|tmp:///User.g|))
 	);
 
 test bool shlouldNotGiveErrorWhenGettingSelfieOfRepository() =

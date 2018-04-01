@@ -8,10 +8,13 @@ lexical ArtifactName
 
 lexical MemberName
     =  ([a-z] !<< [a-z] [0-9A-Za-z]* !>> [0-9A-Za-z]) \ GlagolPreserved
+    | [\\] ([a-z] !<< [a-z] [0-9A-Za-z]* !>> [0-9A-Za-z])
     ;
 
 lexical Identifier
-    =  ([a-zA-Z][a-zA-Z0-9_]* !>> [a-zA-Z0-9_]) \ GlagolPreserved;
+    =  ([a-zA-Z][a-zA-Z0-9_]* !>> [a-zA-Z0-9_]) \ GlagolPreserved
+    | [\\] ([a-zA-Z][a-zA-Z0-9_]* !>> [a-zA-Z0-9_])
+    ;
     
 lexical RoutePlaceholder
     =  (":" [a-zA-Z][a-zA-Z0-9_]* !>> [a-zA-Z0-9_]) \ GlagolPreserved;
@@ -74,3 +77,11 @@ lexical DeciFloatNumeral
     ;
 
 lexical ControllerType = "json-api" | "rest";
+
+lexical Route = "/" {RoutePart "/"}* routes;
+
+lexical PhpClassName 
+	= "\\" Name
+	| "\\" Name PhpClassName 
+	;
+

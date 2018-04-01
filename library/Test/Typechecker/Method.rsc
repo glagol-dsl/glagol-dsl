@@ -50,7 +50,7 @@ test bool shouldGiveErrorWhenUsingConstructorOnRepository() =
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Constructors are disabled for repositories", newEnv());
 
 test bool shouldGiveErrorWhenUsingConstructorOnUtils() = 
-	checkMethod(constructor([], [], emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], util("User", []), newEnv()) ==
+	checkMethod(constructor([], [], emptyExpr())[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], util("User", [], notProxy()), newEnv()) ==
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Constructors are disabled for utilities/services", newEnv());
 
 test bool shouldGiveErrorWhenUsingConstructorOnControllers() = 
@@ -102,10 +102,10 @@ test bool shouldGiveErrorWhenAutofindOnNonEntityParameterInAction() =
 		param(artifact(fullName("Money", namespace("Test"), "Money")), "m", emptyExpr())[@annotations=[
 			annotation("autofind", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]]]
 	], [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)], controller("UserController", jsonApi(), route([]), []), addToAST(
-		\file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("Money", []))), 
+		\file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("Money", [], notProxy()))), 
 			addImported(\import("Money", namespace("Test"), "Money"), newEnv()))) ==
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Annotation @autofind can only be used on entities", addToAST(
-		\file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("Money", []))), 
+		\file(|tmp:///User.g|, \module(namespace("Test"), [], valueObject("Money", [], notProxy()))), 
 			addImported(\import("Money", namespace("Test"), "Money"), 
 				addDefinition(param(artifact(fullName("Money", namespace("Test"), "Money")), "m", emptyExpr())[@annotations=[
 			annotation("autofind", [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]]], newEnv()))));

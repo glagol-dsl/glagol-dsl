@@ -85,7 +85,7 @@ test bool shouldParseConstructWithTwoParamsAndDefaultValue()
     str code 
         = "namespace Example
           'entity User {
-          '    User(int param, float param2 = 0.55, bool param3 = true) {
+          '    User(int param, float param2, bool param3) {
           '    }
           '}
           '";
@@ -93,8 +93,8 @@ test bool shouldParseConstructWithTwoParamsAndDefaultValue()
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([
             param(integer(), "param", emptyExpr()),
-            param(float(), "param2", float(0.55)),
-            param(boolean(), "param3", boolean(true))
+            param(float(), "param2", emptyExpr()),
+            param(boolean(), "param3", emptyExpr())
         ], [], emptyExpr())
     ]));
 }
@@ -104,7 +104,7 @@ test bool shouldParseConstructWithBody()
     str code 
         = "namespace Example
           'entity User {
-          '    User(int param, float param2 = 0.55, bool param3 = true) {
+          '    User(int param, float param2, bool param3) {
           '        param + param2;
           '        param3 = param \> param2;
           '    }
@@ -114,8 +114,8 @@ test bool shouldParseConstructWithBody()
     return parseModule(code) == \module(namespace("Example"), [], entity("User", [
         constructor([
             param(integer(), "param", emptyExpr()),
-            param(float(), "param2", float(0.55)),
-            param(boolean(), "param3", boolean(true))
+            param(float(), "param2", emptyExpr()),
+            param(boolean(), "param3", emptyExpr())
         ], [
             expression(addition(variable("param"), variable("param2"))),
             assign(variable("param3"), defaultAssign(), expression(greaterThan(variable("param"), variable("param2"))))

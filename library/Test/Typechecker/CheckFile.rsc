@@ -13,11 +13,11 @@ test bool shouldConstructFileFromRepositoryModuleUsingTmpLoc() =
     |tmp:///src/Test/Repository/UserRepository.g|;
 
 test bool shouldConstructFileFromVOModuleUsingTmpLoc() =
-    constructFileFromModule(|tmp:///src|, \module(namespace("Test", namespace("VO")), [], valueObject("Date", []))) ==
+    constructFileFromModule(|tmp:///src|, \module(namespace("Test", namespace("VO")), [], valueObject("Date", [], notProxy()))) ==
     |tmp:///src/Test/VO/Date.g|;
 
 test bool shouldConstructFileFromUtilModuleUsingTmpLoc() =
-    constructFileFromModule(|tmp:///src|, \module(namespace("Test", namespace("Util")), [], util("Serve", []))) ==
+    constructFileFromModule(|tmp:///src|, \module(namespace("Test", namespace("Util")), [], util("Serve", [], notProxy()))) ==
     |tmp:///src/Test/Util/Serve.g|;
     
 test bool shouldConstructFileFromControllerModuleUsingTmpLoc() =

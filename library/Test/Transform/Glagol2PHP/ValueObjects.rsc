@@ -10,7 +10,7 @@ import Config::Config;
 test bool shouldTransformToValueObjectPhpClassDefStmt() = 
 	toPhpClassDef(valueObject("Money", [
 		property(string(), "a property", emptyExpr())
-	]), newTransformEnv(anyFramework(), anyORM())) ==
+	], notProxy()), newTransformEnv(anyFramework(), anyORM())) ==
 	phpClassDef(phpClass("Money", {}, phpNoName(), [phpName("\\JsonSerializable")], [
 		phpTraitUse([phpName("\\Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait")], []),
 		phpProperty(
@@ -21,8 +21,8 @@ test bool shouldTransformToValueObjectPhpClassDefStmt() =
 	]));
 
 test bool shouldTransformAnnotatedValueObjectToValueObjectPhpClassDefStmt() = 
-	toPhpClassDef(valueObject("Money", [])[@annotations=[]], newTransformEnv(anyFramework(), anyORM())) ==
+	toPhpClassDef(valueObject("Money", [], notProxy())[@annotations=[]], newTransformEnv(anyFramework(), anyORM())) ==
 	phpClassDef(phpClass("Money", {}, phpNoName(), [phpName("\\JsonSerializable")], [phpTraitUse([phpName("\\Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait")], [])])) &&
-	toPhpClassDef(valueObject("Money", [])[@annotations=[annotation("doc", [annotationVal("This is a doc")])]], newTransformEnv(anyFramework(), anyORM())).classDef@phpAnnotations ==
+	toPhpClassDef(valueObject("Money", [], notProxy())[@annotations=[annotation("doc", [annotationVal("This is a doc")])]], newTransformEnv(anyFramework(), anyORM())).classDef@phpAnnotations ==
 		{phpAnnotation("doc", phpAnnotationVal("This is a doc"))};
 

@@ -71,7 +71,7 @@ public Expression convertExpression(a: (Expression) `[<{Expression ","}* items>]
     = \list([convertExpression(i, env) | i <- items])[@src=a@\loc];
     
 public Expression convertExpression(a: (Expression) `<MemberName varName>`, ParseEnv env)
-    = variable("<varName>")[@src=a@\loc];
+    = variable(stringify(varName))[@src=a@\loc];
     
 public Expression convertExpression(a: (Expression) `-<Expression expr>`, ParseEnv env)
     = negative(convertExpression(expr, env))[@src=a@\loc];

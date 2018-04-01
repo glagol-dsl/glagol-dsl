@@ -41,7 +41,7 @@ test bool shouldNotGiveErrorsOnDuplicatingParamListsWithDifferentGuards() =
 	));
 	
 test bool shouldGiveErrorWhenUsingActionOnNonController() = 
-	checkDeclarations([action("index", [], [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], valueObject("Money", []), newEnv()) ==
+	checkDeclarations([action("index", [], [])[@src=|tmp:///User.g|(0, 0, <20, 20>, <30, 30>)]], valueObject("Money", [], notProxy()), newEnv()) ==
 	addError(|tmp:///User.g|(0, 0, <20, 20>, <30, 30>), "Actions are only permitted in controllers", newEnv());
 	
 test bool shouldGiveErrorWhenUsingActionOnController() = 
