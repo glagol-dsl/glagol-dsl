@@ -9,6 +9,7 @@ library/Tests.rsc
 *.orig
 glagol-dsl.iml
 glagol.iml
+*.iml
 composer.lock
 /vendor/
 /target/
