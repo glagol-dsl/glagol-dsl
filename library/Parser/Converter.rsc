@@ -141,7 +141,7 @@ public Declaration convertDeclaration(a: (Declaration) `<Annotation+ annotations
 
 
 
-public str convertStringQuoted(string) = substring("<string>", 1, size("<string>") - 1);
+public str convertStringQuoted(string) = deescape(substring("<string>", 1, size("<string>") - 1));
 
 
 public Declaration convertProxyDeclaration(a: (ProxyDeclaration) `<Annotation+ annotations><ProxyConstructor c>`, str proxyName, ParseEnv env) 

@@ -1,5 +1,6 @@
 module Compiler::Lumen::Config::Doctrine
 
+import Syntax::Abstract::Glagol;
 import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::PHP;
 import Syntax::Abstract::PHP::Helpers;
@@ -15,14 +16,14 @@ public str createDoctrineConfig(list[Syntax::Abstract::Glagol::Declaration] ast)
                 "meta": env("DOCTRINE_METADATA", "annotations"),
                 "connection": env("DB_CONNECTION", "mysql"),
                 "namespaces": array([
-                    string("App")
+                    stringVal("App")
                 ]),
                 "paths": array([
                     basePath("app")
                 ]),
                 "repository": class("Doctrine\\ORM\\EntityRepository"),
                 "proxies": array((
-                    "namespace": boolean(false),
+                    "namespace": booleanVal(false),
                     "path": storagePath("proxies"),
                     "auto_generate": env("DOCTRINE_PROXY_AUTOGENERATE", false)
                 )),
@@ -43,21 +44,27 @@ public str createDoctrineConfig(list[Syntax::Abstract::Glagol::Declaration] ast)
         "cache": array((
             "default": env("DOCTRINE_CACHE", "array"),
             "namespace": \null(),
-            "second_level": boolean(false)
+            "second_level": booleanVal(false)
         )),
         "gedmo": array((
-            "all_mappings": boolean(false)
+            "all_mappings": booleanVal(false)
         )),
-        "doctrine_presence_verifier": boolean(true),
+        "doctrine_presence_verifier": booleanVal(true),
         "notifications": array((
-            "channel": string("database")
+            "channel": stringVal("database")
         ))
     )))))])));
 
-private map[Conf, Conf] createCustomTypesMapping(list[Syntax::Abstract::Glagol::Declaration] ast) = 
-	(string("json"): class("LaravelDoctrine\\ORM\\Types\\Json")) + 
-	(class("\\App\\Types\\<namespaceToString(ns)><name>Type", "TYPE_NAME"): class("\\App\\Types\\<namespaceToString(ns)><name>Type") |
-		Syntax::Abstract::Glagol::file(_, 
-			Syntax::Abstract::Glagol::\module(ns, _, 
-				Syntax::Abstract::Glagol::valueObject(str name, _, notProxy()))) <- ast);
+private map[Conf, Conf] createCustomTypesMapping(list[Declaration] ast) = 
+	(stringVal("json"): class("LaravelDoctrine\\ORM\\Types\\Json")) + 
+	(class(typeClass(ns, name, v), "TYPE_NAME"): class(typeClass(ns, name, v)) | 
+		file(_, \module(ns, _, v: valueObject(str name, _, Proxy proxy))) <- ast,
+		(proxyClass(str prc) := proxy && (v@annotations?)) ? (
+			[*l, annotation("typeFactory", [annotationVal(str tFactory)]), *r] := v@annotations
+		) : true
+	);
+		
+private str typeClass(Declaration ns, str name, Declaration artifact) = 
+	factory when (artifact@annotations?) && [*l, annotation("typeFactory", [annotationVal(str factory)]), *r] := artifact@annotations;
+private str typeClass(Declaration ns, str name, Declaration artifact) = "\\App\\Types\\<namespaceToString(ns)><name>Type";
 

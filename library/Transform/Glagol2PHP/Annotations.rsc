@@ -1,13 +1,21 @@
 module Transform::Glagol2PHP::Annotations
 
 import Transform::Env;
-import Transform::Glagol2PHP::Doctrine::Annotations;
 import Syntax::Abstract::Glagol;
 import Syntax::Abstract::PHP;
 import Config::Config;
 import Transform::OriginAnnotator;
 import List;
 import Map;
+
+public PhpAnnotation toPhpAnnotation("table", list[Annotation] arguments, TransformEnv env)
+    = origin(phpAnnotationVal(("name": toPhpAnnotation(arguments[0], env))), getContext(env)) when usesDoctrine(env) && isInEntity(env);
+    
+public PhpAnnotation toPhpAnnotation("column", list[Annotation] arguments, TransformEnv env)
+    = toPhpAnnotation(arguments[0], env) when annotationMap(_) := arguments[0] && usesDoctrine(env) && isInEntity(env);
+    
+public PhpAnnotation toPhpAnnotation("field", list[Annotation] arguments, TransformEnv env) = 
+	toPhpAnnotation("column", arguments, env) when usesDoctrine(env) && isInEntity(env);
 
 public PhpAnnotation toPhpAnnotation(a: annotation(str annotationName, list[Annotation] arguments), TransformEnv env)
     = origin(phpAnnotation(toPhpAnnotationKey(annotationName, env)), a) when size(arguments) == 0;
@@ -36,6 +44,11 @@ public PhpAnnotation toPhpAnnotation(a: annotationVal(float()), TransformEnv env
 public PhpAnnotation toPhpAnnotation(a: annotationVal(boolean()), TransformEnv env) = origin(phpAnnotationVal("boolean"), a);
 public PhpAnnotation toPhpAnnotation(a: annotationVal(val), TransformEnv env) = origin(phpAnnotationVal(val), a);
 
+public str toPhpAnnotationKey("sequence", TransformEnv env) = "ORM\\GeneratedValue" when usesDoctrine(env) && isInEntity(env);
+public str toPhpAnnotationKey("table", TransformEnv env) = "ORM\\Table" when usesDoctrine(env) && isInEntity(env);
+public str toPhpAnnotationKey("id", TransformEnv env) = "ORM\\Id" when usesDoctrine(env) && isInEntity(env);
+public str toPhpAnnotationKey("field", TransformEnv env) = "ORM\\Column" when usesDoctrine(env) && isInEntity(env);
+public str toPhpAnnotationKey("column", TransformEnv env) = "ORM\\Column" when usesDoctrine(env) && isInEntity(env);
 public default str toPhpAnnotationKey(str annotation, TransformEnv env) = annotation;
 
 public set[PhpAnnotation] toPhpAnnotations(list[Annotation] annotations, TransformEnv env) = 

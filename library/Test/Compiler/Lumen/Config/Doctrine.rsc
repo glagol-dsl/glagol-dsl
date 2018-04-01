@@ -14,14 +14,14 @@ test bool shouldCreateLumenDoctrineConfig() =
                 "meta": env("DOCTRINE_METADATA", "annotations"),
                 "connection": env("DB_CONNECTION", "mysql"),
                 "namespaces": array([
-                    string("App")
+                    stringVal("App")
                 ]),
                 "paths": array([
                     basePath("app")
                 ]),
                 "repository": class("Doctrine\\ORM\\EntityRepository"),
                 "proxies": array((
-                    "namespace": boolean(false),
+                    "namespace": booleanVal(false),
                     "path": storagePath("proxies"),
                     "auto_generate": env("DOCTRINE_PROXY_AUTOGENERATE", false)
                 )),
@@ -35,7 +35,7 @@ test bool shouldCreateLumenDoctrineConfig() =
         )),
         "extensions": array([]),
         "custom_types": array((
-            string("json"): class("LaravelDoctrine\\ORM\\Types\\Json")
+            stringVal("json"): class("LaravelDoctrine\\ORM\\Types\\Json")
         )),
         "custom_datetime_functions": array([]),
         "custom_numeric_functions": array([]),
@@ -44,13 +44,13 @@ test bool shouldCreateLumenDoctrineConfig() =
         "cache": array((
             "default": env("DOCTRINE_CACHE", "array"),
             "namespace": \null(),
-            "second_level": boolean(false)
+            "second_level": booleanVal(false)
         )),
         "gedmo": array((
-            "all_mappings": boolean(false)
+            "all_mappings": booleanVal(false)
         )),
-        "doctrine_presence_verifier": boolean(true),
+        "doctrine_presence_verifier": booleanVal(true),
         "notifications": array((
-            "channel": string("database")
+            "channel": stringVal("database")
         ))
     )))))])));

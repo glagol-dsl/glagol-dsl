@@ -66,7 +66,7 @@ public default bool isField(str name, TransformEnv env) = false;
 
 public bool isValueObject(artifact(fullName(str localName, Declaration ns, str originalName)), TransformEnv env) {
 	top-down visit (env.ast) {
-		case valueObject(originalName, list[Declaration] ds, notProxy()): return true;
+		case valueObject(originalName, list[Declaration] ds, Proxy proxy): return true;
 	}
 	return false;
 }

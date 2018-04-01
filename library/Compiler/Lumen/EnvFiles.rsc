@@ -54,7 +54,7 @@ private PhpCastType lookupCastType(method(_, boolean(), _, _, _, _)) = phpBool()
 private PhpCastType lookupCastType(method(_, Type t, _, _, _, _)) = phpString();
 private PhpCastType lookupCastType(emptyDecl()) = phpString();
 
-private str createType(m: \module(ns, _, v: valueObject(str name, declarations, notProxy())), Declaration dbValMethod) = implode(toCode(
+private str createType(m: \module(ns, _, v: valueObject(str name, declarations, Proxy pr)), Declaration dbValMethod) = implode(toCode(
 	phpScript([
 		phpDeclareStrict(),
         phpNamespace(
