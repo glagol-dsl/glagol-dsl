@@ -60,7 +60,6 @@ test bool shouldCreateComposerFileWithProxyRequirements() =
         "}," + 
         "\"autoload\":{" + 
             "\"psr-4\":{" + 
-                "\"Test\\\\\":\"src/Test/\"," +
                 "\"App\\\\\":\"app/\"" +  
             "}" + 
         "}" + 

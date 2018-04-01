@@ -106,7 +106,7 @@ private PhpUse toPhpUse(i: \import(str artifactName, Declaration namespace, str 
 	phpUse(phpName(toString(getProxyClass(i, env))), phpSomeName(phpName(as)))
 	when isProxy(i, env);
 
-private PhpUse toPhpUse(\import(str artifactName, Declaration namespace, str as), TransformEnv env) = 
+private default PhpUse toPhpUse(\import(str artifactName, Declaration namespace, str as), TransformEnv env) = 
 	phpUse(phpName(namespaceToString(namespace, "\\") + "\\" + artifactName), toPhpAlias(as, artifactName));
 
 private PhpOptionName toPhpAlias(str as, str artifactName) = phpSomeName(phpName(as)) when as != artifactName;

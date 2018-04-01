@@ -1,6 +1,7 @@
 module Compiler::Composer::Autoloading
 
 import Syntax::Abstract::Glagol;
+import Syntax::Abstract::Glagol::Helpers;
 import Config::Config;
 import Config::Reader;
 import Utils::JSON;
@@ -19,4 +20,4 @@ private map[str, JSON] frameworkSpecificAutoload(lumen()) = ("App\\": string("ap
 private default map[str, JSON] frameworkSpecificAutoload(_) = ();
 
 private set[str] namespaces(list[Declaration] ast) = 
-	{f.\module.namespace.name | f <- ast};
+	{\module.namespace.name | file(loc l, Declaration \module) <- ast, !isProxy(\module)};

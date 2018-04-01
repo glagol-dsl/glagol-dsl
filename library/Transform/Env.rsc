@@ -3,6 +3,7 @@ module Transform::Env
 import Config::Config;
 import Config::Reader;
 import Syntax::Abstract::Glagol;
+import Syntax::Abstract::Glagol::Helpers;
 import Syntax::Abstract::Glagol::Definitions;
 
 alias TransformEnv = tuple[
@@ -89,7 +90,7 @@ public Declaration findRepository(artifact(fullName(str localName, Declaration n
 }
 
 public Proxy getProxyClass(\import(str artifactName, Declaration ns, str as), TransformEnv env) =
-	(notProxy() | proxy | file(_, m: \module(ns, _, valueObject(artifactName, list[Declaration] declarations, proxy: proxyClass(str pr)))) <- env.ast);
+	(notProxy() | artifact.proxy | file(_, m: \module(ns, _, Declaration artifact)) <- env.ast, isProxy(m) && artifactName == artifact.name);
 
 public bool isProxy(i: \import(str artifactName, Declaration namespace, str as), TransformEnv env) =
 	getProxyClass(i, env) != notProxy();
