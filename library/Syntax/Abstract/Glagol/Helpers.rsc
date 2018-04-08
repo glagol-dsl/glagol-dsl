@@ -113,3 +113,5 @@ public list[Declaration] requirements(list[Declaration] ast) =
 private list[Declaration] declarations(util(GlagolID name, list[Declaration] declarations, proxyClass(str c))) = [d | d <- declarations];
 private list[Declaration] declarations(valueObject(GlagolID name, list[Declaration] declarations, proxyClass(str c))) = [d | d <- declarations];
 private default list[Declaration] declarations(Declaration d) = [];
+
+public list[Declaration] properties(list[Declaration] ds) = [d | d <- ds, isProperty(d)];

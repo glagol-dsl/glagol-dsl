@@ -25,5 +25,4 @@ public TypeEnv checkDeclaration(a: action(_, _, _), Declaration d, TypeEnv env) 
 public TypeEnv checkDeclaration(a: action(_, _, _), Declaration d, TypeEnv env) = checkAction(a, d, env);
 public TypeEnv checkDeclaration(Declaration, Declaration d, TypeEnv env) = env;
 
-public list[Declaration] properties(list[Declaration] ds) = [d | d <- ds, isProperty(d)];
 public list[Declaration] behaviors(list[Declaration] ds) = [d | d <- ds, !isProperty(d)];

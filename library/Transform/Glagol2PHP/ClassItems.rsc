@@ -12,7 +12,6 @@ import Transform::Glagol2PHP::Methods;
 import Transform::Glagol2PHP::Common;
 import Transform::Glagol2PHP::Statements;
 import Transform::Glagol2PHP::Properties;
-import Transform::Glagol2PHP::Annotations;
 import Map;
 
 public list[PhpClassItem] toPhpClassItems(list[Declaration] declarations, TransformEnv env) =
@@ -35,4 +34,4 @@ private list[PhpClassItem] transformProperties(list[Declaration] properties, Tra
 
 private list[PhpClassItem] transformConstructors(list[Declaration] declarations, TransformEnv env) = 
 	(hasDependencies(declarations) ? [createDIConstructor(getDIProperties(declarations), env)] : []) +
-	(hasConstructors(declarations) ? [createConstructor(getConstructors(declarations), env)] : []);
+	(hasConstructors(declarations) ? [createConstructor(getConstructors(declarations), properties(declarations), env)] : []);

@@ -35,7 +35,7 @@ public void compile(map[loc, str] sources, int listenerId) {
     TypeEnv typeEnv = checkAST(config, ast);
 	
     if (hasErrors(typeEnv)) {
-		respondWith(error("Cannot compile, errors found:"), listenerId);
+		respondWith(err("Cannot compile, errors found:"), listenerId);
     	for (<loc src, str msg> <- getErrors(typeEnv)) {
     		respondWith(text("[<src.path><line(src)>] <msg>"), listenerId);
     	}

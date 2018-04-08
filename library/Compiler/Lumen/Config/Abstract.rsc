@@ -8,6 +8,7 @@ public data Conf
     = env(str name)
     | env(str name, str \default)
     | env(str name, bool \defaultBool)
+    | env(str name, Conf defaultConf)
     | storagePath(str path)
     | basePath(str path)
     | \null()
@@ -35,6 +36,11 @@ public PhpExpr toPhpConf(env(str name, str \default)) = phpCall("env", [
 public PhpExpr toPhpConf(env(str name, bool \defaultBool)) = phpCall("env", [
     phpActualParameter(phpScalar(phpString(name)), false),
     phpActualParameter(phpScalar(phpBoolean(\defaultBool)), false)
+]);
+
+public PhpExpr toPhpConf(env(str name, Conf defaultConf)) = phpCall("env", [
+    phpActualParameter(phpScalar(phpString(name)), false),
+    phpActualParameter(toPhpConf(defaultConf), false)
 ]);
 
 public PhpExpr toPhpConf(env(str name)) = phpCall("env", [

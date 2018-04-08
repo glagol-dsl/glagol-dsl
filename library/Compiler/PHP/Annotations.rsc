@@ -43,7 +43,8 @@ private str annotationValue(phpAnnotationVal(int number), set[PhpAnnotation] ann
 private str annotationValue(phpAnnotationVal(real number), set[PhpAnnotation] annotations, int i) = "<number>";
 private str annotationValue(phpAnnotationVal(true), set[PhpAnnotation] annotations, int i) = "true";
 private str annotationValue(phpAnnotationVal(false), set[PhpAnnotation] annotations, int i) = "false";
-private str annotationValue(phpAnnotationVal(list[PhpAnnotation] items), set[PhpAnnotation] annotations, int i) = "";
+private str annotationValue(phpAnnotationVal(list[PhpAnnotation] items), set[PhpAnnotation] annotations, int i) = 
+	"{<glue([annotationValue(item, annotations, i) | item <- items], ", ")>}";
 private str annotationValue(phpAnnotationVal(PhpAnnotation v), set[PhpAnnotation] annotations, int i) = annotationValue(v, annotations, i);
 private str annotationValue(a: phpAnnotationVal(map[str, PhpAnnotation] options), set[PhpAnnotation] annotations, int i) = toString(options, annotations, i);
 

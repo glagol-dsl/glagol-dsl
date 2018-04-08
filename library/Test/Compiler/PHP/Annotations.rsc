@@ -30,3 +30,8 @@ test bool shouldCompileVarAnnotation() =
 
 test bool shouldCompileAnnotationWithArgs() = 
 	implode(toCode(phpAnnotation("blah", phpAnnotationVal(("key": phpAnnotationVal(false)))), {}, 0)) == " * @blah(key=false)";
+
+test bool shouldCompileAnnotationWithArgsAndAList() = 
+	implode(toCode(phpAnnotation("ManyToOne", phpAnnotationVal(("cascade": phpAnnotationVal([phpAnnotationVal("persist")])))), {}, 0)) == 
+	" * @ManyToOne(cascade={\"persist\"})";
+	

@@ -15,7 +15,7 @@ test bool shouldAddPhpAnnotationsToPhpClassDef() =
 		newTransformEnv(anyFramework(), doctrine())).classDef@phpAnnotations?;
 
 test bool shouldAddAnnotationsToPhpClassItems() = 
-	toPhpClassItem(constructor([], [], emptyExpr())[@annotations=[annotation("Id", [])]], 
+	toPhpClassItem(constructor([], [], emptyExpr())[@annotations=[annotation("Id", [])]], [],
 		newTransformEnv(anyFramework(), doctrine()))@phpAnnotations?;
 
 test bool shouldTransformPropertiesToPhpClassItems() = 

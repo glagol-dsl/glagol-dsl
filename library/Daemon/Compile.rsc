@@ -58,16 +58,16 @@ private void controller(str inputStream, int listenerId) {
     } catch Ambiguity(loc file, _, _): {
         respondWith(diagnose(parseCode(|file:///| + file.path, true)), listenerId);
     } catch e: ParseError(loc location): {
-    	respondWith(error(
+    	respondWith(err(
     		"Parse error at <location.path> starting on line <location.begin.line>, column <location.begin.column> " +
     		"and ends on line <location.end.line>, column <location.end.column>."
 		), listenerId);
 	} catch ConfigException e: {
-		respondWith(error(e.msg), listenerId);
+		respondWith(err(e.msg), listenerId);
 	} catch ParserException e: {
-		respondWith(error(e.msg, e.at), listenerId);
+		respondWith(err(e.msg, e.at), listenerId);
     } catch TransformException e: {
-		respondWith(error(e.msg, e.at), listenerId);
+		respondWith(err(e.msg, e.at), listenerId);
     }
     
     respondWith(end(), listenerId);

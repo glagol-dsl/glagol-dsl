@@ -30,7 +30,7 @@ private list[PhpParam] toActionParams(list[Declaration] params, _) {
     phpParams = for (p <- params) {
         if (hasAnnotation(p, "autofind")) {
             append origin(toPhpParam(param(integer(), "_<p.name>Id", emptyExpr())), p, true);
-        } else if (!hasAnnotation(p, "autofill")) {
+        } else {
             append origin(toPhpParam(p), p);
         }
     }
@@ -56,35 +56,6 @@ private list[PhpStmt] createInitializers(list[Declaration] params, str _, Transf
             	phpActualParameter(phpVar("_<p.name>Id"), false)
             ]))
         ), p, true);
-    }
-    
-    for (p <- params, hasAnnotation(p, "autofill")) {
-        if (hasAnnotation(p, "autofind")) 
-            stmts += origin(phpExprstmt(
-                phpMethodCall(phpVar(p.name), phpName(phpName("_hydrate")), [
-                    phpActualParameter(phpMethodCall(phpPropertyFetch(
-                        phpCall(phpName(phpName("app")), [phpActualParameter(phpFetchClassConst(phpName(phpName("\\Illuminate\\Http\\Request")), "class"), false)]), 
-                        phpName(phpName("request"))
-                    ), phpName(phpName("all")), []), false)
-                ])
-            ), p, true);
-        else if (artifact(Name n) := p.paramType)
-            stmts += origin([
-                phpExprstmt(phpAssign(phpVar("reflection"), phpNew(phpName(phpName("\\ReflectionClass")), [
-                    phpActualParameter(phpFetchClassConst(phpName(phpName(n.localName)), "class"), false)
-                ]))),
-                phpExprstmt(phpAssign(phpVar(p.name), phpMethodCall(phpVar("reflection"), phpName(phpName(
-                    "newInstanceWithoutConstructor"
-                )), []))),
-                phpExprstmt(
-                    phpMethodCall(phpVar(p.name), phpName(phpName("_hydrate")), [
-                        phpActualParameter(phpMethodCall(phpPropertyFetch(
-                            phpCall(phpName(phpName("app")), [phpActualParameter(phpFetchClassConst(phpName(phpName("\\Illuminate\\Http\\Request")), "class"), false)]), 
-                        	phpName(phpName("request"))
-                        ), phpName(phpName("all")), []), false)
-                    ])
-                )
-            ], p, true);
     }
     
     return stmts;

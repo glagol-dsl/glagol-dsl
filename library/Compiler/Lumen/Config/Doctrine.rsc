@@ -24,8 +24,8 @@ public str createDoctrineConfig(list[Syntax::Abstract::Glagol::Declaration] ast)
                 "repository": class("Doctrine\\ORM\\EntityRepository"),
                 "proxies": array((
                     "namespace": booleanVal(false),
-                    "path": storagePath("proxies"),
-                    "auto_generate": env("DOCTRINE_PROXY_AUTOGENERATE", false)
+                    "path": env("DOCTRINE_PROXY_PATH", storagePath("proxies")),
+                    "auto_generate": env("DOCTRINE_PROXY_AUTOGENERATE", true)
                 )),
                 "events": array((
                     "listeners": array([]),
@@ -61,7 +61,7 @@ private map[Conf, Conf] createCustomTypesMapping(list[Declaration] ast) =
 		file(_, \module(ns, _, v: valueObject(str name, _, Proxy proxy))) <- ast,
 		(proxyClass(str prc) := proxy && (v@annotations?)) ? (
 			[*l, annotation("typeFactory", [annotationVal(str tFactory)]), *r] := v@annotations
-		) : true
+		) : (proxyClass(str prc) := proxy && !(v@annotations?)) ? false : true
 	);
 		
 private str typeClass(Declaration ns, str name, Declaration artifact) = 

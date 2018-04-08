@@ -22,8 +22,8 @@ test bool shouldCreateLumenDoctrineConfig() =
                 "repository": class("Doctrine\\ORM\\EntityRepository"),
                 "proxies": array((
                     "namespace": booleanVal(false),
-                    "path": storagePath("proxies"),
-                    "auto_generate": env("DOCTRINE_PROXY_AUTOGENERATE", false)
+                    "path": env("DOCTRINE_PROXY_PATH", storagePath("proxies")),
+                    "auto_generate": env("DOCTRINE_PROXY_AUTOGENERATE", true)
                 )),
                 "events": array((
                     "listeners": array([]),
