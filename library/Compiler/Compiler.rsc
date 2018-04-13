@@ -37,7 +37,7 @@ public void compile(map[loc, str] sources, int listenerId) {
     if (hasErrors(typeEnv)) {
 		respondWith(err("Cannot compile, errors found:"), listenerId);
     	for (<loc src, str msg> <- getErrors(typeEnv)) {
-    		respondWith(text("[<src.path><line(src)>] <msg>"), listenerId);
+    		respondWith(err("[<src.path><line(src)>] <msg>"), listenerId);
     	}
     	return;
     }

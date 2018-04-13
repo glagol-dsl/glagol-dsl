@@ -65,9 +65,9 @@ private void controller(str inputStream, int listenerId) {
 	} catch ConfigException e: {
 		respondWith(err(e.msg), listenerId);
 	} catch ParserException e: {
-		respondWith(err(e.msg, e.at), listenerId);
+		respondWith(err("[<e.at.path><line(e.at)>] <e.msg>"), listenerId);
     } catch TransformException e: {
-		respondWith(err(e.msg, e.at), listenerId);
+		respondWith(err("[<e.at.path><line(e.at)>] <e.msg>"), listenerId);
     }
     
     respondWith(end(), listenerId);
@@ -79,3 +79,6 @@ private Command decodeJSON(str inputStream) = decodeJSON(fromJSON(#JSON, inputSt
 private Command decodeJSON(JSON json) = decodeJSON(json.properties["command"].s, json);
 private Command decodeJSON(s: "compile", object(map[str, JSON] properties)) = decodeJSON(s, properties["sources"].properties);
 private Command decodeJSON("compile", map[str, JSON] sources) = compileCmd((|file:///| + f : c | f <- sources, string(str c) := sources[f]));
+
+private str line(loc src) = ":<src.begin.line>" when src.begin? && src.begin.line?;
+private str line(loc src) = "";
