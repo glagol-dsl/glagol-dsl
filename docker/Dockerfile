@@ -15,4 +15,4 @@ RUN chmod +x /usr/bin/glagol-server
 EXPOSE ${GLAGOL_DSL_PORT}/tcp
 
 ENTRYPOINT ["glagol-server"]
-CMD ["daemon"]
+CMD ["daemon", "${GLAGOL_DSL_PORT}"]
