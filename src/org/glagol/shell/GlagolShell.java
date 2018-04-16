@@ -53,6 +53,8 @@ public class GlagolShell {
             if (command.equals("daemon") && arguments.size() == 1) {
                 String glagolEnvPort = System.getenv(ENV_KEY_GLAGOL_PORT);
                 arguments.add(glagolEnvPort == null ? DEFAULT_PORT : glagolEnvPort);
+            } else if (command.equals("daemon") && arguments.size() == 2) {
+                arguments.add(arguments.get(1));
             }
 
         } else {
