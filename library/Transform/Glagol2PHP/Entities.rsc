@@ -16,7 +16,7 @@ import Config::Config;
 @doc="Convert entity to a PHP class"
 public PhpStmt toPhpClassDef(e: entity(str name, list[Declaration] declarations), TransformEnv env)
     = origin(phpClassDef(phpClass(name, {}, phpNoName(), [phpName("\\JsonSerializable")], 
-        [origin(phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], []), e, true)] + 
+        [origin(phpTraitUse([phpName("JsonSerializeTrait")], []), e, true)] + 
         toPhpClassItems(declarations, env))[
         @phpAnnotations={phpAnnotation("ORM\\Entity")} + toPhpAnnotations(e, env)
     ]), e) when usesDoctrine(env);

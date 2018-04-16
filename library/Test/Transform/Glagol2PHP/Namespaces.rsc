@@ -14,8 +14,7 @@ test bool shouldTransformToAPhpNamespace() =
 	  [
 	    phpUse({
             phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM"))),
-            phpUse(phpName("Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait"), phpNoName()),
-            phpUse(phpName("Glagol\\Helper\\Entity\\HydrateTrait"), phpNoName())
+            phpUse(phpName("Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait"), phpNoName())
         }),
 	    phpClassDef(phpClass(
 	        "User",
@@ -24,8 +23,7 @@ test bool shouldTransformToAPhpNamespace() =
 	        [phpName("\\JsonSerializable")],
 	        [phpTraitUse(
                 [
-                  phpName("JsonSerializeTrait"),
-                  phpName("HydrateTrait")
+                  phpName("JsonSerializeTrait")
                 ],
                 [])]))
 	  ]) && toPhpNamespace(\module(namespace("Test", namespace("Entity", namespace("User"))), 
@@ -47,12 +45,11 @@ test bool shouldTransformSimpleEntityToPhpScriptUsingDoctrine()
                 phpUse(phpName("Currency\\Value\\Money"), phpNoName()),
                 phpUse(phpName("Currency\\Value\\Currency"), phpSomeName(phpName("CurrencyVB"))),
                 phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM"))),
-                phpUse(phpName("Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait"), phpNoName()),
-                phpUse(phpName("Glagol\\Helper\\Entity\\HydrateTrait"), phpNoName())
+                phpUse(phpName("Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait"), phpNoName())
             }),
             phpClassDef(phpClass(
                 "Customer", {}, phpNoName(), [phpName("\\JsonSerializable")], [
-                    phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], []),
+                    phpTraitUse([phpName("JsonSerializeTrait")], []),
                     phpProperty({phpPrivate()}, [phpProperty("id", phpNoExpr())])
                 ]
             ))
@@ -73,12 +70,11 @@ test bool shouldTransformSimpleAnnotatedEntityToPhpScriptUsingDoctrine()
                 phpUse(phpName("Currency\\Value\\Money"), phpNoName()),
                 phpUse(phpName("Currency\\Value\\Currency"), phpSomeName(phpName("CurrencyVB"))),
                 phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM"))),
-                phpUse(phpName("Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait"), phpNoName()),
-                phpUse(phpName("Glagol\\Helper\\Entity\\HydrateTrait"), phpNoName())
+                phpUse(phpName("Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait"), phpNoName())
             }),
             phpClassDef(phpClass(
                 "Customer", {}, phpNoName(), [phpName("\\JsonSerializable")], [
-                    phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], []),
+                    phpTraitUse([phpName("JsonSerializeTrait")], []),
                     phpProperty({phpPrivate()}, [phpProperty("id", phpNoExpr())])
                 ]
             ))

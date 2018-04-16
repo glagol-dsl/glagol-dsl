@@ -14,7 +14,7 @@ test bool shouldAddOverriderWithRulesWhenTransformingOverridedMethods() =
     ]), setContext(entity("User", []), newTransformEnv())) ==
     phpClassDef(phpClass(
         "User", {}, phpNoName(), [phpName("\\JsonSerializable")], [
-            phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], []),
+            phpTraitUse([phpName("JsonSerializeTrait")], []),
             phpMethod("test", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
                 phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [
 		        	phpActualParameter(phpScalar(phpBoolean(false)), false),

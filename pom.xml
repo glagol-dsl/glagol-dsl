@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <name>Glagol DSL</name>
-    <url>http://github.com/BulgariaPHP/glagol-dsl</url>
+    <url>http://github.com/glagol-dsl/glagol-dsl</url>
 
-    <groupId>org.bulgaria-php</groupId>
+    <groupId>org.glagol-dsl</groupId>
     <artifactId>glagol-dsl</artifactId>
     <version>dev-SNAPSHOT</version>
 

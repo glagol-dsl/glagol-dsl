@@ -20,7 +20,6 @@ test bool shouldConvertToPhpUsesOnDoctrineEntityAndOverriding() =
 		phpUse(phpName("Glagol\\Overriding\\Overrider"), phpNoName()),
         phpUse(phpName("Glagol\\Overriding\\Parameter"), phpNoName()),
         phpUse(phpName("Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait"), phpNoName()),
-        phpUse(phpName("Glagol\\Helper\\Entity\\HydrateTrait"), phpNoName()),
         phpUse(phpName("Foo\\Bar\\Blah"), phpNoName())
 	})]
 	;
@@ -63,8 +62,7 @@ test bool shouldConvertToPhpUsesOnDoctrineEntityWithoutOverriding() =
     [phpUse({
         phpUse(phpName("Doctrine\\ORM\\Mapping"), phpSomeName(phpName("ORM"))),
         phpUse(phpName("Foo\\Bar\\Blah"), phpNoName()),
-        phpUse(phpName("Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait"), phpNoName()),
-        phpUse(phpName("Glagol\\Helper\\Entity\\HydrateTrait"), phpNoName())
+        phpUse(phpName("Glagol\\Bridge\\Lumen\\Entity\\JsonSerializeTrait"), phpNoName())
     })]
     ;
     

@@ -14,7 +14,7 @@ test bool shouldAddOverriderWithRulesWhenTransformingOverridedConstructors() =
     ]), setContext(entity("User", []), newTransformEnv())) ==
     phpClassDef(phpClass(
         "User", {}, phpNoName(), [phpName("\\JsonSerializable")], [
-            phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], []),
+            phpTraitUse([phpName("JsonSerializeTrait")], []),
             phpMethod("__construct", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
                 phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [
 		        	phpActualParameter(phpScalar(phpBoolean(true)), false),
@@ -59,7 +59,7 @@ test bool shouldAddOverriderWithWhenRulesWhenTransformingOverridedConstructors()
     ]), setContext(entity("User", []), newTransformEnv())) ==
     phpClassDef(phpClass(
         "User", {}, phpNoName(), [phpName("\\JsonSerializable")], [
-            phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], []),
+            phpTraitUse([phpName("JsonSerializeTrait")], []),
             phpMethod("__construct", {phpPublic()}, false, [phpParam("args", phpNoExpr(), phpNoName(), false, true)], [
                 phpExprstmt(phpAssign(phpVar(phpName(phpName("overrider"))), phpNew(phpName(phpName("Overrider")), [
 		        	phpActualParameter(phpScalar(phpBoolean(true)), false),

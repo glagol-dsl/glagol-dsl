@@ -1,32 +1,8 @@
 # Glagol DSL
-[![CircleCI](https://circleci.com/gh/BulgariaPHP/glagol-dsl/tree/master.svg?style=svg)](https://circleci.com/gh/BulgariaPHP/glagol-dsl/tree/master)
+[![CircleCI](https://circleci.com/gh/glagol-dsl/glagol-dsl/tree/master.svg?style=svg)](https://circleci.com/gh/glagol-dsl/glagol-dsl/tree/master)
 
 A domain-specific language that utilizes Domain-Driven Design
 
-## Install
+## Docs
 
-_TODO_
-
-## Run the service
-
-_TODO_
-
-## Create your first project
-
-_TODO_
-
-### Hello world
-Create a `src/MyProject/Controller/IndexController.g` with the following source code:
-```
-namespace MyProject::Controller
-
-rest controller / {
-    index = "Hello world!";
-}
-```
-
-## Compile and test
-
-_TODO_
-
-Go to [http://127.0.0.1:8000/](http://127.0.0.1:8000/) and you should see the Hello world! message!
+For documentation visit [glagol-dsl.readthedocs.io](https://glagol-dsl.readthedocs.io)

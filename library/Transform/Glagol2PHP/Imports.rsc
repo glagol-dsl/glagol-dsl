@@ -24,10 +24,6 @@ private list[Declaration] extractImports(
                 namespace("Bridge", 
                     namespace("Lumen",
                         namespace("Entity")))), "JsonSerializeTrait")] +
-        [\import("HydrateTrait", 
-            namespace("Glagol", 
-                namespace("Helper", 
-                    namespace("Entity"))), "HydrateTrait")] +
 	    commonImports(m, ast, env) when usesDoctrine(env);
     
 private list[Declaration] extractImports(

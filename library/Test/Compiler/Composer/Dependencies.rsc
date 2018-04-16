@@ -10,10 +10,7 @@ test bool shouldCreateComposerDependenciesUsingLumenAndDoctrine() =
     setDependencies(object(()), newConfig(), []) == 
     object(("require":object((
         "vlucas/phpdotenv": string("~2.2"),
-        "bulgaria-php/glagol-bridge-lumen":string("^0.2"),
-        "bulgaria-php/glagol-php-overriding":string("^0.2"),
-        "php":string("^7.1"),
-        "bulgaria-php/glagol-php-ds":string("^0.1")
+        "glagol-dsl/bridge-lumen": string("^0.2")
       ))));
 
 test bool shouldCreateComposerDependenciesUsingLumenAndDoctrineAndProxyRequirement() =
@@ -24,10 +21,7 @@ test bool shouldCreateComposerDependenciesUsingLumenAndDoctrineAndProxyRequireme
     ]) == 
     object(("require":object((
         "vlucas/phpdotenv": string("~2.2"),
-        "bulgaria-php/glagol-bridge-lumen":string("^0.2"),
-        "bulgaria-php/glagol-php-overriding":string("^0.2"),
-        "php":string("^7.1"),
-        "bulgaria-php/glagol-php-ds":string("^0.1"),
+        "glagol-dsl/bridge-lumen": string("^0.2"),
         "demo/package": string("0.1")
       ))));
 

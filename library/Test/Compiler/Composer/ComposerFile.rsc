@@ -10,11 +10,8 @@ test bool shouldCreateComposerFileUsingLumenAndDoctrine() =
     generateComposerFile(newConfig(), []) == 
     "{" + 
         "\"require\":{" + 
-            "\"bulgaria-php/glagol-bridge-lumen\":\"^0.2\"," + 
-        	"\"vlucas/phpdotenv\":\"~2.2\"," +
-            "\"bulgaria-php/glagol-php-overriding\":\"^0.2\"," + 
-            "\"php\":\"^7.1\"," +  
-            "\"bulgaria-php/glagol-php-ds\":\"^0.1\"" + 
+            "\"glagol-dsl/bridge-lumen\":\"^0.2\"," + 
+        	"\"vlucas/phpdotenv\":\"~2.2\"" +
         "}," + 
         "\"autoload\":{" + 
             "\"psr-4\":{" + 
@@ -29,11 +26,8 @@ test bool shouldCreateComposerFileUsingLumenAndDoctrineWithNamespaceAutoload() =
     ]) == 
     "{" + 
         "\"require\":{" + 
-            "\"bulgaria-php/glagol-bridge-lumen\":\"^0.2\"," +
-        	"\"vlucas/phpdotenv\":\"~2.2\"," +
-            "\"bulgaria-php/glagol-php-overriding\":\"^0.2\"," + 
-            "\"php\":\"^7.1\"," + 
-            "\"bulgaria-php/glagol-php-ds\":\"^0.1\"" + 
+            "\"glagol-dsl/bridge-lumen\":\"^0.2\"," +
+        	"\"vlucas/phpdotenv\":\"~2.2\"" +
         "}," + 
         "\"autoload\":{" + 
             "\"psr-4\":{" + 
@@ -51,12 +45,9 @@ test bool shouldCreateComposerFileWithProxyRequirements() =
     ]) == 
     "{" + 
         "\"require\":{" + 
-            "\"bulgaria-php/glagol-bridge-lumen\":\"^0.2\"," +
+            "\"glagol-dsl/bridge-lumen\":\"^0.2\"," +
         	"\"vlucas/phpdotenv\":\"~2.2\"," +
-            "\"bulgaria-php/glagol-php-overriding\":\"^0.2\"," + 
-            "\"php\":\"^7.1\"," +  
-            "\"demo/package\":\"0.1\"," +
-            "\"bulgaria-php/glagol-php-ds\":\"^0.1\"" +
+            "\"demo/package\":\"0.1\"" +
         "}," + 
         "\"autoload\":{" + 
             "\"psr-4\":{" + 

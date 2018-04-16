@@ -22,8 +22,8 @@ jobs:
       - run:
           name: Making a GitHub Release
           command: |
-            if [[ ! -z ${CIRCLE_TAG} ]]; then github-release release --user bulgariaphp --repo glagol-dsl --tag ${CIRCLE_TAG} --name "${CIRCLE_TAG}" --description "Release ${CIRCLE_TAG}"; fi; \
-            if [[ ! -z ${CIRCLE_TAG} ]]; then github-release upload --user bulgariaphp --repo glagol-dsl --tag ${CIRCLE_TAG} --name "glagol-dsl-server-${CIRCLE_TAG}.jar" --file target/glagol-dsl.jar; fi;
+            if [[ ! -z ${CIRCLE_TAG} ]]; then github-release release --user glagol-dsl --repo glagol-dsl --tag ${CIRCLE_TAG} --name "${CIRCLE_TAG}" --description "Release ${CIRCLE_TAG}"; fi; \
+            if [[ ! -z ${CIRCLE_TAG} ]]; then github-release upload --user glagol-dsl --repo glagol-dsl --tag ${CIRCLE_TAG} --name "glagol-dsl-server-${CIRCLE_TAG}.jar" --file target/glagol-dsl.jar; fi;
       - run:
           name: Publishing Docker Hub images
           command: |

@@ -10,7 +10,7 @@ import Config::Config;
 test bool shouldTransformToEntityPhpClassDefStmt() = 
 	toPhpClassDef(entity("User", []), newTransformEnv(anyFramework(), doctrine())) ==
 	phpClassDef(phpClass("User", {}, phpNoName(), [phpName("\\JsonSerializable")], [
-	   phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], [])
+	   phpTraitUse([phpName("JsonSerializeTrait")], [])
 	])) &&
 	toPhpClassDef(entity("User", []), newTransformEnv(anyFramework(), doctrine())).classDef@phpAnnotations ==
 		{phpAnnotation("ORM\\Entity")};
@@ -18,7 +18,7 @@ test bool shouldTransformToEntityPhpClassDefStmt() =
 test bool shouldTransformAnnotatedEntityToEntityPhpClassDefStmt() = 
 	toPhpClassDef(entity("User", [])[@annotations=[]], newTransformEnv(anyFramework(), doctrine())) ==
 	phpClassDef(phpClass("User", {}, phpNoName(), [phpName("\\JsonSerializable")], [
-	   phpTraitUse([phpName("JsonSerializeTrait"), phpName("HydrateTrait")], [])
+	   phpTraitUse([phpName("JsonSerializeTrait")], [])
 	])) &&
 	toPhpClassDef(entity("User", [])[@annotations=[annotation("doc", [annotationVal("This is a doc")])]], 
 		newTransformEnv(anyFramework(), doctrine())).classDef@phpAnnotations ==
