@@ -3,6 +3,7 @@ FROM openjdk:8-jdk-alpine
 MAINTAINER Yoan-Alexander Grigorov <joan.grigorov@gmail.com>
 
 ENV GLAGOL_DSL_PORT=51151
+ENV MEMORY_LIMIT=512
 
 RUN mkdir /usr/local/src
 
