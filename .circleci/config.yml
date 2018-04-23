@@ -16,6 +16,7 @@ jobs:
       - run: mvn versions:set -DgenerateBackupPoms=false -DnewVersion=${CIRCLE_TAG}-SNAPSHOT
       - run: mkdir /usr/local/src/
       - run: build/get_rascal
+      - run: mvn clean package
       - run: ./test
       - run: rm -rf library/Test library/Tests.rsc
       - run: mvn clean package
