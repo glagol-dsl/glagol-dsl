@@ -103,6 +103,9 @@ public class Sockets {
 			return vf.string(new String(getDecoder().decode(line.getBytes())));
 		} catch (IOException e) {
 			throw RuntimeExceptionFactory.javaException(e, null, null);
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+			throw e;
 		}
 	}
 	
