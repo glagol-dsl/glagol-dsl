@@ -101,7 +101,7 @@ public class Sockets {
 			String line = in.readLine();
 
 			if (line == null) {
-				return null;
+				return vf.string("");
 			}
 
 			System.out.println("VF:");
