@@ -104,6 +104,13 @@ public class Sockets {
 				return null;
 			}
 
+			System.out.println("VF:");
+			System.out.println(vf);
+			System.out.println("Decoder:");
+			System.out.println(getDecoder());
+			System.out.println("Line:");
+			System.out.println(line);
+
 			return vf.string(new String(getDecoder().decode(line.getBytes())));
 		} catch (IOException e) {
 			throw RuntimeExceptionFactory.javaException(e, null, null);

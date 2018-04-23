@@ -39,7 +39,7 @@ private str getInput(int listenerId) {
 
     str input = trim(readFrom(listenerId));
     
-    return input == "" ? getInput(listenerId) : input;
+    return (input == "" || input == null) ? getInput(listenerId) : input;
 }
 
 public void listenForCompileSignals(int socketId) {
