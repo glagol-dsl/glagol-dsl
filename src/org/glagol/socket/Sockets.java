@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 
@@ -100,6 +99,11 @@ public class Sockets {
 				throw RuntimeExceptionFactory.illegalArgument(socketId, null, null);
 			}
 			String line = in.readLine();
+
+			if (line == null) {
+				return null;
+			}
+
 			return vf.string(new String(getDecoder().decode(line.getBytes())));
 		} catch (IOException e) {
 			throw RuntimeExceptionFactory.javaException(e, null, null);
