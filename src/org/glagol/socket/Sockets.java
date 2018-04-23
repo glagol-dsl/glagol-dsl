@@ -86,11 +86,13 @@ public class Sockets {
 	}
 	
 	public synchronized IString readFrom(IInteger socketId) {
+		System.out.println("Java: checking for key on clientSockets...");
 		if (!clientSockets.containsKey(socketId)) {
 			throw RuntimeExceptionFactory.illegalArgument(socketId, null, null);
 		}
 		
 		try {
+			System.out.println("Java: about to read bytes from stream...");
 			BufferedReader in;
 			if (socketReaders.containsKey(socketId)) {
 				in = socketReaders.get(socketId);

@@ -21,9 +21,11 @@ public int main(list[str] args) {
 
     int port = toInt(args[0]);
 
-	println("Daemon listens on port <port>...");
+	println("About to create server socket on port <port>...");
 	
 	int socketId = createServerSocket(port);
+	
+	println("Created server socket on port <port>.");
 	
 	listenForCompileSignals(socketId);
 	
@@ -32,14 +34,20 @@ public int main(list[str] args) {
     return 0;
 }
 
-private str getInput(listenerId) {
+private str getInput(int listenerId) {
+	println("Trying to get input from listener <listenerId>...");
+
     str input = trim(readFrom(listenerId));
     
     return input == "" ? getInput(listenerId) : input;
 }
 
 public void listenForCompileSignals(int socketId) {
+	println("About to create a listener on socket with ID <socketId>...");
+	
 	int listenerId = createListener(socketId);
+	
+	println("Created listener with ID <listenerId>...");
     
     controller(getInput(listenerId), listenerId);
     
