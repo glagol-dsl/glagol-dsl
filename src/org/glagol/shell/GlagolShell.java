@@ -10,10 +10,12 @@ public class GlagolShell {
 
     private static final String DEFAULT_PORT = "51151";
     private static final String ENV_KEY_GLAGOL_PORT = "GLAGOL_DSL_PORT";
+    private static final String ENV_KEY_HEROKU_PORT = "PORT";
 
     private static final Map<String, String> commandToModule = new HashMap<String, String>() {{
         put("daemon", "Daemon::Compile");
         put("test", "Tests");
+
     }};
 
     public static void main(String[] args) throws IOException {
@@ -51,8 +53,7 @@ public class GlagolShell {
             arguments.set(0, commandToModule.get(command));
 
             if (command.equals("daemon") && arguments.size() == 1) {
-                String glagolEnvPort = System.getenv(ENV_KEY_GLAGOL_PORT);
-                arguments.add(glagolEnvPort == null ? DEFAULT_PORT : glagolEnvPort);
+                arguments.add(lookupPort());
             } else if (command.equals("daemon") && arguments.size() == 2) {
                 arguments.add(arguments.get(1));
             }
@@ -61,6 +62,13 @@ public class GlagolShell {
             System.err.println("Command '" + command + "' is unrecognized");
             System.exit(1);
         }
+    }
+
+    private static String lookupPort() {
+        String  glagolPort = System.getenv(ENV_KEY_GLAGOL_PORT),
+                herokuPort = System.getenv(ENV_KEY_HEROKU_PORT);
+
+        return glagolPort == null ? (herokuPort == null ? DEFAULT_PORT : herokuPort) : glagolPort;
     }
 
     private static void checkForCommand(List<String> arguments) {
