@@ -64,7 +64,7 @@ jobs:
       - checkout
       - run:
           name: Create Kubernetes Deployment
-          command: kubectl apply deployment -f .gkp/deploy.yml --record
+          command: kubectl apply -f .gkp/deploy.yml --record
       - run:
           name: Create Kubernetes Service
           command: kubectl apply -f .gkp/service.yml
