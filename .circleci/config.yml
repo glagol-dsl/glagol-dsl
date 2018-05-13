@@ -56,7 +56,7 @@ jobs:
       - run:
           name: Set Google Cloud Platform Access
           command: |
-            gcloud --quiet components update  # remove if using the google/cloud-sdk image
+            gcloud --quiet components install kubectl
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
             gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
             gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
@@ -70,7 +70,7 @@ jobs:
           command: kubectl apply -f .gkp/service.yml
 workflows:
   version: 2
-  build-workflow:
+  build-and-deploy:
     jobs:
       - build:
           filters:
@@ -80,3 +80,5 @@ workflows:
           filters:
             tags:
               ignore: /^ignore-.*/
+          requires:
+            - build
