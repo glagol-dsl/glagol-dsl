@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: glagol-server-deploy
 spec:
-  replicas: 10
+  replicas: 2
   selector:
     matchLabels:
       app: glagol-server
@@ -23,3 +23,6 @@ spec:
         image: glagol/server:latest
         ports:
         - containerPort: 51151
+        env:
+        - name: MEMORY_LIMIT
+          value: 256
