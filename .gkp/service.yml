@@ -8,7 +8,7 @@ spec:
   type: NodePort
   ports:
   - port: 51151
-    nodePort: 51151
+    nodePort: 30001
     protocol: TCP
   selector:
     app: glagol-server
