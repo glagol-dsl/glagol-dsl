@@ -25,4 +25,4 @@ spec:
         - containerPort: 51151
         env:
         - name: MEMORY_LIMIT
-          value: 256
+          value: "256"
