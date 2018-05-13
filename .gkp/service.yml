@@ -5,10 +5,9 @@ metadata:
   labels:
     app: glagol-server
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
   - port: 51151
-    nodePort: 30001
     protocol: TCP
   selector:
     app: glagol-server
