@@ -1,0 +1,25 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: glagol-server-deploy
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: glagol-server
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: glagol-server
+    spec:
+      containers:
+      - name: glagol-server-pod
+        image: glagol/server:latest
+        ports:
+        - containerPort: 51151

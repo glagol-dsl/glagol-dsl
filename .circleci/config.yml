@@ -45,12 +45,39 @@ jobs:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
+  deploy-gkp:
+    docker:
+      - image: google/cloud-sdk:alpine
+    working_directory: ~/repo
+    steps:
+      - run:
+        name: Store Service Account
+        command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+      - run:
+        name: Set Google Cloud Platform Access
+        command: |
+          gcloud --quiet components update  # remove if using the google/cloud-sdk image
+          gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+          gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+          gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+          gcloud --quiet container clusters get-credentials ${GOOGLE_CLUSTER_NAME}
+      - checkout
+      - run:
+        name: Create Kubernetes Deployment
+        command: kubectl apply deployment -f .gkp/deploy.yml --record
+      - run:
+        name: Create Kubernetes Service
+        command: kubectl apply -f .gkp/service.yml
 
 workflows:
   version: 2
   build-workflow:
     jobs:
       - build:
+          filters:
+            tags:
+              ignore: /^ignore-.*/
+      - deploy-gkp:
           filters:
             tags:
               ignore: /^ignore-.*/
