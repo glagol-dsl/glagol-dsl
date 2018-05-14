@@ -29,15 +29,15 @@ jobs:
       - run:
           name: Publishing Docker Hub images
           command: |
-            cp target/glagol-dsl.jar docker/glagol-dsl.jar
+            cp target/glagol-dsl.jar .docker/glagol-dsl.jar
             TAG="dev-master"
             if [[ ! -z ${CIRCLE_TAG} ]]; then TAG=${CIRCLE_TAG}; fi
-            docker build -t glagol/server:${TAG} -t glagol/server:latest docker/
+            docker build -t glagol/server:${TAG} -t glagol/server:latest .docker/
             docker login -u ${DOCKER_ID} -p ${DOCKER_SECRET}
             docker push glagol/server:${TAG}
             if [[ ! -z ${CIRCLE_TAG} ]]; then \
               TAG=${TAG:0:3}; \
-              docker build -t glagol/server:${TAG} docker/ ; \
+              docker build -t glagol/server:${TAG} .docker/ ; \
               docker push glagol/server:${TAG}; \
               docker push glagol/server:latest; \
             fi

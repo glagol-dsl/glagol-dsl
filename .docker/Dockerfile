@@ -11,5 +11,5 @@ ADD glagol-dsl.jar /usr/local/src/glagol-dsl-server.jar
 
 RUN chmod +x /usr/bin/glagol-server
 
-ENTRYPOINT ["glagol-server"]
+ENTRYPOINT ["entrypoint.sh"]
 CMD ["daemon"]

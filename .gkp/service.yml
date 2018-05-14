@@ -5,7 +5,7 @@ metadata:
   labels:
     app: glagol-server
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
   - port: 51151
     protocol: TCP
