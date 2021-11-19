@@ -1,1 +1,0 @@
-Source: src/org/rascalmpl/library, library

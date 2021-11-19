@@ -1,17 +1,1 @@
-/Example.gl
-.idea
-.project
-.settings
-/bin/
-build.properties
-.classpath
-library/Tests.rsc
-*.orig
-glagol-dsl.iml
-glagol.iml
-*.iml
-composer.lock
-/vendor/
 /target/
-/travis.log
-/dependency-reduced-pom.xml

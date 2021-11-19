@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-BASEDIR=$(dirname "$0")
-java -Xmx2G -Xss32m -jar "$BASEDIR/../target/glagol-dsl.jar" $@
