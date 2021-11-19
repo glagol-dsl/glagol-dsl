@@ -1,7 +1,26 @@
 grammar Glagol;
 
+module
+    : 'namespace' namespace ';'
+        (imports+=use)*
+        (declarations+=annotatedDeclaration)*
+        EOF
+    ;
+
 namespace
-    : 'namespace' identifier ';' (declarations+=declaration)* EOF
+    : names+=identifier ('::' names+=identifier)*
+    ;
+
+use
+    : 'import' namespace '::' decl=identifier ';'                          #importPlain
+    | 'import' namespace '::' decl=identifier 'as' alias=identifier ';'    #importAlias
+    ;
+
+annotatedDeclaration : annotation* declaration;
+
+annotation
+    : ANNOTATION_NAME
+    | ANNOTATION_NAME '(' ')'
     ;
 
 declaration
@@ -18,7 +37,7 @@ repository : 'repository' '<' identifier '>' '{' '}' ;
 value : 'value' identifier '{' '}' ;
 controller : 'rest' 'controller' route '{' '}' #controllerRest ;
 service : ('util' | 'service') identifier '{' '}' ;
-proxy : 'proxy' PHP_LABEL 'as' proxable;
+proxy : 'proxy' PHP_CLASS 'as' proxable;
 
 proxable
     : proxableValue
@@ -40,12 +59,14 @@ identifier : ID ;
 
 RESERVED_WORD : 'namespace' | 'entity' | 'value' | 'repository' | 'controller';
 
-ID : [a-zA-Z][a-zA-Z0-9_]+;
+ANNOTATION_NAME: '@' ID;
+
+ID : [a-zA-Z][a-zA-Z0-9_]*;
 
 WS  :  [ \t\r\n\u000C]+ -> skip
     ;
 
-PHP_LABEL : ('\\' [a-zA-Z0-9_]+)+;
+PHP_CLASS : ('\\' [a-zA-Z0-9_]+)+;
 
 fragment ESCAPE_QUOTE
    : '\\' (["\\/bfnrt] | UNICODE)

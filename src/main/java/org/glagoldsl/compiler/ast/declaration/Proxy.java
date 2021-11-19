@@ -4,7 +4,7 @@ import org.glagoldsl.compiler.ast.declaration.proxy.PhpLabel;
 
 public class Proxy extends Declaration {
     final private PhpLabel phpLabel;
-    private final NamedDeclaration declaration;
+    final private NamedDeclaration declaration;
 
     public Proxy(PhpLabel phpLabel, NamedDeclaration declaration) {
         this.phpLabel = phpLabel;

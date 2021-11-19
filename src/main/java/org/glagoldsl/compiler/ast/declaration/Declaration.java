@@ -1,6 +1,6 @@
 package org.glagoldsl.compiler.ast.declaration;
 
-import org.glagoldsl.compiler.ast.Node;
+import org.glagoldsl.compiler.ast.annotation.AnnotatedNode;
 
-public abstract class Declaration implements Node {
+public abstract class Declaration extends AnnotatedNode {
 }

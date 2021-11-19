@@ -9,6 +9,6 @@ public class RouteElementPlaceholder extends RouteElement {
 
     @Override
     public String toString() {
-        return placeholder;
+        return ':' + placeholder;
     }
 }
