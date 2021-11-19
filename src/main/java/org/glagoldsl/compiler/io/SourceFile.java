@@ -14,15 +14,7 @@ import java.nio.file.Path;
 public class SourceFile {
     private final InputStream inputStream;
 
-    public SourceFile(InputStream stream) {
-        inputStream = stream;
-    }
-
     public SourceFile(Path file) throws IOException {
-        if (!fileExists(file)) {
-            throw new FileNotFoundException();
-        }
-
         if (!isExtensionCorrect(file)) {
             throw new IncorrectExtensionException();
         }
@@ -34,20 +26,8 @@ public class SourceFile {
         return inputStream;
     }
 
-    public TokenStream asTokenStream() {
-        return new CommonTokenStream(createLexer());
-    }
-
-    private GlagolLexer createLexer() {
-        return new GlagolLexer(new UnbufferedCharStream(inputStream));
-    }
-
     private boolean isExtensionCorrect(Path file) {
         return file.getFileName().toString().matches("^.+?\\." + extension() + "$");
-    }
-
-    private boolean fileExists(Path file) {
-        return Files.exists(file);
     }
 
     private String extension() {
