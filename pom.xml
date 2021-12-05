@@ -97,7 +97,7 @@
                 <artifactId>antlr4-maven-plugin</artifactId>
                 <version>4.9.3</version>
                 <configuration>
-                    <sourceDirectory>src/main/resources</sourceDirectory>
+                    <outputDirectory>target/generated-sources/antlr4/org/glagoldsl/compiler/syntax/concrete</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>

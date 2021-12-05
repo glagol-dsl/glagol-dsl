@@ -6,7 +6,7 @@ import org.glagoldsl.compiler.ast.identifier.Identifier;
 import java.util.List;
 import java.util.Objects;
 
-public final class Namespace extends Node {
+public class Namespace extends Node {
     private final List<Identifier> names;
 
     public Namespace(List<Identifier> names) {

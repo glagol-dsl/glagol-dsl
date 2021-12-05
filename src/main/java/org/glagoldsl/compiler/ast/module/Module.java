@@ -5,7 +5,7 @@ import org.glagoldsl.compiler.ast.declaration.Declaration;
 
 import java.util.List;
 
-public final class Module extends Node {
+public class Module extends Node {
     private final Namespace namespace;
     private final List<Import> imports;
     private final List<Declaration> declarations;

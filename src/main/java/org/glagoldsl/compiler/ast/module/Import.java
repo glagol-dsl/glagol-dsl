@@ -3,7 +3,7 @@ package org.glagoldsl.compiler.ast.module;
 import org.glagoldsl.compiler.ast.Node;
 import org.glagoldsl.compiler.ast.identifier.Identifier;
 
-public final class Import extends Node {
+public class Import extends Node {
     private final Namespace namespace;
     private final Identifier declaration;
     private final Identifier alias;

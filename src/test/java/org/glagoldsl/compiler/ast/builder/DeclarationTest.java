@@ -1,9 +1,10 @@
-package org.glagoldsl.compiler.ast;
+package org.glagoldsl.compiler.ast.builder;
 
+import org.glagoldsl.compiler.ast.Builder;
 import org.glagoldsl.compiler.ast.annotation.Annotation;
 import org.glagoldsl.compiler.ast.declaration.*;
+import org.glagoldsl.compiler.ast.expression.literal.StringLiteral;
 import org.glagoldsl.compiler.ast.module.Module;
-import org.glagoldsl.compiler.ast.module.Namespace;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -11,18 +12,18 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class ASTBuilderTest {
+public class DeclarationTest {
 
     @Test
     public void should_build_namespace_node() {
-        Module module = buildModule("namespace test::test;");
+        Module module = build("namespace test::test;");
 
         assertEquals("test::test", module.getNamespace().toString());
     }
 
     @Test
     public void should_build_import_nodes() {
-        Module module = buildModule("""
+        Module module = build("""
                 namespace test::test;
                 import test::package::class as class1;
                 import test::package::class2;
@@ -39,7 +40,7 @@ public class ASTBuilderTest {
 
     @Test
     public void should_build_declarations() {
-        Module module = buildModule("""
+        Module module = build("""
             namespace test;
             entity testEntity {}
             value testValue {}
@@ -65,10 +66,11 @@ public class ASTBuilderTest {
 
     @Test
     public void should_build_annotated_declaration() {
-        Module module = buildModule("""
+        Module module = build("""
             namespace test;
             @table
             @table()
+            @table("table_name")
             entity testEntity {}
         """);
 
@@ -76,9 +78,10 @@ public class ASTBuilderTest {
 
         assertEquals("table", annotations.get(0).getName().toString());
         assertEquals("table", annotations.get(1).getName().toString());
+        assertEquals("table_name", ((StringLiteral) annotations.get(2).getArguments().get(0).getExpression()).getValue());
     }
 
-    private Module buildModule(String code) {
-        return new ASTBuilder().build(new ByteArrayInputStream(code.getBytes()));
+    private Module build(String code) {
+        return new Builder().build(new ByteArrayInputStream(code.getBytes()));
     }
 }
