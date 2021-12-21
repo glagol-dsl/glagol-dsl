@@ -4,11 +4,11 @@ import org.glagoldsl.compiler.ast.Builder;
 import org.glagoldsl.compiler.ast.declaration.member.Accessor;
 import org.glagoldsl.compiler.ast.declaration.member.Constructor;
 import org.glagoldsl.compiler.ast.declaration.member.AccessibleMember;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ConstructorTest {
     @Test

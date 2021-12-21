@@ -18,11 +18,11 @@ import org.glagoldsl.compiler.ast.expression.unary.arithmetic.Negative;
 import org.glagoldsl.compiler.ast.expression.unary.arithmetic.Positive;
 import org.glagoldsl.compiler.ast.expression.unary.relational.Negation;
 import org.glagoldsl.compiler.ast.query.QuerySelect;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ExpressionTest {
 

@@ -7,11 +7,11 @@ import org.glagoldsl.compiler.ast.declaration.controller.RestController;
 import org.glagoldsl.compiler.ast.declaration.proxy.Proxy;
 import org.glagoldsl.compiler.ast.expression.literal.StringLiteral;
 import org.glagoldsl.compiler.ast.module.Module;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DeclarationTest {
 

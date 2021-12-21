@@ -6,11 +6,11 @@ import org.glagoldsl.compiler.ast.declaration.member.AccessibleMember;
 import org.glagoldsl.compiler.ast.declaration.member.Method;
 import org.glagoldsl.compiler.ast.expression.literal.IntegerLiteral;
 import org.glagoldsl.compiler.ast.statement.Return;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MethodTest {
     @Test

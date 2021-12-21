@@ -1,22 +1,27 @@
 package org.glagoldsl.compiler.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class NodeTest {
-    @Test(expected = RuntimeException.class)
+    @Test
     public void should_throw_exception_when_getting_line_without_location_set()
     {
-        var node = new Node() {};
-        node.getLocation().getLine();
+        assertThrows(RuntimeException.class, () -> {
+            var node = new Node() {};
+            node.getLocation().getLine();
+        });
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void should_throw_exception_when_getting_column_without_location_set()
     {
-        var node = new Node() {};
-        node.getLocation().getColumn();
+        assertThrows(RuntimeException.class, () -> {
+            var node = new Node() {
+            };
+            node.getLocation().getColumn();
+        });
     }
 
     @Test

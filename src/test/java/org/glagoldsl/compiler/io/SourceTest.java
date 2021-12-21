@@ -1,33 +1,30 @@
 package org.glagoldsl.compiler.io;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
-@RunWith(MockitoJUnitRunner.class)
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@ExtendWith(MockitoExtension.class)
 public class SourceTest {
 
-    @Test(expected = IncorrectExtensionException.class)
-    public void throws_exception_when_source_file_has_wrong_extension() throws IOException {
-        TemporaryFolder testFolder = new TemporaryFolder();
-        testFolder.create();
+    @Test
+    public void throws_exception_when_source_file_has_wrong_extension(@TempDir Path testFolder) {
+        Path filePath = testFolder.resolve("source.wrong");
 
-        Path filePath = testFolder.newFile("source.wrong").toPath();
-
-        new Source(filePath);
+        assertThrows(IncorrectExtensionException.class, () -> {
+            new Source(filePath);
+        });
     }
 
     @Test
-    public void should_create_source_file_from_a_valid_file() throws Exception {
-        TemporaryFolder testFolder = new TemporaryFolder();
-        testFolder.create();
-
-        Path filePath = testFolder.newFile("source.g").toPath();
+    public void should_create_source_file_from_a_valid_file(@TempDir Path testFolder) throws Exception {
+        Path filePath = testFolder.resolve("source.g");
 
         String code = "namespace test;";
         FileUtils.fileWrite(filePath.toString(), code);

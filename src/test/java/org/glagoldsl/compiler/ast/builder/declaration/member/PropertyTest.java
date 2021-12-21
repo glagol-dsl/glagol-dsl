@@ -5,11 +5,11 @@ import org.glagoldsl.compiler.ast.declaration.member.Accessor;
 import org.glagoldsl.compiler.ast.declaration.member.AccessibleMember;
 import org.glagoldsl.compiler.ast.declaration.member.Property;
 import org.glagoldsl.compiler.ast.expression.literal.IntegerLiteral;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PropertyTest {
     @Test
@@ -20,7 +20,7 @@ public class PropertyTest {
         assertFalse(property.hasDefaultValue());
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void should_build_property_with_annotations() {
         var property = (Property) build("@test @test2 int prop;");
         assertEquals(2, property.getAnnotations().size());

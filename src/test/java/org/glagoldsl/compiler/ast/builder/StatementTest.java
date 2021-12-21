@@ -2,32 +2,19 @@ package org.glagoldsl.compiler.ast.builder;
 
 import org.glagoldsl.compiler.ast.Builder;
 import org.glagoldsl.compiler.ast.expression.*;
-import org.glagoldsl.compiler.ast.expression.binary.Concatenation;
-import org.glagoldsl.compiler.ast.expression.binary.arithmetic.Addition;
-import org.glagoldsl.compiler.ast.expression.binary.arithmetic.Division;
-import org.glagoldsl.compiler.ast.expression.binary.arithmetic.Product;
-import org.glagoldsl.compiler.ast.expression.binary.arithmetic.Subtraction;
-import org.glagoldsl.compiler.ast.expression.binary.relational.*;
 import org.glagoldsl.compiler.ast.expression.literal.BooleanLiteral;
-import org.glagoldsl.compiler.ast.expression.literal.DecimalLiteral;
 import org.glagoldsl.compiler.ast.expression.literal.IntegerLiteral;
-import org.glagoldsl.compiler.ast.expression.literal.StringLiteral;
-import org.glagoldsl.compiler.ast.expression.unary.Bracket;
-import org.glagoldsl.compiler.ast.expression.unary.arithmetic.Negative;
-import org.glagoldsl.compiler.ast.expression.unary.arithmetic.Positive;
-import org.glagoldsl.compiler.ast.expression.unary.relational.Negation;
 import org.glagoldsl.compiler.ast.identifier.Identifier;
 import org.glagoldsl.compiler.ast.statement.*;
 import org.glagoldsl.compiler.ast.statement.assignable.ListValueAssign;
 import org.glagoldsl.compiler.ast.statement.assignable.PropertyAssign;
 import org.glagoldsl.compiler.ast.statement.assignable.VariableAssign;
 import org.glagoldsl.compiler.ast.type.GListType;
-import org.glagoldsl.compiler.ast.type.Type;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class StatementTest {
     @Test

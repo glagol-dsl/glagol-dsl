@@ -3,20 +3,17 @@ package org.glagoldsl.compiler.ast.builder;
 import org.glagoldsl.compiler.ast.Builder;
 import org.glagoldsl.compiler.ast.expression.*;
 import org.glagoldsl.compiler.ast.expression.literal.IntegerLiteral;
-import org.glagoldsl.compiler.ast.expression.literal.StringLiteral;
-import org.glagoldsl.compiler.ast.expression.unary.Bracket;
 import org.glagoldsl.compiler.ast.query.DefinedQueryLimit;
 import org.glagoldsl.compiler.ast.query.Query;
 import org.glagoldsl.compiler.ast.query.QuerySelect;
 import org.glagoldsl.compiler.ast.query.expression.QueryField;
 import org.glagoldsl.compiler.ast.query.expression.QueryInterpolation;
 import org.glagoldsl.compiler.ast.query.expression.binary.relational.QueryEqual;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class QueryTest {
     @Test

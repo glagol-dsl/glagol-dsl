@@ -7,11 +7,11 @@ import org.glagoldsl.compiler.ast.declaration.member.proxy.ProxyConstructor;
 import org.glagoldsl.compiler.ast.declaration.member.proxy.ProxyMethod;
 import org.glagoldsl.compiler.ast.declaration.member.proxy.ProxyProperty;
 import org.glagoldsl.compiler.ast.declaration.member.proxy.ProxyRequire;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ProxyMemberTest {
     @Test
