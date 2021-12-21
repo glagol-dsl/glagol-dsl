@@ -12,10 +12,6 @@ public final class Route extends Node {
         this.routeElements = routeElements;
     }
 
-    public List<RouteElement> getRouteElements() {
-        return routeElements;
-    }
-
     @Override
     public String toString() {
         return routeElements.stream().map(RouteElement::toString).reduce("", (path, e) -> path + '/' + e);

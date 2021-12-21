@@ -1,15 +1,15 @@
 package org.glagoldsl.compiler.ast.expression;
 
-import org.glagoldsl.compiler.ast.query.QuerySelect;
+import org.glagoldsl.compiler.ast.query.Query;
 
 public class ExpressionQuery extends Expression {
-    final private QuerySelect query;
+    final private Query query;
 
-    public ExpressionQuery(QuerySelect query) {
+    public ExpressionQuery(Query query) {
         this.query = query;
     }
 
-    public QuerySelect getQuery() {
+    public Query getQuery() {
         return query;
     }
 }

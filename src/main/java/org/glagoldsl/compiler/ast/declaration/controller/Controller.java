@@ -1,5 +1,6 @@
-package org.glagoldsl.compiler.ast.declaration;
+package org.glagoldsl.compiler.ast.declaration.controller;
 
+import org.glagoldsl.compiler.ast.declaration.Declaration;
 import org.glagoldsl.compiler.ast.declaration.controller.route.Route;
 
 public abstract class Controller extends Declaration {

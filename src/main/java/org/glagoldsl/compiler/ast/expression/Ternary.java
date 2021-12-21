@@ -19,7 +19,7 @@ public class Ternary extends Expression {
         return then;
     }
 
-    public Expression getEls() {
+    public Expression getElse() {
         return els;
     }
 }

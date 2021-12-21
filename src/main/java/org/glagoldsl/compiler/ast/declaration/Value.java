@@ -1,9 +1,22 @@
 package org.glagoldsl.compiler.ast.declaration;
 
+import org.glagoldsl.compiler.ast.declaration.member.Member;
 import org.glagoldsl.compiler.ast.identifier.Identifier;
 
+import java.util.List;
+
 public class Value extends NamedDeclaration {
-    public Value(Identifier identifier) {
+    final private List<Member> members;
+
+    public Value(
+            Identifier identifier,
+            List<Member> members
+    ) {
         super(identifier);
+        this.members = members;
+    }
+
+    public List<Member> getMembers() {
+        return members;
     }
 }

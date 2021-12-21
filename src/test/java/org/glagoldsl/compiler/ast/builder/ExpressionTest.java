@@ -2,6 +2,7 @@ package org.glagoldsl.compiler.ast.builder;
 
 import org.glagoldsl.compiler.ast.Builder;
 import org.glagoldsl.compiler.ast.expression.*;
+import org.glagoldsl.compiler.ast.expression.binary.Binary;
 import org.glagoldsl.compiler.ast.expression.binary.Concatenation;
 import org.glagoldsl.compiler.ast.expression.binary.arithmetic.Addition;
 import org.glagoldsl.compiler.ast.expression.binary.arithmetic.Division;
@@ -16,12 +17,7 @@ import org.glagoldsl.compiler.ast.expression.unary.Bracket;
 import org.glagoldsl.compiler.ast.expression.unary.arithmetic.Negative;
 import org.glagoldsl.compiler.ast.expression.unary.arithmetic.Positive;
 import org.glagoldsl.compiler.ast.expression.unary.relational.Negation;
-import org.glagoldsl.compiler.ast.query.DefinedQueryLimit;
 import org.glagoldsl.compiler.ast.query.QuerySelect;
-import org.glagoldsl.compiler.ast.query.expression.QueryField;
-import org.glagoldsl.compiler.ast.query.expression.QueryInterpolation;
-import org.glagoldsl.compiler.ast.query.expression.binary.relational.QueryEqual;
-import org.glagoldsl.compiler.ast.type.IntegerType;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -32,41 +28,43 @@ public class ExpressionTest {
 
     @Test
     public void should_build_brackets() {
-        Expression singleBrackets = build("(123)");
+        var singleBrackets = build("(123)");
 
         assertEquals(123, (long) ((IntegerLiteral) ((Bracket) singleBrackets).getExpression()).getValue());
 
-        Expression nestedBrackets = build("((123))");
+        var nestedBrackets = build("((123))");
 
         assertEquals(123, (long) ((IntegerLiteral) ((Bracket) ((Bracket) nestedBrackets).getExpression()).getExpression()).getValue());
     }
 
     @Test
     public void should_build_literals() {
-        StringLiteral simpleString = (StringLiteral) build("\"test\"");
-        StringLiteral escapedString = (StringLiteral) build("\"\\\"test\"");
+        var simpleString = (StringLiteral) build("\"test\"");
+        var escapedString = (StringLiteral) build("\"\\\"test\"");
 
         assertEquals("test", simpleString.getValue());
         assertEquals("\"test", escapedString.getValue());
+        assertEquals("test", simpleString.toString());
+        assertEquals("\"test", escapedString.toString());
 
-        BooleanLiteral booleanTrue = (BooleanLiteral) build("true");
-        BooleanLiteral booleanFalse = (BooleanLiteral) build("false");
+        var booleanTrue = (BooleanLiteral) build("true");
+        var booleanFalse = (BooleanLiteral) build("false");
 
         assertTrue(booleanTrue.getValue());
         assertFalse(booleanFalse.getValue());
 
-        IntegerLiteral integer = (IntegerLiteral) build("23");
+        var integer = (IntegerLiteral) build("23");
 
         assertEquals(23, integer.toLong());
 
-        DecimalLiteral decimal = (DecimalLiteral) build("2.2222222222333333");
+        var decimal = (DecimalLiteral) build("2.2222222222333333");
 
         assertEquals("2.2222222222333333", decimal.getValue().toString());
     }
 
     @Test
     public void should_build_list() {
-        GList list = (GList) build("""
+        var list = (GList) build("""
             [1, 2, 3, 4]
         """);
 
@@ -78,7 +76,7 @@ public class ExpressionTest {
 
     @Test
     public void should_build_map() {
-        GMap map = (GMap) build("""
+        var map = (GMap) build("""
             {"key": "value"}
         """);
 
@@ -92,7 +90,7 @@ public class ExpressionTest {
 
     @Test
     public void should_build_variable() {
-        Variable var = (Variable) build("""
+        var var = (Variable) build("""
             variable
         """);
 
@@ -101,7 +99,7 @@ public class ExpressionTest {
 
     @Test
     public void should_build_new_instance() {
-        New newInstance = (New) build("""
+        var newInstance = (New) build("""
             new Instance()
         """);
 
@@ -109,8 +107,18 @@ public class ExpressionTest {
     }
 
     @Test
+    public void should_build_new_instance_with_arguments() {
+        var newInstance = (New) build("""
+            new Instance(1, 2, "3")
+        """);
+
+        assertEquals("Instance", newInstance.getTarget().toString());
+        assertEquals(3, newInstance.getArguments().size());
+    }
+
+    @Test
     public void should_build_invocation() {
-        Invoke invoke = (Invoke) build("""
+        var invoke = (Invoke) build("""
             method(1)
         """);
 
@@ -118,7 +126,7 @@ public class ExpressionTest {
         assertTrue(invoke.getPrev() instanceof This);
         assertEquals(1, ((IntegerLiteral) invoke.getArguments().get(0)).toLong());
 
-        Invoke invokeWithNesting = (Invoke) build("""
+        var invokeWithNesting = (Invoke) build("""
             this.method(1).that().method2()
         """);
 
@@ -128,7 +136,7 @@ public class ExpressionTest {
 
     @Test
     public void should_build_property_access() {
-        PropertyAccess propertyAccess = (PropertyAccess) build("""
+        var propertyAccess = (PropertyAccess) build("""
             that.that.that_final
         """);
 
@@ -138,9 +146,9 @@ public class ExpressionTest {
 
     @Test
     public void should_build_unary_expressions() {
-        Negative negative = (Negative) build("-33");
-        Positive positive = (Positive) build("+33");
-        Negation negate = (Negation) build("!true");
+        var negative = (Negative) build("-33");
+        var positive = (Positive) build("+33");
+        var negate = (Negation) build("!true");
 
         assertEquals(33, ((IntegerLiteral) negative.getExpression()).toLong());
         assertEquals(33, ((IntegerLiteral) positive.getExpression()).toLong());
@@ -149,69 +157,115 @@ public class ExpressionTest {
 
     @Test
     public void should_build_type_cast() {
-        TypeCast typeCastInt = (TypeCast) build("(int) \"10\"");
-        TypeCast typeCastBool = (TypeCast) build("(bool) 0");
-        TypeCast typeCastFloat = (TypeCast) build("(float) 0");
-        TypeCast typeCastString = (TypeCast) build("(string) 0");
-        TypeCast typeCastClass = (TypeCast) build("(MyClass) 0");
-        TypeCast typeCastList = (TypeCast) build("(int[]) 0");
-        TypeCast typeCastMap = (TypeCast) build("({int,string}) 0");
-        TypeCast typeCastRepository = (TypeCast) build("(repository<Book>) 0");
-        TypeCast typeCastVoid = (TypeCast) build("(void) 0");
+        var typeCastInt = (TypeCast) build("(int) \"10\"");
+        var typeCastBool = (TypeCast) build("(bool) 0");
+        var typeCastFloat = (TypeCast) build("(float) 0");
+        var typeCastString = (TypeCast) build("(string) 0");
+        var typeCastClass = (TypeCast) build("(MyClass) 0");
+        var typeCastList = (TypeCast) build("(int[]) 0");
+        var typeCastMap = (TypeCast) build("({int,string}) 0");
+        var typeCastRepository = (TypeCast) build("(repository<Book>) 0");
+        var typeCastVoid = (TypeCast) build("(void) 0");
 
         assertEquals("int", typeCastInt.getType().toString());
+        assertTrue(typeCastInt.getExpression() instanceof StringLiteral);
         assertEquals("bool", typeCastBool.getType().toString());
+        assertTrue(typeCastBool.getExpression() instanceof IntegerLiteral);
         assertEquals("float", typeCastFloat.getType().toString());
+        assertTrue(typeCastFloat.getExpression() instanceof IntegerLiteral);
         assertEquals("string", typeCastString.getType().toString());
+        assertTrue(typeCastString.getExpression() instanceof IntegerLiteral);
         assertEquals("MyClass", typeCastClass.getType().toString());
+        assertTrue(typeCastClass.getExpression() instanceof IntegerLiteral);
         assertEquals("int[]", typeCastList.getType().toString());
+        assertTrue(typeCastList.getExpression() instanceof IntegerLiteral);
         assertEquals("{int,string}", typeCastMap.getType().toString());
+        assertTrue(typeCastMap.getExpression() instanceof IntegerLiteral);
         assertEquals("repository<Book>", typeCastRepository.getType().toString());
+        assertTrue(typeCastRepository.getExpression() instanceof IntegerLiteral);
         assertEquals("void", typeCastVoid.getType().toString());
+        assertTrue(typeCastVoid.getExpression() instanceof IntegerLiteral);
     }
 
     @Test
     public void should_build_binary_expressions() {
-        Expression concat = build("22 ++ 33");
+        var concat = build("22 ++ 33");
         assertTrue(concat instanceof Concatenation);
 
         // arithmetic
-        Expression add = build("2 + 1");
-        Expression sub = build("2 - 1");
-        Expression product = build("2 * 1");
-        Expression div = build("2 / 1");
+        var add = (Binary) build("2 + 1");
+        var sub = (Binary) build("2 - 1");
+        var product = (Binary) build("2 * 1");
+        var div = (Binary) build("2 / 1");
 
         assertTrue(add instanceof Addition);
+        assertTrue(add.getLeft() instanceof IntegerLiteral);
+        assertTrue(add.getRight() instanceof IntegerLiteral);
         assertTrue(sub instanceof Subtraction);
+        assertTrue(sub.getLeft() instanceof IntegerLiteral);
+        assertTrue(sub.getRight() instanceof IntegerLiteral);
         assertTrue(product instanceof Product);
+        assertTrue(product.getLeft() instanceof IntegerLiteral);
+        assertTrue(product.getRight() instanceof IntegerLiteral);
         assertTrue(div instanceof Division);
+        assertTrue(div.getLeft() instanceof IntegerLiteral);
+        assertTrue(div.getRight() instanceof IntegerLiteral);
 
-        //relational
-        Expression gt = build("2 > 1");
-        Expression gte = build("2 >= 1");
-        Expression lt = build("2 < 1");
-        Expression lte = build("2 <= 1");
-        Expression e = build("2 == 1");
-        Expression ne = build("2 != 1");
-        Expression and = build("2 && 1");
-        Expression or = build("2 || 1");
+        // relational
+        var gt = (Binary) build("2 > 1");
+        var gte = (Binary) build("2 >= 1");
+        var lt = (Binary) build("2 < 1");
+        var lte = (Binary) build("2 <= 1");
+        var e = (Binary) build("2 == 1");
+        var ne = (Binary) build("2 != 1");
+        var and = (Binary) build("2 && 1");
+        var or = (Binary) build("2 || 1");
 
         assertTrue(gt instanceof GreaterThan);
+        assertTrue(gt.getLeft() instanceof IntegerLiteral);
+        assertTrue(gt.getRight() instanceof IntegerLiteral);
         assertTrue(gte instanceof GreaterThanOrEqual);
+        assertTrue(gte.getLeft() instanceof IntegerLiteral);
+        assertTrue(gte.getRight() instanceof IntegerLiteral);
         assertTrue(lt instanceof LowerThan);
+        assertTrue(lt.getLeft() instanceof IntegerLiteral);
+        assertTrue(lt.getRight() instanceof IntegerLiteral);
         assertTrue(lte instanceof LowerThanOrEqual);
+        assertTrue(lte.getLeft() instanceof IntegerLiteral);
+        assertTrue(lte.getRight() instanceof IntegerLiteral);
         assertTrue(e instanceof Equal);
+        assertTrue(e.getLeft() instanceof IntegerLiteral);
+        assertTrue(e.getRight() instanceof IntegerLiteral);
         assertTrue(ne instanceof NonEqual);
+        assertTrue(ne.getLeft() instanceof IntegerLiteral);
+        assertTrue(ne.getRight() instanceof IntegerLiteral);
         assertTrue(and instanceof Conjunction);
+        assertTrue(and.getLeft() instanceof IntegerLiteral);
+        assertTrue(and.getRight() instanceof IntegerLiteral);
         assertTrue(or instanceof Disjunction);
+        assertTrue(or.getLeft() instanceof IntegerLiteral);
+        assertTrue(or.getRight() instanceof IntegerLiteral);
     }
 
     @Test
     public void should_build_ternary()
     {
-        Expression ternary = build("true ? true : false");
+        var ternary = (Ternary) build("true ? true : false");
+        var cond = ternary.getCondition();
+        var then = ternary.getThen();
+        var els = ternary.getElse();
 
-        assertTrue(ternary instanceof Ternary);
+        assertTrue(cond instanceof BooleanLiteral);
+        assertTrue(then instanceof BooleanLiteral);
+        assertTrue(els instanceof BooleanLiteral);
+    }
+
+    @Test
+    public void should_build_expression_query()
+    {
+        var query = (ExpressionQuery) build("SELECT a[] FROM aa a");
+
+        assertTrue(query.getQuery() instanceof QuerySelect);
     }
 
     private Expression build(String code) {

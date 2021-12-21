@@ -1,5 +1,7 @@
-package org.glagoldsl.compiler.ast.declaration;
+package org.glagoldsl.compiler.ast.declaration.proxy;
 
+import org.glagoldsl.compiler.ast.declaration.Declaration;
+import org.glagoldsl.compiler.ast.declaration.NamedDeclaration;
 import org.glagoldsl.compiler.ast.declaration.proxy.PhpLabel;
 
 public class Proxy extends Declaration {

@@ -1,14 +1,15 @@
 package org.glagoldsl.compiler.ast.builder;
 
 import org.glagoldsl.compiler.ast.Builder;
-import org.glagoldsl.compiler.ast.annotation.Annotation;
 import org.glagoldsl.compiler.ast.declaration.*;
+import org.glagoldsl.compiler.ast.declaration.controller.Controller;
+import org.glagoldsl.compiler.ast.declaration.controller.RestController;
+import org.glagoldsl.compiler.ast.declaration.proxy.Proxy;
 import org.glagoldsl.compiler.ast.expression.literal.StringLiteral;
 import org.glagoldsl.compiler.ast.module.Module;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,14 +17,14 @@ public class DeclarationTest {
 
     @Test
     public void should_build_namespace_node() {
-        Module module = build("namespace test::test;");
+        var module = build("namespace test::test;");
 
         assertEquals("test::test", module.getNamespace().toString());
     }
 
     @Test
     public void should_build_import_nodes() {
-        Module module = build("""
+        var module = build("""
                 namespace test::test;
                 import test::package::class as class1;
                 import test::package::class2;
@@ -40,7 +41,7 @@ public class DeclarationTest {
 
     @Test
     public void should_build_declarations() {
-        Module module = build("""
+        var module = build("""
             namespace test;
             entity testEntity {}
             value testValue {}
@@ -51,7 +52,7 @@ public class DeclarationTest {
             proxy \\SomeOther\\PhpClass as service localService {}
         """);
 
-        List<Declaration> declarations = module.getDeclarations();
+        var declarations = module.getDeclarations();
 
         assertEquals("testEntity", ((Entity) declarations.get(0)).getIdentifier().toString());
         assertEquals("testValue", ((Value) declarations.get(1)).getIdentifier().toString());
@@ -66,7 +67,7 @@ public class DeclarationTest {
 
     @Test
     public void should_build_annotated_declaration() {
-        Module module = build("""
+        var module = build("""
             namespace test;
             @table
             @table()
@@ -74,11 +75,109 @@ public class DeclarationTest {
             entity testEntity {}
         """);
 
-        List<Annotation> annotations = module.getDeclarations().get(0).getAnnotations();
+        var annotations = module.getDeclarations().get(0).getAnnotations();
 
         assertEquals("table", annotations.get(0).getName().toString());
         assertEquals("table", annotations.get(1).getName().toString());
         assertEquals("table_name", ((StringLiteral) annotations.get(2).getArguments().get(0).getExpression()).getValue());
+    }
+
+    @Test
+    public void should_build_entity_with_members() {
+        var module = build("""
+            namespace test;
+            entity testEntity {
+                int a;
+                int b () = 3;
+                testEntity() {}
+            }
+        """);
+
+        var entity = (Entity) module.getDeclarations().get(0);
+
+        assertEquals(3, entity.getMembers().size());
+    }
+
+    @Test
+    public void should_build_value_with_members() {
+        var module = build("""
+            namespace test;
+            value testValue {
+                int a;
+                int b () = 3;
+                constructor() {}
+            }
+        """);
+
+        var value = (Value) module.getDeclarations().get(0);
+
+        assertEquals(3, value.getMembers().size());
+    }
+
+    @Test
+    public void should_build_repository_with_members() {
+        var module = build("""
+            namespace test;
+            repository<Test> {
+                int a;
+                int b () = 3;
+                constructor() {}
+            }
+        """);
+
+        var repository = (Repository) module.getDeclarations().get(0);
+
+        assertEquals(3, repository.getMembers().size());
+    }
+
+    @Test
+    public void should_build_service_with_members() {
+        var module = build("""
+            namespace test;
+            service Test {
+                int a;
+                int b () = 3;
+                constructor() {}
+            }
+        """);
+
+        var service = (Service) module.getDeclarations().get(0);
+
+        assertEquals(3, service.getMembers().size());
+    }
+
+    @Test
+    public void should_build_rest_controller_with_members() {
+        var module = build("""
+            namespace test;
+            rest controller /test {
+                int a;
+                int b () = 3;
+                constructor() {}
+            }
+        """);
+
+        var controller = (RestController) module.getDeclarations().get(0);
+
+        assertEquals(3, controller.getMembers().size());
+    }
+
+    @Test
+    public void should_build_proxy_with_members() {
+        var module = build("""
+            namespace test;
+            proxy \\Illuminate\\Http\\Request as
+            service Request {
+                int a;
+                int b ();
+                constructor();
+            }
+        """);
+
+        var proxy = (Proxy) module.getDeclarations().get(0);
+        var service = (Service) proxy.getDeclaration();
+
+        assertEquals(3, service.getMembers().size());
     }
 
     private Module build(String code) {

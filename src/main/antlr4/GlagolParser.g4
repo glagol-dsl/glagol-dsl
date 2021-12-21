@@ -9,7 +9,7 @@ options { tokenVocab=GlagolLexer; }
 module
     : 'namespace' namespace ';'
         (imports+=use)*
-        (declarations+=annotatedDeclaration)*
+        (declarations+=declaration)*
         EOF
     ;
 
@@ -21,8 +21,6 @@ use
     : 'import' namespace '::' decl=identifier ';'                          #ImportPlain
     | 'import' namespace '::' decl=identifier 'as' alias=identifier ';'    #ImportAlias
     ;
-
-annotatedDeclaration : annotation* declaration;
 
 annotation
     : AnnotationName
@@ -36,8 +34,8 @@ expression
     | literal                                                                                           #ExprLiteral
     | identifier                                                                                        #ExprVariable
     | 'new' identifier '(' (args+=expression (',' args+=expression)* ','?)? ')'                         #ExprNew
-    | method=identifier '(' (args+=expression (',' args+=expression)* ','?)? ')'                        #ExprInvoke
-    | prev=expression '.' method=identifier '(' (args+=expression (',' args+=expression)* ','?)? ')'    #ExprInvoke
+    | func=identifier '(' (args+=expression (',' args+=expression)* ','?)? ')'                          #ExprInvoke
+    | prev=expression '.' func=identifier '(' (args+=expression (',' args+=expression)* ','?)? ')'      #ExprInvoke
     | 'this'                                                                                            #ExprThis
     | prev=expression '.' prop=identifier                                                               #ExprPropAccess
     | query                                                                                             #ExprQuery
@@ -153,28 +151,117 @@ mapPair
     ;
 
 declaration
-    : entity
-    | repository
-    | value
-    | controller
-    | service
-    | proxy
+    : annotation* entity
+    | annotation* repository
+    | annotation* value
+    | annotation* controller
+    | annotation* service
+    | annotation* proxy
     ;
 
-entity : 'entity' identifier '{' '}' ;
-repository : 'repository' '<' identifier '>' '{' '}' ;
-value : 'value' identifier '{' '}' ;
-controller : 'rest' 'controller' route '{' '}' #controllerRest ;
-service : ('util' | 'service') identifier '{' '}' ;
+entity : 'entity' identifier '{' genericMember* '}' ;
+repository : 'repository' '<' identifier '>' '{' genericMember* '}' ;
+value : 'value' identifier '{' genericMember* '}' ;
+controller : 'rest' 'controller' route '{' controllerMember* '}' #controllerRest ;
+service : ('util' | 'service') identifier '{' genericMember* '}' ;
 proxy : 'proxy' PhpClass 'as' proxable;
 
 proxable
-    : proxableValue
-    | proxableService
+    : 'value' identifier '{' proxyMember* '}'                 #ProxableValue
+    | ('util' | 'service') identifier '{' proxyMember* '}'    #ProxableService
     ;
 
-proxableService: ('util' | 'service') identifier '{' '}' ;
-proxableValue: 'value' identifier '{' '}';
+genericMember
+    : annotation* property
+    | annotation* method
+    | annotation* constructor
+    ;
+
+controllerMember
+    : annotation* property
+    | annotation* method
+    | annotation* action
+    ;
+
+proxyMember
+    : annotation* proxyProperty
+    | annotation* proxyMethod
+    | annotation* proxyConstructor
+    | annotation* proxyRequire
+    ;
+
+proxyRequire
+    : 'require' pkg=StringLiteral ver=StringLiteral ';'
+    ;
+
+proxyMethod
+    : accessor=Public? type identifier '(' (params+=parameter (',' params+=parameter)* ','?)? ')' ';'
+    ;
+
+proxyConstructor
+    : accessor=Public? identifier '(' (params+=parameter (',' params+=parameter)* ','?)? ')' ';'
+    ;
+
+proxyProperty
+    : accessor=Public? type identifier ';'
+    ;
+
+action
+    : identifier ('(' (params+=parameter (',' params+=parameter)* ','?)? ')')? methodBody
+    ;
+
+method
+    : accessor=(Public | Private)? type identifier '(' (params+=parameter (',' params+=parameter)* ','?)? ')' methodBody
+    ;
+
+methodBody
+    : '{' statement* '}'    #MethodBodyStatements
+    | '=' expression ';'    #MethodBodyExpression
+    ;
+
+statement
+    : expression ';'                                                              #StmtExpression
+    | '{' statement* '}'                                                          #StmtBlock
+    | 'if' '(' cond=expression ')' then=statement 'else' elseStmt=statement       #StmtIdThenElse
+    | 'if' '(' cond=expression ')' then=statement                                 #StmtIdThen
+    | assignable assignOperator=('='|'+='|'-='|'*='|'/=') val=statement           #StmtAssign
+    | forEach                                                                     #StmtForeach
+    | 'return' expression ';'                                                     #StmtReturn
+    | 'return' ';'                                                                #StmtReturnVoid
+    | 'persist' expression ';'                                                    #StmtPersist
+    | 'flush' expression ';'                                                      #StmtFlush
+    | 'flush' ';'                                                                 #StmtFlushAll
+    | 'remove' expression ';'                                                     #StmtRemove
+    | 'break' level=IntegerLiteral ';'                                            #StmtBreakLevel
+    | 'break' ';'                                                                 #StmtBreak
+    | 'continue' level=IntegerLiteral ';'                                         #StmtContinueLevel
+    | 'continue' ';'                                                              #StmtContinue
+    | type identifier '=' statement                                               #StmtDeclareWithValue
+    | type identifier ';'                                                         #StmtDeclare
+    ;
+
+forEach
+    : 'for' '(' arr=expression 'as' var=identifier (',' conds+=expression (','conds+=expression)*)? ')' statement                   #ForEachDefault
+    | 'for' '(' arr=expression 'as' k=identifier ':' var=identifier (',' conds+=expression (','conds+=expression)*)? ')' statement  #ForEachWithKey
+    ;
+
+assignable
+    : identifier                        #AssignableVar
+    | expression '.' identifier         #AssignableProp
+    | assignable '[' k=expression ']'   #AssignableListValue
+    ;
+
+parameter
+    : annotation* type identifier
+    ;
+
+constructor
+    : accessor=(Public | Private)? identifier '(' (params+=parameter (',' params+=parameter)* ','?)? ')' methodBody
+    ;
+
+property
+    : accessor=(Public | Private)? type identifier ('=' defaultValue=expression)? ';'
+    ;
 
 route : ('/' routeElement)+ ;
 routeElement
