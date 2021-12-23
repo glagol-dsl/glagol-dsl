@@ -1,10 +1,10 @@
 package org.glagoldsl.compiler.ast.builder.declaration.member;
 
 import org.glagoldsl.compiler.ast.Builder;
-import org.glagoldsl.compiler.ast.declaration.member.Accessor;
-import org.glagoldsl.compiler.ast.declaration.member.AccessibleMember;
-import org.glagoldsl.compiler.ast.declaration.member.Property;
-import org.glagoldsl.compiler.ast.expression.literal.IntegerLiteral;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.Accessor;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.AccessibleMember;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.Property;
+import org.glagoldsl.compiler.ast.nodes.expression.literal.IntegerLiteral;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;

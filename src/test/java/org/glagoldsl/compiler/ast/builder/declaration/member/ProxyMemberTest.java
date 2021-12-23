@@ -1,12 +1,12 @@
 package org.glagoldsl.compiler.ast.builder.declaration.member;
 
 import org.glagoldsl.compiler.ast.Builder;
-import org.glagoldsl.compiler.ast.declaration.member.Accessor;
-import org.glagoldsl.compiler.ast.declaration.member.Member;
-import org.glagoldsl.compiler.ast.declaration.member.proxy.ProxyConstructor;
-import org.glagoldsl.compiler.ast.declaration.member.proxy.ProxyMethod;
-import org.glagoldsl.compiler.ast.declaration.member.proxy.ProxyProperty;
-import org.glagoldsl.compiler.ast.declaration.member.proxy.ProxyRequire;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.Accessor;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.Member;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyConstructor;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyMethod;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyProperty;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyRequire;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;

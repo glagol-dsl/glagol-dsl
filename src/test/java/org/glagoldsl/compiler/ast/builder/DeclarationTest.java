@@ -1,12 +1,15 @@
 package org.glagoldsl.compiler.ast.builder;
 
 import org.glagoldsl.compiler.ast.Builder;
-import org.glagoldsl.compiler.ast.declaration.*;
-import org.glagoldsl.compiler.ast.declaration.controller.Controller;
-import org.glagoldsl.compiler.ast.declaration.controller.RestController;
-import org.glagoldsl.compiler.ast.declaration.proxy.Proxy;
-import org.glagoldsl.compiler.ast.expression.literal.StringLiteral;
-import org.glagoldsl.compiler.ast.module.Module;
+import org.glagoldsl.compiler.ast.nodes.declaration.Entity;
+import org.glagoldsl.compiler.ast.nodes.declaration.Repository;
+import org.glagoldsl.compiler.ast.nodes.declaration.Service;
+import org.glagoldsl.compiler.ast.nodes.declaration.Value;
+import org.glagoldsl.compiler.ast.nodes.declaration.controller.Controller;
+import org.glagoldsl.compiler.ast.nodes.declaration.controller.RestController;
+import org.glagoldsl.compiler.ast.nodes.declaration.proxy.Proxy;
+import org.glagoldsl.compiler.ast.nodes.expression.literal.StringLiteral;
+import org.glagoldsl.compiler.ast.nodes.module.Module;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;

@@ -1,15 +1,18 @@
 package org.glagoldsl.compiler.ast.builder;
 
 import org.glagoldsl.compiler.ast.Builder;
-import org.glagoldsl.compiler.ast.expression.*;
-import org.glagoldsl.compiler.ast.expression.literal.BooleanLiteral;
-import org.glagoldsl.compiler.ast.expression.literal.IntegerLiteral;
-import org.glagoldsl.compiler.ast.identifier.Identifier;
-import org.glagoldsl.compiler.ast.statement.*;
-import org.glagoldsl.compiler.ast.statement.assignable.ListValueAssign;
-import org.glagoldsl.compiler.ast.statement.assignable.PropertyAssign;
-import org.glagoldsl.compiler.ast.statement.assignable.VariableAssign;
-import org.glagoldsl.compiler.ast.type.GListType;
+import org.glagoldsl.compiler.ast.nodes.expression.GList;
+import org.glagoldsl.compiler.ast.nodes.expression.Invoke;
+import org.glagoldsl.compiler.ast.nodes.expression.This;
+import org.glagoldsl.compiler.ast.nodes.expression.Variable;
+import org.glagoldsl.compiler.ast.nodes.expression.literal.BooleanLiteral;
+import org.glagoldsl.compiler.ast.nodes.expression.literal.IntegerLiteral;
+import org.glagoldsl.compiler.ast.nodes.identifier.Identifier;
+import org.glagoldsl.compiler.ast.nodes.statement.*;
+import org.glagoldsl.compiler.ast.nodes.statement.assignable.ListValueAssign;
+import org.glagoldsl.compiler.ast.nodes.statement.assignable.PropertyAssign;
+import org.glagoldsl.compiler.ast.nodes.statement.assignable.VariableAssign;
+import org.glagoldsl.compiler.ast.nodes.type.GListType;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -46,7 +49,7 @@ public class StatementTest {
         var cond = (BooleanLiteral) ifThen.getCondition();
         var then = (ExpressionStatement) ifThen.getThen();
         var thenExpr = (Invoke) then.getExpression();
-        var elseStmt = ifThen.getElseStmt();
+        var elseStmt = ifThen.getElse();
 
         assertTrue(cond.getValue());
         assertEquals("foo", thenExpr.getMethod().toString());
@@ -61,7 +64,7 @@ public class StatementTest {
             }
         """);
         var ifThen = (If) block.getStatements().get(0);
-        var elseStmt = (ExpressionStatement) ifThen.getElseStmt();
+        var elseStmt = (ExpressionStatement) ifThen.getElse();
         var elseExpr = (Invoke) elseStmt.getExpression();
 
         assertEquals("bar", elseExpr.getMethod().toString());

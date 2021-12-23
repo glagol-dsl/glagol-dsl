@@ -4,56 +4,59 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.StringUtils;
-import org.glagoldsl.compiler.ast.annotation.AnnotatedNode;
-import org.glagoldsl.compiler.ast.annotation.Annotation;
-import org.glagoldsl.compiler.ast.annotation.AnnotationArgument;
-import org.glagoldsl.compiler.ast.declaration.*;
-import org.glagoldsl.compiler.ast.declaration.controller.RestController;
-import org.glagoldsl.compiler.ast.declaration.controller.route.Route;
-import org.glagoldsl.compiler.ast.declaration.controller.route.RouteElement;
-import org.glagoldsl.compiler.ast.declaration.controller.route.RouteElementLiteral;
-import org.glagoldsl.compiler.ast.declaration.controller.route.RouteElementPlaceholder;
-import org.glagoldsl.compiler.ast.declaration.member.*;
-import org.glagoldsl.compiler.ast.declaration.member.method.Body;
-import org.glagoldsl.compiler.ast.declaration.member.method.Parameter;
-import org.glagoldsl.compiler.ast.declaration.member.proxy.ProxyConstructor;
-import org.glagoldsl.compiler.ast.declaration.member.proxy.ProxyMethod;
-import org.glagoldsl.compiler.ast.declaration.member.proxy.ProxyProperty;
-import org.glagoldsl.compiler.ast.declaration.member.proxy.ProxyRequire;
-import org.glagoldsl.compiler.ast.declaration.proxy.PhpLabel;
-import org.glagoldsl.compiler.ast.declaration.proxy.Proxy;
-import org.glagoldsl.compiler.ast.expression.*;
-import org.glagoldsl.compiler.ast.expression.binary.Concatenation;
-import org.glagoldsl.compiler.ast.expression.binary.arithmetic.Addition;
-import org.glagoldsl.compiler.ast.expression.binary.arithmetic.Division;
-import org.glagoldsl.compiler.ast.expression.binary.arithmetic.Product;
-import org.glagoldsl.compiler.ast.expression.binary.arithmetic.Subtraction;
-import org.glagoldsl.compiler.ast.expression.binary.relational.*;
-import org.glagoldsl.compiler.ast.expression.literal.*;
-import org.glagoldsl.compiler.ast.expression.unary.Bracket;
-import org.glagoldsl.compiler.ast.expression.unary.arithmetic.Negative;
-import org.glagoldsl.compiler.ast.expression.unary.arithmetic.Positive;
-import org.glagoldsl.compiler.ast.expression.unary.relational.Negation;
-import org.glagoldsl.compiler.ast.identifier.Identifier;
-import org.glagoldsl.compiler.ast.meta.Location;
-import org.glagoldsl.compiler.ast.module.Import;
-import org.glagoldsl.compiler.ast.module.Module;
-import org.glagoldsl.compiler.ast.module.Namespace;
-import org.glagoldsl.compiler.ast.query.*;
-import org.glagoldsl.compiler.ast.query.expression.QueryEmptyExpression;
-import org.glagoldsl.compiler.ast.query.expression.QueryExpression;
-import org.glagoldsl.compiler.ast.query.expression.QueryField;
-import org.glagoldsl.compiler.ast.query.expression.QueryInterpolation;
-import org.glagoldsl.compiler.ast.query.expression.binary.relational.*;
-import org.glagoldsl.compiler.ast.query.expression.unary.QueryBracket;
-import org.glagoldsl.compiler.ast.query.expression.unary.QueryIsNotNull;
-import org.glagoldsl.compiler.ast.query.expression.unary.QueryIsNull;
-import org.glagoldsl.compiler.ast.statement.*;
-import org.glagoldsl.compiler.ast.statement.assignable.Assignable;
-import org.glagoldsl.compiler.ast.statement.assignable.ListValueAssign;
-import org.glagoldsl.compiler.ast.statement.assignable.PropertyAssign;
-import org.glagoldsl.compiler.ast.statement.assignable.VariableAssign;
-import org.glagoldsl.compiler.ast.type.*;
+import org.glagoldsl.compiler.ast.nodes.Node;
+import org.glagoldsl.compiler.ast.nodes.annotation.AnnotatedNode;
+import org.glagoldsl.compiler.ast.nodes.annotation.Annotation;
+import org.glagoldsl.compiler.ast.nodes.annotation.AnnotationArgument;
+import org.glagoldsl.compiler.ast.nodes.declaration.*;
+import org.glagoldsl.compiler.ast.nodes.declaration.controller.RestController;
+import org.glagoldsl.compiler.ast.nodes.declaration.controller.route.Route;
+import org.glagoldsl.compiler.ast.nodes.declaration.controller.route.RouteElement;
+import org.glagoldsl.compiler.ast.nodes.declaration.controller.route.RouteElementLiteral;
+import org.glagoldsl.compiler.ast.nodes.declaration.controller.route.RouteElementPlaceholder;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.*;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Body;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Parameter;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyConstructor;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyMethod;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyProperty;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyRequire;
+import org.glagoldsl.compiler.ast.nodes.declaration.proxy.PhpLabel;
+import org.glagoldsl.compiler.ast.nodes.declaration.proxy.Proxy;
+import org.glagoldsl.compiler.ast.nodes.expression.*;
+import org.glagoldsl.compiler.ast.nodes.expression.binary.Concatenation;
+import org.glagoldsl.compiler.ast.nodes.expression.binary.arithmetic.Addition;
+import org.glagoldsl.compiler.ast.nodes.expression.binary.arithmetic.Division;
+import org.glagoldsl.compiler.ast.nodes.expression.binary.arithmetic.Product;
+import org.glagoldsl.compiler.ast.nodes.expression.binary.arithmetic.Subtraction;
+import org.glagoldsl.compiler.ast.nodes.expression.binary.relational.*;
+import org.glagoldsl.compiler.ast.nodes.expression.literal.*;
+import org.glagoldsl.compiler.ast.nodes.expression.unary.Bracket;
+import org.glagoldsl.compiler.ast.nodes.expression.unary.arithmetic.Negative;
+import org.glagoldsl.compiler.ast.nodes.expression.unary.arithmetic.Positive;
+import org.glagoldsl.compiler.ast.nodes.expression.unary.relational.Negation;
+import org.glagoldsl.compiler.ast.nodes.identifier.Identifier;
+import org.glagoldsl.compiler.ast.nodes.meta.Location;
+import org.glagoldsl.compiler.ast.nodes.module.Import;
+import org.glagoldsl.compiler.ast.nodes.module.Module;
+import org.glagoldsl.compiler.ast.nodes.module.Namespace;
+import org.glagoldsl.compiler.ast.nodes.query.*;
+import org.glagoldsl.compiler.ast.nodes.query.expression.QueryEmptyExpression;
+import org.glagoldsl.compiler.ast.nodes.query.expression.QueryExpression;
+import org.glagoldsl.compiler.ast.nodes.query.expression.QueryField;
+import org.glagoldsl.compiler.ast.nodes.query.expression.QueryInterpolation;
+import org.glagoldsl.compiler.ast.nodes.query.expression.binary.relational.*;
+import org.glagoldsl.compiler.ast.nodes.query.expression.unary.QueryBracket;
+import org.glagoldsl.compiler.ast.nodes.query.expression.unary.QueryIsNotNull;
+import org.glagoldsl.compiler.ast.nodes.query.expression.unary.QueryIsNull;
+import org.glagoldsl.compiler.ast.nodes.statement.*;
+import org.glagoldsl.compiler.ast.nodes.statement.assignable.Assignable;
+import org.glagoldsl.compiler.ast.nodes.statement.assignable.ListValueAssign;
+import org.glagoldsl.compiler.ast.nodes.statement.assignable.PropertyAssign;
+import org.glagoldsl.compiler.ast.nodes.statement.assignable.VariableAssign;
+import org.glagoldsl.compiler.ast.nodes.type.*;
+import org.glagoldsl.compiler.io.Source;
+import org.glagoldsl.compiler.io.SourcePathSetter;
 import org.glagoldsl.compiler.syntax.concrete.GlagolLexer;
 import org.glagoldsl.compiler.syntax.concrete.GlagolParser;
 import org.glagoldsl.compiler.syntax.concrete.GlagolParser.*;
@@ -68,30 +71,56 @@ import java.util.List;
 
 public class Builder extends AbstractParseTreeVisitor<Node> implements GlagolParserVisitor<Node> {
 
-    public Module build(InputStream inputStream) {
-        return visitModule(parse(inputStream).module());
+    public Module build(Source source) {
+        var module = build(source.getInputStream());
+
+        module.accept(new SourcePathSetter(), source.getSourcePath());
+
+        return module;
     }
 
+    public Module build(InputStream inputStream) {
+        return (Module) visit(parse(inputStream).module());
+    }
+
+    /**
+     * Only used for testing
+     */
     public Expression buildExpression(InputStream inputStream) {
         return (Expression) visit(parse(inputStream).expression());
     }
 
+    /**
+     * Only used for testing
+     */
     public Query buildQuery(InputStream inputStream) {
         return (Query) visit(parse(inputStream).query());
     }
 
+    /**
+     * Only used for testing
+     */
     public AccessibleMember buildGenericMember(InputStream inputStream) {
         return (AccessibleMember) visit(parse(inputStream).genericMember());
     }
 
+    /**
+     * Only used for testing
+     */
     public Member buildControllerMember(InputStream inputStream) {
         return (Member) visit(parse(inputStream).controllerMember());
     }
 
+    /**
+     * Only used for testing
+     */
     public Member buildProxyMember(InputStream inputStream) {
         return (Member) visit(parse(inputStream).proxyMember());
     }
 
+    /**
+     * Only used for testing
+     */
     public Statement buildStatement(InputStream inputStream) {
         return (Statement) visit(parse(inputStream).statement());
     }

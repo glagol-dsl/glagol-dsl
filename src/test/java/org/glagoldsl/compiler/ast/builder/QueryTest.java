@@ -1,14 +1,14 @@
 package org.glagoldsl.compiler.ast.builder;
 
 import org.glagoldsl.compiler.ast.Builder;
-import org.glagoldsl.compiler.ast.expression.*;
-import org.glagoldsl.compiler.ast.expression.literal.IntegerLiteral;
-import org.glagoldsl.compiler.ast.query.DefinedQueryLimit;
-import org.glagoldsl.compiler.ast.query.Query;
-import org.glagoldsl.compiler.ast.query.QuerySelect;
-import org.glagoldsl.compiler.ast.query.expression.QueryField;
-import org.glagoldsl.compiler.ast.query.expression.QueryInterpolation;
-import org.glagoldsl.compiler.ast.query.expression.binary.relational.QueryEqual;
+import org.glagoldsl.compiler.ast.nodes.expression.Variable;
+import org.glagoldsl.compiler.ast.nodes.expression.literal.IntegerLiteral;
+import org.glagoldsl.compiler.ast.nodes.query.DefinedQueryLimit;
+import org.glagoldsl.compiler.ast.nodes.query.Query;
+import org.glagoldsl.compiler.ast.nodes.query.QuerySelect;
+import org.glagoldsl.compiler.ast.nodes.query.expression.QueryField;
+import org.glagoldsl.compiler.ast.nodes.query.expression.QueryInterpolation;
+import org.glagoldsl.compiler.ast.nodes.query.expression.binary.relational.QueryEqual;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;

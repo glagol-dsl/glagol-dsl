@@ -1,5 +1,6 @@
 package org.glagoldsl.compiler.ast;
 
+import org.glagoldsl.compiler.ast.nodes.Node;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
