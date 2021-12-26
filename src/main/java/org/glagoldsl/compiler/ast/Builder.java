@@ -472,16 +472,6 @@ public class Builder extends AbstractParseTreeVisitor<Node> implements GlagolPar
     }
 
     @Override
-    public QueryExpression visitParseQueryExpression(ParseQueryExpressionContext ctx) {
-        return (QueryExpression) visit(ctx.queryExpression());
-    }
-
-    @Override
-    public QueryExpression visitParseLiteral(ParseLiteralContext ctx) {
-        return new QueryInterpolation((Literal) visit(ctx.literal()));
-    }
-
-    @Override
     public QuerySpec visitQuerySpecSingle(QuerySpecSingleContext ctx) {
         return new QuerySpec(
                 (Identifier) visit(ctx.identifier()),
@@ -877,11 +867,9 @@ public class Builder extends AbstractParseTreeVisitor<Node> implements GlagolPar
             Token token,
             Accessor defaultAccessor
     ) {
-        if (null == token) {
-            return defaultAccessor;
-        }
+        var text = null == token ? "" : token.getText();
 
-        return switch (token.getText()) {
+        return switch (text) {
             case "public" -> Accessor.PUBLIC;
             case "private" -> Accessor.PRIVATE;
             default -> defaultAccessor;
@@ -1180,6 +1168,11 @@ public class Builder extends AbstractParseTreeVisitor<Node> implements GlagolPar
     @Override
     public Identifier visitIdentifier(IdentifierContext ctx) {
         return new Identifier(ctx.Identifier().getText());
+    }
+
+    @Override
+    public QueryExpression visitQueryExprLiteral(QueryExprLiteralContext ctx) {
+        return new QueryInterpolation((Expression) visit(ctx.literal()));
     }
 
     @Override

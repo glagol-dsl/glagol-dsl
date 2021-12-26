@@ -2,19 +2,19 @@ package org.glagoldsl.compiler.ast.visitor;
 
 import org.glagoldsl.compiler.ast.nodes.annotation.Annotation;
 import org.glagoldsl.compiler.ast.nodes.annotation.AnnotationArgument;
-import org.glagoldsl.compiler.ast.nodes.declaration.Declaration;
-import org.glagoldsl.compiler.ast.nodes.declaration.Entity;
-import org.glagoldsl.compiler.ast.nodes.declaration.Repository;
-import org.glagoldsl.compiler.ast.nodes.declaration.Service;
+import org.glagoldsl.compiler.ast.nodes.declaration.*;
 import org.glagoldsl.compiler.ast.nodes.declaration.controller.RestController;
 import org.glagoldsl.compiler.ast.nodes.declaration.controller.route.Route;
 import org.glagoldsl.compiler.ast.nodes.declaration.controller.route.RouteElement;
+import org.glagoldsl.compiler.ast.nodes.declaration.controller.route.RouteElementLiteral;
+import org.glagoldsl.compiler.ast.nodes.declaration.controller.route.RouteElementPlaceholder;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.*;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Body;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Parameter;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyConstructor;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyMethod;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyProperty;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyRequire;
 import org.glagoldsl.compiler.ast.nodes.declaration.proxy.PhpLabel;
 import org.glagoldsl.compiler.ast.nodes.declaration.proxy.Proxy;
 import org.glagoldsl.compiler.ast.nodes.expression.*;
@@ -24,7 +24,10 @@ import org.glagoldsl.compiler.ast.nodes.expression.binary.arithmetic.Division;
 import org.glagoldsl.compiler.ast.nodes.expression.binary.arithmetic.Product;
 import org.glagoldsl.compiler.ast.nodes.expression.binary.arithmetic.Subtraction;
 import org.glagoldsl.compiler.ast.nodes.expression.binary.relational.*;
+import org.glagoldsl.compiler.ast.nodes.expression.literal.BooleanLiteral;
+import org.glagoldsl.compiler.ast.nodes.expression.literal.DecimalLiteral;
 import org.glagoldsl.compiler.ast.nodes.expression.literal.IntegerLiteral;
+import org.glagoldsl.compiler.ast.nodes.expression.literal.StringLiteral;
 import org.glagoldsl.compiler.ast.nodes.expression.unary.Bracket;
 import org.glagoldsl.compiler.ast.nodes.expression.unary.arithmetic.Negative;
 import org.glagoldsl.compiler.ast.nodes.expression.unary.arithmetic.Positive;
@@ -34,6 +37,7 @@ import org.glagoldsl.compiler.ast.nodes.module.Import;
 import org.glagoldsl.compiler.ast.nodes.module.Module;
 import org.glagoldsl.compiler.ast.nodes.module.Namespace;
 import org.glagoldsl.compiler.ast.nodes.query.*;
+import org.glagoldsl.compiler.ast.nodes.query.expression.QueryEmptyExpression;
 import org.glagoldsl.compiler.ast.nodes.query.expression.QueryExpression;
 import org.glagoldsl.compiler.ast.nodes.query.expression.QueryField;
 import org.glagoldsl.compiler.ast.nodes.query.expression.QueryInterpolation;
@@ -43,6 +47,9 @@ import org.glagoldsl.compiler.ast.nodes.query.expression.unary.QueryIsNotNull;
 import org.glagoldsl.compiler.ast.nodes.query.expression.unary.QueryIsNull;
 import org.glagoldsl.compiler.ast.nodes.statement.*;
 import org.glagoldsl.compiler.ast.nodes.statement.assignable.Assignable;
+import org.glagoldsl.compiler.ast.nodes.statement.assignable.ListValueAssign;
+import org.glagoldsl.compiler.ast.nodes.statement.assignable.PropertyAssign;
+import org.glagoldsl.compiler.ast.nodes.statement.assignable.VariableAssign;
 import org.glagoldsl.compiler.ast.nodes.type.*;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -51,6 +58,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.verification.VerificationMode;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -151,7 +159,7 @@ class VoidVisitorChildrenTest {
         var member = mock(Member.class);
         var annotation = mock(Annotation.class);
 
-        var tree = new Service(identifier, new ArrayList<>() {{
+        var tree = new Value(identifier, new ArrayList<>() {{
             add(member);
         }});
         tree.addAnnotation(annotation);
@@ -249,6 +257,18 @@ class VoidVisitorChildrenTest {
         tree.accept(visitor, null);
 
         verify(parameter, once()).accept(visitor, null);
+        verify(annotation, once()).accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_proxy_require_children_to_be_visited() {
+        var annotation = mock(Annotation.class);
+
+        var tree = new ProxyRequire("", "");
+        tree.addAnnotation(annotation);
+
+        tree.accept(visitor, null);
+
         verify(annotation, once()).accept(visitor, null);
     }
 
@@ -374,6 +394,132 @@ class VoidVisitorChildrenTest {
     }
 
     @Test
+    public void it_expects_php_label_children_to_be_visited() {
+        var tree = new PhpLabel("");
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_route_element_literal_children_to_be_visited() {
+        var tree = new RouteElementLiteral("");
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_route_element_placeholder_children_to_be_visited() {
+        var tree = new RouteElementPlaceholder("");
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_boolean_literal_children_to_be_visited() {
+        var tree = new BooleanLiteral(true);
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_string_literal_children_to_be_visited() {
+        var tree = new StringLiteral("");
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_integer_literal_children_to_be_visited() {
+        var tree = new IntegerLiteral(123);
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_decimal_literal_children_to_be_visited() {
+        var tree = new DecimalLiteral(new BigDecimal("1.0"));
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_this_children_to_be_visited() {
+        var tree = new This();
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_identifier_children_to_be_visited() {
+        var tree = new Identifier("");
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_undefined_query_limit_children_to_be_visited() {
+        var tree = new UndefinedQueryLimit();
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_query_empty_expression_children_to_be_visited() {
+        var tree = new QueryEmptyExpression();
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_assign_operator_children_to_be_visited() {
+        var tree = AssignOperator.DEFAULT;
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_empty_statement_children_to_be_visited() {
+        var tree = new EmptyStatement();
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_bool_type_children_to_be_visited() {
+        var tree = new BoolType();
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_float_type_children_to_be_visited() {
+        var tree = new FloatType();
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_integer_type_children_to_be_visited() {
+        var tree = new IntegerType();
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_string_type_children_to_be_visited() {
+        var tree = new StringType();
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_void_type_children_to_be_visited() {
+        var tree = new VoidType();
+
+        tree.accept(visitor, null);
+    }
+
+    @Test
     public void it_expects_expression_query_children_to_be_visited() {
         var query = mock(Query.class);
 
@@ -382,6 +528,37 @@ class VoidVisitorChildrenTest {
         tree.accept(visitor, null);
 
         verify(query, once()).accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_list_value_assign_children_to_be_visited() {
+        var prev = mock(Assignable.class);
+        var expression = mock(Expression.class);
+
+        new ListValueAssign(prev, expression).accept(visitor, null);
+
+        verify(prev, once()).accept(visitor, null);
+        verify(expression, once()).accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_property_assign_children_to_be_visited() {
+        var prev = mock(Expression.class);
+        var property = mock(Identifier.class);
+
+        new PropertyAssign(prev, property).accept(visitor, null);
+
+        verify(prev, once()).accept(visitor, null);
+        verify(property, once()).accept(visitor, null);
+    }
+
+    @Test
+    public void it_expects_variable_assign_children_to_be_visited() {
+        var identifier = mock(Identifier.class);
+
+        new VariableAssign(identifier).accept(visitor, null);
+
+        verify(identifier, once()).accept(visitor, null);
     }
 
     @Test

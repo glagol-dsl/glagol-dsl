@@ -213,6 +213,22 @@ public class StatementTest {
     }
 
     @Test
+    public void should_build_for_each_with_key_and_conditions() {
+        var block = build("""
+            {
+                for (list as key:var, true, true, false) true;
+            }
+        """);
+
+        var forEach = (ForEachWithKey) block.getStatements().get(0);
+
+        assertEquals(3, forEach.getConditions().size());
+        assertTrue(((BooleanLiteral) forEach.getConditions().get(0)).getValue());
+        assertTrue(((BooleanLiteral) forEach.getConditions().get(1)).getValue());
+        assertFalse(((BooleanLiteral) forEach.getConditions().get(2)).getValue());
+    }
+
+    @Test
     public void should_build_flush() {
         var block = build("""
             {

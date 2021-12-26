@@ -100,17 +100,18 @@ querySource
 
 queryExpression
     : '(' queryExpression ')'                                      #QueryExprBracket
-    | left=queryExpression '=' right=literalOrQueryExpression      #QueryExprEqual
-    | left=queryExpression '!=' right=literalOrQueryExpression     #QueryExprNonEqual
-    | left=queryExpression '>' right=literalOrQueryExpression      #QueryExprGreaterThan
-    | left=queryExpression '>=' right=literalOrQueryExpression     #QueryExprGreaterThanOrEqual
-    | left=queryExpression '<' right=literalOrQueryExpression      #QueryExprLowerThan
-    | left=queryExpression '<=' right=literalOrQueryExpression     #QueryExprLowerThanOrEqual
-    | left=queryExpression 'AND' right=literalOrQueryExpression    #QueryExprConjunction
-    | left=queryExpression 'OR' right=literalOrQueryExpression     #QueryExprDisjunction
+    | left=queryExpression '=' right=queryExpression               #QueryExprEqual
+    | left=queryExpression '!=' right=queryExpression              #QueryExprNonEqual
+    | left=queryExpression '>' right=queryExpression               #QueryExprGreaterThan
+    | left=queryExpression '>=' right=queryExpression              #QueryExprGreaterThanOrEqual
+    | left=queryExpression '<' right=queryExpression               #QueryExprLowerThan
+    | left=queryExpression '<=' right=queryExpression              #QueryExprLowerThanOrEqual
+    | left=queryExpression 'AND' right=queryExpression             #QueryExprConjunction
+    | left=queryExpression 'OR' right=queryExpression              #QueryExprDisjunction
     | expr=queryExpression 'IS' 'NULL'                             #QueryExprIsNull
     | expr=queryExpression 'IS' 'NOT' 'NULL'                       #QueryExprIsNotNull
     | '<<' expression '>>'                                         #QueryExprExpr
+    | literal                                                      #QueryExprLiteral
     | field=queryField                                             #QueryExprField
     ;
 
@@ -123,14 +124,9 @@ queryOrderBy
     ;
 
 queryLimit
-    : offset=literalOrQueryExpression ',' size=literalOrQueryExpression       #QueryLimitOffset
-    | size=literalOrQueryExpression 'OFFSET' offset=literalOrQueryExpression  #QueryLimitOffset
-    | size=literalOrQueryExpression                                           #QueryLimitNoOffset
-    ;
-
-literalOrQueryExpression
-    : queryExpression               #ParseQueryExpression
-    | literal                       #ParseLiteral
+    : offset=queryExpression ',' size=queryExpression       #QueryLimitOffset
+    | size=queryExpression 'OFFSET' offset=queryExpression  #QueryLimitOffset
+    | size=queryExpression                                  #QueryLimitNoOffset
     ;
 
 queryOrderByField
