@@ -74,7 +74,7 @@ public class Builder extends AbstractParseTreeVisitor<Node> implements GlagolPar
     public Module build(Source source) {
         var module = build(source.getInputStream());
 
-        module.accept(new SourcePathSetter(), source.getSourcePath());
+        module.accept(new SourcePathSetter(source.getSourcePath()), null);
 
         return module;
     }

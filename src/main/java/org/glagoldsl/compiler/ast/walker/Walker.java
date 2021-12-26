@@ -53,1021 +53,1021 @@ import org.glagoldsl.compiler.ast.nodes.statement.assignable.VariableAssign;
 import org.glagoldsl.compiler.ast.nodes.type.*;
 import org.glagoldsl.compiler.ast.visitor.VoidVisitor;
 
-public abstract class Walker<T> extends VoidVisitor<T> {
-    private final Listener<T> listener;
+public abstract class Walker extends VoidVisitor<Void> {
+    private final Listener listener;
 
-    public Walker(Listener<T> listener) {
+    public Walker(Listener listener) {
         this.listener = listener;
     }
 
     @Override
     public Void visitAnnotation(
-            Annotation node, T context
+            Annotation node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitAnnotation(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
 
         return null;
     }
 
     @Override
     public Void visitAnnotationArgument(
-            AnnotationArgument node, T context
+            AnnotationArgument node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitAnnotationArgument(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitEntity(
-            Entity node, T context
+            Entity node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitEntity(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitIdentifier(
-            Identifier node, T context
+            Identifier node, Void context
     ) {
-        listener.enter(node).accept(context);
-        listener.leave(node).accept(context);
+        listener.enter(node);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitRepository(
-            Repository node, T context
+            Repository node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitRepository(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitService(
-            Service node, T context
+            Service node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitService(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitValue(
-            Value node, T context
+            Value node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitValue(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitRestController(
-            RestController node, T context
+            RestController node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitRestController(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitRoute(
-            Route node, T context
+            Route node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitRoute(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitRouteElementLiteral(
-            RouteElementLiteral node, T context
+            RouteElementLiteral node, Void context
     ) {
-        listener.enter(node).accept(context);
-        listener.leave(node).accept(context);
+        listener.enter(node);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitRouteElementPlaceholder(
-            RouteElementPlaceholder node, T context
+            RouteElementPlaceholder node, Void context
     ) {
-        listener.enter(node).accept(context);
-        listener.leave(node).accept(context);
+        listener.enter(node);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitAccessor(
-            Accessor node, T context
+            Accessor node, Void context
     ) {
-        listener.enter(node).accept(context);
-        listener.leave(node).accept(context);
+        listener.enter(node);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitAction(
-            Action node, T context
+            Action node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitAction(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitConstructor(
-            Constructor node, T context
+            Constructor node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitConstructor(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitMethod(
-            Method node, T context
+            Method node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitMethod(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitProperty(
-            Property node, T context
+            Property node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitProperty(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitBody(
-            Body node, T context
+            Body node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitBody(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitParameter(
-            Parameter node, T context
+            Parameter node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitParameter(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitProxyConstructor(
-            ProxyConstructor node, T context
+            ProxyConstructor node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitProxyConstructor(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitProxyMethod(
-            ProxyMethod node, T context
+            ProxyMethod node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitProxyMethod(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitProxyProperty(
-            ProxyProperty node, T context
+            ProxyProperty node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitProxyProperty(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitProxyRequire(
-            ProxyRequire node, T context
+            ProxyRequire node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitProxyRequire(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitPhpLabel(
-            PhpLabel node, T context
+            PhpLabel node, Void context
     ) {
-        listener.enter(node).accept(context);
-        listener.leave(node).accept(context);
+        listener.enter(node);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitProxy(
-            Proxy node, T context
+            Proxy node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitProxy(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitConcatenation(
-            Concatenation node, T context
+            Concatenation node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitConcatenation(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitAddition(
-            Addition node, T context
+            Addition node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitAddition(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitDivision(
-            Division node, T context
+            Division node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitDivision(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitProduct(
-            Product node, T context
+            Product node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitProduct(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitSubtraction(
-            Subtraction node, T context
+            Subtraction node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitSubtraction(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitConjunction(
-            Conjunction node, T context
+            Conjunction node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitConjunction(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitDisjunction(
-            Disjunction node, T context
+            Disjunction node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitDisjunction(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitEqual(
-            Equal node, T context
+            Equal node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitEqual(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitGreaterThan(
-            GreaterThan node, T context
+            GreaterThan node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitGreaterThan(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitGreaterThanOrEqual(
-            GreaterThanOrEqual node, T context
+            GreaterThanOrEqual node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitGreaterThanOrEqual(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitLowerThan(LowerThan node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitLowerThan(LowerThan node, Void context) {
+        listener.enter(node);
         super.visitLowerThan(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitLowerThanOrEqual(LowerThanOrEqual node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitLowerThanOrEqual(LowerThanOrEqual node, Void context) {
+        listener.enter(node);
         super.visitLowerThanOrEqual(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitNonEqual(NonEqual node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitNonEqual(NonEqual node, Void context) {
+        listener.enter(node);
         super.visitNonEqual(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitBracket(
-            Bracket node, T context
+            Bracket node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitBracket(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitNegative(
-            Negative node, T context
+            Negative node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitNegative(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitPositive(
-            Positive node, T context
+            Positive node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitPositive(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitNegation(
-            Negation node, T context
+            Negation node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitNegation(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitBooleanLiteral(
-            BooleanLiteral node, T context
+            BooleanLiteral node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitBooleanLiteral(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitDecimalLiteral(
-            DecimalLiteral node, T context
+            DecimalLiteral node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitDecimalLiteral(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitIntegerLiteral(
-            IntegerLiteral node, T context
+            IntegerLiteral node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitIntegerLiteral(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitStringLiteral(
-            StringLiteral node, T context
+            StringLiteral node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitStringLiteral(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitEmptyExpression(
-            EmptyExpression node, T context
+            EmptyExpression node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitEmptyExpression(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitExpressionQuery(
-            ExpressionQuery node, T context
+            ExpressionQuery node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitExpressionQuery(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitGList(
-            GList node, T context
+            GList node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitGList(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitGMap(
-            GMap node, T context
+            GMap node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitGMap(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitInvoke(
-            Invoke node, T context
+            Invoke node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitInvoke(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitNew(New node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitNew(New node, Void context) {
+        listener.enter(node);
         super.visitNew(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitPropertyAccess(PropertyAccess node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitPropertyAccess(PropertyAccess node, Void context) {
+        listener.enter(node);
         super.visitPropertyAccess(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitTernary(Ternary node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitTernary(Ternary node, Void context) {
+        listener.enter(node);
         super.visitTernary(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitThis(This node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitThis(This node, Void context) {
+        listener.enter(node);
         super.visitThis(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitTypeCast(TypeCast node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitTypeCast(TypeCast node, Void context) {
+        listener.enter(node);
         super.visitTypeCast(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitVariable(Variable node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitVariable(Variable node, Void context) {
+        listener.enter(node);
         super.visitVariable(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitModule(
-            Module node, T context
+            Module node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitModule(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitNamespace(
-            Namespace node, T context
+            Namespace node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitNamespace(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitImport(
-            Import node, T context
+            Import node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitImport(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitQuerySelect(
-            QuerySelect node, T context
+            QuerySelect node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitQuerySelect(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitQuerySpec(
-            QuerySpec node, T context
+            QuerySpec node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitQuerySpec(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitQuerySource(
-            QuerySource node, T context
+            QuerySource node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitQuerySource(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitQueryOrderBy(
-            QueryOrderBy node, T context
+            QueryOrderBy node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitQueryOrderBy(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitQueryOrderByField(
-            QueryOrderByField node, T context
+            QueryOrderByField node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitQueryOrderByField(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitDefinedQueryLimit(DefinedQueryLimit node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitDefinedQueryLimit(DefinedQueryLimit node, Void context) {
+        listener.enter(node);
         super.visitDefinedQueryLimit(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitUndefinedQueryLimit(UndefinedQueryLimit node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitUndefinedQueryLimit(UndefinedQueryLimit node, Void context) {
+        listener.enter(node);
         super.visitUndefinedQueryLimit(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitQueryConjunction(
-            QueryConjunction node, T context
+            QueryConjunction node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitQueryConjunction(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitQueryDisjunction(
-            QueryDisjunction node, T context
+            QueryDisjunction node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitQueryDisjunction(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitQueryEqual(
-            QueryEqual node, T context
+            QueryEqual node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitQueryEqual(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitQueryGreaterThan(
-            QueryGreaterThan node, T context
+            QueryGreaterThan node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitQueryGreaterThan(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitQueryGreaterThanOrEqual(
-            QueryGreaterThanOrEqual node, T context
+            QueryGreaterThanOrEqual node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitQueryGreaterThanOrEqual(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitQueryLowerThan(QueryLowerThan node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitQueryLowerThan(QueryLowerThan node, Void context) {
+        listener.enter(node);
         super.visitQueryLowerThan(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitQueryLowerThanOrEqual(
-            QueryLowerThanOrEqual node, T context
+            QueryLowerThanOrEqual node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitQueryLowerThanOrEqual(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitQueryNonEqual(QueryNonEqual node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitQueryNonEqual(QueryNonEqual node, Void context) {
+        listener.enter(node);
         super.visitQueryNonEqual(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitQueryBracket(
-            QueryBracket node, T context
+            QueryBracket node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitQueryBracket(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitQueryIsNotNull(
-            QueryIsNotNull node, T context
+            QueryIsNotNull node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitQueryIsNotNull(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitQueryIsNull(
-            QueryIsNull node, T context
+            QueryIsNull node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitQueryIsNull(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitQueryEmptyExpression(
-            QueryEmptyExpression node, T context
+            QueryEmptyExpression node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitQueryEmptyExpression(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitQueryField(
-            QueryField node, T context
+            QueryField node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitQueryField(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitQueryInterpolation(
-            QueryInterpolation node, T context
+            QueryInterpolation node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitQueryInterpolation(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitAssign(
-            Assign node, T context
+            Assign node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitAssign(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitAssignOperator(
-            AssignOperator node, T context
+            AssignOperator node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitAssignOperator(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitBlock(
-            Block node, T context
+            Block node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitBlock(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitBreak(
-            Break node, T context
+            Break node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitBreak(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitContinue(
-            Continue node, T context
+            Continue node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitContinue(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitDeclare(Declare node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitDeclare(Declare node, Void context) {
+        listener.enter(node);
         super.visitDeclare(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitEmptyStatement(EmptyStatement node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitEmptyStatement(EmptyStatement node, Void context) {
+        listener.enter(node);
         super.visitEmptyStatement(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitExpressionStatement(ExpressionStatement node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitExpressionStatement(ExpressionStatement node, Void context) {
+        listener.enter(node);
         super.visitExpressionStatement(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitFlush(Flush node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitFlush(Flush node, Void context) {
+        listener.enter(node);
         super.visitFlush(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitForEach(ForEach node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitForEach(ForEach node, Void context) {
+        listener.enter(node);
         super.visitForEach(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitForEachWithKey(ForEachWithKey node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitForEachWithKey(ForEachWithKey node, Void context) {
+        listener.enter(node);
         super.visitForEachWithKey(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitIf(If node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitIf(If node, Void context) {
+        listener.enter(node);
         super.visitIf(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitPersist(Persist node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitPersist(Persist node, Void context) {
+        listener.enter(node);
         super.visitPersist(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitRemove(Remove node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitRemove(Remove node, Void context) {
+        listener.enter(node);
         super.visitRemove(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitReturn(Return node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitReturn(Return node, Void context) {
+        listener.enter(node);
         super.visitReturn(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitListValueAssign(
-            ListValueAssign node, T context
+            ListValueAssign node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitListValueAssign(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitPropertyAssign(
-            PropertyAssign node, T context
+            PropertyAssign node, Void context
     ) {
-        listener.enter(node).accept(context);
-        listener.leave(node).accept(context);
+        listener.enter(node);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitVariableAssign(
-            VariableAssign node, T context
+            VariableAssign node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitVariableAssign(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitBoolType(
-            BoolType node, T context
+            BoolType node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitBoolType(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitClassType(
-            ClassType node, T context
+            ClassType node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitClassType(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitFloatType(
-            FloatType node, T context
+            FloatType node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitFloatType(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitGListType(
-            GListType node, T context
+            GListType node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitGListType(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
     public Void visitGMapType(
-            GMapType node, T context
+            GMapType node, Void context
     ) {
-        listener.enter(node).accept(context);
+        listener.enter(node);
         super.visitGMapType(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitIntegerType(IntegerType node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitIntegerType(IntegerType node, Void context) {
+        listener.enter(node);
         super.visitIntegerType(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitRepositoryType(RepositoryType node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitRepositoryType(RepositoryType node, Void context) {
+        listener.enter(node);
         super.visitRepositoryType(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitStringType(StringType node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitStringType(StringType node, Void context) {
+        listener.enter(node);
         super.visitStringType(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 
     @Override
-    public Void visitVoidType(VoidType node, T context) {
-        listener.enter(node).accept(context);
+    public Void visitVoidType(VoidType node, Void context) {
+        listener.enter(node);
         super.visitVoidType(node, context);
-        listener.leave(node).accept(context);
+        listener.leave(node);
         return null;
     }
 }

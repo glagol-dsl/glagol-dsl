@@ -2,7 +2,7 @@ package org.glagoldsl.compiler.ast.nodes.identifier;
 
 import org.glagoldsl.compiler.ast.nodes.Node;
 
-public final class Identifier extends Node {
+public class Identifier extends Node {
     private final String id;
 
     public Identifier(String id) {

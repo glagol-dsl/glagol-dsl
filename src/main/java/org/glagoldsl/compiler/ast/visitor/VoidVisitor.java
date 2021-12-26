@@ -1,6 +1,5 @@
 package org.glagoldsl.compiler.ast.visitor;
 
-import org.glagoldsl.compiler.ast.nodes.annotation.AnnotatedNode;
 import org.glagoldsl.compiler.ast.nodes.annotation.Annotation;
 import org.glagoldsl.compiler.ast.nodes.annotation.AnnotationArgument;
 import org.glagoldsl.compiler.ast.nodes.declaration.*;
@@ -50,12 +49,10 @@ import org.glagoldsl.compiler.ast.nodes.statement.assignable.PropertyAssign;
 import org.glagoldsl.compiler.ast.nodes.statement.assignable.VariableAssign;
 import org.glagoldsl.compiler.ast.nodes.type.*;
 
-import java.util.List;
-import java.util.Map;
-
 public abstract class VoidVisitor<C> implements Visitor<Void, C> {
     @Override
     public Void visitAnnotation(Annotation node, C context) {
+        node.getName().accept(this, context);
         node.getArguments().forEach(argument -> argument.accept(this, context));
 
         return null;
@@ -71,9 +68,8 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
     @Override
     public Void visitEntity(Entity node, C context) {
         node.getIdentifier().accept(this, context);
-
-        visitAnnotations(node, context);
-        visitMembers(node.getMembers(), context);
+        node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
+        node.getMembers().forEach(member -> member.accept(this, context));
 
         return null;
     }
@@ -81,9 +77,8 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
     @Override
     public Void visitRepository(Repository node, C context) {
         node.getEntityIdentifier().accept(this, context);
-
-        visitAnnotations(node, context);
-        visitMembers(node.getMembers(), context);
+        node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
+        node.getMembers().forEach(member -> member.accept(this, context));
 
         return null;
     }
@@ -92,8 +87,8 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
     public Void visitService(Service node, C context) {
         node.getIdentifier().accept(this, context);
 
-        visitAnnotations(node, context);
-        visitMembers(node.getMembers(), context);
+        node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
+        node.getMembers().forEach(member -> member.accept(this, context));
 
         return null;
     }
@@ -102,8 +97,8 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
     public Void visitValue(Value node, C context) {
         node.getIdentifier().accept(this, context);
 
-        visitAnnotations(node, context);
-        visitMembers(node.getMembers(), context);
+        node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
+        node.getMembers().forEach(member -> member.accept(this, context));
 
         return null;
     }
@@ -112,8 +107,8 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
     public Void visitRestController(RestController node, C context) {
         node.getRoute().accept(this, context);
 
-        visitAnnotations(node, context);
-        visitMembers(node.getMembers(), context);
+        node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
+        node.getMembers().forEach(member -> member.accept(this, context));
 
         return null;
     }
@@ -149,8 +144,8 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
         node.getName().accept(this, context);
         node.getBody().accept(this, context);
 
-        visitParameters(node.getParameters(), context);
-        visitAnnotations(node, context);
+        node.getParameters().forEach(parameter -> parameter.accept(this, context));
+        node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
 
         return null;
     }
@@ -160,8 +155,8 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
         node.getBody().accept(this, context);
         node.getAccessor().accept(this, context);
 
-        visitParameters(node.getParameters(), context);
-        visitAnnotations(node, context);
+        node.getParameters().forEach(parameter -> parameter.accept(this, context));
+        node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
 
         return null;
     }
@@ -169,10 +164,12 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
     @Override
     public Void visitMethod(Method node, C context) {
         node.getAccessor().accept(this, context);
+        node.getType().accept(this, context);
         node.getBody().accept(this, context);
         node.getName().accept(this, context);
 
-        visitParameters(node.getParameters(), context);
+        node.getParameters().forEach(parameter -> parameter.accept(this, context));
+        node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
 
         return null;
     }
@@ -184,27 +181,23 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
         node.getType().accept(this, context);
         node.getDefaultValue().accept(this, context);
 
-        visitAnnotations(node, context);
+        node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
 
         return null;
     }
 
     @Override
     public Void visitBody(Body node, C context) {
-        visitStatements(node.getStatements(), context);
+        node.getStatements().forEach(statement -> statement.accept(this, context));
 
         return null;
-    }
-
-    protected void visitStatements(List<Statement> statements, C context) {
-        statements.forEach(statement -> statement.accept(this, context));
     }
 
     @Override
     public Void visitParameter(Parameter node, C context) {
         node.getName().accept(this, context);
         node.getType().accept(this, context);
-        visitAnnotations(node, context);
+        node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
 
         return null;
     }
@@ -214,8 +207,8 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
         node.getAccessor().accept(this, context);
         node.getBody().accept(this, context);
 
-        visitAnnotations(node, context);
-        visitParameters(node.getParameters(), context);
+        node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
+        node.getParameters().forEach(parameter -> parameter.accept(this, context));
 
         return null;
     }
@@ -227,8 +220,8 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
         node.getName().accept(this, context);
         node.getType().accept(this, context);
 
-        visitParameters(node.getParameters(), context);
-        visitAnnotations(node, context);
+        node.getParameters().forEach(parameter -> parameter.accept(this, context));
+        node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
 
         return null;
     }
@@ -240,14 +233,14 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
         node.getDefaultValue().accept(this, context);
         node.getType().accept(this, context);
 
-        visitAnnotations(node, context);
+        node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
 
         return null;
     }
 
     @Override
     public Void visitProxyRequire(ProxyRequire node, C context) {
-        visitAnnotations(node, context);
+        node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
 
         return null;
     }
@@ -262,7 +255,7 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
         node.getDeclaration().accept(this, context);
         node.getPhpLabel().accept(this, context);
 
-        visitAnnotations(node, context);
+        node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
 
         return null;
     }
@@ -437,28 +430,20 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
 
     @Override
     public Void visitGList(GList node, C context) {
-        visitExpressions(node.getExpressions(), context);
+        node.getExpressions().forEach(expression -> expression.accept(this, context));
 
         return null;
-    }
-
-    protected void visitExpressions(List<Expression> expressions, C context) {
-        expressions.forEach(expression -> expression.accept(this, context));
     }
 
     @Override
     public Void visitGMap(GMap node, C context) {
 
-        visitExpressionPairs(node.getPairs(), context);
-
-        return null;
-    }
-
-    protected void visitExpressionPairs(Map<Expression, Expression> pairs, C context) {
-        pairs.forEach((key, value) -> {
+        node.getPairs().forEach((key, value) -> {
             key.accept(this, context);
             value.accept(this, context);
         });
+
+        return null;
     }
 
     @Override
@@ -466,7 +451,7 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
         node.getMethod().accept(this, context);
         node.getPrev().accept(this, context);
 
-        visitExpressions(node.getArguments(), context);
+        node.getArguments().forEach(expression -> expression.accept(this, context));
 
         return null;
     }
@@ -474,7 +459,7 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
     @Override
     public Void visitNew(New node, C context) {
         node.getTarget().accept(this, context);
-        visitExpressions(node.getArguments(), context);
+        node.getArguments().forEach(expression -> expression.accept(this, context));
 
         return null;
     }
@@ -524,18 +509,10 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
     @Override
     public Void visitModule(Module node, C context) {
         node.getNamespace().accept(this, context);
-        visitImports(node.getImports(), context);
-        visitDeclarations(node.getDeclarations(), context);
+        node.getImports().forEach(anImport -> anImport.accept(this, context));
+        node.getDeclarations().forEach(declaration -> declaration.accept(this, context));
 
         return null;
-    }
-
-    protected void visitImports(List<Import> imports, C context) {
-        imports.forEach(anImport -> anImport.accept(this, context));
-    }
-
-    protected void visitDeclarations(List<Declaration> declarations, C context) {
-        declarations.forEach(declaration -> declaration.accept(this, context));
     }
 
     @Override
@@ -649,6 +626,9 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
     public Void visitQueryGreaterThanOrEqual(
             QueryGreaterThanOrEqual node, C context
     ) {
+        node.getLeft().accept(this, context);
+        node.getRight().accept(this, context);
+
         return null;
     }
 
@@ -739,7 +719,7 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
 
     @Override
     public Void visitBlock(Block node, C context) {
-        visitStatements(node.getStatements(), context);
+        node.getStatements().forEach(statement -> statement.accept(this, context));
 
         return null;
     }
@@ -792,7 +772,7 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
         node.getVariable().accept(this, context);
         node.getArray().accept(this, context);
 
-        visitExpressions(node.getConditions(), context);
+        node.getConditions().forEach(expression -> expression.accept(this, context));
 
         return null;
     }
@@ -804,7 +784,7 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
         node.getArray().accept(this, context);
         node.getKey().accept(this, context);
 
-        visitExpressions(node.getConditions(), context);
+        node.getConditions().forEach(expression -> expression.accept(this, context));
 
         return null;
     }
@@ -916,15 +896,4 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
         return null;
     }
 
-    protected void visitMembers(List<Member> members, C context) {
-        members.forEach(member -> member.accept(this, context));
-    }
-
-    protected void visitAnnotations(AnnotatedNode node, C context) {
-        node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
-    }
-
-    protected void visitParameters(List<Parameter> parameters, C context) {
-        parameters.forEach(parameter -> parameter.accept(this, context));
-    }
 }

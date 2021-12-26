@@ -10,10 +10,10 @@ public class Repository extends Declaration {
     final private List<Member> members;
 
     public Repository(
-            Identifier identifier,
+            Identifier entityIdentifier,
             List<Member> members
     ) {
-        this.entityIdentifier = identifier;
+        this.entityIdentifier = entityIdentifier;
         this.members = members;
     }
 

@@ -4,36 +4,26 @@ import org.glagoldsl.compiler.ast.nodes.Node;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.Accessor;
 import org.glagoldsl.compiler.ast.nodes.statement.AssignOperator;
 
-import java.util.function.Consumer;
-
-public abstract class Listener<T> {
-    protected Consumer<T> enter(Node node) {
-        return context -> {
-        };
+public abstract class Listener {
+    public void enter(Node node) {
     }
 
-    protected Consumer<T> leave(Node node) {
-        return context -> {
-        };
+    public void leave(Node node) {
     }
 
-    protected Consumer<T> enter(Accessor node) {
-        return context -> {
-        };
+    // Accessor does not extend Node
+    // therefore we need separate methods for it
+    public void enter(Accessor node) {
     }
 
-    protected Consumer<T> leave(Accessor node) {
-        return context -> {
-        };
+    public void leave(Accessor node) {
     }
 
-    protected Consumer<T> enter(AssignOperator node) {
-        return context -> {
-        };
+    // AssignOperator does not extend Node
+    // therefore we need separate methods for it
+    public void enter(AssignOperator node) {
     }
 
-    protected Consumer<T> leave(AssignOperator node) {
-        return context -> {
-        };
+    public void leave(AssignOperator node) {
     }
 }
