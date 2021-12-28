@@ -975,6 +975,7 @@ public abstract class Walker extends VoidVisitor<Void> {
             PropertyAssign node, Void context
     ) {
         listener.enter(node);
+        super.visitPropertyAssign(node, context);
         listener.leave(node);
         return null;
     }

@@ -1,6 +1,5 @@
 package org.glagoldsl.compiler.ast.nodes.statement;
 
-import org.glagoldsl.compiler.ast.nodes.expression.Expression;
 import org.glagoldsl.compiler.ast.nodes.expression.literal.IntegerLiteral;
 
 public class Break extends Statement {

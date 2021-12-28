@@ -27,6 +27,12 @@ public class StatementTest {
     }
 
     @Test
+    public void should_build_empty_statement() {
+        var block = build("{;}");
+        assertTrue(block.getStatements().get(0) instanceof EmptyStatement);
+    }
+
+    @Test
     public void should_build_expression_statement() {
         var block = build("""
             {

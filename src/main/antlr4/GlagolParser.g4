@@ -234,6 +234,7 @@ statement
     | 'continue' ';'                                                              #StmtContinue
     | type identifier '=' statement                                               #StmtDeclareWithValue
     | type identifier ';'                                                         #StmtDeclare
+    | ';'                                                                         #StmtEmpty
     ;
 
 forEach

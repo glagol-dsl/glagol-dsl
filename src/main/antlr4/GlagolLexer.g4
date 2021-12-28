@@ -106,6 +106,14 @@ Identifier : [a-zA-Z][a-zA-Z0-9_]*;
 Whitespace  :  [ \t\r\n\u000C]+ -> skip
     ;
 
+COMMENT
+    : '/*' .*? '*/' -> skip
+    ;
+
+LINE_COMMENT
+    : '//' ~[\r\n]* -> skip
+    ;
+
 PhpClass : ('\\' [a-zA-Z0-9_]+)+;
 
 // literal

@@ -1176,9 +1176,14 @@ public class Builder extends AbstractParseTreeVisitor<Node> implements GlagolPar
     }
 
     @Override
+    public EmptyStatement visitStmtEmpty(StmtEmptyContext ctx) {
+        return new EmptyStatement();
+    }
+
+    @Override
     public Node visit(ParseTree tree) {
         Node node = super.visit(tree);
-        if (tree instanceof ParserRuleContext context) {
+        if (node != null && tree instanceof ParserRuleContext context) {
             node.setLocation(new Location(
                     context.start.getLine(),
                     context.start.getCharPositionInLine()
