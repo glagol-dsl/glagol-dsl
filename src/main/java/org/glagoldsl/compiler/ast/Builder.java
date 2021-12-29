@@ -30,7 +30,10 @@ import org.glagoldsl.compiler.ast.nodes.expression.binary.arithmetic.Division;
 import org.glagoldsl.compiler.ast.nodes.expression.binary.arithmetic.Product;
 import org.glagoldsl.compiler.ast.nodes.expression.binary.arithmetic.Subtraction;
 import org.glagoldsl.compiler.ast.nodes.expression.binary.relational.*;
-import org.glagoldsl.compiler.ast.nodes.expression.literal.*;
+import org.glagoldsl.compiler.ast.nodes.expression.literal.BooleanLiteral;
+import org.glagoldsl.compiler.ast.nodes.expression.literal.DecimalLiteral;
+import org.glagoldsl.compiler.ast.nodes.expression.literal.IntegerLiteral;
+import org.glagoldsl.compiler.ast.nodes.expression.literal.StringLiteral;
 import org.glagoldsl.compiler.ast.nodes.expression.unary.Bracket;
 import org.glagoldsl.compiler.ast.nodes.expression.unary.arithmetic.Negative;
 import org.glagoldsl.compiler.ast.nodes.expression.unary.arithmetic.Positive;
@@ -70,9 +73,27 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Builder extends AbstractParseTreeVisitor<Node> implements GlagolParserVisitor<Node> {
+    private static class SyntaxErrorListener extends BaseErrorListener {
+        private final Source source;
+
+        public SyntaxErrorListener(Source source) {
+            this.source = source;
+        }
+
+        @Override
+        public void syntaxError(
+                Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg,
+                RecognitionException e
+        ) {
+            System.err.println(
+                    "Syntax error: " + msg + " in " + source.getSourcePath() + ":" + line + ":" + charPositionInLine
+            );
+        }
+    }
 
     public Module build(Source source) {
-        var module = build(source.getInputStream());
+        var parser = parse(source.getInputStream(), new SyntaxErrorListener(source));
+        var module = (Module) visit(parser.module());
 
         module.accept(new SourcePathSetter(source.getSourcePath()), null);
 
@@ -125,11 +146,19 @@ public class Builder extends AbstractParseTreeVisitor<Node> implements GlagolPar
         return (Statement) visit(parse(inputStream).statement());
     }
 
-    @NotNull
     private GlagolParser parse(InputStream inputStream) {
-        GlagolLexer lexer = new GlagolLexer(new UnbufferedCharStream(inputStream));
-        lexer.setTokenFactory(new CommonTokenFactory(true));
-        return new GlagolParser(new CommonTokenStream(lexer));
+        return parse(inputStream, new BaseErrorListener());
+    }
+
+    @NotNull
+    private GlagolParser parse(InputStream inputStream, ANTLRErrorListener errorListener) {
+        GlagolLexer lexer = new GlagolLexer(new UnbufferedCharStream(inputStream)) {{
+            setTokenFactory(new CommonTokenFactory(true));
+        }};
+        return new GlagolParser(new CommonTokenStream(lexer)) {{
+            removeErrorListeners();
+            addErrorListener(errorListener);
+        }};
     }
 
     @Override

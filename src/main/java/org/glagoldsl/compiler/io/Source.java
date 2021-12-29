@@ -9,16 +9,16 @@ import java.nio.file.Path;
 
 public class Source {
     private final InputStream inputStream;
-    private final Path file;
+    private final SourcePath sourcePath;
 
-    public Source(Path file) throws IOException {
-        this.file = file;
+    public Source(SourcePath sourcePath) throws IOException {
+        this.sourcePath = sourcePath;
 
-        if (!isExtensionCorrect(file)) {
+        if (!isExtensionCorrect(sourcePath.getPath())) {
             throw new IncorrectExtensionException();
         }
 
-        inputStream = new FileInputStream(file.toFile());
+        inputStream = new FileInputStream(sourcePath.getPath().toFile());
     }
 
     public InputStream getInputStream() {
@@ -34,6 +34,6 @@ public class Source {
     }
 
     public SourcePath getSourcePath() {
-        return new SourcePath(file);
+        return sourcePath;
     }
 }

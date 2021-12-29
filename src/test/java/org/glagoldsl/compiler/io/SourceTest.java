@@ -1,6 +1,7 @@
 package org.glagoldsl.compiler.io;
 
 import org.apache.commons.io.FileUtils;
+import org.glagoldsl.compiler.ast.nodes.meta.SourcePath;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -15,7 +16,7 @@ public class SourceTest {
         Path filePath = testFolder.resolve("source.wrong");
 
         assertThrows(IncorrectExtensionException.class, () -> {
-            new Source(filePath);
+            new Source(new SourcePath(filePath));
         });
     }
 
@@ -26,6 +27,6 @@ public class SourceTest {
         String code = "namespace test;";
         FileUtils.fileWrite(filePath.toString(), code);
 
-        new Source(filePath);
+        new Source(new SourcePath(filePath));
     }
 }
