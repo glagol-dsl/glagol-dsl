@@ -40,3 +40,7 @@ test {
         events "passed", "skipped", "failed"
     }
 }
+
+testlogger {
+    theme 'mocha'
+}
