@@ -16,4 +16,4 @@ jobs:
           architecture: x64
           cache: gradle
       - name: Test
-        run: ./gradlew test
+        run: ./gradlew cleanTest test
