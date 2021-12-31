@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id 'antlr'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    antlr 'org.antlr:antlr4:4.9.3'
+    implementation 'org.antlr:antlr4-runtime:4.9.3'
+    implementation 'commons-io:commons-io:20030203.000550'
+    implementation 'org.jetbrains:annotations:23.0.0'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    testImplementation 'org.mockito:mockito-core:4.2.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:4.2.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+    testImplementation 'com.github.stefanbirkner:system-lambda:1.2.1'
+}
+
+group = 'org.glagoldsl.compiler'
+version = '2.0'
+description = 'compiler'
+
+java.sourceCompatibility = JavaVersion.VERSION_17
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+generateGrammarSource {
+    arguments += ["-visitor"]
+}
+
+test {
+    useJUnitPlatform()
+}
