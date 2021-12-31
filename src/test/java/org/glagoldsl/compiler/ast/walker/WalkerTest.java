@@ -31,89 +31,89 @@ class WalkerTest {
             public int bla = 123;           // +3
                                             // =31
             @public(true)                   // +5
-            Test() {}                       // +1
-                                            // =37
+            Test() {}                       // +2
+                                            // =38
             @private(true)                  // +5
-            private Test(@ttt Arg a) {}     // +7
-                                            // =49
+            private Test(@ttt Arg a) {}     // +8
+                                            // =51
             @method("arg")                  // +5
-            public bool expression(         // +2
+            public bool expression(         // +3
                 @argument(true) string a    // +7
             ) = true;                       // +3
-                                            // =66
+                                            // =69
             @method("arg1", 2)              // +7
-            public void expressions(        // +3
+            public void expressions(        // +4
                 @argument1(true) string a,  // +7
                 @argument2(false) string b  // +7
-            ) {                             // =90
+            ) {                             // =94
                 SELECT a FROM aa a;         // +(expr_stmt=1, expr_query=1, query=1, query_select=5+1+2)
-                                            // =101
+                                            // =105
                 SELECT a FROM aa a          // +(expr_stmt=1, expr_query=1, query=1, query_select=5+1+2+2+1)
-                    LIMIT 10;               // =115
+                    LIMIT 10;               // =119
                     
                 SELECT a FROM aa a          // +(expr_stmt=1, expr_query=1, query=1, query_select=5+1+2)         
                     ORDER BY                // +3
                         a.id ASC,           // +3
                         a.b DESC,           // +3
                         a.c;                // +3
-                                            // =138
+                                            // =142
                 
                 SELECT a FROM aa a          // +(expr_stmt=1, expr_query=1, query=1, query_select=5+1+2+2+2)
-                    LIMIT 10,10;            // =153
+                    LIMIT 10,10;            // =157
                     
                 SELECT a[] FROM aa a        // +(expr_stmt=1, expr_query=1, query=1, query_select=5+1+2)
-                    WHERE                   // =164
+                    WHERE                   // =168
                         true AND false;     // +4
-                                            // =168
+                                            // =172
                     
                 SELECT a[] FROM aa a        // +(expr_stmt=1, expr_query=1, query=1, query_select=5+1+2)
-                    WHERE                   // =179
+                    WHERE                   // =183
                         true OR false;      // +4
-                                            // =183
+                                            // =187
                     
                 SELECT a[] FROM aa a        // +(expr_stmt=1, expr_query=1, query=1, query_select=5+1+2)
-                    WHERE                   // =194
+                    WHERE                   // =198
                         1 > 2;              // +4
-                                            // =198
+                                            // =202
                     
                 SELECT a[] FROM aa a        // +(expr_stmt=1, expr_query=1, query=1, query_select=5+1+2)
-                    WHERE                   // =209
+                    WHERE                   // =213
                         a.a >= 2;           // +5
-                                            // =214
+                                            // =218
                     
                 SELECT a[] FROM aa a        // +(expr_stmt=1, expr_query=1, query=1, query_select=5+1+2)
-                    WHERE                   // =225
+                    WHERE                   // =229
                         a.a = a.b;          // +6
-                                            // =231
+                                            // =235
                     
                 SELECT a[] FROM aa a        // +(expr_stmt=1, expr_query=1, query=1, query_select=5+1+2)
-                    WHERE                   // =242
+                    WHERE                   // =246
                         a.a != a.b;         // +6
-                                            // =248
+                                            // =252
                     
                 SELECT a[] FROM aa a        // +(expr_stmt=1, expr_query=1, query=1, query_select=5+1+2)
-                    WHERE                   // =259
+                    WHERE                   // =263
                         a.a < <<2>>;        // +5
-                                            // =264
+                                            // =268
                     
                 SELECT a[] FROM aa a        // +(expr_stmt=1, expr_query=1, query=1, query_select=5+1+2)
-                    WHERE                   // =275
+                    WHERE                   // =279
                         (a.a <= <<2>>);     // +6
-                                            // =281
+                                            // =285
                     
                 SELECT a[] FROM aa a        // +(expr_stmt=1, expr_query=1, query=1, query_select=5+1+2)
-                    WHERE                   // =292
+                    WHERE                   // =296
                         a.id IS NULL;       // +3
-                                            // =295
+                                            // =299
                     
                 SELECT a[] FROM aa a        // +(expr_stmt=1, expr_query=1, query=1, query_select=5+1+2)
-                    WHERE                   // =306
+                    WHERE                   // =310
                         a.id IS NOT NULL;   // +3
-                                            // =309
+                                            // =313
                 [1, 2, 3];                  // +(expr_stmt=1, expr_list=1, nodes=3)
-                                            // =314
-                {"a": "b"};                 // +(expr_stmt=1, expr_map=1, nodes=2)
                                             // =318
+                {"a": "b"};                 // +(expr_stmt=1, expr_map=1, nodes=2)
+                                            // =322
                 (true);                     // +3
                 "test";                     // +2
                 10;                         // +2
@@ -121,17 +121,17 @@ class WalkerTest {
                 false;                      // +2
                 var;                        // +3
                 new Class(123, "test");     // +(expr_stmt=1, expr_new=1, new=3)
-                                            // =337
+                                            // =341
                 test();                     // +(expr_stmt=1, expr_invoke=1, nodes=2)
                 test(123);                  // +(expr_stmt=1, expr_invoke=1, nodes=3)
-                                            // =346
+                                            // =350
                 this;                       // +2
                 this.a;                     // +4
                 true ? true : true;         // +5
                 +1;                         // +3
                 -1;                         // +3
                 !true;                      // +3
-                                            // =366
+                                            // =370
                 (int) a;                    // +5
                 (bool) a;                   // +5
                 (string) a;                 // +5
@@ -141,7 +141,7 @@ class WalkerTest {
                 (int[]) a;                  // +6
                 ({string,bool}) a;          // +7
                 (repository<Test>) a;       // +6
-                                            // =416
+                                            // =420
                 "abc" ++ "def";             // +4
                 12 + 34;                    // +4
                 12 - 34;                    // +4
@@ -155,21 +155,21 @@ class WalkerTest {
                 12 <= 34;                   // +4
                 12 && 34;                   // +4
                 12 || 34;                   // +4
-                                            // =468
+                                            // =472
                 {}                          // +1
                 if (true) false;            // +5
                 if (true) false; else true; // +6
-                                            // =480
+                                            // =484
                 var = 123;                  // +5
                 this.var = 123;             // +6
                 var["123"] = 123;           // +7
-                                            // =498
+                                            // =502
                 for (var as v, true)        // +5 
                     return;                 // +2
-                                            // =505
+                                            // =509
                 for (var as k:v, true)      // +6
                     return;                 // +2
-                                            // =513
+                                            // =517
                 return 123;                 // +2
                 return;                     // +2
                 flush 123;                  // +2
@@ -180,62 +180,64 @@ class WalkerTest {
                 break;                      // +2
                 continue 1;                 // +2
                 continue;                   // +2
-                                            // =533
+                                            // =537
                 int a = b;                  // +6
                 int a;                      // +4
-                                            // =543
+                                            // =547
             }
         }
         
         @ab("test2")                        // +5
         repository<Test> {                  // +1
-                                            // =550
+                                            // =554
             @anno1(21.3)                    // +5
             public string bla2 = "123";     // +3
-                                            // =558
+                                            // =562
         }
         
         @ab("test2")                        // +5
         value Test {                        // +1
-                                            // =563
+                                            // =567
             @anno1(21.3)                    // +5
             public string bla2 = "123";     // +3
-                                            // =572
+                                            // =576
         }
         
         @ab("test2")                        // +5
         service Test {                      // +1
-                                            // =577
+                                            // =581
             @anno1(21.3)                    // +5
             public string bla2 = "123";     // +3
-                                            // =585
+                                            // =589
         }
         
         @ab("test2")                        // +5
         rest controller /path/:var {        // +3
-                                            // =593
-            index = "test";                 // +5
-                                            // =599
-            index (string a) = a;           // +9
-                                            // =608
+                                            // =597
+            index = "test";                 // +6
+                                            // =604
+            index (string a) = a;           // +10
+                                            // =614
+            index (string a) when (1) = a;  // +11
+                                            // =625
         }
         
         @ab("test2")                        // +5
         proxy \\Php\\Class as               // +1
         service Test {                      // +2
-                                            // =615
+                                            // =632
             @anno2(true)                    // +5
             string bla2;                    // +3
-                                            // =623
+                                            // =640
             @anno2(false)                   // +5
-            string bla2(int b);             // +6
-                                            // =635
+            string bla2(int b);             // +7
+                                            // =653
             @anno2(1)                       // +5
-            Test(int b);                    // +4
-                                            // =643
+            Test(int b);                    // +5
+                                            // =662
             @anno2(2)                       // +5
             require "test" "1.0";           // +0
-                                            // =648
+                                            // =667
         }
         """);
 
@@ -243,8 +245,8 @@ class WalkerTest {
         var walker = new Walker(listener) {};
         tree.accept(walker, null);
 
-        verify(listener, times(648)).enter(any(Node.class));
-        verify(listener, times(648)).leave(any(Node.class));
+        verify(listener, times(667)).enter(any(Node.class));
+        verify(listener, times(667)).leave(any(Node.class));
         verify(listener, times(11)).enter(any(Accessor.class));
         verify(listener, times(3)).enter(any(AssignOperator.class));
     }

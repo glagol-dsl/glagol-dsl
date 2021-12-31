@@ -45,6 +45,7 @@ Bool: 'bool';
 Void: 'void';
 String: 'string';
 Require: 'require';
+When: 'when';
 OpenBracket: '[';
 CloseBracket: ']';
 OpenParen: '(';

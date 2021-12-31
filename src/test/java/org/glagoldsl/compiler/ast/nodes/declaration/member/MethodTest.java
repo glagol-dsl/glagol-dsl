@@ -2,6 +2,7 @@ package org.glagoldsl.compiler.ast.nodes.declaration.member;
 
 import org.glagoldsl.compiler.ast.nodes.declaration.DeclarationVisitor;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Body;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.method.When;
 import org.glagoldsl.compiler.ast.nodes.identifier.Identifier;
 import org.glagoldsl.compiler.ast.nodes.type.Type;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ class MethodTest {
     @Test
     void accept(@Mock DeclarationVisitor<Void, Void> visitor) {
         var node = new Method(
-                Accessor.PUBLIC, mock(Type.class), mock(Identifier.class), new ArrayList<>(), mock(Body.class));
+                Accessor.PUBLIC, mock(Type.class), mock(Identifier.class), new ArrayList<>(), mock(When.class), mock(Body.class));
         node.accept(visitor, null);
         verify(visitor, times(1)).visitMethod(any(), any());
     }

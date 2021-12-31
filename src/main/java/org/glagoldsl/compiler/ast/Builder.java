@@ -17,6 +17,8 @@ import org.glagoldsl.compiler.ast.nodes.declaration.controller.route.RouteElemen
 import org.glagoldsl.compiler.ast.nodes.declaration.member.*;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Body;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Parameter;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.method.When;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.method.WhenEmpty;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyConstructor;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyMethod;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyProperty;
@@ -872,8 +874,7 @@ public class Builder extends AbstractParseTreeVisitor<Node> implements GlagolPar
     public Action visitAction(ActionContext ctx) {
         return new Action(
                 (Identifier) visit(ctx.identifier()),
-                createParameters(ctx.params),
-                (Body) visit(ctx.methodBody())
+                createParameters(ctx.params), (When) visit(ctx.when()), (Body) visit(ctx.methodBody())
         );
     }
 
@@ -886,8 +887,7 @@ public class Builder extends AbstractParseTreeVisitor<Node> implements GlagolPar
                 ),
                 (Type) visit(ctx.type()),
                 (Identifier) visit(ctx.identifier()),
-                createParameters(ctx.params),
-                (Body) visit(ctx.methodBody())
+                createParameters(ctx.params), (When) visit(ctx.when()), (Body) visit(ctx.methodBody())
         );
     }
 
@@ -1132,9 +1132,18 @@ public class Builder extends AbstractParseTreeVisitor<Node> implements GlagolPar
                         ctx.accessor,
                         Accessor.PUBLIC
                 ),
-                createParameters(ctx.params),
-                (Body) visit(ctx.methodBody())
+                createParameters(ctx.params), (When) visit(ctx.when()), (Body) visit(ctx.methodBody())
         );
+    }
+
+    @Override
+    public When visitWhenExpr(WhenExprContext ctx) {
+        return new When((Expression) visit(ctx.expression()));
+    }
+
+    @Override
+    public WhenEmpty visitWhenEmpty(WhenEmptyContext ctx) {
+        return new WhenEmpty();
     }
 
     @Override

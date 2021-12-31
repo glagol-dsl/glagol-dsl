@@ -4,6 +4,7 @@ import org.glagoldsl.compiler.ast.Builder;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.Accessor;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.AccessibleMember;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.Method;
+import org.glagoldsl.compiler.ast.nodes.expression.literal.BooleanLiteral;
 import org.glagoldsl.compiler.ast.nodes.expression.literal.IntegerLiteral;
 import org.glagoldsl.compiler.ast.nodes.statement.Return;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ public class MethodTest {
     public void should_build_method_without_annotations() {
         var method = (Method) build("int method() = 1;");
         assertEquals("method", method.getName().toString());
+        assertTrue(method.getGuard().isEmpty());
     }
 
     @Test
@@ -75,6 +77,14 @@ public class MethodTest {
             }
         """);
         assertEquals(0, method.getBody().getStatements().size());
+    }
+
+    @Test
+    public void should_build_method_with_guard() {
+        var method = (Method) build("int method() when (false) = 1;");
+        var expr = (BooleanLiteral) method.getGuard().getExpression();
+        assertFalse(method.getGuard().isEmpty());
+        assertFalse(expr.getValue());
     }
 
     private AccessibleMember build(String code) {

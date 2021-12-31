@@ -4,6 +4,7 @@ import org.glagoldsl.compiler.ast.Builder;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.Accessor;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.Constructor;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.AccessibleMember;
+import org.glagoldsl.compiler.ast.nodes.expression.literal.BooleanLiteral;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -19,6 +20,7 @@ public class ConstructorTest {
 
         assertEquals(Accessor.PUBLIC, constructor.getAccessor());
         assertEquals(0, constructor.getParameters().size());
+        assertTrue(constructor.getGuard().isEmpty());
         assertEquals(0, constructor.getBody().getStatements().size());
     }
 
@@ -49,6 +51,17 @@ public class ConstructorTest {
         """);
 
         assertEquals(4, constructor.getParameters().size());
+    }
+
+    @Test
+    public void should_build_constructor_with_guard() {
+        var constructor = (Constructor) build("""
+            Constructor() when (true) {}
+        """);
+        var expr = (BooleanLiteral) constructor.getGuard().getExpression();
+
+        assertFalse(constructor.getGuard().isEmpty());
+        assertTrue(expr.getValue());
     }
 
     private AccessibleMember build(String code) {

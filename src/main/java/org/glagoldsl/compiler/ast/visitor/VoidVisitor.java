@@ -10,6 +10,8 @@ import org.glagoldsl.compiler.ast.nodes.declaration.controller.route.RouteElemen
 import org.glagoldsl.compiler.ast.nodes.declaration.member.*;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Body;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Parameter;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.method.When;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.method.WhenEmpty;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyConstructor;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyMethod;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyProperty;
@@ -55,6 +57,18 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
         node.getName().accept(this, context);
         node.getArguments().forEach(argument -> argument.accept(this, context));
 
+        return null;
+    }
+
+    @Override
+    public Void visitWhen(When node, C context) {
+        node.getExpression().accept(this, context);
+
+        return null;
+    }
+
+    @Override
+    public Void visitWhenEmpty(WhenEmpty node, C context) {
         return null;
     }
 
@@ -143,6 +157,7 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
     public Void visitAction(Action node, C context) {
         node.getName().accept(this, context);
         node.getBody().accept(this, context);
+        node.getGuard().accept(this, context);
 
         node.getParameters().forEach(parameter -> parameter.accept(this, context));
         node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
@@ -154,6 +169,7 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
     public Void visitConstructor(Constructor node, C context) {
         node.getBody().accept(this, context);
         node.getAccessor().accept(this, context);
+        node.getGuard().accept(this, context);
 
         node.getParameters().forEach(parameter -> parameter.accept(this, context));
         node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
@@ -167,6 +183,7 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
         node.getType().accept(this, context);
         node.getBody().accept(this, context);
         node.getName().accept(this, context);
+        node.getGuard().accept(this, context);
 
         node.getParameters().forEach(parameter -> parameter.accept(this, context));
         node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
@@ -206,6 +223,7 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
     public Void visitProxyConstructor(ProxyConstructor node, C context) {
         node.getAccessor().accept(this, context);
         node.getBody().accept(this, context);
+        node.getGuard().accept(this, context);
 
         node.getAnnotations().forEach(annotation -> annotation.accept(this, context));
         node.getParameters().forEach(parameter -> parameter.accept(this, context));
@@ -219,6 +237,7 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
         node.getAccessor().accept(this, context);
         node.getName().accept(this, context);
         node.getType().accept(this, context);
+        node.getGuard().accept(this, context);
 
         node.getParameters().forEach(parameter -> parameter.accept(this, context));
         node.getAnnotations().forEach(annotation -> annotation.accept(this, context));

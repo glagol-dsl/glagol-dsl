@@ -13,6 +13,8 @@ import org.glagoldsl.compiler.ast.nodes.declaration.controller.route.RouteElemen
 import org.glagoldsl.compiler.ast.nodes.declaration.member.*;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Body;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Parameter;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.method.When;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.method.WhenEmpty;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyConstructor;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyMethod;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyProperty;
@@ -58,6 +60,26 @@ public abstract class Walker extends VoidVisitor<Void> {
 
     public Walker(Listener listener) {
         this.listener = listener;
+    }
+
+    @Override
+    public Void visitWhen(When node, Void context) {
+        listener.enter(node);
+        super.visitWhen(node, context);
+        listener.leave(node);
+
+        return null;
+    }
+
+    @Override
+    public Void visitWhenEmpty(
+            WhenEmpty node, Void context
+    ) {
+        listener.enter(node);
+        super.visitWhenEmpty(node, context);
+        listener.leave(node);
+
+        return null;
     }
 
     @Override

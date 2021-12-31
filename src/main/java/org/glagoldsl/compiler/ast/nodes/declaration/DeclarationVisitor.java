@@ -7,6 +7,8 @@ import org.glagoldsl.compiler.ast.nodes.declaration.controller.route.RouteElemen
 import org.glagoldsl.compiler.ast.nodes.declaration.member.*;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Body;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Parameter;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.method.When;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.method.WhenEmpty;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyConstructor;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyMethod;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyProperty;
@@ -47,4 +49,8 @@ public interface DeclarationVisitor<T, C> {
     // proxy nodes
     T visitPhpLabel(PhpLabel node, C context);
     T visitProxy(Proxy node, C context);
+
+    // when nodes
+    T visitWhen(When node, C context);
+    T visitWhenEmpty(WhenEmpty node, C context);
 }

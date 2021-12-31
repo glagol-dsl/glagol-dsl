@@ -39,6 +39,7 @@ public class ProxyMemberTest {
         var method = (ProxyMethod) build("int method();");
         assertEquals("method", method.getName().toString());
         assertTrue(method.getBody().isEmpty());
+        assertTrue(method.getGuard().isEmpty());
         assertEquals(Accessor.PUBLIC, method.getAccessor());
         assertEquals("int", method.getType().toString());
     }
@@ -65,6 +66,7 @@ public class ProxyMemberTest {
     public void should_build_proxy_constructor_without_annotations() {
         var constructor = (ProxyConstructor) build("method();");
         assertTrue(constructor.getBody().isEmpty());
+        assertTrue(constructor.getGuard().isEmpty());
         assertEquals(Accessor.PUBLIC, constructor.getAccessor());
     }
 
@@ -72,18 +74,21 @@ public class ProxyMemberTest {
     public void should_build_proxy_constructor_with_annotations() {
         var constructor = (ProxyConstructor) build("@testing constructor();");
         assertEquals(1, constructor.getAnnotations().size());
+        assertTrue(constructor.getGuard().isEmpty());
     }
 
     @Test
     public void should_build_proxy_constructor_with_public_accessor() {
         var constructor = (ProxyConstructor) build("public constructor();");
         assertEquals(Accessor.PUBLIC, constructor.getAccessor());
+        assertTrue(constructor.getGuard().isEmpty());
     }
 
     @Test
     public void should_build_proxy_constructor_with_parameters() {
         var constructor = (ProxyConstructor) build("constructor(int a, float b, bool c);");
         assertEquals(3, constructor.getParameters().size());
+        assertTrue(constructor.getGuard().isEmpty());
     }
 
     @Test

@@ -203,11 +203,26 @@ proxyProperty
     ;
 
 action
-    : identifier ('(' (params+=parameter (',' params+=parameter)* ','?)? ')')? methodBody
+    : identifier ('(' (params+=parameter (',' params+=parameter)* ','?)? ')')?
+        when
+        methodBody
     ;
 
 method
-    : accessor=(Public | Private)? type identifier '(' (params+=parameter (',' params+=parameter)* ','?)? ')' methodBody
+    : accessor=(Public | Private)? type identifier '(' (params+=parameter (',' params+=parameter)* ','?)? ')'
+        when
+        methodBody
+    ;
+
+constructor
+    : accessor=(Public | Private)? identifier '(' (params+=parameter (',' params+=parameter)* ','?)? ')'
+        when
+        methodBody
+    ;
+
+when
+    : 'when' '(' expression ')'     #WhenExpr
+    |                               #WhenEmpty
     ;
 
 methodBody
@@ -250,10 +265,6 @@ assignable
 
 parameter
     : annotation* type identifier
-    ;
-
-constructor
-    : accessor=(Public | Private)? identifier '(' (params+=parameter (',' params+=parameter)* ','?)? ')' methodBody
     ;
 
 property

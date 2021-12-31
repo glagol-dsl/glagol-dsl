@@ -20,6 +20,8 @@ public class ActionTest {
         var body = (Return) action.getBody().getStatements().get(0);
         var expression = (StringLiteral) body.getExpression();
 
+
+        assertTrue(action.getGuard().isEmpty());
         assertEquals("index", action.getName().toString());
         assertEquals("index", action.getName().toString());
         assertEquals("hello world", expression.getValue());
@@ -59,6 +61,15 @@ public class ActionTest {
         assertEquals("index", action.getName().toString());
         assertEquals("index", action.getName().toString());
         assertEquals("hello world", expression.getValue());
+    }
+
+    @Test
+    public void should_build_action_with_guard() {
+        var action = (Action) build("""
+            index when (true) = "hello world";
+        """);
+
+        assertFalse(action.getGuard().isEmpty());
     }
 
     private Member build(String code) {

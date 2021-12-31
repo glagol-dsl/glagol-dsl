@@ -5,6 +5,7 @@ import org.glagoldsl.compiler.ast.nodes.declaration.member.Accessor;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.Method;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Body;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Parameter;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.method.WhenEmpty;
 import org.glagoldsl.compiler.ast.nodes.identifier.Identifier;
 import org.glagoldsl.compiler.ast.nodes.type.Type;
 
@@ -21,8 +22,7 @@ public class ProxyMethod extends Method {
                 Accessor.PUBLIC,
                 type,
                 name,
-                parameters,
-                new Body(new ArrayList<>())
+                parameters, new WhenEmpty(), new Body(new ArrayList<>())
         );
     }
 

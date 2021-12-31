@@ -3,20 +3,21 @@ package org.glagoldsl.compiler.ast.nodes.declaration.member;
 import org.glagoldsl.compiler.ast.nodes.declaration.DeclarationVisitor;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Body;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Parameter;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.method.When;
 
 import java.util.List;
 
 public class Constructor extends AccessibleMember {
     final private List<Parameter> parameters;
+    final private When guard;
     final private Body body;
 
     public Constructor(
-            Accessor accessor,
-            List<Parameter> parameters,
-            Body body
+            Accessor accessor, List<Parameter> parameters, When guard, Body body
     ) {
         super(accessor);
         this.parameters = parameters;
+        this.guard = guard;
         this.body = body;
     }
 
@@ -26,6 +27,10 @@ public class Constructor extends AccessibleMember {
 
     public Body getBody() {
         return body;
+    }
+
+    public When getGuard() {
+        return guard;
     }
 
     public <T, C> T accept(DeclarationVisitor<T, C> visitor, C context) {

@@ -11,6 +11,7 @@ import org.glagoldsl.compiler.ast.nodes.declaration.controller.route.RouteElemen
 import org.glagoldsl.compiler.ast.nodes.declaration.member.*;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Body;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Parameter;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.method.When;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyConstructor;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyMethod;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyProperty;
@@ -209,18 +210,20 @@ class VoidVisitorChildrenTest {
     public void it_expects_action_children_to_be_visited() {
         var identifier = mock(Identifier.class);
         var parameter = mock(Parameter.class);
+        var guard = mock(When.class);
         var body = mock(Body.class);
         var annotation = mock(Annotation.class);
 
         var tree = new Action(identifier, new ArrayList<>() {{
             add(parameter);
-        }}, body);
+        }}, guard, body);
         tree.addAnnotation(annotation);
 
         tree.accept(visitor, null);
 
         verify(identifier, once()).accept(visitor, null);
         verify(parameter, once()).accept(visitor, null);
+        verify(guard, once()).accept(visitor, null);
         verify(body, once()).accept(visitor, null);
         verify(annotation, once()).accept(visitor, null);
     }
@@ -229,17 +232,19 @@ class VoidVisitorChildrenTest {
     public void it_expects_constructor_children_to_be_visited() {
         var accessor = Accessor.PUBLIC;
         var parameter = mock(Parameter.class);
+        var guard = mock(When.class);
         var body = mock(Body.class);
         var annotation = mock(Annotation.class);
 
         var tree = new Constructor(accessor, new ArrayList<>() {{
             add(parameter);
-        }}, body);
+        }}, guard, body);
         tree.addAnnotation(annotation);
 
         tree.accept(visitor, null);
 
         verify(parameter, once()).accept(visitor, null);
+        verify(guard, once()).accept(visitor, null);
         verify(body, once()).accept(visitor, null);
         verify(annotation, once()).accept(visitor, null);
     }
@@ -278,12 +283,13 @@ class VoidVisitorChildrenTest {
         var type = mock(Type.class);
         var identifier = mock(Identifier.class);
         var parameter = mock(Parameter.class);
+        var guard = mock(When.class);
         var body = mock(Body.class);
         var annotation = mock(Annotation.class);
 
         var tree = new Method(accessor, type, identifier, new ArrayList<>() {{
             add(parameter);
-        }}, body);
+        }}, guard, body);
         tree.addAnnotation(annotation);
 
         tree.accept(visitor, null);
@@ -291,6 +297,7 @@ class VoidVisitorChildrenTest {
         verify(type, once()).accept(visitor, null);
         verify(identifier, once()).accept(visitor, null);
         verify(parameter, once()).accept(visitor, null);
+        verify(guard, once()).accept(visitor, null);
         verify(body, once()).accept(visitor, null);
         verify(annotation, once()).accept(visitor, null);
     }
