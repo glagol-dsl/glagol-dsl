@@ -2,10 +2,7 @@ package org.glagoldsl.compiler.ast.walker;
 
 import org.glagoldsl.compiler.ast.nodes.annotation.Annotation;
 import org.glagoldsl.compiler.ast.nodes.annotation.AnnotationArgument;
-import org.glagoldsl.compiler.ast.nodes.declaration.Entity;
-import org.glagoldsl.compiler.ast.nodes.declaration.Repository;
-import org.glagoldsl.compiler.ast.nodes.declaration.Service;
-import org.glagoldsl.compiler.ast.nodes.declaration.Value;
+import org.glagoldsl.compiler.ast.nodes.declaration.*;
 import org.glagoldsl.compiler.ast.nodes.declaration.controller.RestController;
 import org.glagoldsl.compiler.ast.nodes.declaration.controller.route.Route;
 import org.glagoldsl.compiler.ast.nodes.declaration.controller.route.RouteElementLiteral;
@@ -77,6 +74,17 @@ public abstract class Walker extends VoidVisitor<Void> {
     ) {
         listener.enter(node);
         super.visitWhenEmpty(node, context);
+        listener.leave(node);
+
+        return null;
+    }
+
+    @Override
+    public Void visitNullDeclaration(
+            NullDeclaration node, Void context
+    ) {
+        listener.enter(node);
+        super.visitNullDeclaration(node, context);
         listener.leave(node);
 
         return null;
@@ -196,6 +204,15 @@ public abstract class Walker extends VoidVisitor<Void> {
     ) {
         listener.enter(node);
         listener.leave(node);
+        return null;
+    }
+
+    @Override
+    public Void visitMembers(MemberCollection node, Void context) {
+        listener.enter(node);
+        super.visitMembers(node, context);
+        listener.leave(node);
+
         return null;
     }
 
@@ -626,6 +643,14 @@ public abstract class Walker extends VoidVisitor<Void> {
     ) {
         listener.enter(node);
         super.visitModule(node, context);
+        listener.leave(node);
+        return null;
+    }
+
+    @Override
+    public Void visitDeclarations(DeclarationCollection node, Void context) {
+        listener.enter(node);
+        super.visitDeclarations(node, context);
         listener.leave(node);
         return null;
     }

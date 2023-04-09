@@ -171,7 +171,7 @@ public class Builder extends AbstractParseTreeVisitor<Node> implements GlagolPar
             imports.add((Import) visit(use));
         }
 
-        List<Declaration> declarations = new ArrayList<>();
+        var declarations = new DeclarationCollection();
 
         for (DeclarationContext declaration : ctx.declarations) {
             declarations.add((Declaration) visit(declaration));
@@ -744,8 +744,8 @@ public class Builder extends AbstractParseTreeVisitor<Node> implements GlagolPar
     }
 
     @NotNull
-    private <T extends ParseTree> ArrayList<Member> createMembers(List<T> contexts) {
-        var members = new ArrayList<Member>();
+    private <T extends ParseTree> MemberCollection createMembers(List<T> contexts) {
+        var members = new MemberCollection();
 
         for (T member : contexts) {
             members.add((Member) visit(member));

@@ -106,7 +106,7 @@ class VoidVisitorChildrenTest {
         var member = mock(Member.class);
         var annotation = mock(Annotation.class);
 
-        var tree = new Entity(identifier, new ArrayList<>() {{
+        var tree = new Entity(identifier, new MemberCollection() {{
             add(member);
         }});
         tree.addAnnotation(annotation);
@@ -124,7 +124,7 @@ class VoidVisitorChildrenTest {
         var member = mock(Member.class);
         var annotation = mock(Annotation.class);
 
-        var tree = new Repository(identifier, new ArrayList<>() {{
+        var tree = new Repository(identifier, new MemberCollection() {{
             add(member);
         }});
         tree.addAnnotation(annotation);
@@ -142,7 +142,7 @@ class VoidVisitorChildrenTest {
         var member = mock(Member.class);
         var annotation = mock(Annotation.class);
 
-        var tree = new Service(identifier, new ArrayList<>() {{
+        var tree = new Service(identifier, new MemberCollection() {{
             add(member);
         }});
         tree.addAnnotation(annotation);
@@ -160,7 +160,7 @@ class VoidVisitorChildrenTest {
         var member = mock(Member.class);
         var annotation = mock(Annotation.class);
 
-        var tree = new Value(identifier, new ArrayList<>() {{
+        var tree = new Value(identifier, new MemberCollection() {{
             add(member);
         }});
         tree.addAnnotation(annotation);
@@ -178,7 +178,7 @@ class VoidVisitorChildrenTest {
         var member = mock(Member.class);
         var annotation = mock(Annotation.class);
 
-        var tree = new RestController(route, new ArrayList<>() {{
+        var tree = new RestController(route, new MemberCollection() {{
             add(member);
         }});
         tree.addAnnotation(annotation);
@@ -723,7 +723,7 @@ class VoidVisitorChildrenTest {
 
         new Module(namespace, new ArrayList<>() {{
             add(imprt);
-        }}, new ArrayList<>() {{
+        }}, new DeclarationCollection() {{
             add(declaration);
         }}).accept(visitor, null);
 

@@ -25,4 +25,19 @@ public class Route extends Node {
     public <T, C> T accept(DeclarationVisitor<T, C> visitor, C context) {
         return visitor.visitRoute(this, context);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Route route = (Route) o;
+
+        return routeElements.equals(route.routeElements);
+    }
+
+    @Override
+    public int hashCode() {
+        return routeElements.hashCode();
+    }
 }

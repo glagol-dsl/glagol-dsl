@@ -38,6 +38,11 @@ public class Property extends AccessibleMember {
         return name;
     }
 
+    @Override
+    public boolean isProperty() {
+        return true;
+    }
+
     public <T, C> T accept(DeclarationVisitor<T, C> visitor, C context) {
         return visitor.visitProperty(this, context);
     }

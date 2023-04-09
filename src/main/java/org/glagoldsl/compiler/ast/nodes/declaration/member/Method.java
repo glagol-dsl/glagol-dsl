@@ -47,6 +47,11 @@ public class Method extends AccessibleMember {
         return guard;
     }
 
+    @Override
+    public boolean isMethod() {
+        return true;
+    }
+
     public <T, C> T accept(DeclarationVisitor<T, C> visitor, C context) {
         return visitor.visitMethod(this, context);
     }

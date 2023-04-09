@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'antlr'
-    id 'com.adarshr.test-logger' version '3.1.+'
 }
 
 repositories {
@@ -36,11 +35,4 @@ generateGrammarSource {
 
 test {
     useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
-}
-
-testlogger {
-    theme 'mocha'
 }

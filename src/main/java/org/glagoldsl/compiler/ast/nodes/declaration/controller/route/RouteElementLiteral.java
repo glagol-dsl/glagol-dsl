@@ -17,4 +17,19 @@ public class RouteElementLiteral extends RouteElement {
     public <T, C> T accept(DeclarationVisitor<T, C> visitor, C context) {
         return visitor.visitRouteElementLiteral(this, context);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RouteElementLiteral that = (RouteElementLiteral) o;
+
+        return value.equals(that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
 }

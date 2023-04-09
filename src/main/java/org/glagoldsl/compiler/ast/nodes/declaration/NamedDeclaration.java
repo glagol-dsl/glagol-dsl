@@ -12,4 +12,9 @@ public abstract class NamedDeclaration extends Declaration {
     public Identifier getIdentifier() {
         return identifier;
     }
+
+    @Override
+    public boolean isNamed() {
+        return true;
+    }
 }

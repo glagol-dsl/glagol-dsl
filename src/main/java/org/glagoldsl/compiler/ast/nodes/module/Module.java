@@ -2,17 +2,18 @@ package org.glagoldsl.compiler.ast.nodes.module;
 
 import org.glagoldsl.compiler.ast.nodes.Node;
 import org.glagoldsl.compiler.ast.nodes.declaration.Declaration;
+import org.glagoldsl.compiler.ast.nodes.declaration.DeclarationCollection;
 
 import java.util.List;
 
 public class Module extends Node {
     private final Namespace namespace;
     private final List<Import> imports;
-    private final List<Declaration> declarations;
+    private final DeclarationCollection declarations;
 
     public Module(Namespace namespace,
                   List<Import> imports,
-                  List<Declaration> declarations) {
+                  DeclarationCollection declarations) {
         this.namespace = namespace;
         this.imports = imports;
         this.declarations = declarations;
@@ -26,7 +27,7 @@ public class Module extends Node {
         return imports;
     }
 
-    public List<Declaration> getDeclarations() {
+    public DeclarationCollection getDeclarations() {
         return declarations;
     }
 

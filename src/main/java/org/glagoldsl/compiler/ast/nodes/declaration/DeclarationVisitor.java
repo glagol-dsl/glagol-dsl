@@ -18,39 +18,114 @@ import org.glagoldsl.compiler.ast.nodes.declaration.proxy.Proxy;
 
 public interface DeclarationVisitor<T, C> {
     // declarations
-    T visitEntity(Entity node, C context);
-    T visitRepository(Repository node, C context);
-    T visitService(Service node, C context);
-    T visitValue(Value node, C context);
-    T visitRestController(RestController node, C context);
+    default T visitDeclarations(DeclarationCollection node, C context) {
+        return null;
+    }
 
+    default T visitEntity(Entity node, C context) {
+        return null;
+    }
+
+    default T visitRepository(Repository node, C context) {
+        return null;
+    }
+
+    default T visitService(Service node, C context) {
+        return null;
+    }
+
+    default T visitValue(Value node, C context) {
+        return null;
+    }
+
+    default T visitRestController(RestController node, C context) {
+        return null;
+    }
     // controller nodes
-    T visitRoute(Route node, C context);
-    T visitRouteElementLiteral(RouteElementLiteral node, C context);
-    T visitRouteElementPlaceholder(RouteElementPlaceholder node, C context);
 
+    default T visitRoute(Route node, C context) {
+        return null;
+    }
+
+    default T visitRouteElementLiteral(RouteElementLiteral node, C context) {
+        return null;
+    }
+
+    default T visitRouteElementPlaceholder(RouteElementPlaceholder node, C context) {
+        return null;
+    }
     // members
-    T visitAccessor(Accessor node, C context);
-    T visitAction(Action node, C context);
-    T visitConstructor(Constructor node, C context);
-    T visitMethod(Method node, C context);
-    T visitProperty(Property node, C context);
 
+    default T visitAccessor(Accessor node, C context) {
+        return null;
+    }
+
+    default T visitAction(Action node, C context) {
+        return null;
+    }
+
+    default T visitMembers(MemberCollection node, C context) {
+        return null;
+    }
+
+    default T visitConstructor(Constructor node, C context) {
+        return null;
+    }
+
+    default T visitMethod(Method node, C context) {
+        return null;
+    }
+
+    default T visitProperty(Property node, C context) {
+        return null;
+    }
     // method nodes
-    T visitBody(Body node, C context);
-    T visitParameter(Parameter node, C context);
 
+    default T visitBody(Body node, C context) {
+        return null;
+    }
+
+    default T visitParameter(Parameter node, C context) {
+        return null;
+    }
     // proxy members
-    T visitProxyConstructor(ProxyConstructor node, C context);
-    T visitProxyMethod(ProxyMethod node, C context);
-    T visitProxyProperty(ProxyProperty node, C context);
-    T visitProxyRequire(ProxyRequire node, C context);
 
+    default T visitProxyConstructor(ProxyConstructor node, C context) {
+        return null;
+    }
+
+    default T visitProxyMethod(ProxyMethod node, C context) {
+        return null;
+    }
+
+    default T visitProxyProperty(ProxyProperty node, C context) {
+        return null;
+    }
+
+    default T visitProxyRequire(ProxyRequire node, C context) {
+        return null;
+    }
     // proxy nodes
-    T visitPhpLabel(PhpLabel node, C context);
-    T visitProxy(Proxy node, C context);
 
+    default T visitPhpLabel(PhpLabel node, C context) {
+        return null;
+    }
+
+    default T visitProxy(Proxy node, C context) {
+        return null;
+    }
     // when nodes
-    T visitWhen(When node, C context);
-    T visitWhenEmpty(WhenEmpty node, C context);
+
+    default T visitWhen(When node, C context) {
+        return null;
+    }
+
+    default T visitWhenEmpty(WhenEmpty node, C context) {
+        return null;
+    }
+    // null declaration
+
+    default T visitNullDeclaration(NullDeclaration node, C context) {
+        return null;
+    }
 }

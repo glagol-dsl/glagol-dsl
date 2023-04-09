@@ -16,6 +16,13 @@ public class Import extends Node {
         this.alias = alias;
     }
 
+    public Import(Namespace namespace,
+                  Identifier declaration) {
+        this.namespace = namespace;
+        this.declaration = declaration;
+        this.alias = declaration;
+    }
+
     public Namespace getNamespace() {
         return namespace;
     }
@@ -26,6 +33,11 @@ public class Import extends Node {
 
     public Identifier getAlias() {
         return alias;
+    }
+
+    @Override
+    public String toString() {
+        return namespace + Namespace.NAMESPACE_DELIMITER + declaration;
     }
 
     public <T, C> T accept(ModuleVisitor<T, C> visitor, C context) {

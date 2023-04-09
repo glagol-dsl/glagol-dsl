@@ -33,6 +33,11 @@ public class Constructor extends AccessibleMember {
         return guard;
     }
 
+    @Override
+    public boolean isConstructor() {
+        return true;
+    }
+
     public <T, C> T accept(DeclarationVisitor<T, C> visitor, C context) {
         return visitor.visitConstructor(this, context);
     }
