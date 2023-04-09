@@ -24,6 +24,10 @@ public class MemberCollection extends ArrayList<Member> {
         return filter(Action.class);
     }
 
+    public List<Member> members() {
+        return filter(Member.class);
+    }
+
     public <T, C> T accept(DeclarationVisitor<T, C> visitor, C context) {
         return visitor.visitMembers(this, context);
     }

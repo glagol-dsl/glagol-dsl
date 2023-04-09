@@ -167,10 +167,7 @@ public abstract class VoidVisitor<C> implements Visitor<Void, C> {
 
     @Override
     public Void visitMembers(MemberCollection node, C context) {
-        node.properties().forEach(property -> property.accept(this, context));
-        node.constructors().forEach(property -> property.accept(this, context));
-        node.methods().forEach(property -> property.accept(this, context));
-        node.actions().forEach(property -> property.accept(this, context));
+        node.members().forEach(member -> member.accept(this, context));
 
         return null;
     }

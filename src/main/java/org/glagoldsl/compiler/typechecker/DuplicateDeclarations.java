@@ -104,4 +104,15 @@ public class DuplicateDeclarations implements ModuleVisitor<Void, Environment>, 
             ));
         }
     }
+
+    private void duplicatesCheck(
+            Declaration declaration, Environment context, Namespace namespace, List<?> declarations
+    ) {
+        if (declarations.size() > 1) {
+            context.getErrors().add(new Error(
+                    declaration,
+                    namespace + Namespace.NAMESPACE_DELIMITER + declaration + " has already been declared"
+            ));
+        }
+    }
 }
