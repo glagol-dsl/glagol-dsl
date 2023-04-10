@@ -4,10 +4,8 @@ import org.glagoldsl.compiler.ast.nodes.declaration.DeclarationCollection;
 import org.glagoldsl.compiler.ast.nodes.declaration.Entity;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.MemberCollection;
 import org.glagoldsl.compiler.ast.nodes.identifier.Identifier;
-import org.glagoldsl.compiler.ast.nodes.module.Import;
+import org.glagoldsl.compiler.ast.nodes.module.*;
 import org.glagoldsl.compiler.ast.nodes.module.Module;
-import org.glagoldsl.compiler.ast.nodes.module.ModuleSet;
-import org.glagoldsl.compiler.ast.nodes.module.Namespace;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -26,14 +24,14 @@ class InvalidImportTest {
         var modules = new ModuleSet() {{
             add(new Module(
                     new Namespace(new Identifier("Test")),
-                    new ArrayList<>(),
+                    new ImportCollection(),
                     new DeclarationCollection() {{
                         add(new Entity(new Identifier("User"), new MemberCollection()));
                     }}
             ));
             add(new Module(
                     new Namespace(new Identifier("Test2")),
-                    new ArrayList<>() {{
+                    new ImportCollection() {{
                         add(anImport);
                     }},
                     new DeclarationCollection()
@@ -57,14 +55,14 @@ class InvalidImportTest {
         var modules = new ModuleSet() {{
             add(new Module(
                     new Namespace(new Identifier("Test")),
-                    new ArrayList<>(),
+                    new ImportCollection(),
                     new DeclarationCollection() {{
                         add(new Entity(new Identifier("User"), new MemberCollection()));
                     }}
             ));
             add(new Module(
                     new Namespace(new Identifier("Test2")),
-                    new ArrayList<>() {{
+                    new ImportCollection() {{
                         add(new Import(new Namespace(new Identifier("Test")), new Identifier("User")));
                     }},
                     new DeclarationCollection()

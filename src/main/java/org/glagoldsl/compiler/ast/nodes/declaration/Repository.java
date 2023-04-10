@@ -2,6 +2,8 @@ package org.glagoldsl.compiler.ast.nodes.declaration;
 
 import org.glagoldsl.compiler.ast.nodes.declaration.member.MemberCollection;
 import org.glagoldsl.compiler.ast.nodes.identifier.Identifier;
+import org.glagoldsl.compiler.ast.nodes.module.Module;
+import org.glagoldsl.compiler.ast.nodes.module.ModuleSet;
 
 public class Repository extends Declaration {
     final private Identifier entityIdentifier;
@@ -25,6 +27,11 @@ public class Repository extends Declaration {
 
     public <T, C> T accept(DeclarationVisitor<T, C> visitor, C context) {
         return visitor.visitRepository(this, context);
+    }
+
+    @Override
+    public DeclarationPointer pointer(Module module) {
+        return new DeclarationPointer(module, this);
     }
 
     @Override

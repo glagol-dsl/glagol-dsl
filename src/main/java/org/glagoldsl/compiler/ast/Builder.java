@@ -43,6 +43,7 @@ import org.glagoldsl.compiler.ast.nodes.expression.unary.relational.Negation;
 import org.glagoldsl.compiler.ast.nodes.identifier.Identifier;
 import org.glagoldsl.compiler.ast.nodes.meta.Location;
 import org.glagoldsl.compiler.ast.nodes.module.Import;
+import org.glagoldsl.compiler.ast.nodes.module.ImportCollection;
 import org.glagoldsl.compiler.ast.nodes.module.Module;
 import org.glagoldsl.compiler.ast.nodes.module.Namespace;
 import org.glagoldsl.compiler.ast.nodes.query.*;
@@ -165,7 +166,7 @@ public class Builder extends AbstractParseTreeVisitor<Node> implements GlagolPar
 
     @Override
     public Module visitModule(ModuleContext ctx) {
-        List<Import> imports = new ArrayList<>();
+        ImportCollection imports = new ImportCollection();
 
         for (UseContext use : ctx.imports) {
             imports.add((Import) visit(use));

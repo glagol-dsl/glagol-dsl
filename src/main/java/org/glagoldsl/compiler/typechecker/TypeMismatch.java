@@ -27,7 +27,7 @@ public class TypeMismatch implements ModuleVisitor<Type, Environment>,
 
     @Override
     public Type visitModuleSet(ModuleSet node, Environment context) {
-        var environment = context.withModuleSet(node);
+        var environment = context.withModules(node);
 
         node.forEach(module -> module.accept(this, environment));
 
@@ -38,7 +38,7 @@ public class TypeMismatch implements ModuleVisitor<Type, Environment>,
     public Type visitModule(
             Module node, Environment context
     ) {
-        node.getDeclarations().forEach(declaration -> declaration.accept(this, context.withScope(node)));
+        node.getDeclarations().forEach(declaration -> declaration.accept(this, context.inScope(node)));
 
         return null;
     }

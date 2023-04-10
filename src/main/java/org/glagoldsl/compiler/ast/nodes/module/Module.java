@@ -8,11 +8,11 @@ import java.util.List;
 
 public class Module extends Node {
     private final Namespace namespace;
-    private final List<Import> imports;
+    private final ImportCollection imports;
     private final DeclarationCollection declarations;
 
     public Module(Namespace namespace,
-                  List<Import> imports,
+                  ImportCollection imports,
                   DeclarationCollection declarations) {
         this.namespace = namespace;
         this.imports = imports;
@@ -23,7 +23,7 @@ public class Module extends Node {
         return namespace;
     }
 
-    public List<Import> getImports() {
+    public ImportCollection getImports() {
         return imports;
     }
 

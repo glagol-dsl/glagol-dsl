@@ -49,4 +49,8 @@ public class DeclarationCollection extends ArrayList<Declaration> {
 
         return collection;
     }
+
+    public List<Repository> repositories() {
+        return filter(Repository.class);
+    }
 }

@@ -8,7 +8,7 @@ public class InvalidImport implements ModuleVisitor<Void, Environment> {
     public Void visitModuleSet(
             ModuleSet node, Environment context
     ) {
-        var environment = context.withModuleSet(node);
+        var environment = context.withModules(node);
 
         node.forEach(module -> module.accept(this, environment));
 
@@ -19,7 +19,7 @@ public class InvalidImport implements ModuleVisitor<Void, Environment> {
     public Void visitModule(
             Module node, Environment context
     ) {
-        var environment = context.withScope(node);
+        var environment = context.inModule(node);
         node.getImports().forEach(anImport -> anImport.accept(this, environment));
 
         return null;

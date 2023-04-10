@@ -21,12 +21,12 @@ public class ModuleSet extends HashSet<Module> {
                 .orElse(new NullDeclaration());
     }
 
-    public DeclarationCollection lookupDeclarations(Namespace namespace, Identifier declaration) {
+    public DeclarationCollection lookupDeclarations(Namespace namespace, Identifier id) {
         var declarations = new DeclarationCollection();
 
         for (Module module : this) {
             if (module.getNamespace().equals(namespace)) {
-                declarations.addAll(module.getDeclarations().lookupMany(declaration));
+                declarations.addAll(module.getDeclarations().lookupMany(id));
             }
         }
 
@@ -34,8 +34,8 @@ public class ModuleSet extends HashSet<Module> {
     }
 
 
-    public List<Controller> lookupControllers(Route route) {
-        var controllers = new ArrayList<Controller>();
+    public DeclarationCollection lookupControllers(Route route) {
+        var controllers = new DeclarationCollection();
 
         for (Module module : this) {
             var moduleControllers = module.getDeclarations().controllers();
@@ -48,5 +48,17 @@ public class ModuleSet extends HashSet<Module> {
 
     public <T, C> T accept(ModuleVisitor<T, C> visitor, C context) {
         return visitor.visitModuleSet(this, context);
+    }
+
+    public DeclarationCollection lookupRepositories(Identifier entityIdentifier) {
+        var repositories = new DeclarationCollection();
+
+        for (Module module : this) {
+            var moduleRepositories = module.getDeclarations().repositories();
+            repositories.addAll(moduleRepositories.stream().filter(
+                    repository -> entityIdentifier.equals(repository.getEntityIdentifier())).toList());
+        }
+
+        return repositories;
     }
 }

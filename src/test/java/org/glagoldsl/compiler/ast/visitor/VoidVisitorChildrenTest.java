@@ -35,6 +35,7 @@ import org.glagoldsl.compiler.ast.nodes.expression.unary.arithmetic.Positive;
 import org.glagoldsl.compiler.ast.nodes.expression.unary.relational.Negation;
 import org.glagoldsl.compiler.ast.nodes.identifier.Identifier;
 import org.glagoldsl.compiler.ast.nodes.module.Import;
+import org.glagoldsl.compiler.ast.nodes.module.ImportCollection;
 import org.glagoldsl.compiler.ast.nodes.module.Module;
 import org.glagoldsl.compiler.ast.nodes.module.Namespace;
 import org.glagoldsl.compiler.ast.nodes.query.*;
@@ -721,7 +722,7 @@ class VoidVisitorChildrenTest {
         var imprt = mock(Import.class);
         var declaration = mock(Declaration.class);
 
-        new Module(namespace, new ArrayList<>() {{
+        new Module(namespace, new ImportCollection() {{
             add(imprt);
         }}, new DeclarationCollection() {{
             add(declaration);
