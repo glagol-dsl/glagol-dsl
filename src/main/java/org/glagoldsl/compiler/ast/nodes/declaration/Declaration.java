@@ -8,10 +8,6 @@ public abstract class Declaration extends AnnotatedNode {
 
     abstract public DeclarationPointer pointer(Module module);
 
-    public boolean isNamed() {
-        return false;
-    }
-
     public boolean isNull() {
         return false;
     }

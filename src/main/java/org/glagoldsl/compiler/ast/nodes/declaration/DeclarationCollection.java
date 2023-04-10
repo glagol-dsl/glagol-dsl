@@ -23,16 +23,6 @@ public class DeclarationCollection extends ArrayList<Declaration> {
         return new NullDeclaration();
     }
 
-    public DeclarationCollection lookupMany(Identifier identifier) {
-        return new DeclarationCollection() {{
-            addAll(named().stream().filter(declaration -> identifier.equals(declaration.getIdentifier())).toList());
-        }};
-    }
-
-    public List<Controller> controllers() {
-        return filter(Controller.class);
-    }
-
     private List<NamedDeclaration> named() {
         return filter(NamedDeclaration.class);
     }
@@ -48,9 +38,5 @@ public class DeclarationCollection extends ArrayList<Declaration> {
         });
 
         return collection;
-    }
-
-    public List<Repository> repositories() {
-        return filter(Repository.class);
     }
 }

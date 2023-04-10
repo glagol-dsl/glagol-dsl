@@ -19,8 +19,4 @@ public abstract class NamedDeclaration extends Declaration {
         return identifier;
     }
 
-    @Override
-    public boolean isNamed() {
-        return true;
-    }
 }

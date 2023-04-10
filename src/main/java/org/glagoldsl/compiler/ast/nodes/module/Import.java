@@ -1,6 +1,7 @@
 package org.glagoldsl.compiler.ast.nodes.module;
 
 import org.glagoldsl.compiler.ast.nodes.Node;
+import org.glagoldsl.compiler.ast.nodes.declaration.DeclarationPointer;
 import org.glagoldsl.compiler.ast.nodes.identifier.Identifier;
 
 public class Import extends Node {
@@ -42,5 +43,9 @@ public class Import extends Node {
 
     public <T, C> T accept(ModuleVisitor<T, C> visitor, C context) {
         return visitor.visitImport(this, context);
+    }
+
+    public DeclarationPointer pointer() {
+        return new DeclarationPointer(namespace, declaration);
     }
 }

@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -19,5 +20,17 @@ class RestControllerTest {
         var node = new RestController(mock(Route.class), new MemberCollection());
         node.accept(visitor, null);
         verify(visitor, times(1)).visitRestController(any(), any());
+    }
+
+    @Test
+    void getMembers() {
+        var node = new RestController(mock(Route.class), new MemberCollection());
+        assertEquals(new MemberCollection(), node.getMembers());
+    }
+
+    @Test
+    void testToString() {
+        var node = new RestController(mock(Route.class), new MemberCollection());
+        assertEquals("rest controller", node.toString());
     }
 }

@@ -1,6 +1,7 @@
 package org.glagoldsl.compiler.ast.nodes.declaration;
 
 import org.glagoldsl.compiler.ast.nodes.declaration.controller.Controller;
+import org.glagoldsl.compiler.ast.nodes.identifier.Identifier;
 import org.glagoldsl.compiler.ast.nodes.module.Import;
 import org.glagoldsl.compiler.ast.nodes.module.Module;
 import org.glagoldsl.compiler.ast.nodes.module.Namespace;
@@ -10,8 +11,12 @@ import java.util.Objects;
 public class DeclarationPointer {
     private final String pointer;
 
+    public DeclarationPointer(Namespace namespace, Identifier declaration) {
+        pointer = namespace.toString() + Namespace.NAMESPACE_DELIMITER + declaration.toString();
+    }
+
     public DeclarationPointer(Module module, NamedDeclaration declaration) {
-        pointer = module.getNamespace().toString() + Namespace.NAMESPACE_DELIMITER + declaration.getIdentifier().toString();
+        this(module.getNamespace(), declaration.getIdentifier());
     }
 
     public DeclarationPointer(Module module, Controller controller) {
