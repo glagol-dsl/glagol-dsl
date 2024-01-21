@@ -24,7 +24,7 @@ group = 'org.glagoldsl.compiler'
 version = '2.0'
 description = 'compiler'
 
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_20
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
