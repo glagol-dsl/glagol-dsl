@@ -1,5 +1,6 @@
 package org.glagoldsl.compiler.ast.nodes.declaration;
 
+import org.glagoldsl.compiler.CodeCoverageIgnore;
 import org.glagoldsl.compiler.ast.nodes.declaration.controller.RestController;
 import org.glagoldsl.compiler.ast.nodes.declaration.controller.route.Route;
 import org.glagoldsl.compiler.ast.nodes.declaration.controller.route.RouteElementLiteral;
@@ -16,6 +17,7 @@ import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyRequire;
 import org.glagoldsl.compiler.ast.nodes.declaration.proxy.PhpLabel;
 import org.glagoldsl.compiler.ast.nodes.declaration.proxy.Proxy;
 
+@CodeCoverageIgnore
 public interface DeclarationVisitor<T, C> {
     // declarations
     default T visitDeclarations(DeclarationCollection node, C context) {

@@ -1,5 +1,8 @@
 package org.glagoldsl.compiler.ast.nodes.module;
 
+import org.glagoldsl.compiler.CodeCoverageIgnore;
+
+@CodeCoverageIgnore
 public interface ModuleVisitor<T, C> {
     default T visitModuleSet(ModuleSet node, C context) {
         return null;

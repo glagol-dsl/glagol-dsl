@@ -4,6 +4,7 @@ import org.glagoldsl.compiler.ast.nodes.declaration.DeclarationVisitor;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Body;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Parameter;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.When;
+import org.glagoldsl.compiler.ast.nodes.expression.Expression;
 import org.glagoldsl.compiler.ast.nodes.identifier.Identifier;
 import org.glagoldsl.compiler.ast.nodes.type.Type;
 
@@ -16,9 +17,7 @@ public class Method extends AccessibleMember {
     final private When guard;
     final private Body body;
 
-    public Method(
-            Accessor accessor, Type type, Identifier name, List<Parameter> parameters, When guard, Body body
-    ) {
+    public Method(Accessor accessor, Type type, Identifier name, List<Parameter> parameters, When guard, Body body) {
         super(accessor);
         this.type = type;
         this.name = name;
@@ -50,6 +49,11 @@ public class Method extends AccessibleMember {
     @Override
     public boolean isMethod() {
         return true;
+    }
+
+    public Signature signature() {
+        List<Type> types = parameters.stream().map(Parameter::getType).toList();
+        return new Signature(name, types);
     }
 
     public <T, C> T accept(DeclarationVisitor<T, C> visitor, C context) {

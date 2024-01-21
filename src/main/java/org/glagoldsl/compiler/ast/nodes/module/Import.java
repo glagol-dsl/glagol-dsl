@@ -1,8 +1,11 @@
 package org.glagoldsl.compiler.ast.nodes.module;
 
+import org.glagoldsl.compiler.CodeCoverageIgnore;
 import org.glagoldsl.compiler.ast.nodes.Node;
 import org.glagoldsl.compiler.ast.nodes.declaration.DeclarationPointer;
 import org.glagoldsl.compiler.ast.nodes.identifier.Identifier;
+
+import java.util.Objects;
 
 public class Import extends Node {
     private final Namespace namespace;
@@ -47,5 +50,24 @@ public class Import extends Node {
 
     public DeclarationPointer pointer() {
         return new DeclarationPointer(namespace, declaration);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Import anImport = (Import) o;
+
+        boolean isNamespaceEqual = Objects.equals(namespace, anImport.namespace);
+        boolean isDeclarationEqual = Objects.equals(declaration, anImport.declaration);
+        boolean isAliasEqual = Objects.equals(alias, anImport.alias);
+
+        return isNamespaceEqual && isDeclarationEqual && isAliasEqual;
+    }
+
+    @Override
+    @CodeCoverageIgnore
+    public int hashCode() {
+        return Objects.hash(namespace, declaration, alias);
     }
 }

@@ -2,6 +2,7 @@ package org.glagoldsl.compiler.typechecker;
 
 import org.glagoldsl.compiler.ast.nodes.declaration.*;
 import org.glagoldsl.compiler.ast.nodes.declaration.controller.RestController;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.MemberCollection;
 import org.glagoldsl.compiler.ast.nodes.declaration.proxy.Proxy;
 import org.glagoldsl.compiler.ast.nodes.module.Module;
 import org.glagoldsl.compiler.ast.nodes.module.ModuleSet;
@@ -9,8 +10,8 @@ import org.glagoldsl.compiler.ast.nodes.module.ModuleVisitor;
 
 import java.util.HashSet;
 
+public class Redefinition implements ModuleVisitor<Void, Environment>, DeclarationVisitor<Void, Environment> {
 
-public class Duplicates implements ModuleVisitor<Void, Environment>, DeclarationVisitor<Void, Environment> {
     /**
      * A bag containing all already loaded declarations.
      */
@@ -42,6 +43,7 @@ public class Duplicates implements ModuleVisitor<Void, Environment>, Declaration
     @Override
     public Void visitEntity(Entity node, Environment context) {
         check(node, context);
+        check(node.getMembers(), node, context);
 
         return null;
     }
@@ -49,6 +51,7 @@ public class Duplicates implements ModuleVisitor<Void, Environment>, Declaration
     @Override
     public Void visitService(Service node, Environment context) {
         check(node, context);
+        check(node.getMembers(), node, context);
 
         return null;
     }
@@ -56,6 +59,7 @@ public class Duplicates implements ModuleVisitor<Void, Environment>, Declaration
     @Override
     public Void visitValue(Value node, Environment context) {
         check(node, context);
+        check(node.getMembers(), node, context);
 
         return null;
     }
@@ -70,6 +74,7 @@ public class Duplicates implements ModuleVisitor<Void, Environment>, Declaration
     @Override
     public Void visitRestController(RestController node, Environment context) {
         check(node, context);
+        check(node.getMembers(), node, context);
 
         return null;
     }
@@ -77,6 +82,7 @@ public class Duplicates implements ModuleVisitor<Void, Environment>, Declaration
     @Override
     public Void visitRepository(Repository node, Environment context) {
         check(node, context);
+        check(node.getMembers(), node, context);
 
         return null;
     }
@@ -90,5 +96,13 @@ public class Duplicates implements ModuleVisitor<Void, Environment>, Declaration
         }
 
         loaded.add(pointer);
+    }
+
+    private static void check(MemberCollection node, Declaration parent, Environment context) {
+        var propertyRedefinition = new PropertyRedefinition();
+        node.properties().forEach(member -> member.accept(propertyRedefinition, context.inDeclaration(parent)));
+
+        var methodRedefinition = new MethodRedefinition();
+        node.methods().forEach(member -> member.accept(methodRedefinition, context.inDeclaration(parent)));
     }
 }

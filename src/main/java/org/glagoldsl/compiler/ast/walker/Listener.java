@@ -1,11 +1,13 @@
 package org.glagoldsl.compiler.ast.walker;
 
+import org.glagoldsl.compiler.CodeCoverageIgnore;
 import org.glagoldsl.compiler.ast.nodes.Node;
 import org.glagoldsl.compiler.ast.nodes.declaration.DeclarationCollection;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.Accessor;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.MemberCollection;
 import org.glagoldsl.compiler.ast.nodes.statement.AssignOperator;
 
+@CodeCoverageIgnore
 public abstract class Listener {
     public void enter(Node node) {
     }
@@ -14,6 +16,7 @@ public abstract class Listener {
     }
 
     // Following methods are for nodes that do not extend the Node class
+
     public void enter(Accessor node) {
     }
 

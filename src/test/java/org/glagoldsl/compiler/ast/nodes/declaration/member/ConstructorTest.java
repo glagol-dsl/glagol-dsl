@@ -48,5 +48,7 @@ class ConstructorTest {
     void isConstructor() {
         var node = new Constructor(Accessor.PUBLIC, new ArrayList<>(), mock(When.class), mock(Body.class));
         assertTrue(node.isConstructor());
+        assertFalse(node.isMethod());
+        assertFalse(node.isProperty());
     }
 }

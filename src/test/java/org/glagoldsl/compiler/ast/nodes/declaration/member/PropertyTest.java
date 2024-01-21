@@ -55,5 +55,7 @@ class PropertyTest {
     void isProperty() {
         var node = new Property(Accessor.PUBLIC, mock(Type.class), mock(Identifier.class), mock(Expression.class));
         assertTrue(node.isProperty());
+        assertFalse(node.isMethod());
+        assertFalse(node.isConstructor());
     }
 }

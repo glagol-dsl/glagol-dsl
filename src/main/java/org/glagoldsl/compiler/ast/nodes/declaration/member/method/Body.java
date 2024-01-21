@@ -18,7 +18,7 @@ public class Body extends Node {
     }
 
     public boolean isEmpty() {
-        return statements.size() == 0 || (statements.size() == 1 && statements.get(0).isEmpty());
+        return statements.isEmpty() || (statements.size() == 1 && statements.get(0).isEmpty());
     }
 
     public <T, C> T accept(DeclarationVisitor<T, C> visitor, C context) {

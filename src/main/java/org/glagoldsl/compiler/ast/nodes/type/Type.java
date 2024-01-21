@@ -1,7 +1,9 @@
 package org.glagoldsl.compiler.ast.nodes.type;
 
+import org.glagoldsl.compiler.CodeCoverageIgnore;
 import org.glagoldsl.compiler.ast.nodes.Node;
 
+@CodeCoverageIgnore
 public abstract class Type extends Node {
     abstract public String toString();
 

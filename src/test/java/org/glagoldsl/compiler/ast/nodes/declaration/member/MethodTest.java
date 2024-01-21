@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -70,6 +70,31 @@ class MethodTest {
     void isMethod() {
         var node = new Method(
                 Accessor.PUBLIC, mock(Type.class), mock(Identifier.class), new ArrayList<>(), mock(When.class), mock(Body.class));
-        assertSame(true, node.isMethod());
+        assertTrue(node.isMethod());
+        assertFalse(node.isProperty());
+        assertFalse(node.isConstructor());
+    }
+
+    @Test
+    void signature() {
+        var name = mock(Identifier.class);
+        var type1 = mock(Type.class);
+        var type2 = mock(Type.class);
+        var parameter1 = mock(Parameter.class);
+        when(parameter1.getType()).thenReturn(type1);
+        var parameter2 = mock(Parameter.class);
+        when(parameter2.getType()).thenReturn(type2);
+        var parameters = new ArrayList<Parameter>() {{
+            add(parameter1);
+            add(parameter2);
+        }};
+        var method1 = new Method(
+                Accessor.PUBLIC, mock(Type.class), name, parameters, mock(When.class), mock(Body.class));
+        var method2 = new Method(
+                Accessor.PRIVATE, mock(Type.class), name, parameters, mock(When.class), mock(Body.class));
+
+        assertEquals(new Signature(name, type1, type2), method1.signature());
+        assertEquals(new Signature(name, type1, type2), method2.signature());
+        assertEquals(method1.signature(), method2.signature());
     }
 }

@@ -38,22 +38,8 @@ public class TypeMismatch implements ModuleVisitor<Type, Environment>,
     public Type visitModule(
             Module node, Environment context
     ) {
-        node.getDeclarations().forEach(declaration -> declaration.accept(this, context.inScope(node)));
+        node.getDeclarations().forEach(declaration -> declaration.accept(this, context.inModule(node)));
 
-        return null;
-    }
-
-    @Override
-    public Type visitNamespace(
-            Namespace node, Environment context
-    ) {
-        return null;
-    }
-
-    @Override
-    public Type visitImport(
-            Import node, Environment context
-    ) {
         return null;
     }
 
@@ -122,6 +108,8 @@ public class TypeMismatch implements ModuleVisitor<Type, Environment>,
             Action node, Environment context
     ) {
         node.getGuard().accept(this, context);
+        node.getBody().accept(this, context);
+        node.getParameters().forEach(parameter -> parameter.accept(this, context));
 
         return null;
     }
@@ -130,6 +118,7 @@ public class TypeMismatch implements ModuleVisitor<Type, Environment>,
     public Type visitConstructor(
             Constructor node, Environment context
     ) {
+
         return null;
     }
 

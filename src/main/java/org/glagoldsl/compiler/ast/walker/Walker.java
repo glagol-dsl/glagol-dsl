@@ -1,5 +1,6 @@
 package org.glagoldsl.compiler.ast.walker;
 
+import org.glagoldsl.compiler.CodeCoverageIgnore;
 import org.glagoldsl.compiler.ast.nodes.annotation.Annotation;
 import org.glagoldsl.compiler.ast.nodes.annotation.AnnotationArgument;
 import org.glagoldsl.compiler.ast.nodes.declaration.*;
@@ -79,6 +80,7 @@ public abstract class Walker extends VoidVisitor<Void> {
         return null;
     }
 
+    @CodeCoverageIgnore
     @Override
     public Void visitNullDeclaration(
             NullDeclaration node, Void context

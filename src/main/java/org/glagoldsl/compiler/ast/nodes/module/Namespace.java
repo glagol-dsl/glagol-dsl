@@ -1,5 +1,6 @@
 package org.glagoldsl.compiler.ast.nodes.module;
 
+import org.glagoldsl.compiler.CodeCoverageIgnore;
 import org.glagoldsl.compiler.ast.nodes.Node;
 import org.glagoldsl.compiler.ast.nodes.identifier.Identifier;
 
@@ -42,6 +43,7 @@ public class Namespace extends Node {
     }
 
     @Override
+    @CodeCoverageIgnore
     public int hashCode() {
         return names.hashCode();
     }
