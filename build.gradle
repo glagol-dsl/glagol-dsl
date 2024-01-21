@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'antlr'
     id 'idea'
+    id 'jvm-test-suite'
 }
 
 repositories {
@@ -16,7 +17,8 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     testImplementation 'org.mockito:mockito-core:4.2.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:4.2.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'com.github.stefanbirkner:system-lambda:1.2.1'
 }
 
@@ -26,7 +28,7 @@ description = 'compiler'
 
 java.sourceCompatibility = JavaVersion.VERSION_20
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
