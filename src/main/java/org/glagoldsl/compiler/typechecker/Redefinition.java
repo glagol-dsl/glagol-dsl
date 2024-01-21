@@ -104,5 +104,8 @@ public class Redefinition implements ModuleVisitor<Void, Environment>, Declarati
 
         var methodRedefinition = new MethodRedefinition();
         node.methods().forEach(member -> member.accept(methodRedefinition, context.inDeclaration(parent)));
+
+        var constructorRedefinition = new ConstructorRedefinition();
+        node.constructors().forEach(member -> member.accept(constructorRedefinition, context.inDeclaration(parent)));
     }
 }

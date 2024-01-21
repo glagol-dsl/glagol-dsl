@@ -8,6 +8,7 @@ import org.glagoldsl.compiler.ast.nodes.declaration.member.*;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Body;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Parameter;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.method.When;
+import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyConstructor;
 import org.glagoldsl.compiler.ast.nodes.declaration.member.proxy.ProxyMethod;
 import org.glagoldsl.compiler.ast.nodes.declaration.proxy.PhpLabel;
 import org.glagoldsl.compiler.ast.nodes.declaration.proxy.Proxy;
@@ -20,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.stream.Stream;
@@ -239,8 +239,12 @@ class RedefinitionTest {
     }
 
     @ParameterizedTest
-    @MethodSource("declarationsWithPropertyRedefinitions")
-    void it_yields_error_when_duplicated_property_is_declared_in_entity(Declaration declaration, String expectedError) {
+    @MethodSource({
+            "declarationsWithPropertyRedefinitions",
+            "declarationsWithMethodRedefinitions",
+            "declarationsWithConstructorRedefinitions"
+    })
+    void it_yields_error_when_duplicated_property_is_declared_in_declaration(Declaration declaration, String expectedError) {
         var modules = new ModuleSet() {{
             add(new Module(
                     new Namespace(new Identifier("Test")),
@@ -299,29 +303,6 @@ class RedefinitionTest {
         );
     }
 
-    @ParameterizedTest
-    @MethodSource("declarationsWithMethodRedefinitions")
-    void it_yields_error_when_duplicated_method_is_declared_in_entity(Declaration declaration, String expectedError) {
-        var modules = new ModuleSet() {{
-            add(new Module(
-                    new Namespace(new Identifier("Test")),
-                    new ImportCollection(),
-                    new DeclarationCollection() {{
-                        add(declaration);
-                    }}
-            ));
-        }};
-        var environment = new Environment();
-
-        modules.accept(new Redefinition(), environment);
-
-        assertEquals(1, environment.getErrors().size());
-
-        var error = environment.getErrors().get(0);
-
-        assertEquals(expectedError, error.message());
-    }
-
     public static Stream<Arguments> declarationsWithMethodRedefinitions() {
         var type1 = mock(Type.class);
         when(type1.toString()).thenReturn("Type1");
@@ -366,6 +347,40 @@ class RedefinitionTest {
                 Arguments.of(value, "Test::Money -> name(Type1) method is already defined"),
                 Arguments.of(repository, "Test -> repository <::> -> name(Type1) method is already defined"),
                 Arguments.of(service, "Test::UserCreator -> name(Type1) method is already defined")
+        );
+    }
+
+    public static Stream<Arguments> declarationsWithConstructorRedefinitions() {
+        var type1 = mock(Type.class);
+        when(type1.toString()).thenReturn("Type1");
+
+        var constructor1 = new Constructor(Accessor.PUBLIC, new ArrayList<>() {{
+            add(new Parameter(type1, new Identifier("name")));
+        }}, mock(When.class), mock(Body.class));
+
+        var constructor2 = new ProxyConstructor(new ArrayList<>() {{
+            add(new Parameter(type1, new Identifier("name")));
+        }});
+
+        var entity = new Entity(new Identifier("User"), new MemberCollection() {{
+            add(constructor1);
+            add(constructor2);
+        }});
+
+        var value = new Value(new Identifier("Money"), new MemberCollection() {{
+            add(constructor1);
+            add(constructor2);
+        }});
+
+        var service = new Service(new Identifier("UserCreator"), new MemberCollection() {{
+            add(constructor1);
+            add(constructor2);
+        }});
+
+        return Stream.of(
+                Arguments.of(entity, "Test::User -> constructor (Type1) is already defined"),
+                Arguments.of(value, "Test::Money -> constructor (Type1) is already defined"),
+                Arguments.of(service, "Test::UserCreator -> constructor (Type1) is already defined")
         );
     }
 }

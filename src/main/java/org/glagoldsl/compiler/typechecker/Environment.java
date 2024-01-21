@@ -1,12 +1,10 @@
 package org.glagoldsl.compiler.typechecker;
 
+import org.glagoldsl.compiler.ast.nodes.declaration.Declaration;
 import org.glagoldsl.compiler.ast.nodes.declaration.NullDeclaration;
+import org.glagoldsl.compiler.ast.nodes.identifier.Identifier;
 import org.glagoldsl.compiler.ast.nodes.module.Module;
 import org.glagoldsl.compiler.ast.nodes.module.ModuleSet;
-import org.glagoldsl.compiler.ast.nodes.Node;
-import org.glagoldsl.compiler.ast.nodes.NullNode;
-import org.glagoldsl.compiler.ast.nodes.declaration.Declaration;
-import org.glagoldsl.compiler.ast.nodes.identifier.Identifier;
 import org.glagoldsl.compiler.ast.nodes.module.NullModule;
 import org.glagoldsl.compiler.ast.nodes.type.Type;
 import org.jetbrains.annotations.NotNull;

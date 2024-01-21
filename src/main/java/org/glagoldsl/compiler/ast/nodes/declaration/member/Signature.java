@@ -1,8 +1,8 @@
 package org.glagoldsl.compiler.ast.nodes.declaration.member;
 
 import org.glagoldsl.compiler.CodeCoverageIgnore;
-import org.glagoldsl.compiler.ast.nodes.declaration.member.method.Parameter;
 import org.glagoldsl.compiler.ast.nodes.identifier.Identifier;
+import org.glagoldsl.compiler.ast.nodes.identifier.NullIdentifier;
 import org.glagoldsl.compiler.ast.nodes.type.Type;
 
 import java.util.List;
@@ -20,6 +20,10 @@ public class Signature {
     public Signature(Identifier name, Type... types) {
         this.name = name;
         this.types = List.of(types);
+    }
+
+    public List<Type> getTypes() {
+        return types;
     }
 
     @Override

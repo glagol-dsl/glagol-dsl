@@ -38,6 +38,10 @@ public class Constructor extends AccessibleMember {
         return true;
     }
 
+    public ConstructorSignature signature() {
+        return new ConstructorSignature(parameters.stream().map(Parameter::getType).toList());
+    }
+
     public <T, C> T accept(DeclarationVisitor<T, C> visitor, C context) {
         return visitor.visitConstructor(this, context);
     }
